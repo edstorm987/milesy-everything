@@ -1,8 +1,15 @@
 // Demo seed endpoint — dev-only.
 //
-// Stands up a Demo Agency + Felicia mirror with brand kits, fulfillment
-// installed (auto via core), Felicia at "onboarding" stage, and a
-// half-ticked checklist so the phase board has visible state.
+// Stands up the Demo Agency + Felicia mirror via the shared
+// `seedDemoAgency()` helper at `src/lib/server/demoSeed.ts`. The same
+// helper backs the public `/demo` entry point so both flows produce
+// identical state.
+//
+// Modes:
+//   POST                  — idempotent seed (reuses existing demo tenant).
+//   POST  ?reset=1        — wipe demo agency + descendants, then re-seed.
+//   GET                   — list agencies (debug hint).
+//   GET   ?reset=1        — wipe + re-seed without needing a JSON body.
 //
 // Gated on:
 //   • `NEXT_PUBLIC_DEV_BYPASS=1` (any caller), OR
@@ -12,36 +19,14 @@ import crypto from "crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { ensureHydrated } from "@/server/storage";
 import { getSession } from "@/lib/server/auth";
-import { bootstrapAgency } from "@/server/agencyBootstrap";
-import { createClient, getAgencyBySlug, listAgencies, listClients } from "@/server/tenants";
-import { createUser, getUser } from "@/server/users";
-import { listPhasesForAgency } from "@/server/phases";
-import { logActivity } from "@/server/activity";
-import { makePluginStorage } from "@/lib/server/pluginStorage";
-import { getInstall, listInstalledFor } from "@/server/pluginInstalls";
-import { installPlugin as runtimeInstallPlugin } from "@/plugins/_runtime";
-import type { Agency, Client, PhaseDefinition } from "@/server/types";
+import { listAgencies } from "@/server/tenants";
+import {
+  DEMO_OWNER_EMAIL, DEMO_OWNER_PASSWORD,
+  DEMO_CLIENT_EMAIL, DEMO_CLIENT_PASSWORD,
+  resetDemo, seedDemoAgency, listInstalledFor,
+} from "@/lib/server/demoSeed";
 
-const DEMO_AGENCY_SLUG = "demo-agency";
-const DEMO_AGENCY_NAME = "Demo · Aqua";
-const DEMO_OWNER_EMAIL = "demo@aqua.dev";
-const DEMO_OWNER_PASSWORD = "demo-aqua-2026";
-const DEMO_CLIENT_SLUG = "luv-and-ker-demo";
-const DEMO_CLIENT_NAME = "Luv & Ker · Demo";
-const DEMO_CLIENT_EMAIL = "felicia@luvandker.demo";
-const DEMO_CLIENT_PASSWORD = "felicia-demo-2026";
-
-interface ChecklistItemState { done: boolean; doneAt?: number; doneBy?: string; notes?: string }
-interface ChecklistProgress {
-  clientId: string;
-  phaseId: string;
-  items: Record<string, ChecklistItemState>;
-  updatedAt: number;
-}
-
-function checklistKey(clientId: string, phaseId: string) { return `progress:${clientId}:${phaseId}`; }
-
-async function gateAllowed(req: NextRequest): Promise<{ ok: boolean; actor?: string }> {
+async function gateAllowed(_req: NextRequest): Promise<{ ok: boolean; actor?: string }> {
   if (process.env.NEXT_PUBLIC_DEV_BYPASS === "1") return { ok: true };
   const session = await getSession();
   if (!session) return { ok: false };
@@ -51,175 +36,61 @@ async function gateAllowed(req: NextRequest): Promise<{ ok: boolean; actor?: str
   return { ok: false };
 }
 
+function isResetRequested(req: NextRequest): boolean {
+  const v = req.nextUrl.searchParams.get("reset");
+  return v === "1" || v === "true" || v === "yes";
+}
+
+async function performSeedFlow(req: NextRequest, actor?: string) {
+  let resetSummary: Awaited<ReturnType<typeof resetDemo>> | null = null;
+  if (isResetRequested(req)) {
+    resetSummary = await resetDemo();
+  }
+  const seed = await seedDemoAgency(actor);
+
+  return NextResponse.json({
+    ok: true,
+    reset: resetSummary,
+    agency: { id: seed.agency.id, name: seed.agency.name, slug: seed.agency.slug },
+    client: { id: seed.client.id, name: seed.client.name, stage: seed.client.stage },
+    credentials: {
+      owner: { email: DEMO_OWNER_EMAIL, password: DEMO_OWNER_PASSWORD, role: "agency-owner" },
+      client: { email: DEMO_CLIENT_EMAIL, password: DEMO_CLIENT_PASSWORD, role: "client-owner" },
+    },
+    seededChecklist: seed.seededChecklist,
+    installedClientPlugins: seed.installedClientPlugins,
+    installedScope: listInstalledFor({ agencyId: seed.agency.id, clientId: seed.client.id })
+      .map(p => ({ pluginId: p.pluginId, enabled: p.enabled })),
+    bootstrapped: seed.bootstrapped,
+    correlationId: crypto.randomBytes(4).toString("hex"),
+  });
+}
+
 export async function POST(req: NextRequest) {
   await ensureHydrated();
   const gate = await gateAllowed(req);
   if (!gate.ok) {
     return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
   }
-  const actor = gate.actor;
-
-  // Idempotent: if Demo Agency already exists, return its ids.
-  let agency: Agency | null = getAgencyBySlug(DEMO_AGENCY_SLUG);
-  let createdAgency = false;
-  if (!agency) {
-    const result = await bootstrapAgency(
-      {
-        name: DEMO_AGENCY_NAME,
-        slug: DEMO_AGENCY_SLUG,
-        ownerEmail: DEMO_OWNER_EMAIL,
-        brand: {
-          primaryColor: "#06B6D4",          // cyan-500
-          secondaryColor: "#0E7490",         // cyan-700
-          accentColor: "#F472B6",            // pink-400
-          fontHeading: "ui-sans-serif, system-ui",
-          fontBody: "ui-sans-serif, system-ui",
-          borderRadius: "14px",
-        },
-      },
-      actor,
-    );
-    agency = result.agency;
-    createdAgency = true;
-  }
-
-  // Demo owner user.
-  if (!getUser(DEMO_OWNER_EMAIL)) {
-    createUser({
-      email: DEMO_OWNER_EMAIL,
-      password: DEMO_OWNER_PASSWORD,
-      name: "Demo Owner",
-      role: "agency-owner",
-      agencyId: agency.id,
-    });
-  }
-
-  // Demo client.
-  const existingClients = listClients(agency.id);
-  let client: Client | undefined = existingClients.find(c => c.slug === DEMO_CLIENT_SLUG);
-  let createdClient = false;
-  if (!client) {
-    client = createClient(agency.id, {
-      name: DEMO_CLIENT_NAME,
-      slug: DEMO_CLIENT_SLUG,
-      ownerEmail: DEMO_CLIENT_EMAIL,
-      websiteUrl: "https://luvandker.com",
-      stage: "onboarding",
-      brand: {
-        primaryColor: "#F97316",            // orange-500
-        secondaryColor: "#FFF7ED",           // cream
-        accentColor: "#7C3AED",
-        fontHeading: "Playfair Display, ui-serif, Georgia",
-        fontBody: "ui-sans-serif, system-ui",
-        borderRadius: "8px",
-      },
-    });
-    createdClient = true;
-  }
-
-  // Demo client-owner user.
-  if (!getUser(DEMO_CLIENT_EMAIL)) {
-    createUser({
-      email: DEMO_CLIENT_EMAIL,
-      password: DEMO_CLIENT_PASSWORD,
-      name: "Felicia (demo)",
-      role: "client-owner",
-      agencyId: agency.id,
-      clientId: client.id,
-    });
-  }
-
-  // Install client-scoped plugins for the Felicia mirror so the
-  // per-client surfaces (editor, products, orders) are reachable in the
-  // smoke flow. website-editor must install before ecommerce because
-  // ecommerce declares `requires: ["website-editor"]`.
-  const installedClientPlugins: string[] = [];
-  for (const pluginId of ["website-editor", "ecommerce"]) {
-    if (!getInstall({ agencyId: agency.id, clientId: client.id }, pluginId)) {
-      const result = await runtimeInstallPlugin(pluginId, {
-        scope: { agencyId: agency.id, clientId: client.id },
-        installedBy: actor ?? "demo-seed",
-      });
-      if (result.ok) {
-        installedClientPlugins.push(pluginId);
-      } else {
-        // Don't crash the seed — log and continue; smoke output reports it.
-        logActivity({
-          agencyId: agency.id,
-          clientId: client.id,
-          actorUserId: actor,
-          category: "plugin",
-          action: "demo.install.failed",
-          message: `Demo seed: failed to install '${pluginId}' for client: ${result.error}`,
-          metadata: { pluginId, error: result.error },
-        });
-      }
-    }
-  }
-
-  // Seed half-ticked checklist progress for the client's current phase.
-  // Fulfillment is installed agency-wide (core: true), so the per-install
-  // namespace lives at the agency-scoped install id.
-  const fulfillmentInstall = getInstall({ agencyId: agency.id }, "fulfillment");
-  let seededChecklist: { phaseId: string; ticked: number; total: number } | null = null;
-  if (fulfillmentInstall) {
-    const phases: PhaseDefinition[] = listPhasesForAgency(agency.id);
-    const phase = phases.find(p => p.stage === client.stage);
-    if (phase && phase.checklist.length > 0) {
-      const storage = makePluginStorage(fulfillmentInstall.id);
-      const items: Record<string, ChecklistItemState> = {};
-      // Tick the first half of the items.
-      const total = phase.checklist.length;
-      const halfCount = Math.max(1, Math.floor(total / 2));
-      for (let i = 0; i < total; i++) {
-        const item = phase.checklist[i]!;
-        items[item.id] = i < halfCount
-          ? { done: true, doneAt: Date.now() - (total - i) * 60_000, doneBy: actor ?? "demo-seed" }
-          : { done: false };
-      }
-      const progress: ChecklistProgress = {
-        clientId: client.id,
-        phaseId: phase.id,
-        items,
-        updatedAt: Date.now(),
-      };
-      await storage.set(checklistKey(client.id, phase.id), progress);
-      seededChecklist = { phaseId: phase.id, ticked: halfCount, total };
-    }
-  }
-
-  logActivity({
-    agencyId: agency.id,
-    clientId: client.id,
-    actorUserId: actor,
-    category: "system",
-    action: "demo.seeded",
-    message: `Demo agency + Felicia mirror ready (${createdAgency ? "new" : "existing"} agency, ${createdClient ? "new" : "existing"} client).`,
-    metadata: { seededChecklist, idempotent: !createdAgency && !createdClient, installedClientPlugins },
-  });
-
-  return NextResponse.json({
-    ok: true,
-    agency: { id: agency.id, name: agency.name, slug: agency.slug },
-    client: { id: client.id, name: client.name, stage: client.stage },
-    credentials: {
-      owner: { email: DEMO_OWNER_EMAIL, password: DEMO_OWNER_PASSWORD, role: "agency-owner" },
-      client: { email: DEMO_CLIENT_EMAIL, password: DEMO_CLIENT_PASSWORD, role: "client-owner" },
-    },
-    seededChecklist,
-    installedClientPlugins,
-    installedScope: listInstalledFor({ agencyId: agency.id, clientId: client.id }).map(p => ({ pluginId: p.pluginId, enabled: p.enabled })),
-    bootstrapped: { agency: createdAgency, client: createdClient },
-    correlationId: crypto.randomBytes(4).toString("hex"),
-  });
+  return performSeedFlow(req, gate.actor);
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   await ensureHydrated();
+
+  // GET ?reset=1 is also gated — wiping data must not be drive-by.
+  if (isResetRequested(req)) {
+    const gate = await gateAllowed(req);
+    if (!gate.ok) {
+      return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
+    }
+    return performSeedFlow(req, gate.actor);
+  }
+
   const agencies = listAgencies();
   return NextResponse.json({
     ok: true,
     agencies: agencies.map(a => ({ id: a.id, slug: a.slug, name: a.name })),
-    hint: "POST to seed Demo Agency + Felicia mirror.",
+    hint: "POST to seed Demo Agency + Felicia mirror. Append ?reset=1 to wipe + re-seed.",
   });
 }

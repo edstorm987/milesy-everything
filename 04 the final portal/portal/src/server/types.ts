@@ -136,6 +136,10 @@ export interface SessionPayload {
   role: Role;
   agencyId: string;
   clientId?: string;
+  // Sandboxed demo session. Set when the cookie was issued by `/demo`
+  // (not by `/api/auth/login`). Surfaces a banner + POV toggle in the
+  // portal chrome and isolates the demo agency from real tenants.
+  isDemo?: boolean;
   iat: number;
   exp: number;
 }

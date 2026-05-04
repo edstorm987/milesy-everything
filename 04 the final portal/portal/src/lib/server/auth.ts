@@ -44,6 +44,10 @@ interface IssueSessionInput {
   role: Role;
   agencyId: string;
   clientId?: string;
+  // Mark the session as a sandboxed demo. The chrome layer reads this to
+  // render the demo banner + POV toggle; the seed/reset endpoints use it
+  // to scope writes to the demo agency only.
+  isDemo?: boolean;
 }
 
 export function issueSession(input: IssueSessionInput): string {
@@ -54,6 +58,7 @@ export function issueSession(input: IssueSessionInput): string {
     role: input.role,
     agencyId: input.agencyId,
     clientId: input.clientId,
+    isDemo: input.isDemo === true ? true : undefined,
     iat: now,
     exp: now + COOKIE_MAX_AGE,
   };

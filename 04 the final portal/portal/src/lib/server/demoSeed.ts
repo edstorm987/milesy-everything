@@ -1,0 +1,322 @@
+import "server-only";
+// Demo seed — shared between `/api/dev/seed-demo` (gated dev endpoint) and
+// `/demo/page.tsx` (public entry from milesymedia.com). Both call
+// `seedDemoAgency()` to ensure the demo tenant exists. The route adds a
+// gate; the public page does not — the demo IS the entry point and a
+// session is always issued before the visitor sees any portal data.
+//
+// `resetDemo()` wipes the demo agency + all children (clients, users,
+// plugin installs + per-install plugin data, phases, activity entries)
+// and is safe to call before re-seeding. Used by `?reset=1` on the
+// route handler and (eventually) a nightly cron.
+
+import { ensureHydrated, getState, mutate } from "@/server/storage";
+import { bootstrapAgency } from "@/server/agencyBootstrap";
+import { createClient, getAgencyBySlug, listClients } from "@/server/tenants";
+import { createUser, getUser } from "@/server/users";
+import { listPhasesForAgency } from "@/server/phases";
+import { logActivity } from "@/server/activity";
+import { makePluginStorage } from "@/lib/server/pluginStorage";
+import { getInstall, listInstalledFor } from "@/server/pluginInstalls";
+import { installPlugin as runtimeInstallPlugin } from "@/plugins/_runtime";
+import type { Agency, Client, PhaseDefinition, ServerUser } from "@/server/types";
+
+// ─── Demo tenant constants ────────────────────────────────────────────────
+//
+// Exported so `/demo/page.tsx` and `/demo/toggle/route.ts` can look up
+// the demo users by email when issuing the POV-specific cookie.
+
+export const DEMO_AGENCY_SLUG = "demo-agency";
+export const DEMO_AGENCY_NAME = "Demo · Aqua";
+export const DEMO_OWNER_EMAIL = "demo@aqua.dev";
+export const DEMO_OWNER_PASSWORD = "demo-aqua-2026";
+export const DEMO_CLIENT_SLUG = "luv-and-ker-demo";
+export const DEMO_CLIENT_NAME = "Luv & Ker · Demo";
+export const DEMO_CLIENT_EMAIL = "felicia@luvandker.demo";
+export const DEMO_CLIENT_PASSWORD = "felicia-demo-2026";
+
+// ─── Types ────────────────────────────────────────────────────────────────
+
+interface ChecklistItemState { done: boolean; doneAt?: number; doneBy?: string; notes?: string }
+interface ChecklistProgress {
+  clientId: string;
+  phaseId: string;
+  items: Record<string, ChecklistItemState>;
+  updatedAt: number;
+}
+
+function checklistKey(clientId: string, phaseId: string) { return `progress:${clientId}:${phaseId}`; }
+
+export interface SeedDemoResult {
+  agency: Agency;
+  client: Client;
+  ownerUser: ServerUser;
+  clientUser: ServerUser;
+  bootstrapped: { agency: boolean; client: boolean };
+  installedClientPlugins: string[];
+  seededChecklist: { phaseId: string; ticked: number; total: number } | null;
+}
+
+// ─── Seed ─────────────────────────────────────────────────────────────────
+//
+// Idempotent: existing demo agency + client + users are reused. New
+// installs and phase progress are seeded only if missing.
+
+export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
+  await ensureHydrated();
+
+  let agency: Agency | null = getAgencyBySlug(DEMO_AGENCY_SLUG);
+  let createdAgency = false;
+  if (!agency) {
+    const result = await bootstrapAgency(
+      {
+        name: DEMO_AGENCY_NAME,
+        slug: DEMO_AGENCY_SLUG,
+        ownerEmail: DEMO_OWNER_EMAIL,
+        brand: {
+          primaryColor: "#06B6D4",          // cyan-500
+          secondaryColor: "#0E7490",         // cyan-700
+          accentColor: "#F472B6",            // pink-400
+          fontHeading: "ui-sans-serif, system-ui",
+          fontBody: "ui-sans-serif, system-ui",
+          borderRadius: "14px",
+        },
+      },
+      actor,
+    );
+    agency = result.agency;
+    createdAgency = true;
+  }
+
+  let ownerUser = getUser(DEMO_OWNER_EMAIL);
+  if (!ownerUser) {
+    ownerUser = createUser({
+      email: DEMO_OWNER_EMAIL,
+      password: DEMO_OWNER_PASSWORD,
+      name: "Demo Owner",
+      role: "agency-owner",
+      agencyId: agency.id,
+    });
+  }
+
+  const existingClients = listClients(agency.id);
+  let client: Client | undefined = existingClients.find(c => c.slug === DEMO_CLIENT_SLUG);
+  let createdClient = false;
+  if (!client) {
+    client = createClient(agency.id, {
+      name: DEMO_CLIENT_NAME,
+      slug: DEMO_CLIENT_SLUG,
+      ownerEmail: DEMO_CLIENT_EMAIL,
+      websiteUrl: "https://luvandker.com",
+      stage: "onboarding",
+      brand: {
+        primaryColor: "#F97316",            // orange-500
+        secondaryColor: "#FFF7ED",           // cream
+        accentColor: "#7C3AED",
+        fontHeading: "Playfair Display, ui-serif, Georgia",
+        fontBody: "ui-sans-serif, system-ui",
+        borderRadius: "8px",
+      },
+    });
+    createdClient = true;
+  }
+
+  let clientUser = getUser(DEMO_CLIENT_EMAIL);
+  if (!clientUser) {
+    clientUser = createUser({
+      email: DEMO_CLIENT_EMAIL,
+      password: DEMO_CLIENT_PASSWORD,
+      name: "Felicia (demo)",
+      role: "client-owner",
+      agencyId: agency.id,
+      clientId: client.id,
+    });
+  }
+
+  // Install client-scoped plugins on the Felicia mirror so the per-client
+  // surfaces (editor, products, orders) are reachable in the smoke flow.
+  // website-editor must install before ecommerce because ecommerce
+  // declares `requires: ["website-editor"]`.
+  const installedClientPlugins: string[] = [];
+  for (const pluginId of ["website-editor", "ecommerce"]) {
+    if (!getInstall({ agencyId: agency.id, clientId: client.id }, pluginId)) {
+      const result = await runtimeInstallPlugin(pluginId, {
+        scope: { agencyId: agency.id, clientId: client.id },
+        installedBy: actor ?? "demo-seed",
+      });
+      if (result.ok) {
+        installedClientPlugins.push(pluginId);
+      } else {
+        // Don't crash the seed — log and continue. The Demo banner still
+        // works without ecommerce; the editor/products pages just 404.
+        logActivity({
+          agencyId: agency.id,
+          clientId: client.id,
+          actorUserId: actor,
+          category: "plugin",
+          action: "demo.install.failed",
+          message: `Demo seed: failed to install '${pluginId}' for client: ${result.error}`,
+          metadata: { pluginId, error: result.error },
+        });
+      }
+    }
+  }
+
+  // Seed half-ticked checklist progress for the current phase so the
+  // phase board has visible state when the demo visitor lands.
+  const fulfillmentInstall = getInstall({ agencyId: agency.id }, "fulfillment");
+  let seededChecklist: SeedDemoResult["seededChecklist"] = null;
+  if (fulfillmentInstall) {
+    const phases: PhaseDefinition[] = listPhasesForAgency(agency.id);
+    const phase = phases.find(p => p.stage === client.stage);
+    if (phase && phase.checklist.length > 0) {
+      const storage = makePluginStorage(fulfillmentInstall.id);
+      const existingProgress = await storage.get<ChecklistProgress>(checklistKey(client.id, phase.id));
+      if (!existingProgress) {
+        const items: Record<string, ChecklistItemState> = {};
+        const total = phase.checklist.length;
+        const halfCount = Math.max(1, Math.floor(total / 2));
+        for (let i = 0; i < total; i++) {
+          const item = phase.checklist[i]!;
+          items[item.id] = i < halfCount
+            ? { done: true, doneAt: Date.now() - (total - i) * 60_000, doneBy: actor ?? "demo-seed" }
+            : { done: false };
+        }
+        const progress: ChecklistProgress = {
+          clientId: client.id,
+          phaseId: phase.id,
+          items,
+          updatedAt: Date.now(),
+        };
+        await storage.set(checklistKey(client.id, phase.id), progress);
+        seededChecklist = { phaseId: phase.id, ticked: halfCount, total };
+      } else {
+        const ticked = Object.values(existingProgress.items).filter(i => i.done).length;
+        seededChecklist = { phaseId: phase.id, ticked, total: phase.checklist.length };
+      }
+    }
+  }
+
+  logActivity({
+    agencyId: agency.id,
+    clientId: client.id,
+    actorUserId: actor,
+    category: "system",
+    action: "demo.seeded",
+    message: `Demo agency + Felicia mirror ready (${createdAgency ? "new" : "existing"} agency, ${createdClient ? "new" : "existing"} client).`,
+    metadata: { seededChecklist, idempotent: !createdAgency && !createdClient, installedClientPlugins },
+  });
+
+  return {
+    agency,
+    client,
+    ownerUser,
+    clientUser,
+    bootstrapped: { agency: createdAgency, client: createdClient },
+    installedClientPlugins,
+    seededChecklist,
+  };
+}
+
+// ─── Reset ────────────────────────────────────────────────────────────────
+//
+// Wipe the demo agency + every descendant. Safe to call when the demo
+// agency doesn't exist (no-op). Used by `?reset=1` and (eventually) a
+// nightly cron.
+
+export interface ResetDemoResult {
+  ok: true;
+  existed: boolean;
+  removed: {
+    agency: number;          // 0 or 1
+    clients: number;
+    users: number;
+    pluginInstalls: number;
+    pluginDataKeys: number;
+    phases: number;
+    activityEntries: number;
+    endCustomers: number;
+  };
+}
+
+export async function resetDemo(): Promise<ResetDemoResult> {
+  await ensureHydrated();
+
+  const agency = getAgencyBySlug(DEMO_AGENCY_SLUG);
+  if (!agency) {
+    return {
+      ok: true,
+      existed: false,
+      removed: {
+        agency: 0, clients: 0, users: 0, pluginInstalls: 0,
+        pluginDataKeys: 0, phases: 0, activityEntries: 0, endCustomers: 0,
+      },
+    };
+  }
+
+  const removed = {
+    agency: 0, clients: 0, users: 0, pluginInstalls: 0,
+    pluginDataKeys: 0, phases: 0, activityEntries: 0, endCustomers: 0,
+  };
+
+  mutate(state => {
+    const aId = agency.id;
+
+    for (const [id, c] of Object.entries(state.clients)) {
+      if (c.agencyId === aId) { delete state.clients[id]; removed.clients++; }
+    }
+    for (const [id, ec] of Object.entries(state.endCustomers)) {
+      if (ec.agencyId === aId) { delete state.endCustomers[id]; removed.endCustomers++; }
+    }
+    for (const [email, u] of Object.entries(state.users)) {
+      if (u.agencyId === aId) { delete state.users[email]; removed.users++; }
+    }
+    for (const [installId, p] of Object.entries(state.pluginInstalls)) {
+      if (p.agencyId === aId) {
+        delete state.pluginInstalls[installId];
+        removed.pluginInstalls++;
+        if (state.pluginData[installId]) {
+          removed.pluginDataKeys += Object.keys(state.pluginData[installId]).length;
+          delete state.pluginData[installId];
+        }
+      }
+    }
+    for (const [id, ph] of Object.entries(state.phases)) {
+      if (ph.agencyId === aId) { delete state.phases[id]; removed.phases++; }
+    }
+    const beforeAct = state.activity.length;
+    state.activity = state.activity.filter(a => a.agencyId !== aId);
+    removed.activityEntries = beforeAct - state.activity.length;
+
+    if (state.agencies[aId]) { delete state.agencies[aId]; removed.agency = 1; }
+  });
+
+  return { ok: true, existed: true, removed };
+}
+
+// ─── Read-only helper for the demo route handlers ────────────────────────
+
+export interface DemoTenantSnapshot {
+  agency: Agency;
+  client: Client;
+  ownerUser: ServerUser;
+  clientUser: ServerUser;
+}
+
+// Returns the live demo agency/client/users if they exist. Used by
+// `/demo` + `/demo/toggle` to skip re-seeding when nothing changed.
+export function getDemoSnapshot(): DemoTenantSnapshot | null {
+  const agency = getAgencyBySlug(DEMO_AGENCY_SLUG);
+  if (!agency) return null;
+  const ownerUser = getUser(DEMO_OWNER_EMAIL);
+  const clientUser = getUser(DEMO_CLIENT_EMAIL);
+  if (!ownerUser || !clientUser) return null;
+  const clients = listClients(agency.id);
+  const client = clients.find(c => c.slug === DEMO_CLIENT_SLUG);
+  if (!client) return null;
+  return { agency, client, ownerUser, clientUser };
+}
+
+// Re-export so seed callers can introspect what's installed without
+// reaching into pluginInstalls themselves.
+export { listInstalledFor };
