@@ -173,3 +173,4 @@ Updated tasks.md In-progress section + terminal-prompts/README.md active table.
 - No Q-BLOCKED outstanding. Two productive terminals + one parked-after-clean-shutdown waiting for re-paste of the new R8 prompt.
 
 PING messages to T1 + T3 are now redundant (they're already working) but harmless — they're informational, not blocking.
+[2026-05-05T02:20:00Z] SLEEP: 1500s (25 min). T1 + T3 active (R5 + R3 in flight). T2 awaits re-paste of R8 prompt. 25-min cadence catches T1 R5 progress + T3 R3 Goal B/C + any T2 STARTED.
