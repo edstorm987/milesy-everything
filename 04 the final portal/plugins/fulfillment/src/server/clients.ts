@@ -46,7 +46,7 @@ export interface CreateClientWithPhaseInput {
 export interface CreateClientWithPhaseResult {
   client: Client;
   phase: PhaseDefinition;
-  installs: { pluginId: string; ok: boolean; error?: string }[];
+  installs: { pluginId: string; ok: boolean; error?: string; skipped?: boolean }[];
   variant:
     | { ok: true; variantId: string; pageId?: string; siteId?: string }
     | { ok: false; error: string }
@@ -85,6 +85,12 @@ export class ClientLifecycleService {
     const scope = { agencyId: input.agencyId, clientId: client.id };
 
     // Install the phase's preset plugins for this client.
+    //
+    // R7 — Soft-fail policy: an "unregistered plugin id" error from
+    // the runtime is treated as `skipped: true` (not a hard install
+    // failure). Caller can see which ids skipped via
+    // `installs[i].skipped === true`. Same pattern as
+    // TransitionService.advancePhase.
     const installs: CreateClientWithPhaseResult["installs"] = [];
     for (const pluginId of phase.pluginPreset) {
       const r = await this.runtime.installPlugin({
@@ -94,6 +100,20 @@ export class ClientLifecycleService {
       });
       if (r.ok) {
         installs.push({ pluginId, ok: true });
+      } else if (isUnregisteredPluginError(r.error)) {
+        installs.push({ pluginId, ok: false, error: r.error, skipped: true });
+        await this.activity.logActivity({
+          agencyId: input.agencyId,
+          clientId: client.id,
+          actorUserId: input.actor,
+          category: "phase",
+          action: "phase.preset_plugin_skipped",
+          message: `Phase preset plugin "${pluginId}" skipped on client creation — not registered in foundation.`,
+          metadata: { pluginId, reason: r.error, phaseStage: phase.stage },
+        });
+        this.events.emit(scope, "phase.preset_plugin_skipped" as never, {
+          pluginId, phaseId: phase.id, phaseStage: phase.stage, reason: r.error,
+        });
       } else {
         installs.push({ pluginId, ok: false, error: r.error });
       }
@@ -135,4 +155,14 @@ export class ClientLifecycleService {
 
     return { client, phase, installs, variant };
   }
+}
+
+// Same string-match heuristic as TransitionService — see
+// `transitions.ts` for the rationale + future error-code migration.
+function isUnregisteredPluginError(error: string): boolean {
+  if (!error) return false;
+  const lower = error.toLowerCase();
+  return lower.includes("not found")
+    || lower.includes("not in registry")
+    || lower.includes("not registered");
 }

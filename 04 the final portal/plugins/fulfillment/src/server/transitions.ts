@@ -43,6 +43,12 @@ export interface AdvancePhaseResult {
   client: Client;
   disabled: string[];
   enabled: string[];
+  // R7 — plugins referenced in the preset but skipped because they're
+  // not in the foundation registry. Soft-fail rather than hard-fail
+  // (matches the variant-id soft-fail in step 3 — same architecture
+  // spirit). Re-running advancePhase after T1 wires the registry
+  // picks them up automatically.
+  skipped: { pluginId: string; error: string }[];
   variant:
     | { ok: true; variantId: string; pageId?: string; siteId?: string }
     | { ok: false; error: string }
@@ -102,7 +108,18 @@ export class TransitionService {
     }
 
     // 2. Enable / install new phase plugins.
+    //
+    // Soft-fail policy (R7): plugin ids in the preset that aren't in
+    // the foundation registry yet (or fail with a "not found" /
+    // "not in registry" runtime error) are SKIPPED rather than
+    // aborting the phase advance. The skipped plugin is logged as a
+    // WARN activity entry + a `phase.preset_plugin_skipped` event
+    // emit; phase.advanced still fires and the client moves stage.
+    // This matches Bug B's variant-id soft-fail (architecture §7).
+    // Real registry-side errors (auth, scope policy mismatch,
+    // dependency unmet) still hard-fail.
     const enabled: string[] = [];
+    const skipped: { pluginId: string; error: string }[] = [];
     for (const pluginId of args.toPhase.pluginPreset) {
       const existing = await this.installs.getInstall(scope, pluginId);
       if (existing) {
@@ -122,13 +139,33 @@ export class TransitionService {
             };
           }
         }
+        enabled.push(pluginId);
       } else {
         const r = await this.runtime.installPlugin({
           pluginId,
           scope,
           installedBy: args.actor,
         });
-        if (!r.ok) {
+        if (r.ok) {
+          enabled.push(pluginId);
+        } else if (isUnregisteredPluginError(r.error)) {
+          skipped.push({ pluginId, error: r.error });
+          await this.activity.logActivity({
+            agencyId: args.agencyId,
+            clientId: args.clientId,
+            actorUserId: args.actor,
+            category: "phase",
+            action: "phase.preset_plugin_skipped",
+            message: `Phase preset plugin "${pluginId}" skipped — not registered in foundation. Will install on next phase advance once T1 wires it.`,
+            metadata: { pluginId, reason: r.error, phaseStage: args.toPhase.stage },
+          });
+          this.events.emit(scope, "phase.preset_plugin_skipped" as never, {
+            pluginId,
+            phaseId: args.toPhase.id,
+            phaseStage: args.toPhase.stage,
+            reason: r.error,
+          });
+        } else {
           return {
             ok: false,
             error: `install ${pluginId}: ${r.error}`,
@@ -137,7 +174,6 @@ export class TransitionService {
           };
         }
       }
-      enabled.push(pluginId);
     }
 
     // 3. Apply starter portal variant (T3 integration; no-op until T3 lands).
@@ -199,6 +235,7 @@ export class TransitionService {
         toStage: args.toPhase.stage,
         disabled,
         enabled,
+        skipped: skipped.map(s => s.pluginId),
       },
     });
 
@@ -210,9 +247,28 @@ export class TransitionService {
       toStage: args.toPhase.stage,
       disabled,
       enabled,
+      skipped: skipped.map(s => s.pluginId),
       actor: args.actor,
     });
 
-    return { ok: true, client: updated, disabled, enabled, variant };
+    return { ok: true, client: updated, disabled, enabled, skipped, variant };
   }
+}
+
+// Error-string detection for the runtime's "unregistered plugin"
+// failure mode. The foundation's `_runtime.installPlugin` returns
+// `{ ok: false, error: 'Plugin "X" not found.' }` for unregistered
+// ids — no error code today, so we match on the message. Real
+// runtime-side errors (scope-policy mismatch, dependency unmet,
+// auth) carry distinct messages and still hard-fail the advance.
+//
+// When the runtime grows an explicit error code, this helper switches
+// to that. For now it's a string match — narrow + agnostic to the
+// plugin id.
+function isUnregisteredPluginError(error: string): boolean {
+  if (!error) return false;
+  const lower = error.toLowerCase();
+  return lower.includes("not found")
+    || lower.includes("not in registry")
+    || lower.includes("not registered");
 }

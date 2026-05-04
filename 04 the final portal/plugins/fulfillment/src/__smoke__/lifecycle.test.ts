@@ -644,6 +644,163 @@ describe("phase lifecycle smoke", () => {
   });
 });
 
+// ─── R7 — per-phase install-set + soft-fail assertions ───────────────────
+//
+// Two things to prove:
+//   1. The R7 catalogue mapping is reflected in DEFAULT_PHASE_PRESETS:
+//      Discovery → [website-editor]
+//      Design → [website-editor]
+//      Development → [website-editor, ecommerce]
+//      Onboarding → [website-editor, ecommerce, memberships]
+//      Live → [website-editor, ecommerce, memberships, affiliates]
+//      Churned → []
+//   2. Soft-fail: when the registry doesn't carry a preset id, the phase
+//      advance still succeeds — the missing plugin lands in
+//      `result.skipped`, an activity entry + `phase.preset_plugin_skipped`
+//      event fires, and the rest of the preset still installs.
+
+describe("R7 — phase preset catalogue + soft-fail", () => {
+  test("catalogue: each phase preset matches the R7 plan", () => {
+    const byStage = new Map(DEFAULT_PHASE_PRESETS.map(p => [p.stage, p.pluginPreset]));
+    assert.deepEqual(byStage.get("discovery"), ["website-editor"]);
+    assert.deepEqual(byStage.get("design"), ["website-editor"]);
+    assert.deepEqual(byStage.get("development"), ["website-editor", "ecommerce"]);
+    assert.deepEqual(
+      byStage.get("onboarding"),
+      ["website-editor", "ecommerce", "memberships"],
+    );
+    assert.deepEqual(
+      byStage.get("live"),
+      ["website-editor", "ecommerce", "memberships", "affiliates"],
+    );
+    assert.deepEqual(byStage.get("churned"), []);
+  });
+
+  test("soft-fail: unregistered preset id is skipped, phase still advances", async () => {
+    // Registry only knows website-editor + ecommerce. Onboarding's
+    // preset references memberships — that id should land in `skipped`,
+    // not abort the advance.
+    const REGISTRY = ["website-editor", "ecommerce"];
+    const w = buildSmokeWorld("agency_softfail", "user_softfail", REGISTRY);
+    const services = buildFulfillmentContainer({
+      clients: w.clients,
+      pluginInstalls: w.installs,
+      pluginRuntime: w.runtime,
+      registry: w.registry,
+      phases: w.phases,
+      activity: w.activity,
+      events: w.events,
+      variants: w.variants,
+      storage: w.storage,
+    });
+    await services.phaseService.seedDefaultPhases("agency_softfail");
+    const created = await services.clientLifecycleService.createWithPhase({
+      agencyId: "agency_softfail",
+      actor: "user_softfail",
+      name: "Soft-fail Co",
+      stage: "discovery",
+    });
+    const cid = created.client.id;
+
+    // Walk discovery → development (registers website-editor + ecommerce
+    // — both known). Tick checklist + advance.
+    let current = created.phase;
+    for (const targetStage of ["design", "development"] as const) {
+      for (const item of current.checklist) {
+        await services.checklistService.tickItem({
+          agencyId: "agency_softfail",
+          clientId: cid,
+          phase: current,
+          itemId: item.id,
+          done: true,
+          actor: "user_softfail",
+        });
+      }
+      const target = (await services.phaseService.getPhaseForStage("agency_softfail", targetStage))!;
+      const r = await services.transitionService.advancePhase({
+        agencyId: "agency_softfail",
+        clientId: cid,
+        fromPhase: current,
+        toPhase: target,
+        actor: "user_softfail",
+      });
+      assert.equal(r.ok, true);
+      if (!r.ok) return;
+      assert.deepEqual(r.skipped, [], "no skips expected through development (registry has website-editor + ecommerce)");
+      current = target;
+    }
+
+    // Now hop to onboarding — preset includes memberships (not in registry).
+    for (const item of current.checklist) {
+      await services.checklistService.tickItem({
+        agencyId: "agency_softfail",
+        clientId: cid,
+        phase: current,
+        itemId: item.id,
+        done: true,
+        actor: "user_softfail",
+      });
+    }
+    const onboarding = (await services.phaseService.getPhaseForStage("agency_softfail", "onboarding"))!;
+    const result = await services.transitionService.advancePhase({
+      agencyId: "agency_softfail",
+      clientId: cid,
+      fromPhase: current,
+      toPhase: onboarding,
+      actor: "user_softfail",
+    });
+    assert.equal(result.ok, true, "onboarding advance succeeds despite missing memberships");
+    if (!result.ok) return;
+
+    // memberships skipped; website-editor + ecommerce enabled.
+    assert.deepEqual(result.skipped.map(s => s.pluginId), ["memberships"]);
+    assert.deepEqual([...result.enabled].sort(), ["ecommerce", "website-editor"]);
+
+    // Skip-event fired. (Cast: `phase.preset_plugin_skipped` isn't yet
+    // in the canonical EventName union — same `as never` cast the
+    // service uses on emit. T1 extends the union when wiring the
+    // route in their next round.)
+    const skippedEvents = w.state.emittedEvents.filter(
+      e => (e.name as string) === "phase.preset_plugin_skipped",
+    );
+    assert.equal(skippedEvents.length, 1);
+
+    // Skip-activity entry written.
+    const skippedActivity = w.state.activityLog.filter(e => e.action === "phase.preset_plugin_skipped");
+    assert.equal(skippedActivity.length, 1);
+
+    // Client stage still moved.
+    assert.equal(w.state.clients.get(cid)?.stage, "onboarding");
+
+    // Live hop: preset includes memberships AND affiliates (both unregistered).
+    for (const item of onboarding.checklist) {
+      await services.checklistService.tickItem({
+        agencyId: "agency_softfail",
+        clientId: cid,
+        phase: onboarding,
+        itemId: item.id,
+        done: true,
+        actor: "user_softfail",
+      });
+    }
+    const live = (await services.phaseService.getPhaseForStage("agency_softfail", "live"))!;
+    const liveResult = await services.transitionService.advancePhase({
+      agencyId: "agency_softfail",
+      clientId: cid,
+      fromPhase: onboarding,
+      toPhase: live,
+      actor: "user_softfail",
+    });
+    assert.equal(liveResult.ok, true);
+    if (!liveResult.ok) return;
+    assert.deepEqual(
+      liveResult.skipped.map(s => s.pluginId).sort(),
+      ["affiliates", "memberships"],
+    );
+    assert.equal(w.state.clients.get(cid)?.stage, "live");
+  });
+});
+
 // ─── Programmatic entry point ─────────────────────────────────────────────
 //
 // Lets a future foundation-side smoke runner invoke this whole flow

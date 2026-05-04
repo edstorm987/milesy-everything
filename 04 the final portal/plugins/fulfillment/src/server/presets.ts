@@ -8,14 +8,34 @@
 //   - the starter portal-variant id (T3 owns the variant content)
 //   - the checklist template (internal + client items)
 //
-// Only plugins that the foundation actually ships in its registry can be
-// referenced here — `installPlugin` of an unregistered id returns
-// `{ ok: false }` and the transition fails. Today the registry holds:
-// `fulfillment` (auto-installed at agency scope, never per client),
-// `website-editor`, `ecommerce`. Future plugins (forms, brand, email,
-// analytics, seo, support, agency-hr) are listed in `OPTIONAL_PRESETS`
-// below as ready-to-go templates that the agency can opt into via the
-// phase settings UI once those plugins land.
+// **Plugin catalogue mapping (R7 — consolidation pass)**
+//
+// The presets reflect the real plugin lifecycle a Felicia-shaped client
+// actually walks through:
+//
+// | Phase       | Plugins installed                                            | Why |
+// |-------------|--------------------------------------------------------------|-----|
+// | Discovery   | website-editor                                               | Brand exploration; pages but no commerce yet. |
+// | Design      | website-editor                                               | Mood-board / wireframe iteration. |
+// | Development | website-editor + ecommerce                                   | Build the storefront. |
+// | Onboarding  | website-editor + ecommerce + memberships                     | Add the member tier offering. |
+// | Live        | website-editor + ecommerce + memberships + affiliates        | Full customer-facing trio (shop · join · refer). |
+// | Churned     | (nothing — old installs flip to enabled:false, config preserved) | Per architecture §7 / Decisions log #4. |
+//
+// **Soft-fail policy.** Foundation today (R3 wire-up) only registers
+// `fulfillment` + `ecommerce` + `website-editor`. The four extra ids
+// memberships / affiliates / agency-hr / agency-finance / agency-marketing
+// are not yet in `_registry.ts`. Per R3a Bug A, an unregistered id
+// causes a hard 422 from the runtime — which would fail every phase
+// advance into Onboarding / Live until T1's mass-wire-up round lands.
+//
+// To prevent that, `TransitionService.advancePhase` and
+// `ClientLifecycleService.createWithPhase` treat "plugin not in
+// registry" as a SOFT-FAIL: log a WARN activity entry, emit
+// `phase.preset_plugin_skipped`, continue. Real registry-side errors
+// (auth, dependency, scope) still hard-fail. Same architectural spirit
+// as the variant-id soft-fail (Bug B). When T1 wires the new plugins,
+// re-running phase advance picks them up automatically.
 
 import { makeId } from "../lib/ids";
 import type { AgencyId, PhaseDefinition, PhaseChecklistItem } from "../lib/tenancy";
@@ -37,7 +57,7 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Discovery",
     description: "Initial consultation, scoping, and kick-off.",
     order: 10,
-    pluginPreset: [],
+    pluginPreset: ["website-editor"],
     starterVariantId: "starter-discovery",
     internalTasks: [
       "Schedule kickoff call",
@@ -56,6 +76,10 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     order: 20,
     pluginPreset: ["website-editor"],
     starterVariantId: "starter-design",
+    // Note: same set as discovery — design extends rather than replaces.
+    // Architecture §7: `auto-disable` removes only plugins NOT in the
+    // new preset. So discovery → design is a no-op on installs; only
+    // the variant + checklist swap.
     internalTasks: [
       "Build mood-board",
       "Wireframe 3 versions",
@@ -71,7 +95,7 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Development",
     description: "Build the site / portal / app.",
     order: 30,
-    pluginPreset: ["website-editor"],
+    pluginPreset: ["website-editor", "ecommerce"],
     starterVariantId: "starter-development",
     internalTasks: [
       "Convert design to blocks",
@@ -88,7 +112,9 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Onboarding",
     description: "Pre-launch training and plugin configuration.",
     order: 40,
-    pluginPreset: ["website-editor", "ecommerce"],
+    // Adds memberships — Felicia's tier offering goes live before
+    // public launch so existing customers can join during onboarding.
+    pluginPreset: ["website-editor", "ecommerce", "memberships"],
     starterVariantId: "starter-onboarding",
     internalTasks: [
       "Set up Stripe",
@@ -105,7 +131,10 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Live",
     description: "Site is live; ongoing optimisation.",
     order: 50,
-    pluginPreset: ["website-editor", "ecommerce"],
+    // Adds affiliates — referral programme launches at Live so members
+    // can start earning commissions on referred orders. Memberships
+    // already established during Onboarding.
+    pluginPreset: ["website-editor", "ecommerce", "memberships", "affiliates"],
     starterVariantId: "starter-live",
     internalTasks: [
       "Weekly performance review",
