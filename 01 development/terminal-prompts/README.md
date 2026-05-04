@@ -41,22 +41,16 @@ When done:
 - Commit (`Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`).
 - Push to `main`.
 
-## Round 1 (now)
+## Active prompts (paste these)
 
 | Terminal | Prompt | Goal |
 |----------|--------|------|
-| **T1** | [T1-foundation.md](T1-foundation.md) | Scaffold `04 the final portal/portal/`. Plugin runtime + multi-tenant auth (Agency → Client → End-customer) + role hierarchy + chrome that mounts plugins from manifests. |
-| **T2** | [T2-fulfillment.md](T2-fulfillment.md) | Build the **fulfillment plugin** at `04 the final portal/plugins/fulfillment/`. Phase engine (6 default phases as data), collaborative checklist (internal + client tasks), client CRUD, plugin marketplace UI. |
-| **T3** | [T3-website-editor.md](T3-website-editor.md) | Port the **website-editor plugin** from `02` → `04 the final portal/plugins/website-editor/`. Editor + 58 blocks + portal variants admin. |
+| **T1 → R4** | [T1-round4-demo-button.md](T1-round4-demo-button.md) | Wire static Milesy Media site → live portal. Sign-in button + Demo button + POV toggle banner + reset endpoint. |
+| **T2 → R3** | [T2-round3-validation.md](T2-round3-validation.md) | (A) End-to-end phase-preset smoke walking 5 phase advances. (B) Build `@aqua/plugin-agency-hr` (staff/departments/leave). |
+| **T3 → R2** | [T3-round2-block-uis.md](T3-round2-block-uis.md) | Lift the real 58 block components + real EditorPage (Live/Block/Code) + PortalsPage + Pages/Customise/Sites/Themes/Sections/Assets/Popups admin pages from `02`. |
 
-T2 and T3 don't depend on T1's runtime — they package code into new plugin
-folders. T1's foundation needs to land before any plugin can be installed +
-tested end-to-end. Once all three commits are on `main`, Round 2 wires
-everything together.
+## Archive
 
-## Round 2 (next, after Round 1 lands)
-
-- Wire all three plugins into T1's shell (test install + uninstall + render).
-- Port the **ecommerce plugin** (products / orders / cart / Stripe) from `02`.
-- Build the first phase preset end-to-end (create client → pick Onboarding → fulfillment installs forms + brand + email → checklist appears → both sides tick → advance phase).
-- Wire the demo button on milesymedia.com to a sandboxed agency.
+Superseded prompts move to [old prompts/](old%20prompts/) once shipped.
+That keeps the active folder unambiguous — whatever sits at this level
+is what to paste into a fresh terminal.
