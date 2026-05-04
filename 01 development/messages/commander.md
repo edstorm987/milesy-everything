@@ -105,3 +105,4 @@ Note on system imbalance: T2 has shipped 5 fully-done rounds while T1+T3 each ha
 2. Did NOT pre-draft T2 R7 — T2 still mid-R6. Per orchestrator.md, draft next-round prompt when DONE entry lands.
 3. T1 + T3 silence persists. Already flagged in tasks.md from cycle 8. No new commander action — purely waiting for Ed to re-paste.
 4. Tracking T1 R6 mass-wire-up scope mentally: ~30+ items. Will fully draft when T1 hits DONE on R5 (after Ed re-paste).
+[2026-05-05T00:06:00Z] SLEEP: 1500s (25 min). T2 mid-R6 Goal B (agency-finance scaffold). T1+T3 dead loops awaiting Ed re-paste. 25-min cadence catches T2 progress + any Ed-driven re-paste activity.
