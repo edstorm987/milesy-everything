@@ -1,10 +1,7 @@
 # Tasks
 
 ## In progress
-- [ ] **T2 R3 — agency-HR plugin** — `@aqua/plugin-agency-hr` at
-      `04 the final portal/plugins/agency-hr/`. Staff directory + departments
-      + leave management, agency-scoped (`scopePolicy: "agency"`),
-      opt-in (`core: false`). Pending in this round.
+_(T2 R3 done — see `Done — Round 3` below)_
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
@@ -72,6 +69,23 @@
       (Bug B) is per-architecture (logged for T3 alignment, not blocking).
       Both smokes 0 failures. `npm run smoke` script added. See
       `context/prior research/04-phase-lifecycle-smoke.md`.
+- [x] **T2 R3b — agency-HR plugin (Goal B)** — shipped.
+      `@aqua/plugin-agency-hr` at `04 the final portal/plugins/agency-hr/`.
+      `scopePolicy: "agency"`, `core: false` (opt-in). Staff +
+      departments + leave-request domain (Staff with status/role/manager
+      graph + locationType/hourlyRate; Department tree with cycle-safe
+      parentId; LeaveRequest with pto/sick/sabbatical types and
+      pending/approved/rejected workflow). Three services with cycle
+      checks + email uniqueness. Four ports declared (TenantPort,
+      ActivityLogPort, EventBusPort, PluginInstallStorePort). 13 API
+      routes at `/api/portal/agency-hr/*` with per-route
+      `visibleToRoles`. 5 admin pages + 4 client components. Foundation
+      adapter (`registerAgencyHrFoundation` + `containerFor` singleton)
+      ready for T1 to side-effect-import. `onInstall` seeds five default
+      departments. tsc-clean; 6/6 smoke tests green. See
+      `context/prior research/04-plugin-agency-hr.md`. Foundation
+      pending: workspace dep + transpilePackages + side-effect-import
+      file + `_registry.ts` append + `ActivityCategory` += "hr".
 - [x] **T1 R3 — three plugins live** — shipped. `@aqua/plugin-ecommerce`
       and `@aqua/plugin-website-editor` mounted as workspace deps
       alongside fulfillment. `_routeResolver.ts` handles two manifest
