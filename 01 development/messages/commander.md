@@ -120,3 +120,4 @@ Note on system imbalance: T2 has shipped 5 fully-done rounds while T1+T3 each ha
 4. Did NOT archive prior round prompts — same rule.
 
 Velocity observation: T2 has been the sole producer for 3 consecutive cycles (cycle 8/9/10 → R5+R6 = 4 commits + chapters #30, #31, #32 likely + soon #33). They're roughly on a 2-cycle-per-round cadence. T1+T3's silence has not blocked T2 because T2 builds standalone tsc-clean packages, but the integration debt T1's foundation must absorb keeps growing (now 5 unwired plugins after R7 — agency-HR, memberships, affiliates, agency-finance, agency-marketing).
+[2026-05-05T00:26:00Z] SLEEP: 1500s (25 min). T2 R7 active (just TASKed). T1+T3 still parked. 25-min cadence covers T2 R7 progress + Ed re-paste activity if any.
