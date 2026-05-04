@@ -1,26 +1,27 @@
 # Tasks
 
-## In progress
+## In progress (post-cleanup 2026-05-05T02:15Z — Ed re-engaging all three terminals)
+
+Active prompts at `terminal-prompts/` (all shipped prompts archived to
+`old prompts/`):
+
 - [ ] **T1 R5 — End-customer flow** — prompt
-      `terminal-prompts/T1-round5-end-customer.md` dropped 21:35Z.
-      Per-client end-customer signup + login, real `/portal/customer`
-      powered by T3's variant flow, third POV in demo cycle.
-      **NOTE 22:50Z**: T1's loop appears to have ended post-R4 DONE
-      before TASK landed (no STARTED entry across two wakes). Ed needs
-      to re-paste the R5 prompt to restart the loop.
-_(T2 R5 done — see `Done — Round 5` below)_
-_(T2 R6 done — see `Done — Round 6` below)_
-_(T2 R7 done — see `Done — Round 7` below)_
-- [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
+      `terminal-prompts/T1-round5-end-customer.md`. Per-client
+      end-customer signup + login, real `/portal/customer` powered by
+      T3's variant flow, third POV in demo cycle.
+- [ ] **T2 R8 — Client-CRM plugin** — prompt
+      `terminal-prompts/T2-round8-client-crm.md`. `@aqua/plugin-client-crm`
+      (`scopePolicy: "client"`, no hard deps). Contacts + segments +
+      activity timeline. Pairs with T1 R5 (end-customer signups
+      auto-appear as Contacts).
+- [ ] **T3 R3 — CustomisePage + ThemeDetailPage + cross-plugin block
       renderers** — prompt
-      `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.
-      (A) Lift CustomisePage (898 LOC brand-kit editor), (B) register
-      8 ecommerce block renderers in RENDERER_REGISTRATIONS (cross-team
-      handoff parked since T2 R2), (C) lift ThemeDetailPage (1063 LOC)
-      + re-point PagesPage at EditorPage list. PageDetailPage /
-      SitesPage / customPages backend deferred to R4.
-      **NOTE 22:50Z**: T3's loop also appears ended post-R2 DONE (no
-      STARTED across two wakes). Ed needs to re-paste the R3 prompt.
+      `terminal-prompts/T3-round3-admin-and-renderers.md`. (A) Lift
+      CustomisePage (898 LOC brand-kit editor), (B) register 14
+      cross-plugin block renderers (ecommerce 8 + memberships 3 +
+      affiliates 3 — components already lifted in R2 Phase A), (C)
+      lift ThemeDetailPage (1063 LOC) + re-point PagesPage at
+      EditorPage list.
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded

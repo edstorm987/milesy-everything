@@ -144,3 +144,32 @@ Velocity observation: T2 has been the sole producer for 3 consecutive cycles (cy
 
 [2026-05-05T01:55:00Z] PLAN: cycle 13 actions — minimal. T2 winding down per design; nothing to drive. T1+T3 still need Ed re-paste. No new prompts to draft, no replies to write. Cadence stays at 1500s for one more cycle. If cycle 14 is also wind-down-only (T2 logs WAKE-EMPTY 2/3, no Ed activity), I'll drop to 1800s. After 3 fully-empty wakes (no new entries from anyone), end my own /loop per orchestrator.md stop conditions.
 [2026-05-05T01:56:00Z] SLEEP: 1500s (25 min). T2 mid-wind-down (1/3). T1+T3 dead. Quiet cycle expected next.
+
+[2026-05-05T02:15:00Z] WAKEUP: cycle 14 — Ed-driven cleanup. Ed asked to verify completeness, archive old prompts, and reissue new prompts to the terminals.
+
+Verification — all previously-active prompts shipped:
+- T1: R1 (16bc524), R2 (f02863a), R3 (29bd49a — inline TASK, no file), R4 (322ef74) — all DONE.
+- T2: R1 (2dfc7e6), R2 (4f6b264), R3 (f678ef6 + 4d17a29), R4 (6af1c72), R5 (640d98b + a5b4abc), R6 (db60015 + 8045511), R7 (a80daa9 + 074ee78) — all DONE.
+- T3: R1 (39d00c5), R2 (079a666) — all DONE.
+
+Archive — moved 7 shipped prompts to `terminal-prompts/old prompts/` via `git mv` (preserves history):
+- T1-round4-demo-button.md
+- T2-round3-validation.md, T2-round4-memberships.md, T2-round5-affiliates-and-discounts.md, T2-round6-agency-finance.md, T2-round7-phase-presets-and-marketing.md
+- T3-round2-block-uis.md
+Updated `old prompts/README.md` archive table with shipped commit hashes.
+
+Active prompts at root after cleanup (4 files): orchestrator-init.md, README.md, T1-round5-end-customer.md, T3-round3-admin-and-renderers.md.
+
+PAUSE on T2 lifted by Ed directive. Drafted `T2-round8-client-crm.md` — `@aqua/plugin-client-crm` (per-client CRM: contacts + segments + activity timeline; pairs with T1 R5 via `mergeFromUser`; soft-integrates with memberships/affiliates/ecommerce via optional ports). Now 3 active prompts.
+
+PING entries dropped into all three terminal inboxes pointing at their current prompt + giving them a brief catch-up on the state of the world while they were silent (esp. T1+T3 — they missed T2's R4-R7 entirely). T1 R5 prompt unchanged. T3 R3 Goal B updated context: pre-register list now firmer at 14 ids (8 ecommerce + 3 memberships + 3 affiliates).
+
+Updated tasks.md In-progress section + terminal-prompts/README.md active table.
+
+[2026-05-05T02:18:00Z] CORRECTION: T1 + T3 are BOTH alive — Ed re-pasted earlier than I detected. Confirmed via outbox + git log:
+- T1 R5 STARTED at 08:30Z 2026-05-05 with full plan A/B/C/D + Q-ASSUMED on scoped email lookup. WIP visible in working tree: `/api/auth/end-customer/`, `/portal/customer/[...rest]/`, modifications to users.ts/tenants.ts/types.ts/auth/login/demoSeed/etc.
+- T3 R3 STARTED at 23:35Z 2026-05-04, Goal A DONE @ `6b5becf` (CustomisePage 898-LOC + lib/customise + lib/loginCustomisation expanded). Their commit absorbed my git-mv prompt-archives via shared-`.git/index` mesh behavior — clean side-effect, archives are now committed in mainline.
+- T2 ended loop cleanly after WAKE-EMPTY 3/3 at `fa9c567`, plus `56621f7` post-loop note. T2 R8 TASK now sits in inbox awaiting re-paste.
+- No Q-BLOCKED outstanding. Two productive terminals + one parked-after-clean-shutdown waiting for re-paste of the new R8 prompt.
+
+PING messages to T1 + T3 are now redundant (they're already working) but harmless — they're informational, not blocking.

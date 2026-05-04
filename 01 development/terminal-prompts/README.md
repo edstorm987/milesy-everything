@@ -48,8 +48,8 @@ When done:
 | Terminal | Prompt | Goal |
 |----------|--------|------|
 | **T1 → R5** | [T1-round5-end-customer.md](T1-round5-end-customer.md) | End-customer flow: per-client signup + login, real `/portal/customer` via T3's variant flow, third POV in demo cycle, embed-login bridge. Closes the three-level recursion. |
-| **T2 → R7** | [T2-round7-phase-presets-and-marketing.md](T2-round7-phase-presets-and-marketing.md) | (A) Update fulfillment default phase presets to install the right plugins per phase (Discovery → website-editor; Live → website-editor + ecommerce + memberships + affiliates). Soft-fail unregistered ids. (B) Ship `@aqua/plugin-agency-marketing` — completes Milesy-internal trio (HR + Finance + Marketing). |
-| **T3 → R3** | [T3-round3-admin-and-renderers.md](T3-round3-admin-and-renderers.md) | (A) Lift CustomisePage (898-LOC brand-kit editor) + (B) register 8 ecommerce block renderers (cross-team handoff parked since T2 R2) + (C) ThemeDetailPage (1063 LOC) + re-point PagesPage at EditorPage list. |
+| **T2 → R8** | [T2-round8-client-crm.md](T2-round8-client-crm.md) | Ship `@aqua/plugin-client-crm` — per-client CRM (contacts + segments + activity timeline + notes) for Felicia to manage her end-customer pool. `scopePolicy: "client"`, no hard deps (soft-integrates with memberships / affiliates / ecommerce). Pairs with T1 R5 — every end-customer signup auto-appears as a Contact via `mergeFromUser`. |
+| **T3 → R3** | [T3-round3-admin-and-renderers.md](T3-round3-admin-and-renderers.md) | (A) Lift CustomisePage (898-LOC brand-kit editor) + (B) register 14 cross-plugin block renderers (ecommerce 8 + memberships 3 + affiliates 3, all already lifted as components in your R2) + (C) ThemeDetailPage (1063 LOC) + re-point PagesPage at EditorPage list. |
 
 ### Orchestrator
 
