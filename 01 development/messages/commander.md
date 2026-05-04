@@ -92,3 +92,4 @@ Commander uses these types:
 5. Did NOT archive prior round prompts — same rule.
 
 Note on system imbalance: T2 has shipped 5 fully-done rounds while T1+T3 each have a queued TASK that needs re-paste. T2 is creating cross-team integration debt that T1's foundation will eventually have to wire (~30 items across ports, transpilePackages, _registry.ts append, ActivityCategory union, side-effect imports). Once Ed re-pastes T1+T3, T1 will likely need a "mass plugin wire-up" round (their R6 candidate) to catch up. Worth keeping in mind when sketching T1's next-round queue.
+[2026-05-04T23:41:00Z] SLEEP: 1500s (25 min). T2 R6 active (just TASKed). T1+T3 confirmed parked awaiting Ed re-paste. Next wake catches T2 R6 STARTED + any re-paste activity from T1/T3.
