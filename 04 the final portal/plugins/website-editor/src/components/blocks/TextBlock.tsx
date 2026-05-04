@@ -1,17 +1,44 @@
-// TextBlock — text
-//
-// Round 1 placeholder. Renders props.children (so layout blocks compose
-// correctly) and a debug data-attribute for Round-2 visual port from
-// 02 felicias aqua portal work/src/components/editor/blocks/TextBlock.tsx.
+"use client";
 
-import type { BlockComponentProps } from "../blockRegistry";
-import { BlockRenderer } from "../BlockRenderer";
+import { useEffect, useRef } from "react";
+import type { BlockRenderProps } from "../blockRegistry";
+import { blockStylesToCss } from "../blockStyles";
 
-export function TextBlock({ block, children }: BlockComponentProps) {
-  const childBlocks = block.children ?? [];
+export default function TextBlock({ block, editorMode }: BlockRenderProps) {
+  const text = (block.props.text as string | undefined) ?? "";
+  const style = { lineHeight: 1.6, fontSize: "1rem", margin: 0, outline: "none", ...blockStylesToCss(block.styles) };
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current && ref.current.innerHTML !== text) ref.current.innerHTML = text;
+  }, [text]);
+
+  // Outside editor mode: render the raw HTML (admins can write <strong>,
+  // <em>, <a>). The /admin/assets pipeline never embeds untrusted HTML —
+  // the content is authored by the same admin who edits these blocks, so
+  // raw output is acceptable here.
+  if (!editorMode) {
+    if (text.includes("<")) {
+      return <div data-block-type="text" style={style} dangerouslySetInnerHTML={{ __html: text }} />;
+    }
+    return <p data-block-type="text" style={style}>{text}</p>;
+  }
+
   return (
-    <div data-block-type="text" data-block-id={block.id}>
-      {children ?? childBlocks.map((c) => <BlockRenderer key={c.id} block={c} />)}
-    </div>
+    <div
+      ref={ref}
+      data-block-type="text"
+      style={style}
+      contentEditable
+      suppressContentEditableWarning
+      onClick={e => e.stopPropagation()}
+      onBlur={e => {
+        const next = e.currentTarget.innerHTML;
+        if (next === text) return;
+        window.dispatchEvent(new CustomEvent("lk-block-text-commit", {
+          detail: { id: block.id, key: "text", value: next },
+        }));
+      }}
+    />
   );
 }

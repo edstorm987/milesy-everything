@@ -1,54 +1,182 @@
-// Recursive block renderer. Walks an `EditorPage.blocks` tree and
-// renders each block via its registry-resolved component.
-//
-// Round 1: simple recursion + missing-type fallback. Round 2 adds:
-//   - Split-test resolution (`variantResolver.ts`)
-//   - Style overrides + responsive CSS (`blockStyles.ts`)
-//   - Animation (AnimateOnScroll wrap)
-//   - Visibility gates (member-gate, mobile/desktop, feature flags)
-//   - Exposure tracking for split tests
+"use client";
 
-import { Fragment } from "react";
-import type { Block } from "../types/block";
-import { getBlockEntry } from "./blockRegistry";
+// Recursive renderer used by both the editor canvas and the host-side
+// PortalPageRenderer. Looks up the block component in the registry and
+// passes a renderChildren helper down so containers don't have to
+// re-import the renderer.
+//
+// Faithful port of `02/src/components/editor/BlockRenderer.tsx`. The
+// registry import resolves to the plugin's local `blockRegistry.ts`.
+
+import { Fragment, useEffect } from "react";
+import type { Block, SplitTestGroup } from "../types/block";
+import { getBlockDefinition } from "./blockRegistry";
+import AnimateOnScroll from "./AnimateOnScroll";
+import { overridesToCssText } from "./blockStyles";
+import { applyVariant, recordExposure, resolveVariant } from "./variantResolver";
 
 export interface BlockRendererProps {
-  block: Block;
+  blocks: Block[] | undefined;
+  editorMode?: boolean;
+  themeId?: string;
+  splitTestGroups?: SplitTestGroup[];
 }
 
-export function BlockRenderer({ block }: BlockRendererProps) {
-  const entry = getBlockEntry(block.type);
-  if (!entry) {
-    return (
-      <div
-        data-block-missing={block.type}
-        data-block-id={block.id}
-        style={{
-          padding: 16,
-          border: "1px dashed #d97706",
-          color: "#92400e",
-          fontFamily: "monospace",
-          fontSize: 12,
-        }}
-      >
-        Unknown block type: <code>{block.type}</code>
+function BlockRenderer({ blocks, editorMode = false, themeId, splitTestGroups }: BlockRendererProps) {
+  if (!blocks || blocks.length === 0) return null;
+  return (
+    <>
+      {blocks.map(block => (
+        <BlockNode
+          key={block.id}
+          block={block}
+          editorMode={editorMode ?? false}
+          themeId={themeId}
+          splitTestGroups={splitTestGroups}
+        />
+      ))}
+    </>
+  );
+}
+
+function BlockNode({
+  block: blockArg,
+  editorMode,
+  themeId,
+  splitTestGroups,
+}: {
+  block: Block;
+  editorMode: boolean;
+  themeId?: string;
+  splitTestGroups?: SplitTestGroup[];
+}) {
+  let block = blockArg;
+  let variantId: string | null = null;
+  let resolvedGroupId: string | null = null;
+  if (!editorMode && block.variantsByGroup && splitTestGroups) {
+    for (const groupId of Object.keys(block.variantsByGroup)) {
+      const group = splitTestGroups.find(g => g.id === groupId && g.status === "running");
+      if (!group) continue;
+      const result = resolveVariant({
+        block,
+        groupId: group.id,
+        trafficPercent: group.trafficPercent,
+        stickyBy: group.stickyBy,
+      });
+      block = applyVariant(block, result.variant);
+      variantId = result.variantId;
+      resolvedGroupId = group.id;
+      break;
+    }
+  }
+
+  const themeOverlay = themeId ? block.themeStyles?.[themeId] : undefined;
+  if (themeOverlay) {
+    block = { ...block, styles: { ...(block.styles ?? {}), ...themeOverlay } };
+  }
+  const def = getBlockDefinition(block.type);
+  if (!def) {
+    if (editorMode) {
+      return (
+        <div style={{ padding: 8, border: "1px dashed #ef4444", color: "#ef4444", fontSize: 12, borderRadius: 6 }}>
+          Unknown block type: <code>{block.type}</code>
+        </div>
+      );
+    }
+    return null;
+  }
+  const Component = def.Component;
+  const componentNode = (
+    <Component
+      block={block}
+      editorMode={editorMode}
+      renderChildren={children => (
+        <BlockRenderer
+          blocks={children}
+          editorMode={editorMode}
+          themeId={themeId}
+          splitTestGroups={splitTestGroups}
+        />
+      )}
+    />
+  );
+
+  const a = block.a11y;
+  const hasA11y = a && (a.ariaLabel || a.ariaLabelledBy || a.role || a.ariaHidden || a.htmlId || a.tabIndex !== undefined);
+  const node = hasA11y ? (
+    <div
+      id={a!.htmlId || undefined}
+      role={a!.role || undefined}
+      aria-label={a!.ariaLabel || undefined}
+      aria-labelledby={a!.ariaLabelledBy || undefined}
+      aria-hidden={a!.ariaHidden ? true : undefined}
+      tabIndex={a!.tabIndex}
+      style={{ display: "contents" }}
+    >
+      {componentNode}
+    </div>
+  ) : componentNode;
+
+  const tabletCss = !editorMode ? overridesToCssText(block.styles?.tablet) : "";
+  const mobileCss = !editorMode ? overridesToCssText(block.styles?.mobile) : "";
+  const needsScopedCss = tabletCss || mobileCss;
+
+  let body: React.ReactNode = node;
+  if (needsScopedCss) {
+    const css = [
+      tabletCss && `@media (max-width: 1024px) { [data-block-id="${block.id}"] { ${tabletCss} } }`,
+      mobileCss && `@media (max-width: 640px) { [data-block-id="${block.id}"] { ${mobileCss} } }`,
+    ].filter(Boolean).join("\n");
+    body = (
+      <div data-block-id={block.id} style={{ display: "contents" }}>
+        <style dangerouslySetInnerHTML={{ __html: css }} />
+        {node}
       </div>
     );
   }
-  const Component = entry.component;
-  return <Component block={block} />;
+
+  const animate = block.styles?.animate;
+  if (animate && !editorMode) {
+    body = (
+      <AnimateOnScroll
+        animate={animate}
+        duration={block.styles?.animateDuration}
+        delay={block.styles?.animateDelay}
+        easing={block.styles?.animateEasing}
+      >{body}</AnimateOnScroll>
+    );
+  }
+
+  if (resolvedGroupId && variantId && !editorMode) {
+    body = (
+      <SplitTestExposure groupId={resolvedGroupId} variantId={variantId}>
+        {body}
+      </SplitTestExposure>
+    );
+  }
+
+  return <Fragment>{body}</Fragment>;
 }
 
-export interface BlockTreeRendererProps {
-  blocks: Block[];
+function SplitTestExposure({ groupId, variantId, children }: { groupId: string; variantId: string; children: React.ReactNode }) {
+  useEffect(() => {
+    recordExposure(groupId, variantId);
+  }, [groupId, variantId]);
+  return <Fragment>{children}</Fragment>;
 }
 
-export function BlockTreeRenderer({ blocks }: BlockTreeRendererProps) {
+// Convenience tree wrapper preserving the Round-1 named-export contract
+// the storefront PortalPageRenderer expects.
+export function BlockTreeRenderer({ blocks, editorMode, themeId, splitTestGroups }: BlockRendererProps) {
   return (
-    <Fragment>
-      {blocks.map((block) => (
-        <BlockRenderer key={block.id} block={block} />
-      ))}
-    </Fragment>
+    <BlockRenderer
+      blocks={blocks}
+      editorMode={editorMode}
+      themeId={themeId}
+      splitTestGroups={splitTestGroups}
+    />
   );
 }
+
+export { BlockRenderer };
+export default BlockRenderer;

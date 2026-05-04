@@ -1,17 +1,48 @@
-// QuoteBlock — quote
-//
-// Round 1 placeholder. Renders props.children (so layout blocks compose
-// correctly) and a debug data-attribute for Round-2 visual port from
-// 02 felicias aqua portal work/src/components/editor/blocks/QuoteBlock.tsx.
+"use client";
 
-import type { BlockComponentProps } from "../blockRegistry";
-import { BlockRenderer } from "../BlockRenderer";
+// Quote / pull-quote block — single editorial quotation with
+// optional attribution. Common in long-form blog posts and
+// brand stories.
 
-export function QuoteBlock({ block, children }: BlockComponentProps) {
-  const childBlocks = block.children ?? [];
+import type { BlockRenderProps } from "../blockRegistry";
+import { blockStylesToCss } from "../blockStyles";
+
+export default function QuoteBlock({ block }: BlockRenderProps) {
+  const text = (block.props.text as string | undefined) ?? "Design is intelligence made visible.";
+  const author = (block.props.author as string | undefined);
+  const role = (block.props.role as string | undefined);
+  const align = (block.props.align as "left" | "center" | undefined) ?? "center";
+
   return (
-    <div data-block-type="quote" data-block-id={block.id}>
-      {children ?? childBlocks.map((c) => <BlockRenderer key={c.id} block={c} />)}
-    </div>
+    <figure
+      data-block-type="quote"
+      style={{
+        padding: "48px 24px",
+        textAlign: align,
+        margin: 0,
+        ...blockStylesToCss(block.styles),
+      }}
+    >
+      <blockquote
+        style={{
+          fontFamily: "var(--font-playfair, Georgia, serif)",
+          fontSize: 26,
+          fontWeight: 500,
+          fontStyle: "italic",
+          lineHeight: 1.4,
+          maxWidth: 720,
+          margin: align === "center" ? "0 auto" : 0,
+        }}
+      >
+        “{text}”
+      </blockquote>
+      {(author || role) && (
+        <figcaption style={{ marginTop: 16, fontSize: 13, opacity: 0.65 }}>
+          {author && <span style={{ fontWeight: 600 }}>{author}</span>}
+          {author && role && <span> · </span>}
+          {role}
+        </figcaption>
+      )}
+    </figure>
   );
 }

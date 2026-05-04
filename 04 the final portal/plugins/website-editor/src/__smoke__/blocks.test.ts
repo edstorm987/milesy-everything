@@ -75,8 +75,8 @@ async function main(): Promise<void> {
   );
   // Force every block module to evaluate by touching its component reference.
   let evaluated = 0;
-  for (const [type, entry] of Object.entries(BLOCK_REGISTRY)) {
-    if (typeof entry.component === "function" && entry.descriptor.type === type) evaluated++;
+  for (const [type, def] of Object.entries(BLOCK_REGISTRY)) {
+    if (typeof def.Component === "function" && def.type === type) evaluated++;
   }
   expect("every block component is callable", evaluated === 58, `actual: ${evaluated}`);
 

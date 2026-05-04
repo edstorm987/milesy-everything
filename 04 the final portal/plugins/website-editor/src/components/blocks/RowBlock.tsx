@@ -1,17 +1,26 @@
-// RowBlock — row
-//
-// Round 1 placeholder. Renders props.children (so layout blocks compose
-// correctly) and a debug data-attribute for Round-2 visual port from
-// 02 felicias aqua portal work/src/components/editor/blocks/RowBlock.tsx.
+"use client";
 
-import type { BlockComponentProps } from "../blockRegistry";
-import { BlockRenderer } from "../BlockRenderer";
+import type { BlockRenderProps } from "../blockRegistry";
+import { blockStylesToCss } from "../blockStyles";
 
-export function RowBlock({ block, children }: BlockComponentProps) {
-  const childBlocks = block.children ?? [];
+export default function RowBlock({ block, editorMode, renderChildren }: BlockRenderProps) {
+  const gap = (block.props.gap as string | undefined) ?? "16px";
+  const style = {
+    display: "flex" as const,
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    gap,
+    ...blockStylesToCss(block.styles),
+  };
+  const empty = !block.children || block.children.length === 0;
   return (
-    <div data-block-type="row" data-block-id={block.id}>
-      {children ?? childBlocks.map((c) => <BlockRenderer key={c.id} block={c} />)}
+    <div data-block-type="row" style={style}>
+      {renderChildren?.(block.children)}
+      {empty && editorMode && (
+        <div style={{ padding: 16, flex: 1, textAlign: "center", border: "1px dashed rgba(255,107,53,0.3)", color: "rgba(255,107,53,0.6)", fontSize: 11, borderRadius: 6 }}>
+          Row · drop columns here
+        </div>
+      )}
     </div>
   );
 }

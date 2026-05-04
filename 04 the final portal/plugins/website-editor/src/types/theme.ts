@@ -1,33 +1,31 @@
-// ThemeRecord — flat token-based theme. Lifted from
-// `02 felicias aqua portal work/src/portal/server/themes.ts`. Tokens map
-// to CSS variables (`--theme-*`) injected by EditorThemeInjector at the
-// page root.
+// ThemeRecord — flat token-based theme.
+//
+// Faithful port of `02/src/portal/server/types.ts` ThemeTokens + ThemeRecord
+// definitions. Tokens are emitted as `--theme-*` CSS variables by the
+// EditorThemeInjector; both editor canvas and host PortalPageRenderer
+// consume the same variable names so what you see in the canvas matches
+// what visitors see live.
 
 import type { AgencyId, ClientId } from "../lib/tenancy";
 
 export interface ThemeTokens {
-  // Brand-kit-aligned colours
-  "primary"?: string;
-  "primary-foreground"?: string;
-  "secondary"?: string;
-  "secondary-foreground"?: string;
-  "accent"?: string;
-  "accent-foreground"?: string;
-  "background"?: string;
-  "foreground"?: string;
-  "muted"?: string;
-  "muted-foreground"?: string;
-  "border"?: string;
+  // Palette
+  primary?: string;
+  surface?: string;
+  surfaceAlt?: string;
+  ink?: string;
+  inkSoft?: string;
+  border?: string;
+  shadow?: string;
   // Typography
-  "font-heading"?: string;
-  "font-body"?: string;
-  "font-mono"?: string;
-  // Layout
-  "radius"?: string;
-  "container-max-width"?: string;
-  "section-padding-y"?: string;
-  // Open extension — plugins or operators can extend.
-  [token: string]: string | undefined;
+  fontHeading?: string;
+  fontBody?: string;
+  fontMono?: string;
+  // Sizing
+  radius?: string;
+  spacingUnit?: string;
+  // Free-form CSS
+  customCss?: string;
 }
 
 export interface ThemeRecord {
@@ -37,6 +35,7 @@ export interface ThemeRecord {
   clientId: ClientId;
   name: string;
   description?: string;
+  appearance?: "light" | "dark" | "auto";
   tokens: ThemeTokens;
   isDefault?: boolean;
   createdAt: number;

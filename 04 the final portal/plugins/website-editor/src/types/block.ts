@@ -1,50 +1,16 @@
-// Block — leaf unit of an EditorPage tree. Faithful copy of
-// `02 felicias aqua portal work/src/components/editor/types.ts` (or
-// embedded in blockRegistry.ts there).
+// Block — leaf unit of an EditorPage tree.
 //
-// `type` is an open string so plugins (commerce, blog, etc.) can extend
-// the registry. The website-editor plugin contributes the canonical 58
-// types; their values are aliased in `BlockType` for in-tree references.
+// Faithful port of `02 felicias aqua portal work/src/portal/server/types.ts`
+// (sections covering Block, BlockStyles, BlockVariant, BlockA11y, BlockSeo,
+// SplitTestGroup, SplitTestStatus, SplitTestResult). The plugin re-exports
+// these so the lifted block components and renderer can import from
+// `@plugin/types/block` without touching the foundation type module.
+//
+// `type` remains an open string so other plugins (ecommerce, blog, etc.)
+// can extend the registry. The website-editor plugin contributes the
+// canonical 58 types; their values are aliased in `BlockType` for
+// in-tree references.
 
-export interface Block {
-  id: string;
-  type: string;
-  props?: Record<string, unknown>;
-  children?: Block[];
-  // Optional split-test metadata. Resolved by `variantResolver.ts`.
-  variants?: BlockVariant[];
-  // Optional theme + style overrides applied per-block.
-  styleOverrides?: Record<string, string | number>;
-  responsive?: Record<"sm" | "md" | "lg" | "xl", Record<string, string | number>>;
-  animation?: BlockAnimation;
-  visibility?: BlockVisibility;
-}
-
-export interface BlockVariant {
-  id: string;
-  name: string;
-  weight?: number;
-  props?: Record<string, unknown>;
-  children?: Block[];
-}
-
-export interface BlockAnimation {
-  kind: "fade" | "slide-up" | "slide-down" | "slide-left" | "slide-right" | "zoom" | "none";
-  delayMs?: number;
-  durationMs?: number;
-}
-
-export interface BlockVisibility {
-  hidden?: boolean;
-  hiddenOnMobile?: boolean;
-  hiddenOnDesktop?: boolean;
-  showAfterLogin?: boolean;
-  hideAfterLogin?: boolean;
-  requiresFeature?: string;
-}
-
-// Convenience aliases — the canonical 58 block types contributed by the
-// website-editor plugin. Open string remains valid.
 export type BlockType =
   // layout
   | "container" | "section" | "row" | "column" | "grid" | "spacer" | "divider"
@@ -66,5 +32,103 @@ export type BlockType =
   | "app-showcase" | "social-proof-bar"
   // open extension
   | (string & {});
+
+// Per-block style overrides. Optional — empty object means inherit. The
+// renderer maps these to inline styles so the editor preview matches the
+// host site exactly without per-block CSS classes.
+export interface BlockStyles {
+  padding?: string;
+  margin?: string;
+  background?: string;
+  textColor?: string;
+  align?: "left" | "center" | "right";
+  width?: string;
+  maxWidth?: string;
+  minHeight?: string;
+  borderRadius?: string;
+  border?: string;
+  boxShadow?: string;
+  fontFamily?: string;
+  fontSize?: string;
+  fontWeight?: string | number;
+  lineHeight?: string | number;
+  letterSpacing?: string;
+  display?: "block" | "flex" | "grid" | "inline-block";
+  flexDirection?: "row" | "column";
+  justifyContent?: "flex-start" | "center" | "flex-end" | "space-between" | "space-around";
+  alignItems?: "flex-start" | "center" | "flex-end" | "stretch";
+  gap?: string;
+  gridTemplateColumns?: string;
+  customCss?: string;
+  // Responsive overrides
+  mobile?: Partial<Omit<BlockStyles, "mobile" | "tablet" | "animate">>;
+  tablet?: Partial<Omit<BlockStyles, "mobile" | "tablet" | "animate">>;
+  // On-scroll entrance animation
+  animate?: "fade-in" | "slide-up" | "slide-left" | "slide-right" | "zoom-in" | "rotate-in" | "blur-in";
+  animateDuration?: string;
+  animateDelay?: string;
+  animateEasing?: string;
+}
+
+export interface BlockA11y {
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
+  role?: string;
+  ariaHidden?: boolean;
+  alt?: string;
+  tabIndex?: number;
+  htmlId?: string;
+}
+
+export interface BlockSeo {
+  schemaType?: string;
+  schemaProps?: Record<string, unknown>;
+}
+
+export interface BlockVariant {
+  id: string;
+  name: string;
+  props?: Record<string, unknown>;
+  styles?: BlockStyles;
+  weight?: number;
+}
+
+export interface Block {
+  id: string;
+  type: BlockType;
+  props: Record<string, unknown>;
+  styles?: BlockStyles;
+  children?: Block[];
+  a11y?: BlockA11y;
+  seo?: BlockSeo;
+  themeStyles?: Record<string, BlockStyles>;
+  variantsByGroup?: Record<string, BlockVariant[]>;
+}
+
+export type SplitTestStatus = "draft" | "running" | "paused" | "completed";
+
+export interface SplitTestGroup {
+  id: string;
+  siteId: string;
+  name: string;
+  description?: string;
+  status: SplitTestStatus;
+  startedAt?: number;
+  endsAt?: number;
+  trafficPercent?: number;
+  stickyBy?: "visitor" | "session";
+  goalEvent?: string;
+  blockRefs?: Array<{ pageId: string; blockId: string }>;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface SplitTestResult {
+  groupId: string;
+  variantId: string;
+  exposures: number;
+  conversions: number;
+  updatedAt: number;
+}
 
 export type BlockTreeJSON = Block[];

@@ -1,17 +1,12 @@
-// IconBlock — icon
-//
-// Round 1 placeholder. Renders props.children (so layout blocks compose
-// correctly) and a debug data-attribute for Round-2 visual port from
-// 02 felicias aqua portal work/src/components/editor/blocks/IconBlock.tsx.
+"use client";
 
-import type { BlockComponentProps } from "../blockRegistry";
-import { BlockRenderer } from "../BlockRenderer";
+import type { BlockRenderProps } from "../blockRegistry";
+import { blockStylesToCss } from "../blockStyles";
 
-export function IconBlock({ block, children }: BlockComponentProps) {
-  const childBlocks = block.children ?? [];
-  return (
-    <div data-block-type="icon" data-block-id={block.id}>
-      {children ?? childBlocks.map((c) => <BlockRenderer key={c.id} block={c} />)}
-    </div>
-  );
+export default function IconBlock({ block }: BlockRenderProps) {
+  const glyph = (block.props.glyph as string | undefined) ?? "✦";
+  const size = (block.props.size as string | undefined) ?? "32px";
+  const color = (block.props.color as string | undefined) ?? "#ff6b35";
+  const style = { fontSize: size, color, lineHeight: 1, display: "inline-block", ...blockStylesToCss(block.styles) };
+  return <span data-block-type="icon" style={style} aria-hidden="true">{glyph}</span>;
 }

@@ -1,17 +1,15 @@
-// HtmlBlock — html
-//
-// Round 1 placeholder. Renders props.children (so layout blocks compose
-// correctly) and a debug data-attribute for Round-2 visual port from
-// 02 felicias aqua portal work/src/components/editor/blocks/HtmlBlock.tsx.
+"use client";
 
-import type { BlockComponentProps } from "../blockRegistry";
-import { BlockRenderer } from "../BlockRenderer";
+import type { BlockRenderProps } from "../blockRegistry";
+import { blockStylesToCss } from "../blockStyles";
 
-export function HtmlBlock({ block, children }: BlockComponentProps) {
-  const childBlocks = block.children ?? [];
-  return (
-    <div data-block-type="html" data-block-id={block.id}>
-      {children ?? childBlocks.map((c) => <BlockRenderer key={c.id} block={c} />)}
-    </div>
-  );
+// Custom HTML escape-hatch. Keeps the editor flexible for power users who
+// want a chunk of bespoke markup. Trust comes from the admin who authored
+// it; on save the page-write API can sanitise if the operator opts into a
+// strict mode in PortalSettings.
+
+export default function HtmlBlock({ block }: BlockRenderProps) {
+  const html = (block.props.html as string | undefined) ?? "";
+  const style = blockStylesToCss(block.styles);
+  return <div data-block-type="html" style={style} dangerouslySetInnerHTML={{ __html: html }} />;
 }

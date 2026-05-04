@@ -1,17 +1,17 @@
-// SpacerBlock — spacer
-//
-// Round 1 placeholder. Renders props.children (so layout blocks compose
-// correctly) and a debug data-attribute for Round-2 visual port from
-// 02 felicias aqua portal work/src/components/editor/blocks/SpacerBlock.tsx.
+"use client";
 
-import type { BlockComponentProps } from "../blockRegistry";
-import { BlockRenderer } from "../BlockRenderer";
+import type { BlockRenderProps } from "../blockRegistry";
 
-export function SpacerBlock({ block, children }: BlockComponentProps) {
-  const childBlocks = block.children ?? [];
+export default function SpacerBlock({ block, editorMode }: BlockRenderProps) {
+  const height = (block.props.height as string | undefined) ?? "32px";
   return (
-    <div data-block-type="spacer" data-block-id={block.id}>
-      {children ?? childBlocks.map((c) => <BlockRenderer key={c.id} block={c} />)}
-    </div>
+    <div
+      data-block-type="spacer"
+      style={{
+        height,
+        width: "100%",
+        ...(editorMode ? { background: "rgba(255,107,53,0.05)", border: "1px dashed rgba(255,107,53,0.2)" } : null),
+      }}
+    />
   );
 }

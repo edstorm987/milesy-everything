@@ -1,17 +1,8 @@
-// DividerBlock — divider
-//
-// Round 1 placeholder. Renders props.children (so layout blocks compose
-// correctly) and a debug data-attribute for Round-2 visual port from
-// 02 felicias aqua portal work/src/components/editor/blocks/DividerBlock.tsx.
+"use client";
 
-import type { BlockComponentProps } from "../blockRegistry";
-import { BlockRenderer } from "../BlockRenderer";
+import type { BlockRenderProps } from "../blockRegistry";
 
-export function DividerBlock({ block, children }: BlockComponentProps) {
-  const childBlocks = block.children ?? [];
-  return (
-    <div data-block-type="divider" data-block-id={block.id}>
-      {children ?? childBlocks.map((c) => <BlockRenderer key={c.id} block={c} />)}
-    </div>
-  );
+export default function DividerBlock({ block }: BlockRenderProps) {
+  const color = (block.props.color as string | undefined) ?? "rgba(255,255,255,0.1)";
+  return <hr data-block-type="divider" style={{ border: 0, borderTop: `1px solid ${color}`, margin: "16px 0", width: "100%" }} />;
 }
