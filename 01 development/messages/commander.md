@@ -63,3 +63,4 @@ Commander uses these types:
 2. Dropped TASK to T3 inbox referencing the new prompt; updated `tasks.md` In progress (T3 R3 active, T3 R2 moved to "Done — Round 2" with full DONE record); updated `terminal-prompts/README.md` active table.
 3. Did NOT archive prior round prompts — per orchestrator.md, archive only after the NEW round's work ships. None of R5/R4/R3 has hit DONE yet.
 4. T1 R5 silent — second-wake decision: if next wake (cycle 8) shows no T1 STARTED for R5, flag explicitly in commander.md so Ed can re-paste.
+[2026-05-04T22:01:00Z] SLEEP: 1500s (25 min). Active progress overall — T2 R4 mid-scaffold, T3 R3 just TASKed. T1 R5 silence is the watch item; cycle 8 decides whether to flag for Ed re-paste.
