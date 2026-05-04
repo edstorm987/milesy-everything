@@ -86,7 +86,28 @@
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
 
-## Up next (after Round 3)
+## Done — Round 4
+- [x] **T1 R4 — Milesy Media demo button + sign-in wiring** — shipped.
+      Static site declares `<meta name="aqua-portal-base">`; an inline
+      rewriter retargets `[data-aqua-action="sign-in"|"demo"]` hrefs at
+      load (sign-in → `${base}/login`, demo → `${base}/demo`).
+      `SessionPayload` gains optional `isDemo` baked into the HMAC
+      cookie. New top-level Route Handlers: `GET /demo`
+      (seed-then-cookie-then-redirect to `/portal/agency`) +
+      `GET /demo/toggle` (POV flip agency-owner ↔ client-owner via the
+      Felicia mirror). Seed body factored into
+      `src/lib/server/demoSeed.ts`; `resetDemo()` wipes demo agency +
+      every descendant before re-seeding; `/api/dev/seed-demo?reset=1`
+      gated reset. `DemoBanner` server component injected at
+      `/portal/layout.tsx` so POV toggle spans agency + client surfaces.
+      Real `/api/auth/login` never sets `isDemo` — banner only renders
+      for sandboxed sessions. Footer "Last deployed YYYY-MM-DD" + README
+      doc the bump-on-deploy convention. Smoke green: `/demo` cold,
+      toggle both directions, `?reset=1` wipes/re-seeds, real auth
+      unaffected. tsc + build clean. See
+      `context/prior research/04-milesymedia-demo.md`.
+
+## Up next (after Round 4)
 - [ ] T3 R2: lift website-editor block UIs + admin UIs from `02` (the
       pages render but most are placeholder shells).
 - [ ] T2 follow-up: real Stripe webhook smoke (foundation already routes
@@ -95,8 +116,8 @@
       Onboarding → fulfillment installs starter plugins → checklist appears
       → both sides tick → advance phase). Foundation runs the preset
       machinery; T2 owns preset definitions.
-- [ ] Demo button on milesymedia.com — wraps `/api/dev/seed-demo` with a
-      POV toggle.
+- [ ] Demo cron — wire a Vercel cron to `GET /api/dev/seed-demo?reset=1`
+      at 04:00 UTC nightly (architecture §8) once we're ready.
 
 ## Done
 - [x] Phase 0 — Prior research. 18 chapters in
