@@ -143,3 +143,4 @@ Velocity observation: T2 has been the sole producer for 3 consecutive cycles (cy
 - No Q-BLOCKED.
 
 [2026-05-05T01:55:00Z] PLAN: cycle 13 actions — minimal. T2 winding down per design; nothing to drive. T1+T3 still need Ed re-paste. No new prompts to draft, no replies to write. Cadence stays at 1500s for one more cycle. If cycle 14 is also wind-down-only (T2 logs WAKE-EMPTY 2/3, no Ed activity), I'll drop to 1800s. After 3 fully-empty wakes (no new entries from anyone), end my own /loop per orchestrator.md stop conditions.
+[2026-05-05T01:56:00Z] SLEEP: 1500s (25 min). T2 mid-wind-down (1/3). T1+T3 dead. Quiet cycle expected next.
