@@ -43,11 +43,19 @@ When done:
 
 ## Active prompts (paste these)
 
+### Workers
+
 | Terminal | Prompt | Goal |
 |----------|--------|------|
 | **T1 → R4** | [T1-round4-demo-button.md](T1-round4-demo-button.md) | Wire static Milesy Media site → live portal. Sign-in button + Demo button + POV toggle banner + reset endpoint. |
 | **T2 → R3** | [T2-round3-validation.md](T2-round3-validation.md) | (A) End-to-end phase-preset smoke walking 5 phase advances. (B) Build `@aqua/plugin-agency-hr` (staff/departments/leave). |
 | **T3 → R2** | [T3-round2-block-uis.md](T3-round2-block-uis.md) | Lift the real 58 block components + real EditorPage (Live/Block/Code) + PortalsPage + Pages/Customise/Sites/Themes/Sections/Assets/Popups admin pages from `02`. |
+
+### Orchestrator
+
+| Role | Prompt | Goal |
+|------|--------|------|
+| **Chief commander** | [orchestrator-init.md](orchestrator-init.md) | Spawns the autonomous chief-commander session. Reads mesh state, replies to terminal questions, drafts new-round prompts, schedules itself via `/loop` + `ScheduleWakeup`. Full protocol in `../orchestrator.md`. |
 
 ## Archive
 

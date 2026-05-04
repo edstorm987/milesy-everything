@@ -17,6 +17,10 @@ only logs at `01 development/messages/`.
 → **Read `01 development/messages/README.md`** for the full autonomous-
 mesh protocol. Then read the rest of this file.
 
+Within Mode A there are two roles:
+- **Worker terminal (T1 / T2 / T3)** — paste a prompt from `01 development/terminal-prompts/T<N>-...md`. You build code in your assigned slice.
+- **Chief commander (orchestrator)** — paste `01 development/terminal-prompts/orchestrator-init.md`. You coordinate the workers; full protocol in `01 development/orchestrator.md`. You don't write product code.
+
 ### Mode B — Claude web (claude.ai with GitHub connector)
 
 You're running in Ed's browser at work. **Single chat, single actor.** No
