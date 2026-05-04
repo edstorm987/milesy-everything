@@ -1,7 +1,10 @@
 # Tasks
 
 ## In progress
-_(T1 R2 done — see `Done — Round 2` below)_
+- [ ] **T2 R3 — agency-HR plugin** — `@aqua/plugin-agency-hr` at
+      `04 the final portal/plugins/agency-hr/`. Staff directory + departments
+      + leave management, agency-scoped (`scopePolicy: "agency"`),
+      opt-in (`core: false`). Pending in this round.
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
@@ -56,6 +59,19 @@ _(T1 R2 done — see `Done — Round 2` below)_
       block-renderer registration.
 
 ## Done — Round 3
+- [x] **T2 R3a — phase-lifecycle smoke (Goal A)** — shipped. Two smoke
+      harnesses under `04 the final portal/plugins/fulfillment/src/__smoke__/`:
+      in-process `lifecycle.test.ts` (9 `node:test` tests, mocks all 8
+      foundation ports, walks `seedPhases → createWithPhase → tick → advance ×4`)
+      and HTTP `lifecycle.http.mjs` (~50 assertions against a live
+      `npm run dev`, hits seed-demo + login + every fulfillment endpoint).
+      Surfaced + fixed Bug A: default phase presets referenced unregistered
+      plugins (`brand`, `forms`, `email`, `analytics`, `seo`, `support`)
+      causing 422 on `phase/advance`. Trimmed presets to plugins that
+      actually ship (`website-editor`, `ecommerce`). Variant id soft-fail
+      (Bug B) is per-architecture (logged for T3 alignment, not blocking).
+      Both smokes 0 failures. `npm run smoke` script added. See
+      `context/prior research/04-phase-lifecycle-smoke.md`.
 - [x] **T1 R3 — three plugins live** — shipped. `@aqua/plugin-ecommerce`
       and `@aqua/plugin-website-editor` mounted as workspace deps
       alongside fulfillment. `_routeResolver.ts` handles two manifest

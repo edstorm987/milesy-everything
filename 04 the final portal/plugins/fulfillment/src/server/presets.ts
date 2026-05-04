@@ -7,6 +7,15 @@
 //   - the plugin preset (ids that get installed when entering this phase)
 //   - the starter portal-variant id (T3 owns the variant content)
 //   - the checklist template (internal + client items)
+//
+// Only plugins that the foundation actually ships in its registry can be
+// referenced here — `installPlugin` of an unregistered id returns
+// `{ ok: false }` and the transition fails. Today the registry holds:
+// `fulfillment` (auto-installed at agency scope, never per client),
+// `website-editor`, `ecommerce`. Future plugins (forms, brand, email,
+// analytics, seo, support, agency-hr) are listed in `OPTIONAL_PRESETS`
+// below as ready-to-go templates that the agency can opt into via the
+// phase settings UI once those plugins land.
 
 import { makeId } from "../lib/ids";
 import type { AgencyId, PhaseDefinition, PhaseChecklistItem } from "../lib/tenancy";
@@ -28,7 +37,7 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Discovery",
     description: "Initial consultation, scoping, and kick-off.",
     order: 10,
-    pluginPreset: ["brand", "forms"],
+    pluginPreset: [],
     starterVariantId: "starter-discovery",
     internalTasks: [
       "Schedule kickoff call",
@@ -45,7 +54,7 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Design",
     description: "Mood-boards, wireframes, and the design proposal.",
     order: 20,
-    pluginPreset: ["brand", "website-editor"],
+    pluginPreset: ["website-editor"],
     starterVariantId: "starter-design",
     internalTasks: [
       "Build mood-board",
@@ -62,7 +71,7 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Development",
     description: "Build the site / portal / app.",
     order: 30,
-    pluginPreset: ["website-editor", "forms", "email"],
+    pluginPreset: ["website-editor"],
     starterVariantId: "starter-development",
     internalTasks: [
       "Convert design to blocks",
@@ -79,7 +88,7 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Onboarding",
     description: "Pre-launch training and plugin configuration.",
     order: 40,
-    pluginPreset: ["website-editor", "email", "analytics"],
+    pluginPreset: ["website-editor", "ecommerce"],
     starterVariantId: "starter-onboarding",
     internalTasks: [
       "Set up Stripe",
@@ -96,7 +105,7 @@ export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
     label: "Live",
     description: "Site is live; ongoing optimisation.",
     order: 50,
-    pluginPreset: ["website-editor", "email", "analytics", "seo", "support"],
+    pluginPreset: ["website-editor", "ecommerce"],
     starterVariantId: "starter-live",
     internalTasks: [
       "Weekly performance review",
