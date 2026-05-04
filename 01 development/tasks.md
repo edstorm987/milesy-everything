@@ -5,10 +5,7 @@
 Active prompts at `terminal-prompts/` (all shipped prompts archived to
 `old prompts/`):
 
-- [ ] **T1 R5 — End-customer flow** — prompt
-      `terminal-prompts/T1-round5-end-customer.md`. Per-client
-      end-customer signup + login, real `/portal/customer` powered by
-      T3's variant flow, third POV in demo cycle.
+_(T1 R5 done — see `Done — Round 5` below)_
 - [ ] **T2 R8 — Client-CRM plugin** — prompt
       `terminal-prompts/T2-round8-client-crm.md`. `@aqua/plugin-client-crm`
       (`scopePolicy: "client"`, no hard deps). Contacts + segments +
@@ -205,6 +202,32 @@ Active prompts at `terminal-prompts/` (all shipped prompts archived to
       `context/prior research/04-plugin-agency-finance.md`.
 
 ## Done — Round 5
+- [x] **T1 R5 — End-customer flow** — shipped. Closes the architecture's
+      three-level recursion (Agency → Client → End-customer).
+      `users.ts` storage key for end-customers becomes
+      `email|c:<clientId>` so two clients of the same agency may both
+      have a customer named jane@gmail.com; agency/client tier keep
+      the legacy plain-email key. `getUser`/`verifyPassword`/
+      `setUserPassword`/`updateUser` accept optional `UserLookupScope`.
+      New `POST /api/auth/end-customer/signup` with rate limits +
+      `signupsEnabled` gate + 409 on duplicate; issues `lk_session_v1`
+      with `clientId + role=end-customer`. `/api/auth/login` accepts
+      an embed-supplied `clientId` and tries the per-client pool first.
+      `Client.endCustomers: ClientEndCustomerConfig` (`signupsEnabled`
+      default true, optional `postLoginReturnUrl`).
+      `/portal/customer/page.tsx` is variant-driven — looks up the
+      website-editor install, calls T3's `getActivePortalVariant` for
+      "account" then "login", renders blocks via `<BlockRenderer>`,
+      falls back to a welcome card + customer-panel plugin links.
+      New `/portal/customer/[...rest]` catch-all + `resolveCustomerPluginPage`
+      in the resolver. `PanelId += "customer"`; `buildSidebar` filters
+      by `panelId === "customer"` (or `/portal/customer` href) when
+      scope is `customer`. Demo seed adds `demo-shopper@aqua.test`;
+      `/demo/toggle` cycles agency → client → customer → agency;
+      `DemoBanner` shows three POV labels + "Next view → X" button.
+      Embed `LoginForm` carries `clientId` + `allowSignup` + signup
+      toggle + parent-frame return URL. tsc + build clean. See
+      `context/prior research/04-end-customer-flow.md`.
 - [x] **T2 R5 — Affiliates plugin + ecommerce↔memberships discount
       integration** — shipped.
       Goal A (ecommerce edit, commit `640d98b`): extended
