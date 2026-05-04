@@ -75,6 +75,22 @@ export interface ServerOrder {
   // discount lookup at checkout. Null for guest checkouts (no
   // membership lookup possible).
   endCustomerUserId?: string;
+  // R6 — referral attribution. Stamped at checkout when the cart
+  // carried an affiliate referral code. Foundation routes the
+  // `order.created` event payload (which mirrors this field) to
+  // `@aqua/plugin-affiliates` so its AttributionService records the
+  // commission. Persisted on the order so retries / late routing /
+  // backfills can still attribute.
+  referralCodeId?: string;
+}
+
+// R6 — `upsertOrderByStripeSession` returns whether the call inserted
+// a new row or patched an existing one. The Stripe-webhook handler
+// uses this to decide whether to emit `order.created` (only on first
+// insert — webhooks retry, and we don't want to re-emit on retries).
+export interface UpsertOrderResult {
+  order: ServerOrder;
+  isNew: boolean;
 }
 
 const KEY_PREFIX = "order:";
@@ -141,7 +157,8 @@ export class OrderService {
     discountCode?: string;
     discountSnapshot?: MembershipDiscountSnapshot;
     endCustomerUserId?: string;
-  }): Promise<ServerOrder> {
+    referralCodeId?: string;
+  }): Promise<UpsertOrderResult> {
     const existing = input.stripeSessionId
       ? await this.getOrderByStripeSession(input.stripeSessionId)
       : null;
@@ -166,9 +183,10 @@ export class OrderService {
         discountCode: existing.discountCode ?? input.discountCode,
         discountSnapshot: existing.discountSnapshot ?? input.discountSnapshot,
         endCustomerUserId: existing.endCustomerUserId ?? input.endCustomerUserId,
+        referralCodeId: existing.referralCodeId ?? input.referralCodeId,
       };
       await this.storage.set(this.orderKey(patched.id), patched);
-      return patched;
+      return { order: patched, isNew: false };
     }
 
     const order: ServerOrder = {
@@ -191,9 +209,10 @@ export class OrderService {
       discountCode: input.discountCode,
       discountSnapshot: input.discountSnapshot,
       endCustomerUserId: input.endCustomerUserId,
+      referralCodeId: input.referralCodeId,
     };
     await this.storage.set(this.orderKey(order.id), order);
-    return order;
+    return { order, isNew: true };
   }
 
   async markOrderRefunded(paymentIntentId: string): Promise<ServerOrder | null> {

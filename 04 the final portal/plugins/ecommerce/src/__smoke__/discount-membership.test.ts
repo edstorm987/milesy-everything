@@ -157,7 +157,7 @@ describe("R5 — ecommerce ↔ memberships discount", () => {
     });
 
     test("step 5: order persistence carries discountSource + snapshot", async () => {
-      const order = await services.orders.upsertOrderByStripeSession({
+      const { order, isNew } = await services.orders.upsertOrderByStripeSession({
         clientId: CLIENT_ID,
         stripeSessionId: "cs_disc_001",
         amountTotal: 4000,
@@ -169,6 +169,7 @@ describe("R5 — ecommerce ↔ memberships discount", () => {
         discountCode: "MEMBER:Silver",
         discountSnapshot: MOCK_SNAPSHOT,
       });
+      assert.equal(isNew, true, "first upsert is a fresh insert");
       assert.equal(order.discountSource, "membership");
       assert.equal(order.discountAmount, 1000);
       assert.equal(order.discountSnapshot?.planId, "plan_silver");
@@ -183,9 +184,10 @@ describe("R5 — ecommerce ↔ memberships discount", () => {
         items: [],
         // Pretend a webhook retry came in without the discount metadata.
       });
-      assert.equal(second.id, order.id);
-      assert.equal(second.discountSource, "membership", "discount source preserved across upsert");
-      assert.equal(second.discountSnapshot?.planId, "plan_silver");
+      assert.equal(second.isNew, false, "retry is a patch, not an insert");
+      assert.equal(second.order.id, order.id);
+      assert.equal(second.order.discountSource, "membership", "discount source preserved across upsert");
+      assert.equal(second.order.discountSnapshot?.planId, "plan_silver");
     });
   });
 

@@ -260,7 +260,13 @@ export async function stripeWebhookHandler(req: Request, ctx: PluginCtx): Promis
           unitAmount: li.amount_total ? Math.round(li.amount_total / (li.quantity ?? 1)) : 0,
           currency: li.currency ?? "gbp",
         }));
-        const order = await c.orders.upsertOrderByStripeSession({
+        // R6 — `referralCodeId` and `endCustomerUserId` are stamped at
+        // checkout into the Stripe session metadata by the storefront's
+        // checkout API. Reading them here lets the order-creation event
+        // payload carry them downstream to affiliates + memberships.
+        const referralCodeId = sess.metadata?.referralCodeId || undefined;
+        const endCustomerUserId = sess.metadata?.endCustomerUserId || undefined;
+        const { order, isNew } = await c.orders.upsertOrderByStripeSession({
           clientId: ctx.clientId ?? sess.metadata?.clientId ?? "",
           stripeSessionId: sess.id,
           paymentIntentId: sess.payment_intent,
@@ -271,7 +277,45 @@ export async function stripeWebhookHandler(req: Request, ctx: PluginCtx): Promis
           shippingAddress: sess.shipping_details?.address as never,
           items,
           metadata: sess.metadata,
+          referralCodeId,
+          endCustomerUserId,
         });
+        if (isNew) {
+          // R6 — emit order.created exactly once per order. Foundation
+          // routes this to affiliates' AttributionService when an
+          // affiliates install exists for the same client. The
+          // `referralCodeId` + `endCustomerUserId` fields are the
+          // load-bearing additions; `subtotal` is the pre-discount
+          // amount (falls back to amountTotal when no discount applied).
+          const subtotal = order.amountTotal + (order.discountAmount ?? 0);
+          c.events.emit(
+            { agencyId: ctx.agencyId, clientId: ctx.clientId },
+            "order.created",
+            {
+              orderId: order.id,
+              clientId: order.clientId,
+              amountTotal: order.amountTotal,
+              currency: order.currency,
+              subtotal,
+              referralCodeId: order.referralCodeId,
+              endCustomerUserId: order.endCustomerUserId,
+              discountSource: order.discountSource,
+            },
+          );
+          await c.activity.logActivity({
+            agencyId: ctx.agencyId,
+            clientId: ctx.clientId,
+            category: "ecommerce",
+            action: "order.created",
+            message: `Order ${order.id} created (${order.amountTotal / 100} ${order.currency})${order.referralCodeId ? ` via referral ${order.referralCodeId}` : ""}.`,
+            metadata: {
+              orderId: order.id,
+              sessionId: sess.id,
+              referralCodeId: order.referralCodeId,
+              endCustomerUserId: order.endCustomerUserId,
+            },
+          });
+        }
         c.events.emit(
           { agencyId: ctx.agencyId, clientId: ctx.clientId },
           "order.paid",
