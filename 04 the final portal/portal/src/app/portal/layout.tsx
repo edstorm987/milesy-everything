@@ -30,7 +30,10 @@ export default async function PortalLayout({ children }: { children: ReactNode }
     }
   }
 
-  const pov: "agency" | "client" = session.role === "client-owner" ? "client" : "agency";
+  const pov: "agency" | "client" | "customer" =
+    session.role === "client-owner" ? "client" :
+    session.role === "end-customer" ? "customer" :
+    "agency";
 
   return (
     <>
@@ -39,6 +42,7 @@ export default async function PortalLayout({ children }: { children: ReactNode }
           pov={pov}
           agencyName={demoSnapshot.agency.name}
           clientName={demoSnapshot.client.name}
+          customerEmail={demoSnapshot.customerUser.email}
         />
       )}
       {children}

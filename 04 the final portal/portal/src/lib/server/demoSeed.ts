@@ -34,6 +34,9 @@ export const DEMO_CLIENT_SLUG = "luv-and-ker-demo";
 export const DEMO_CLIENT_NAME = "Luv & Ker · Demo";
 export const DEMO_CLIENT_EMAIL = "felicia@luvandker.demo";
 export const DEMO_CLIENT_PASSWORD = "felicia-demo-2026";
+export const DEMO_CUSTOMER_EMAIL = "demo-shopper@aqua.test";
+export const DEMO_CUSTOMER_PASSWORD = "shopper-demo-2026";
+export const DEMO_CUSTOMER_NAME = "Demo shopper";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -52,7 +55,8 @@ export interface SeedDemoResult {
   client: Client;
   ownerUser: ServerUser;
   clientUser: ServerUser;
-  bootstrapped: { agency: boolean; client: boolean };
+  customerUser: ServerUser;
+  bootstrapped: { agency: boolean; client: boolean; customer: boolean };
   installedClientPlugins: string[];
   seededChecklist: { phaseId: string; ticked: number; total: number } | null;
 }
@@ -131,6 +135,24 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
       agencyId: agency.id,
       clientId: client.id,
     });
+  }
+
+  // End-customer (Felicia mirror's demo shopper). Seeds the third POV
+  // for the demo cycle. Scoped per-client — uniqueness key is
+  // `email|c:<clientId>` so this address can coexist with a hypothetical
+  // agency-owner of the same name in a future demo.
+  let customerUser = getUser(DEMO_CUSTOMER_EMAIL, { clientId: client.id, role: "end-customer" });
+  let createdCustomer = false;
+  if (!customerUser) {
+    customerUser = createUser({
+      email: DEMO_CUSTOMER_EMAIL,
+      password: DEMO_CUSTOMER_PASSWORD,
+      name: DEMO_CUSTOMER_NAME,
+      role: "end-customer",
+      agencyId: agency.id,
+      clientId: client.id,
+    });
+    createdCustomer = true;
   }
 
   // Install client-scoped plugins on the Felicia mirror so the per-client
@@ -212,7 +234,8 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
     client,
     ownerUser,
     clientUser,
-    bootstrapped: { agency: createdAgency, client: createdClient },
+    customerUser,
+    bootstrapped: { agency: createdAgency, client: createdClient, customer: createdCustomer },
     installedClientPlugins,
     seededChecklist,
   };
@@ -301,6 +324,7 @@ export interface DemoTenantSnapshot {
   client: Client;
   ownerUser: ServerUser;
   clientUser: ServerUser;
+  customerUser: ServerUser;
 }
 
 // Returns the live demo agency/client/users if they exist. Used by
@@ -314,7 +338,9 @@ export function getDemoSnapshot(): DemoTenantSnapshot | null {
   const clients = listClients(agency.id);
   const client = clients.find(c => c.slug === DEMO_CLIENT_SLUG);
   if (!client) return null;
-  return { agency, client, ownerUser, clientUser };
+  const customerUser = getUser(DEMO_CUSTOMER_EMAIL, { clientId: client.id, role: "end-customer" });
+  if (!customerUser) return null;
+  return { agency, client, ownerUser, clientUser, customerUser };
 }
 
 // Re-export so seed callers can introspect what's installed without

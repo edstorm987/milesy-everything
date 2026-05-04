@@ -16,7 +16,12 @@ import { bootstrapAgency } from "@/server/agencyBootstrap";
 import { createUser, listUsersForAgency, verifyPassword } from "@/server/users";
 import { logActivity } from "@/server/activity";
 
-interface Body { email?: unknown; password?: unknown }
+interface Body {
+  email?: unknown;
+  password?: unknown;
+  clientId?: unknown;     // optional — when /embed/login knows the embedding client,
+                          // its end-customer pool gets first-priority lookup
+}
 
 export async function POST(req: NextRequest) {
   await ensureHydrated();
@@ -39,6 +44,9 @@ export async function POST(req: NextRequest) {
 
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   const password = typeof body.password === "string" ? body.password : "";
+  const embedClientId = typeof body.clientId === "string" && body.clientId.trim().length > 0
+    ? body.clientId.trim()
+    : undefined;
   if (!email || !password) {
     return NextResponse.json({ ok: false, error: "Email and password are required." }, { status: 400 });
   }
@@ -93,7 +101,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const user = verifyPassword(email, password);
+  // When the form supplies an `embedClientId` (came from /embed/login?client=…),
+  // try the end-customer scoped pool first. Falls through to the
+  // global agency/client tier on miss so an agency-owner can still
+  // sign in via an embed surface that happens to know its clientId.
+  let user = embedClientId
+    ? verifyPassword(email, password, { clientId: embedClientId, role: "end-customer" })
+    : null;
+  if (!user) {
+    user = verifyPassword(email, password);
+  }
   if (!user) {
     return NextResponse.json({ ok: false, error: "Email or password is incorrect." }, { status: 401 });
   }

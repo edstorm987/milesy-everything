@@ -30,6 +30,7 @@ const DEFAULT_PANELS: { id: PanelId; label: string; order: number }[] = [
   { id: "main", label: "Overview", order: 0 },
   { id: "fulfillment", label: "Fulfillment", order: 10 },
   { id: "store", label: "Store", order: 20 },
+  { id: "customer", label: "Account", order: 25 },
   { id: "content", label: "Content", order: 30 },
   { id: "marketing", label: "Marketing", order: 40 },
   { id: "ops", label: "Operations", order: 50 },
@@ -87,11 +88,16 @@ export function buildSidebar(input: BuildSidebarInput): NavPanel[] {
       if (allowedRoles && !allowedRoles.includes(input.role)) continue;
       // Scope gate — items targeting agency paths only render in agency
       // scope; items targeting `/portal/clients/[clientId]` only render
-      // in client scope.
+      // in client scope; the customer scope is panelId-driven (a plugin
+      // declares `panelId: "customer"` to opt into the end-customer
+      // chrome) with an href fallback for plugins authored before the
+      // panelId convention landed.
       const isAgencyHref = navItem.href.startsWith("/portal/agency");
       const isClientHref = navItem.href.includes(":clientId") || navItem.href.startsWith("/portal/clients/");
+      const isCustomerHref = navItem.href.startsWith("/portal/customer");
       if (input.scope === "agency" && !isAgencyHref) continue;
       if (input.scope === "client" && !isClientHref) continue;
+      if (input.scope === "customer" && navItem.panelId !== "customer" && !isCustomerHref) continue;
       // Feature gate.
       if (navItem.requiresFeature) {
         const install = input.installedPlugins.find(i => i.pluginId === plugin.id);

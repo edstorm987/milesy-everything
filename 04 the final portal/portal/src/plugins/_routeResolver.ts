@@ -192,6 +192,55 @@ export function resolveClientPluginPage({ agencyId, clientId, rest }: MatchInput
   return null;
 }
 
+// Customer-scope catch-all: /portal/customer/[...rest]
+//
+// Mirrors the client branch but anchored at `/portal/customer`. End-
+// customer plugins are scoped to the (agencyId, clientId) pair (every
+// end-customer belongs to one client of one agency). The session
+// payload supplies both IDs via `requireRole("end-customer")`.
+//
+// A plugin opts into this surface by either:
+//   • declaring a page with `path: "/portal/customer/<sub>"` (full URL), OR
+//   • declaring a relative-path page AND a NavItem with
+//     `panelId: "customer"` (the chrome routes the URL prefix through
+//     this resolver under `/portal/customer/<pluginId>/<sub>`).
+export function resolveCustomerPluginPage({ agencyId, clientId, rest }: MatchInput): ResolvedPluginPage | null {
+  if (rest.length === 0) return null;
+
+  // Branch 1: explicit plugin id prefix — `/portal/customer/<pluginId>/<sub>`.
+  const head = rest[0]!;
+  const pluginByPrefix = listPlugins().find(p => p.id === head);
+  if (pluginByPrefix) {
+    const install = pickInstall(pluginByPrefix.id, agencyId, clientId);
+    if (install) {
+      const sub = rest.slice(1);
+      for (const page of pluginByPrefix.pages) {
+        if (isFullUrlPath(page.path)) continue;
+        const m = tryMatchRelative(page.path, sub);
+        if (m) return { plugin: pluginByPrefix, page, install, segments: m.segments };
+      }
+    }
+  }
+
+  // Branch 2: scan every plugin's pages for full-URL paths anchored at
+  // `/portal/customer/...`. Relative paths under customer scope only
+  // resolve via the explicit-prefix branch above (ambiguity guard —
+  // we don't know which plugin a bare `/portal/customer/orders` belongs
+  // to without the prefix).
+  const fullUrlSegs = ["portal", "customer", ...rest];
+  for (const plugin of listPlugins()) {
+    const install = pickInstall(plugin.id, agencyId, clientId);
+    if (!install) continue;
+    for (const page of plugin.pages) {
+      if (!isFullUrlPath(page.path)) continue;
+      const m = tryMatchFullUrl(page.path, fullUrlSegs);
+      if (m) return { plugin, page, install, segments: m.segments };
+    }
+  }
+
+  return null;
+}
+
 // API catch-all: /api/portal/<pluginId>/<sub-path>
 export interface ResolvedPluginApiRoute {
   plugin: AquaPlugin;

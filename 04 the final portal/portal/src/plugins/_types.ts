@@ -284,7 +284,12 @@ export type PanelId =
   | "marketing"
   | "settings"
   | "ops"
-  | "tools";
+  | "tools"
+  // End-customer surface (Felicia's shoppers / members / affiliates).
+  // Plugins set `panelId: "customer"` on nav items they want to expose
+  // under `/portal/customer`. The chrome filters by this in
+  // `scope: "customer"` builds.
+  | "customer";
 
 export interface NavItem {
   id: string;

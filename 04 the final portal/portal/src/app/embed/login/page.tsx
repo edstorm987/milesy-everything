@@ -29,6 +29,8 @@ export default async function EmbedLoginPage({
   let brand: BrandKit | null = null;
   let title = "Sign in";
   let subtitle: string | undefined;
+  let resolvedClientId: string | undefined;
+  let allowSignup = false;
 
   if (params.client) {
     const client = getClient(params.client);
@@ -36,6 +38,10 @@ export default async function EmbedLoginPage({
       brand = client.brand;
       title = `Sign in to ${client.name}`;
       subtitle = "Member access";
+      resolvedClientId = client.id;
+      // Default true — only suppressed when the agency explicitly turns
+      // signups off for this client.
+      allowSignup = client.endCustomers?.signupsEnabled !== false;
     }
   } else if (params.agency) {
     const agency = getAgency(params.agency);
@@ -63,7 +69,11 @@ export default async function EmbedLoginPage({
           {subtitle && <p className="mt-1 text-xs text-black/60">{subtitle}</p>}
         </div>
         <Suspense fallback={<div className="h-40" aria-hidden />}>
-          <LoginForm embedded />
+          <LoginForm
+            embedded
+            clientId={resolvedClientId}
+            allowSignup={allowSignup}
+          />
         </Suspense>
       </div>
     </main>

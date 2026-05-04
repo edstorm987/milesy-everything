@@ -23,6 +23,7 @@ import { listAgencies } from "@/server/tenants";
 import {
   DEMO_OWNER_EMAIL, DEMO_OWNER_PASSWORD,
   DEMO_CLIENT_EMAIL, DEMO_CLIENT_PASSWORD,
+  DEMO_CUSTOMER_EMAIL, DEMO_CUSTOMER_PASSWORD,
   resetDemo, seedDemoAgency, listInstalledFor,
 } from "@/lib/server/demoSeed";
 
@@ -56,6 +57,7 @@ async function performSeedFlow(req: NextRequest, actor?: string) {
     credentials: {
       owner: { email: DEMO_OWNER_EMAIL, password: DEMO_OWNER_PASSWORD, role: "agency-owner" },
       client: { email: DEMO_CLIENT_EMAIL, password: DEMO_CLIENT_PASSWORD, role: "client-owner" },
+      customer: { email: DEMO_CUSTOMER_EMAIL, password: DEMO_CUSTOMER_PASSWORD, role: "end-customer", clientId: seed.client.id },
     },
     seededChecklist: seed.seededChecklist,
     installedClientPlugins: seed.installedClientPlugins,

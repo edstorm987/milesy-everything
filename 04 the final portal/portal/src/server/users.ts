@@ -79,6 +79,29 @@ function normEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
+// Compose the storage key for the user record. End-customers are scoped
+// per-client because two different clients of the same agency may both
+// have a customer named `jane@gmail.com` — they're different humans
+// using the same address from the agency's perspective. Agency- and
+// client-tier users keep the legacy plain-email key (no collision risk
+// because those tiers are unique within an agency by convention).
+function userKey(email: string, role: Role, clientId?: string): string {
+  const e = normEmail(email);
+  if (role === "end-customer" && clientId) return `${e}|c:${clientId}`;
+  return e;
+}
+
+// Lookup scope for `getUser` / `verifyPassword`. When omitted, the
+// helper falls back to the plain-email key (agency/client tier). When
+// `clientId` is supplied along with `role: "end-customer"` we look up
+// the per-client scoped key; if that misses we fall back to the plain
+// key so an agency-side user can sign in via an embed surface that
+// happens to know its embedding clientId.
+export interface UserLookupScope {
+  clientId?: string;
+  role?: Role;
+}
+
 export interface CreateUserInput {
   email: string;
   password: string;
@@ -93,6 +116,7 @@ export function createUser(input: CreateUserInput): ServerUser {
   const check = validatePassword(input.password);
   if (!check.ok) throw new Error(check.error ?? "Invalid password");
   const email = normEmail(input.email);
+  const key = userKey(email, input.role, input.clientId);
   const now = Date.now();
   const user: ServerUser = {
     id: makeId(),
@@ -107,14 +131,25 @@ export function createUser(input: CreateUserInput): ServerUser {
     updatedAt: now,
   };
   mutate(state => {
-    state.users[email] = user;
+    state.users[key] = user;
   });
   emit({ agencyId: user.agencyId, clientId: user.clientId }, "user.signed_up", { userId: user.id });
   return user;
 }
 
-export function getUser(email: string): ServerUser | null {
-  return getState().users[normEmail(email)] ?? null;
+// Lookup. Without a scope we hit the plain-email key (legacy behaviour
+// for agency/client tiers + first-run bootstrap). With a scope hinting
+// `role: "end-customer"` + `clientId` we first hit the per-client
+// scoped key, then fall through to the plain-email key.
+export function getUser(email: string, scope?: UserLookupScope): ServerUser | null {
+  const users = getState().users;
+  const e = normEmail(email);
+  if (scope?.clientId && (scope.role === "end-customer" || scope.role === undefined)) {
+    const scoped = users[`${e}|c:${scope.clientId}`];
+    if (scoped) return scoped;
+    if (scope.role === "end-customer") return null;
+  }
+  return users[e] ?? null;
 }
 
 export function getUserById(userId: string): ServerUser | null {
@@ -130,8 +165,12 @@ const DUMMY_HASH = (() => {
   return `scrypt$${SCRYPT_N}$${SCRYPT_R}$${SCRYPT_P}$${salt.toString("hex")}$${derived.toString("hex")}`;
 })();
 
-export function verifyPassword(email: string, password: string): ServerUser | null {
-  const user = getUser(email);
+export function verifyPassword(
+  email: string,
+  password: string,
+  scope?: UserLookupScope,
+): ServerUser | null {
+  const user = getUser(email, scope);
   if (!user) {
     // Timing-equalize: still run scrypt against a dummy hash so the
     // response time matches the user-found path.
@@ -150,16 +189,22 @@ export function listUsersForClient(clientId: string): ServerUser[] {
   return Object.values(getState().users).filter(u => u.clientId === clientId);
 }
 
-export function setUserPassword(email: string, password: string): boolean {
+export function setUserPassword(
+  email: string,
+  password: string,
+  scope?: UserLookupScope,
+): boolean {
   const check = validatePassword(password);
   if (!check.ok) throw new Error(check.error ?? "Invalid password");
-  const e = normEmail(email);
+  const existing = getUser(email, scope);
+  if (!existing) return false;
+  const key = userKey(existing.email, existing.role, existing.clientId);
   let ok = false;
   mutate(state => {
-    const existing = state.users[e];
-    if (!existing) return;
-    state.users[e] = {
-      ...existing,
+    const stored = state.users[key];
+    if (!stored) return;
+    state.users[key] = {
+      ...stored,
       passwordHash: hashPassword(password),
       mustChangePassword: false,
       updatedAt: Date.now(),
@@ -176,21 +221,27 @@ export interface UpdateUserPatch {
   mustChangePassword?: boolean;
 }
 
-export function updateUser(email: string, patch: UpdateUserPatch): ServerUser | null {
-  const e = normEmail(email);
+export function updateUser(
+  email: string,
+  patch: UpdateUserPatch,
+  scope?: UserLookupScope,
+): ServerUser | null {
+  const existing = getUser(email, scope);
+  if (!existing) return null;
+  const key = userKey(existing.email, existing.role, existing.clientId);
   let saved: ServerUser | null = null;
   mutate(state => {
-    const existing = state.users[e];
-    if (!existing) return;
+    const stored = state.users[key];
+    if (!stored) return;
     saved = {
-      ...existing,
-      name: patch.name ?? existing.name,
-      role: patch.role ?? existing.role,
-      clientId: patch.clientId ?? existing.clientId,
-      mustChangePassword: patch.mustChangePassword ?? existing.mustChangePassword,
+      ...stored,
+      name: patch.name ?? stored.name,
+      role: patch.role ?? stored.role,
+      clientId: patch.clientId ?? stored.clientId,
+      mustChangePassword: patch.mustChangePassword ?? stored.mustChangePassword,
       updatedAt: Date.now(),
     };
-    state.users[e] = saved;
+    state.users[key] = saved;
   });
   return saved;
 }

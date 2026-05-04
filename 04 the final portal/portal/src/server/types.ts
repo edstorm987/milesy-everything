@@ -47,6 +47,13 @@ export type ClientStage =
   | "live"
   | "churned";
 
+// End-customer surface configuration. Optional — when absent the client
+// uses the foundation defaults (signups enabled, no return URL).
+export interface ClientEndCustomerConfig {
+  signupsEnabled?: boolean;        // default true
+  postLoginReturnUrl?: string;     // default `${portalBase}/portal/customer`
+}
+
 export interface Client {
   id: string;
   agencyId: string;
@@ -57,6 +64,7 @@ export interface Client {
   ownerEmail?: string;
   websiteUrl?: string;
   status: AgencyStatus;
+  endCustomers?: ClientEndCustomerConfig;
   createdAt: number;
   updatedAt: number;
 }
