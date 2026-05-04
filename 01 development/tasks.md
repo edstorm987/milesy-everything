@@ -5,7 +5,16 @@
       `terminal-prompts/T1-round5-end-customer.md` dropped 21:35Z.
       Per-client end-customer signup + login, real `/portal/customer`
       powered by T3's variant flow, third POV in demo cycle.
-_(T2 R4 done — see `Done — Round 4` below)_
+      **NOTE 22:50Z**: T1's loop appears to have ended post-R4 DONE
+      before TASK landed (no STARTED entry across two wakes). Ed needs
+      to re-paste the R5 prompt to restart the loop.
+- [ ] **T2 R5 — Affiliates plugin + ecommerce↔memberships discount
+      integration** — prompt
+      `terminal-prompts/T2-round5-affiliates-and-discounts.md` dropped
+      22:50Z. (A) Extend ecommerce DiscountService chain for membership
+      discount benefits via injected MembershipBenefitsPort.
+      (B) Ship `@aqua/plugin-affiliates` (referral codes + attributions
+      + manual payouts + per-end-customer dashboard).
 - [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
       renderers** — prompt
       `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.
@@ -14,6 +23,8 @@ _(T2 R4 done — see `Done — Round 4` below)_
       handoff parked since T2 R2), (C) lift ThemeDetailPage (1063 LOC)
       + re-point PagesPage at EditorPage list. PageDetailPage /
       SitesPage / customPages backend deferred to R4.
+      **NOTE 22:50Z**: T3's loop also appears ended post-R2 DONE (no
+      STARTED across two wakes). Ed needs to re-paste the R3 prompt.
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded

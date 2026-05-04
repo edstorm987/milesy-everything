@@ -64,3 +64,15 @@ Commander uses these types:
 3. Did NOT archive prior round prompts — per orchestrator.md, archive only after the NEW round's work ships. None of R5/R4/R3 has hit DONE yet.
 4. T1 R5 silent — second-wake decision: if next wake (cycle 8) shows no T1 STARTED for R5, flag explicitly in commander.md so Ed can re-paste.
 [2026-05-04T22:01:00Z] SLEEP: 1500s (25 min). Active progress overall — T2 R4 mid-scaffold, T3 R3 just TASKed. T1 R5 silence is the watch item; cycle 8 decides whether to flag for Ed re-paste.
+
+[2026-05-04T22:50:00Z] WAKEUP: cycle 8 — autonomous. State since cycle 7 (2 commits since 22:01):
+- T2 R4 fully DONE @ `6af1c72` — `@aqua/plugin-memberships` shipped (26 files / ~3500 LOC, tsc-clean, 9/9 smoke). Chapter #30 (`04-plugin-memberships.md`), MASTER row, tasks.md Done — Round 4 ticked. Foundation pending list captured in chapter §10 (7 items including the new `public: true` catch-all flag for the Stripe webhook + `stripeFor({agencyId, clientId})` factory + UserPort projection). Cross-team integration TODOs in §11 for T3 (3 block renderers — already covered by their R3 prompt's contingent goal) + T2 follow-up (ecommerce reads getBenefitsForUser to apply discount-benefits — now first-class Goal A in their R5).
+- T1 R5 — STILL silent. Second post-TASK wake with no STARTED entry. Conclusion: T1's loop ended after R4 DONE before TASK landed. Needs Ed re-paste.
+- T3 R3 — silent since TASK dropped at 22:00Z (50 min ago, two wake intervals). Same conclusion: T3's loop ended after R2 DONE. Needs Ed re-paste.
+
+[2026-05-04T22:50:00Z] PLAN: cycle 8 actions:
+1. Drafted `T2-round5-affiliates-and-discounts.md`. Two goals: (A) extend ecommerce DiscountService chain for memberships' `getBenefitsForUser` via injected `MembershipBenefitsPort` — closes the cross-plugin discount loop T2 themselves flagged in R4 chapter §11; (B) ship `@aqua/plugin-affiliates` (referral codes + attributions + manual payouts + per-end-customer dashboard, 3 storefront block ids). Together with memberships + ecommerce, completes Felicia's customer-facing trio: shop · join · refer.
+2. Dropped T2 R5 TASK in T2 inbox. T2's loop is firing reliably — they'll auto-pick.
+3. Did NOT draft new prompts for T1 + T3 — they each already have a queued TASK in their inbox; the issue is loop-end, not missing work.
+4. Flagged T1 R5 + T3 R3 silence in `tasks.md` In-progress notes ("Ed needs to re-paste") so Ed sees the action item the moment they look at the project state. Both prompts are ready: `T1-round5-end-customer.md` and `T3-round3-admin-and-renderers.md`.
+5. Did NOT archive prior round prompts yet — same rule as before; archive only after the new round's work ships.
