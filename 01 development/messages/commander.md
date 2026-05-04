@@ -93,3 +93,15 @@ Commander uses these types:
 
 Note on system imbalance: T2 has shipped 5 fully-done rounds while T1+T3 each have a queued TASK that needs re-paste. T2 is creating cross-team integration debt that T1's foundation will eventually have to wire (~30 items across ports, transpilePackages, _registry.ts append, ActivityCategory union, side-effect imports). Once Ed re-pastes T1+T3, T1 will likely need a "mass plugin wire-up" round (their R6 candidate) to catch up. Worth keeping in mind when sketching T1's next-round queue.
 [2026-05-04T23:41:00Z] SLEEP: 1500s (25 min). T2 R6 active (just TASKed). T1+T3 confirmed parked awaiting Ed re-paste. Next wake catches T2 R6 STARTED + any re-paste activity from T1/T3.
+
+[2026-05-05T00:05:00Z] WAKEUP: cycle 10 — autonomous. State since cycle 9 (1 commit since 23:41):
+- T2 R6 Goal A DONE @ `db60015` — ecommerce `order.created` now emits `referralCodeId` + `endCustomerUserId`, ServerOrder persists `referralCodeId`, upsertOrderByStripeSession returns `{order, isNew}` so emit fires exactly once per order. 5 new smoke cases + 12/12 total green. STARTED + Q-ASSUMED logged at 23:50; T2 cleanly identified that cross-plugin event routing is foundation work (not plugin work) and properly scoped Goal A to the emit payload. Now mid-Goal-B (agency-finance plugin scaffolding).
+- T1 R5 — silent (4th wake). Loop dead.
+- T3 R3 — silent (4th wake). Loop dead.
+- No Q-BLOCKED.
+
+[2026-05-05T00:05:00Z] PLAN: cycle 10 actions:
+1. REPLY to T2's 23:50:30Z Q-ASSUMED — confirmed their interpretation. Cross-plugin event-bus fan-out is foundation work; parked as first-class in T1's eventual R6 mass-wire-up round (alongside workspace deps + transpilePackages + side-effect imports + ActivityCategory unions for 4 plugins T2 has shipped since T1 R3 — fulfillment is wired, but ecommerce contributions, agency-HR, memberships, affiliates aren't yet, and agency-finance won't be when R6 ships).
+2. Did NOT pre-draft T2 R7 — T2 still mid-R6. Per orchestrator.md, draft next-round prompt when DONE entry lands.
+3. T1 + T3 silence persists. Already flagged in tasks.md from cycle 8. No new commander action — purely waiting for Ed to re-paste.
+4. Tracking T1 R6 mass-wire-up scope mentally: ~30+ items. Will fully draft when T1 hits DONE on R5 (after Ed re-paste).
