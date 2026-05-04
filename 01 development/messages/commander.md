@@ -51,3 +51,15 @@ Commander uses these types:
 3. Updated `tasks.md` — In-progress section tracks T1 R5, T2 R4, T3 R2 ongoing. Updated `terminal-prompts/README.md` — active prompts table now lists R5/R4/R2 trio; T1 R5 graduated from Queued to Active.
 4. Did NOT archive prior round prompts yet — per orchestrator.md, archive only after the NEW round's work ships. T1-round4 + T2-round3 stay at root until R5 + R4 hit DONE. T3-round2 still in flight.
 [2026-05-04T21:36:00Z] SLEEP: 1500s (25 min). Active progress overall — T3 mid-Phase-B, T1+T2 just got fresh TASKs. Next wake reveals whether T1+T2 loops are still firing (TASK auto-picked up) or ended in 3-empty-wake countdown (Ed re-paste needed). If no T1/T2 movement after 2 wakes, will flag to Ed.
+
+[2026-05-04T22:00:00Z] WAKEUP: cycle 7 — autonomous. State since cycle 6 (4 commits since 21:36):
+- T3 R2 fully DONE @ `079a666` — ALL FOUR PHASES delivered. Phase C (`c10432e`) lifted PortalsPage 444-LOC; Phase D (`36404ea`) lifted Sections/Assets/Popups/Themes admin pages. tsc-clean + smoke 31/31 throughout. Chapter 29 (`04-plugin-website-editor-round2.md`), MASTER row, tasks.md ticked. R3 deferrals explicitly carved: PageDetailPage / CustomisePage / ThemeDetailPage / SitesPage / customPages backend.
+- T2 R4 STARTED @ 21:35:30Z — `@aqua/plugin-memberships` scaffold begun. One Q-ASSUMED logged: chose injected `StripePort` over importing ecommerce's `requireFoundation()` (kept packages decoupled per prompt's recommended fallback). T2 also caught + logged a WARN about their R3b commit `f678ef6` that picked up T3's WIP — same shared-`.git/index` mesh pattern that bit me in cycle 5; followup commit `4d17a29` shipped the missed agency-HR files. T2 self-corrected cleanly. No commit yet for R4 (still scaffolding).
+- T1 R5 — NO movement since TASK dropped at 21:35Z. T1's last entry remains 21:20 DONE for R4. First post-TASK wake — could mean their loop ended in 3-empty-wake countdown, or just hasn't woken since. Will flag to Ed if next wake is also silent.
+- No Q-BLOCKED outstanding.
+
+[2026-05-04T22:00:00Z] PLAN: cycle 7 actions:
+1. Drafted `T3-round3-admin-and-renderers.md`. Three goals: (A) lift CustomisePage 898-LOC brand-kit editor with `lib/customise.ts` + `lib/loginCustomisation.ts` shims; (B) wire `RENDERER_REGISTRATIONS` + `registerExternalBlockRenderers` for T2's 8 ecommerce block ids (handoff parked since T2 R2; pre-register memberships' 3 ids if T2 R4 lands during T3's loop); (C) lift ThemeDetailPage 1063-LOC + re-point PagesPage at EditorPage list. Explicit out-of-scope: PageDetailPage / SitesPage / customPages backend (R4 candidates).
+2. Dropped TASK to T3 inbox referencing the new prompt; updated `tasks.md` In progress (T3 R3 active, T3 R2 moved to "Done — Round 2" with full DONE record); updated `terminal-prompts/README.md` active table.
+3. Did NOT archive prior round prompts — per orchestrator.md, archive only after the NEW round's work ships. None of R5/R4/R3 has hit DONE yet.
+4. T1 R5 silent — second-wake decision: if next wake (cycle 8) shows no T1 STARTED for R5, flag explicitly in commander.md so Ed can re-paste.

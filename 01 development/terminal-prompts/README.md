@@ -49,7 +49,7 @@ When done:
 |----------|--------|------|
 | **T1 → R5** | [T1-round5-end-customer.md](T1-round5-end-customer.md) | End-customer flow: per-client signup + login, real `/portal/customer` via T3's variant flow, third POV in demo cycle, embed-login bridge. Closes the three-level recursion. |
 | **T2 → R4** | [T2-round4-memberships.md](T2-round4-memberships.md) | Build `@aqua/plugin-memberships` — recurring subscriptions (Bronze/Silver/Gold tiers + benefits) billed via ecommerce's per-install Stripe keys. Closes the end-customer experience loop with T1 R5. |
-| **T3 → R2** | [T3-round2-block-uis.md](T3-round2-block-uis.md) | Lift the real 58 block components + real EditorPage (Live/Block/Code) + PortalsPage + Pages/Customise/Sites/Themes/Sections/Assets/Popups admin pages from `02`. |
+| **T3 → R3** | [T3-round3-admin-and-renderers.md](T3-round3-admin-and-renderers.md) | (A) Lift CustomisePage (898-LOC brand-kit editor) + (B) register 8 ecommerce block renderers (cross-team handoff parked since T2 R2) + (C) ThemeDetailPage (1063 LOC) + re-point PagesPage at EditorPage list. |
 
 ### Orchestrator
 

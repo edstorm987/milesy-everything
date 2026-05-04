@@ -10,17 +10,14 @@
       `@aqua/plugin-memberships` (`scopePolicy: "client"`,
       `requires: ["ecommerce"]`). Recurring subscriptions billed via
       ecommerce's per-install Stripe keys.
-- [x] **T3 R2 — Block + admin UIs lift** — DONE. Phase A: 58 blocks
-      faithfully ported from 02 (absorbed in `e702415`). Phase B:
-      canvas + admin siblings + libs (`5ce6cbf`) + 1429-LOC EditorPage
-      faithful port (folded into `f678ef6`). Phase C: 444-LOC
-      PortalsPage (`c10432e`). Phase D: Sections / Assets / Popups /
-      Themes (`36404ea`). tsc-clean throughout, smoke 31/31.
-      Round-3 deferred: PageDetailPage / CustomisePage /
-      ThemeDetailPage / SitesPage (depend on libs not yet lifted or
-      file-size budget). Chapter
-      `context/prior research/04-plugin-website-editor-round2.md`,
-      MASTER row #29.
+- [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
+      renderers** — prompt
+      `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.
+      (A) Lift CustomisePage (898 LOC brand-kit editor), (B) register
+      8 ecommerce block renderers in RENDERER_REGISTRATIONS (cross-team
+      handoff parked since T2 R2), (C) lift ThemeDetailPage (1063 LOC)
+      + re-point PagesPage at EditorPage list. PageDetailPage /
+      SitesPage / customPages backend deferred to R4.
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
@@ -73,6 +70,17 @@
       standalone. See `context/prior research/04-plugin-ecommerce.md`.
       Foundation pending: `registerEcommerceFoundation` call site + T3
       block-renderer registration.
+- [x] **T3 R2 — Block + admin UIs lift** — shipped. Phase A: 58 blocks
+      faithfully ported from 02 (absorbed in `e702415`). Phase B:
+      canvas + admin siblings + libs (`5ce6cbf`) + 1429-LOC EditorPage
+      faithful port (folded into `f678ef6`). Phase C: 444-LOC
+      PortalsPage (`c10432e`). Phase D: Sections / Assets / Popups /
+      Themes (`36404ea`). tsc-clean throughout, smoke 31/31. Final
+      DONE @ `079a666`. Round-3 deferred: PageDetailPage /
+      CustomisePage / ThemeDetailPage / SitesPage (depend on libs not
+      yet lifted or file-size budget). Chapter
+      `context/prior research/04-plugin-website-editor-round2.md`,
+      MASTER row #29.
 
 ## Done — Round 3
 - [x] **T2 R3a — phase-lifecycle smoke (Goal A)** — shipped. Two smoke
