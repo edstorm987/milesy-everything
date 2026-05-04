@@ -5,11 +5,7 @@
       `terminal-prompts/T1-round5-end-customer.md` dropped 21:35Z.
       Per-client end-customer signup + login, real `/portal/customer`
       powered by T3's variant flow, third POV in demo cycle.
-- [ ] **T2 R4 — Memberships plugin** — prompt
-      `terminal-prompts/T2-round4-memberships.md` dropped 21:35Z.
-      `@aqua/plugin-memberships` (`scopePolicy: "client"`,
-      `requires: ["ecommerce"]`). Recurring subscriptions billed via
-      ecommerce's per-install Stripe keys.
+_(T2 R4 done — see `Done — Round 4` below)_
 - [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
       renderers** — prompt
       `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.
@@ -128,6 +124,28 @@
       dispatch. See `context/prior research/04-foundation-round3.md`.
 
 ## Done — Round 4
+- [x] **T2 R4 — Memberships plugin** — shipped.
+      `@aqua/plugin-memberships` at `04 the final portal/plugins/memberships/`.
+      `scopePolicy: "client"`, `requires: ["ecommerce"]`, `core: false`.
+      Domain: Plan + Benefit + Subscription. Four services
+      (PlanService / BenefitService / SubscriptionService / WebhookService).
+      Seven ports — including new StripePort (decoupled from ecommerce
+      per the prompt's preferred default; 13 methods covering customer +
+      subscription + checkout + billing-portal + price + webhook-verify)
+      and new UserPort (resolve EndCustomerProfile from foundation Users).
+      16 API routes split admin / customer / public-webhook
+      (`public: true` flag for catch-all bypass). 7 admin pages + 1
+      customer-facing "My membership" page. 3 storefront block ids
+      (membership-paywall / membership-signup / membership-tier-grid —
+      T3 owns rendering). `onInstall` seeds Bronze/Silver/Gold defaults
+      ($0 / $9.99 / $24.99 monthly + annual variants). tsc-clean
+      standalone; 9/9 smoke pass via `npm run smoke`. Foundation pending
+      list: workspace dep + transpilePackages + side-effect-import file
+      + `_registry.ts` append + `ActivityCategory` += "memberships" +
+      UserPort projection + `stripeFor({agencyId, clientId})` reading
+      per-install Stripe keys from the ecommerce install + catch-all
+      honouring `public: true`. See
+      `context/prior research/04-plugin-memberships.md`.
 - [x] **T1 R4 — Milesy Media demo button + sign-in wiring** — shipped.
       Static site declares `<meta name="aqua-portal-base">`; an inline
       rewriter retargets `[data-aqua-action="sign-in"|"demo"]` hrefs at
