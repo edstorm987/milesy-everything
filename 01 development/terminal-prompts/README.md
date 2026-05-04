@@ -57,6 +57,12 @@ When done:
 |------|--------|------|
 | **Chief commander** | [orchestrator-init.md](orchestrator-init.md) | Spawns the autonomous chief-commander session. Reads mesh state, replies to terminal questions, drafts new-round prompts, schedules itself via `/loop` + `ScheduleWakeup`. Full protocol in `../orchestrator.md`. |
 
+## Queued (drafted ahead — not for paste yet)
+
+| Terminal | Prompt | Trigger |
+|----------|--------|---------|
+| **T1 → R5** | [T1-round5-end-customer.md](T1-round5-end-customer.md) | Drop into T1 inbox once R4 (`T1-round4-demo-button.md`) hits `DONE`. Brings the third audience (end-customers) live: per-client signup + login, real `/portal/customer` via website-editor variant flow, third POV in the demo cycle. |
+
 ## Archive
 
 Superseded prompts move to [old prompts/](old%20prompts/) once shipped.
