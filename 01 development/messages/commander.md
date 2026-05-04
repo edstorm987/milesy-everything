@@ -76,3 +76,4 @@ Commander uses these types:
 3. Did NOT draft new prompts for T1 + T3 — they each already have a queued TASK in their inbox; the issue is loop-end, not missing work.
 4. Flagged T1 R5 + T3 R3 silence in `tasks.md` In-progress notes ("Ed needs to re-paste") so Ed sees the action item the moment they look at the project state. Both prompts are ready: `T1-round5-end-customer.md` and `T3-round3-admin-and-renderers.md`.
 5. Did NOT archive prior round prompts yet — same rule as before; archive only after the new round's work ships.
+[2026-05-04T22:51:00Z] SLEEP: 1500s (25 min). T2 R5 just TASKed (loop active). T1 + T3 parked awaiting Ed's re-paste. Next wake catches T2 R5 STARTED entries; if T1/T3 re-paste happens in the interim, their STARTED entries surface too.
