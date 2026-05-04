@@ -11,14 +11,7 @@ _(T1 R5 done — see `Done — Round 5` below)_
       (`scopePolicy: "client"`, no hard deps). Contacts + segments +
       activity timeline. Pairs with T1 R5 (end-customer signups
       auto-appear as Contacts).
-- [ ] **T3 R3 — CustomisePage + ThemeDetailPage + cross-plugin block
-      renderers** — prompt
-      `terminal-prompts/T3-round3-admin-and-renderers.md`. (A) Lift
-      CustomisePage (898 LOC brand-kit editor), (B) register 14
-      cross-plugin block renderers (ecommerce 8 + memberships 3 +
-      affiliates 3 — components already lifted in R2 Phase A), (C)
-      lift ThemeDetailPage (1063 LOC) + re-point PagesPage at
-      EditorPage list.
+_(T3 R3 done — see `Done — Round 3` below)_
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
@@ -84,6 +77,24 @@ _(T1 R5 done — see `Done — Round 5` below)_
       MASTER row #29.
 
 ## Done — Round 3
+- [x] **T3 R3 — CustomisePage + ThemeDetailPage + cross-plugin block
+      renderers** — DONE. Goal A: 898-LOC CustomisePage faithful port
+      with five tabs (Branding / Sidebar / Custom-tabs / Login /
+      Export) + new lib/customise + lib/sidebarLayout +
+      lib/loginCustomisation upgrade. Goal B: RENDERER_REGISTRATIONS
+      cross-plugin renderer map (58 native + 8 ecommerce + 3
+      memberships + 3 affiliates) + getBlockRenderer +
+      registerExternalBlockRenderers + BlockRenderer consults the map
+      first. 6 NEW stub block components for memberships + affiliates
+      (paywall/signup/tier-grid/affiliate-signup/payout-meter/
+      leaderboard) hitting their plugins' API namespaces. Goal C:
+      ThemeDetailPage clean rewrite (architectural mismatch with 02's
+      localStorage singleton — wired to plugin's per-site lib/theme.ts
+      instead) + PagesPage re-pointed at EditorPage list. tsc clean;
+      smoke 40/40 (was 31; +9 cross-plugin renderer tests). Chapter
+      `context/prior research/04-plugin-website-editor-round3.md`,
+      MASTER row #34. R4 deferred: PageDetailPage / SitesPage (3264
+      LOC) / customise server-side persistence.
 - [x] **T2 R3a — phase-lifecycle smoke (Goal A)** — shipped. Two smoke
       harnesses under `04 the final portal/plugins/fulfillment/src/__smoke__/`:
       in-process `lifecycle.test.ts` (9 `node:test` tests, mocks all 8

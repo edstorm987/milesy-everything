@@ -95,7 +95,12 @@ async function main(): Promise<void> {
   // aren't in BLOCK_REGISTRY (BLOCK_REGISTRY also includes the 8
   // ecommerce because they were lifted in R2 Phase A — but memberships
   // is the strict cross-plugin check).
-  const externalIds = ["membership-paywall", "membership-signup", "membership-tier-grid"];
+  const externalIds = [
+    // memberships (T2 R4)
+    "membership-paywall", "membership-signup", "membership-tier-grid",
+    // affiliates (T2 R5)
+    "affiliate-signup", "affiliate-payout-meter", "affiliate-leaderboard",
+  ];
   for (const id of externalIds) {
     expect(
       `getBlockRenderer("${id}") returns a function`,

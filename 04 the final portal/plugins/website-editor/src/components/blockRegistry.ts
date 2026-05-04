@@ -91,6 +91,9 @@ import VideoBlock from "./blocks/VideoBlock";
 import MembershipPaywallBlock from "./blocks/MembershipPaywallBlock";
 import MembershipSignupBlock from "./blocks/MembershipSignupBlock";
 import MembershipTierGridBlock from "./blocks/MembershipTierGridBlock";
+import AffiliateSignupBlock from "./blocks/AffiliateSignupBlock";
+import AffiliatePayoutMeterBlock from "./blocks/AffiliatePayoutMeterBlock";
+import AffiliateLeaderboardBlock from "./blocks/AffiliateLeaderboardBlock";
 
 // ─── Registry shape ────────────────────────────────────────────────────────
 
@@ -865,6 +868,11 @@ export const RENDERER_REGISTRATIONS: Record<string, BlockComponentType> = {
   "membership-paywall":    MembershipPaywallBlock,
   "membership-signup":     MembershipSignupBlock,
   "membership-tier-grid":  MembershipTierGridBlock,
+
+  // affiliates (T2 R5 — @aqua/plugin-affiliates)
+  "affiliate-signup":         AffiliateSignupBlock,
+  "affiliate-payout-meter":   AffiliatePayoutMeterBlock,
+  "affiliate-leaderboard":    AffiliateLeaderboardBlock,
 };
 
 export function getBlockRenderer(type: string): BlockComponentType | undefined {
