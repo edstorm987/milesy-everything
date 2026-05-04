@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Milesy Media — Marketing that performs</title>
   <meta name="description" content="A modern performance marketing agency. Strategy, content, and paid media that move the needle." />
+  <!-- Aqua portal base. Override at deploy time (e.g. set to https://portal.milesymedia.com).
+       The inline script at the bottom of <body> rewrites every [data-aqua-action] href to point here. -->
+  <meta name="aqua-portal-base" content="http://localhost:3000" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
@@ -26,7 +29,8 @@
         <a href="#contact">Contact</a>
       </nav>
       <div class="nav-cta">
-        <a href="login.html" class="btn btn-ghost">Sign in</a>
+        <a href="login.html" class="btn btn-ghost" data-aqua-action="sign-in">Sign in</a>
+        <a href="login.html" class="btn btn-secondary" data-aqua-action="demo">Try the demo</a>
         <a href="#contact" class="btn btn-primary">Book a call</a>
       </div>
     </div>
@@ -44,7 +48,7 @@
         </p>
         <div class="hero-actions">
           <a href="#contact" class="btn btn-primary btn-lg">Get a free audit →</a>
-          <a href="#work" class="btn btn-secondary btn-lg">See our work</a>
+          <a href="login.html" class="btn btn-secondary btn-lg" data-aqua-action="demo">Try the live demo →</a>
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
@@ -130,21 +134,41 @@
       <span class="eyebrow">Get started</span>
       <h2>Ready when you are.</h2>
       <p>Book a free 30-minute audit. We'll tell you the three highest-leverage moves you could make this quarter — even if you don't hire us.</p>
-      <a href="login.html" class="btn btn-primary btn-lg">Sign in to your portal →</a>
+      <a href="login.html" class="btn btn-primary btn-lg" data-aqua-action="sign-in">Sign in to your portal →</a>
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
     <div class="container foot-row">
-      <span>© 2026 Milesy Media · All rights reserved. <span style="opacity:0.4">· build 2026-05-04</span></span>
+      <span>© 2026 Milesy Media · All rights reserved. <span style="opacity:0.4">· Last deployed 2026-05-04</span></span>
       <span>
-        <a href="login.html">Client portal</a> ·
-        <a href="admin.html">Admin</a> ·
+        <a href="login.html" data-aqua-action="sign-in">Client portal</a> ·
+        <a href="login.html" data-aqua-action="demo">Demo</a> ·
         <a href="mailto:hello@milesymedia.co">hello@milesymedia.co</a>
       </span>
     </div>
   </footer>
+
+  <script>
+    // Rewrite [data-aqua-action] hrefs to the configured Aqua portal.
+    // The base URL comes from <meta name="aqua-portal-base"> so it can be
+    // overridden at deploy time without rebuilding the marketing site.
+    (function () {
+      var meta = document.querySelector('meta[name="aqua-portal-base"]');
+      var base = (meta && meta.getAttribute('content')) || 'http://localhost:3000';
+      base = base.replace(/\/+$/, '');
+      var routes = {
+        'sign-in': '/login',
+        'demo': '/demo?source=milesymedia'
+      };
+      document.querySelectorAll('[data-aqua-action]').forEach(function (el) {
+        var action = el.getAttribute('data-aqua-action');
+        var path = routes[action];
+        if (path) el.setAttribute('href', base + path);
+      });
+    })();
+  </script>
 
 </body>
 </html>

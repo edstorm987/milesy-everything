@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sign in · Milesy Media</title>
+  <!-- Aqua portal base. Override at deploy time. The inline script below rewrites every
+       [data-aqua-action] href and redirects the form submit to ${base}/login. -->
+  <meta name="aqua-portal-base" content="http://localhost:3000" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -52,14 +55,14 @@
 
       <div class="divider"><span>or</span></div>
 
-      <a href="admin.html" class="admin-link">
+      <a href="admin.html" class="admin-link" data-aqua-action="demo">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <rect x="3" y="3" width="7" height="7" rx="1"/>
           <rect x="14" y="3" width="7" height="7" rx="1"/>
           <rect x="3" y="14" width="7" height="7" rx="1"/>
           <rect x="14" y="14" width="7" height="7" rx="1"/>
         </svg>
-        Admin access
+        Try the live demo
       </a>
 
       <p class="dim" style="font-size:12px;text-align:center;margin-top:22px">
@@ -70,27 +73,47 @@
 
   <footer>
     <div class="container foot-row">
-      <span>© 2026 Milesy Media</span>
-      <span><a href="index.html">Home</a> · <a href="admin.html">Admin</a></span>
+      <span>© 2026 Milesy Media · <span style="opacity:0.4">Last deployed 2026-05-04</span></span>
+      <span><a href="index.html">Home</a> · <a href="admin.html" data-aqua-action="demo">Demo</a></span>
     </div>
   </footer>
 
   <script>
-    // Quick demo handler — accepts any non-empty creds and bounces to admin.
-    document.getElementById("login-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      var email = document.getElementById("email").value.trim();
-      var pw    = document.getElementById("password").value;
-      var err   = document.getElementById("error");
-      if (!email || pw.length < 8) {
-        err.style.display = "block";
-        err.textContent = "Enter a valid email and a password (8+ chars).";
-        return;
-      }
-      err.style.display = "none";
-      // No backend yet — drop the operator into the placeholder admin UI.
-      window.location.href = "admin.html";
-    });
+    // Resolve the Aqua portal base from <meta name="aqua-portal-base">.
+    // Used both for [data-aqua-action] hrefs and for the form-submit redirect.
+    (function () {
+      var meta = document.querySelector('meta[name="aqua-portal-base"]');
+      var base = (meta && meta.getAttribute('content')) || 'http://localhost:3000';
+      base = base.replace(/\/+$/, '');
+      var routes = {
+        'sign-in': '/login',
+        'demo': '/demo?source=milesymedia'
+      };
+      document.querySelectorAll('[data-aqua-action]').forEach(function (el) {
+        var action = el.getAttribute('data-aqua-action');
+        var path = routes[action];
+        if (path) el.setAttribute('href', base + path);
+      });
+
+      // The form's role is now "send the visitor to the real portal sign-in".
+      // Static credentials are not validated here — they're collected only as a
+      // visual placeholder so the page still looks like a real login surface.
+      document.getElementById('login-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var email = document.getElementById('email').value.trim();
+        var pw    = document.getElementById('password').value;
+        var err   = document.getElementById('error');
+        if (!email || pw.length < 8) {
+          err.style.display = 'block';
+          err.textContent = 'Enter a valid email and a password (8+ chars).';
+          return;
+        }
+        err.style.display = 'none';
+        // Hand the email off to the portal so the real form is pre-filled.
+        var next = base + '/login?email=' + encodeURIComponent(email);
+        window.location.href = next;
+      });
+    })();
   </script>
 </body>
 </html>
