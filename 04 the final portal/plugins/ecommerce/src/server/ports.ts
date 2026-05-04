@@ -109,3 +109,39 @@ export interface EventBusPort {
 export interface PluginInstallStorePort {
   getInstall(scope: PluginInstallScope, pluginId: string): Promise<PluginInstall | null> | PluginInstall | null;
 }
+
+// ─── Membership benefits (cross-plugin read into @aqua/plugin-memberships) ─
+//
+// Optional. The DiscountService extends its resolver chain with a
+// "membership" step that fires when the checkout request carries a
+// `userId` and no explicit code applied. Foundation brokers the
+// cross-package read at boot via a side-effect-import file (same
+// pattern memberships used for StripePort) — this plugin doesn't
+// import `@aqua/plugin-memberships` directly, keeping the package
+// decoupled and tsc-checkable in isolation.
+//
+// `getDiscountPercentForUser` walks the user's active subscription →
+// plan → benefits in the memberships plugin and returns the *largest*
+// `Benefit { category: "discount", percentOff }` it finds, plus a
+// snapshot of the planId so orders can persist where the discount
+// came from. Returns `null` when:
+//   - the memberships plugin isn't installed for this client, OR
+//   - the user has no active/trialing subscription, OR
+//   - the active plan carries no discount-category benefits.
+//
+// Backward-compatible: if the foundation hasn't wired the port,
+// `EcommerceDeps.membershipBenefits` is undefined and the discount
+// chain just skips this step.
+
+export interface MembershipDiscountSnapshot {
+  percent: number;                 // 0–100
+  planId: string;
+  planName?: string;
+  benefitId?: string;              // which benefit row produced the discount
+}
+
+export interface MembershipBenefitsPort {
+  getDiscountPercentForUser(
+    args: { agencyId: AgencyId; clientId: ClientId; userId: UserId },
+  ): Promise<MembershipDiscountSnapshot | null>;
+}

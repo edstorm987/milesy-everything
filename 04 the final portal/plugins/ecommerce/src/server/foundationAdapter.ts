@@ -17,6 +17,7 @@
 import type {
   ActivityPort,
   EventBusPort,
+  MembershipBenefitsPort,
   PluginInstallStorePort,
   StoragePort,
   TenantPort,
@@ -28,6 +29,15 @@ export interface EcommerceFoundation {
   activity: ActivityPort;
   events: EventBusPort;
   pluginInstalls: PluginInstallStorePort;
+  // Optional R5 cross-plugin port. Foundation supplies this when the
+  // memberships plugin is also installed for the same client. The
+  // adapter reads `containerFor({...}).benefits.getBenefitsForUser(...)`
+  // from `@aqua/plugin-memberships/server` and projects the largest
+  // discount-category benefit into a `MembershipDiscountSnapshot`.
+  // Foundation-side wiring lives in
+  // `portal/src/plugins/foundation-adapters/membershipBenefits.ts`
+  // (T1 adds in their next round — see chapter §"Foundation pending").
+  membershipBenefits?: MembershipBenefitsPort;
 }
 
 let registered: EcommerceFoundation | null = null;
@@ -65,5 +75,6 @@ export function containerFor(storage: StoragePort): EcommerceContainer {
     activity: f.activity,
     events: f.events,
     pluginInstalls: f.pluginInstalls,
+    membershipBenefits: f.membershipBenefits,
   });
 }

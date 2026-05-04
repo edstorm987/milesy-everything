@@ -16,6 +16,8 @@ import { now } from "../lib/time";
 import { makeId } from "../lib/ids";
 import type { ClientId } from "../lib/tenancy";
 import type { StoragePort } from "./ports";
+import type { DiscountType } from "./discounts";
+import type { MembershipDiscountSnapshot } from "./ports";
 
 export type OrderStatus =
   | "pending"
@@ -61,6 +63,18 @@ export interface ServerOrder {
   shippedAt?: number;
   trackingNumber?: string;
   trackingCarrier?: string;
+  // R5 — discount provenance. Populated when the discount chain
+  // applied a discount to the cart. `discountSource: "membership"`
+  // also carries `discountSnapshot` with the planId so the source
+  // remains auditable even if the user later changes plan.
+  discountSource?: DiscountType;
+  discountAmount?: number;          // pence
+  discountCode?: string;
+  discountSnapshot?: MembershipDiscountSnapshot;
+  // The end-customer that placed the order. Used by the membership
+  // discount lookup at checkout. Null for guest checkouts (no
+  // membership lookup possible).
+  endCustomerUserId?: string;
 }
 
 const KEY_PREFIX = "order:";
@@ -122,6 +136,11 @@ export class OrderService {
     shippingAddress?: ServerOrder["shippingAddress"];
     items: ServerOrderItem[];
     metadata?: Record<string, string>;
+    discountSource?: DiscountType;
+    discountAmount?: number;
+    discountCode?: string;
+    discountSnapshot?: MembershipDiscountSnapshot;
+    endCustomerUserId?: string;
   }): Promise<ServerOrder> {
     const existing = input.stripeSessionId
       ? await this.getOrderByStripeSession(input.stripeSessionId)
@@ -140,6 +159,13 @@ export class OrderService {
         metadata: { ...existing.metadata, ...input.metadata },
         status: existing.status === "pending" ? "paid" : existing.status,
         paidAt: existing.paidAt ?? now(),
+        // Discount provenance is set on first upsert; later upserts
+        // (Stripe webhook retries, fulfillment patches) don't overwrite.
+        discountSource: existing.discountSource ?? input.discountSource,
+        discountAmount: existing.discountAmount ?? input.discountAmount,
+        discountCode: existing.discountCode ?? input.discountCode,
+        discountSnapshot: existing.discountSnapshot ?? input.discountSnapshot,
+        endCustomerUserId: existing.endCustomerUserId ?? input.endCustomerUserId,
       };
       await this.storage.set(this.orderKey(patched.id), patched);
       return patched;
@@ -160,6 +186,11 @@ export class OrderService {
       status: "paid",
       createdAt: now(),
       paidAt: now(),
+      discountSource: input.discountSource,
+      discountAmount: input.discountAmount,
+      discountCode: input.discountCode,
+      discountSnapshot: input.discountSnapshot,
+      endCustomerUserId: input.endCustomerUserId,
     };
     await this.storage.set(this.orderKey(order.id), order);
     return order;

@@ -50,6 +50,8 @@ export type {
   EventBusPort,
   ListActivityFilter,
   LogActivityInput,
+  MembershipBenefitsPort,
+  MembershipDiscountSnapshot,
   PluginInstallStorePort,
   StoragePort,
   TenantPort,
@@ -58,6 +60,7 @@ export type {
 import type {
   ActivityPort,
   EventBusPort,
+  MembershipBenefitsPort,
   PluginInstallStorePort,
   StoragePort,
   TenantPort,
@@ -75,6 +78,10 @@ export interface EcommerceDeps {
   activity: ActivityPort;
   events: EventBusPort;
   pluginInstalls: PluginInstallStorePort;
+  // Optional R5 cross-plugin port. Foundation injects this when the
+  // memberships plugin is also installed for the same client. When
+  // absent, DiscountService.resolveForUser cleanly returns null.
+  membershipBenefits?: MembershipBenefitsPort;
 }
 
 export interface EcommerceContainer {
@@ -98,7 +105,7 @@ export function buildEcommerceContainer(deps: EcommerceDeps): EcommerceContainer
   const products = new ProductService(deps.storage);
   const giftCards = new GiftCardService(deps.storage);
   const referrals = new ReferralCodeService(deps.storage);
-  const discounts = new DiscountService(deps.storage, giftCards, referrals);
+  const discounts = new DiscountService(deps.storage, giftCards, referrals, deps.membershipBenefits);
   return {
     orders,
     billing,

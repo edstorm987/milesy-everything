@@ -2,20 +2,42 @@
 //
 // Lifted from `02 felicias aqua portal work/src/lib/discounts.ts` +
 // `02/.../lib/admin/marketing.ts` (the discount-code slice). Resolver
-// chain: gift card → referral code → static promo → per-install custom code.
+// chain: gift card → referral code → static promo → per-install custom
+// code → (R5) membership benefit. The membership step fires from
+// `resolveForUser` and is keyed on userId (not on a code), so it lives
+// alongside the existing code resolver as a separate entry point that
+// the checkout API calls when no explicit code applies.
 
 import { now } from "../lib/time";
-import type { StoragePort } from "./ports";
+import type {
+  AgencyId,
+  ClientId,
+  UserId,
+} from "../lib/tenancy";
+import type {
+  MembershipBenefitsPort,
+  MembershipDiscountSnapshot,
+  StoragePort,
+} from "./ports";
 import type { GiftCardService } from "./giftCards";
 import type { ReferralCodeService } from "./referralCodes";
 
-export type DiscountType = "gift_card" | "referral" | "promo" | "staff" | "creator";
+export type DiscountType =
+  | "gift_card"
+  | "referral"
+  | "promo"
+  | "staff"
+  | "creator"
+  | "membership";
 
 export interface AppliedDiscount {
   code: string;
   type: DiscountType;
   label: string;
   amountOff: number;             // pence
+  // Set when type === "membership". Persisted on the order so the
+  // discount source survives later plan changes / cancellations.
+  membershipSnapshot?: MembershipDiscountSnapshot;
 }
 
 export interface PromoEntry {
@@ -53,6 +75,9 @@ export class DiscountService {
     private storage: StoragePort,
     private giftCards: GiftCardService,
     private referrals: ReferralCodeService,
+    // Optional — undefined means "memberships plugin not installed for
+    // this client". The chain skips the membership step cleanly.
+    private membershipBenefits?: MembershipBenefitsPort,
   ) {}
 
   // ─── Custom (admin-created) codes ───────────────────────────────────
@@ -173,5 +198,52 @@ export class DiscountService {
     }
 
     return { ok: false, reason: "We don't recognise that code. Double-check and try again." };
+  }
+
+  // ─── Membership-discount resolver (R5 — userId-keyed, no code) ───────
+  //
+  // Called by the checkout API when an end-customer is checking out and
+  // either no code was entered OR the code didn't yield a discount.
+  // Walks the membership-benefits port to find the user's largest
+  // discount-category benefit and returns it as an `AppliedDiscount`
+  // with `type: "membership"`. The order persistor reads
+  // `discount.membershipSnapshot` and stores it as
+  // `order.discountSource: "membership"` + `order.discountSnapshot`.
+  //
+  // Returns `null` (no discount) when:
+  //   - `membershipBenefits` port wasn't injected (memberships not installed)
+  //   - the port returns null (no active subscription / no discount benefits)
+  //   - the computed `amountOff` is zero (e.g. subtotal already covered)
+
+  async resolveForUser(args: {
+    agencyId: AgencyId;
+    clientId: ClientId;
+    userId: UserId;
+    subtotal: number;
+    alreadyAppliedTypes?: DiscountType[];
+  }): Promise<AppliedDiscount | null> {
+    if (!this.membershipBenefits) return null;
+    // If a non-membership discount already applied, don't stack —
+    // memberships is the lowest-priority step in the chain.
+    const blockedBy = new Set<DiscountType>(["gift_card", "referral", "promo", "staff", "creator"]);
+    if ((args.alreadyAppliedTypes ?? []).some(t => blockedBy.has(t))) return null;
+
+    const snapshot = await this.membershipBenefits.getDiscountPercentForUser({
+      agencyId: args.agencyId,
+      clientId: args.clientId,
+      userId: args.userId,
+    });
+    if (!snapshot || snapshot.percent <= 0) return null;
+
+    const amountOff = Math.round((args.subtotal * snapshot.percent) / 100);
+    if (amountOff <= 0) return null;
+
+    return {
+      code: `MEMBER:${snapshot.planName ?? snapshot.planId}`,
+      type: "membership",
+      label: `Member discount — ${snapshot.percent}% off`,
+      amountOff,
+      membershipSnapshot: snapshot,
+    };
   }
 }
