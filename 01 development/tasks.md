@@ -10,12 +10,17 @@
       `@aqua/plugin-memberships` (`scopePolicy: "client"`,
       `requires: ["ecommerce"]`). Recurring subscriptions billed via
       ecommerce's per-install Stripe keys.
-- [ ] **T3 R2 — Block + admin UIs lift (in flight)** — Phase A done
-      (58 blocks lifted, in absorbed `e702415`). Phase B step 1
-      (`5ce6cbf`) lifted editor canvas + admin siblings + libs;
-      step 2 (1429-LOC EditorPage.tsx faithful port from `02`) shipped
-      tsc-clean per outbox. Phases C/D ahead (PortalsPage + remaining
-      admin pages).
+- [x] **T3 R2 — Block + admin UIs lift** — DONE. Phase A: 58 blocks
+      faithfully ported from 02 (absorbed in `e702415`). Phase B:
+      canvas + admin siblings + libs (`5ce6cbf`) + 1429-LOC EditorPage
+      faithful port (folded into `f678ef6`). Phase C: 444-LOC
+      PortalsPage (`c10432e`). Phase D: Sections / Assets / Popups /
+      Themes (`36404ea`). tsc-clean throughout, smoke 31/31.
+      Round-3 deferred: PageDetailPage / CustomisePage /
+      ThemeDetailPage / SitesPage (depend on libs not yet lifted or
+      file-size budget). Chapter
+      `context/prior research/04-plugin-website-editor-round2.md`,
+      MASTER row #29.
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
@@ -136,8 +141,13 @@
       `context/prior research/04-milesymedia-demo.md`.
 
 ## Up next (after Round 4)
-- [ ] T3 R2: lift website-editor block UIs + admin UIs from `02` (the
-      pages render but most are placeholder shells).
+- [x] T3 R2: lift website-editor block UIs + admin UIs from `02` —
+      DONE. See above (under "Round 2 in flight" → moved to Done).
+      Round-3 follow-ups: PageDetailPage (depends on lifting 02's
+      `customPages.ts` localStorage block system distinct from
+      EditorPage), CustomisePage (898 lines, deps on adminConfig +
+      sidebarLayout + loginCustomisation), ThemeDetailPage (1063
+      lines), SitesPage (3264 lines — split across multiple sub-loops).
 - [ ] T2 follow-up: real Stripe webhook smoke (foundation already routes
       `/api/portal/ecommerce/stripe/webhook` correctly).
 - [ ] Build the first phase-preset end-to-end (create client → pick
