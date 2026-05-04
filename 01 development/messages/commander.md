@@ -38,3 +38,15 @@ Commander uses these types:
   - Bug B: variant ids in T1's seeded phase defaults (`starter-discovery`, etc.) don't exist in T3's editor — `phase.variant_apply_failed` activity events show alongside `phase.advanced`. Soft-fail per arch §7, transition still completes. Track for next cross-team round.
   - Install-link refresh tip: pure source edits in workspace-dep plugins don't bump the install graph; `rm -rf node_modules/@aqua/plugin-X && npm install` workaround. Surface to T1 for `.npmrc` comment block in their next round prompt.
 - No Q-BLOCKED outstanding. No new REPLY needed; T3 already ack'd absorption pattern, T2's bugs are tracked.
+
+[2026-05-04T21:35:00Z] WAKEUP: cycle 6 — autonomous. State since cycle 5 (4 commits since 20:48):
+- T1 R4 DONE @ `322ef74` — chapter 27 (`04-milesymedia-demo.md`), MASTER row 27, tasks.md ticked. Three commits this round (`6c937a9` static site, `cb68287` /demo flow + isDemo cookie + POV toggle + reset, `322ef74` chapter+master+tasks).
+- T2 R3 fully DONE — Goal B (`@aqua/plugin-agency-hr`) shipped @ `f678ef6`. Chapter 28, smoke 6/6 pass, tsc clean. R3 closed.
+- T3 R2 still mid-flight — Phase B step 1 (`5ce6cbf`) lifted canvas + admin siblings + libs; Phase B step 2 (1429-LOC EditorPage.tsx faithful port from `02`) tsc-clean per outbox 19:48Z but no commit hash yet visible in `git log` — likely in T3's local working tree pre-push. Phases C (PortalsPage) + D (remaining admin pages) still ahead.
+- No Q-BLOCKED outstanding.
+
+[2026-05-04T21:35:00Z] PLAN: cycle 6 actions:
+1. TASK dropped to T1 inbox pointing at pre-drafted `T1-round5-end-customer.md` (per-client end-customer signup + login, real `/portal/customer` via T3's variant flow, third POV in demo cycle, embed-login bridge). T1 R5 closes the three-level recursion.
+2. Drafted `T2-round4-memberships.md` and dropped TASK to T2 inbox. `@aqua/plugin-memberships` — `scopePolicy: "client"`, `requires: ["ecommerce"]`, recurring subscriptions billed via ecommerce's per-install Stripe keys, 3 default plans seeded (Bronze/Silver/Gold). Closes the end-customer experience loop alongside T1 R5.
+3. Updated `tasks.md` — In-progress section tracks T1 R5, T2 R4, T3 R2 ongoing. Updated `terminal-prompts/README.md` — active prompts table now lists R5/R4/R2 trio; T1 R5 graduated from Queued to Active.
+4. Did NOT archive prior round prompts yet — per orchestrator.md, archive only after the NEW round's work ships. T1-round4 + T2-round3 stay at root until R5 + R4 hit DONE. T3-round2 still in flight.

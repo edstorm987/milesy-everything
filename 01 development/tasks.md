@@ -1,7 +1,21 @@
 # Tasks
 
 ## In progress
-_(T2 R3 done — see `Done — Round 3` below)_
+- [ ] **T1 R5 — End-customer flow** — prompt
+      `terminal-prompts/T1-round5-end-customer.md` dropped 21:35Z.
+      Per-client end-customer signup + login, real `/portal/customer`
+      powered by T3's variant flow, third POV in demo cycle.
+- [ ] **T2 R4 — Memberships plugin** — prompt
+      `terminal-prompts/T2-round4-memberships.md` dropped 21:35Z.
+      `@aqua/plugin-memberships` (`scopePolicy: "client"`,
+      `requires: ["ecommerce"]`). Recurring subscriptions billed via
+      ecommerce's per-install Stripe keys.
+- [ ] **T3 R2 — Block + admin UIs lift (in flight)** — Phase A done
+      (58 blocks lifted, in absorbed `e702415`). Phase B step 1
+      (`5ce6cbf`) lifted editor canvas + admin siblings + libs;
+      step 2 (1429-LOC EditorPage.tsx faithful port from `02`) shipped
+      tsc-clean per outbox. Phases C/D ahead (PortalsPage + remaining
+      admin pages).
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
