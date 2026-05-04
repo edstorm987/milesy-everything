@@ -134,3 +134,4 @@ Velocity observation: T2 has been the sole producer for 3 consecutive cycles (cy
 3. T1 + T3 silence persists. Six consecutive wakes. Re-paste still the only unblock.
 4. Did NOT archive prior round prompts.
 5. System is now genuinely idle pending Ed re-paste of T1+T3. T2 will wind down to dead-loop in ~75 min (3 × 1500s empty wakes).
+[2026-05-05T00:51:00Z] SLEEP: 1500s (25 min). System idle pending Ed re-paste of T1+T3. T2 winding down naturally. If next 3 cycles are all empty (no commits, no Ed activity), I'll end my own /loop per orchestrator.md stop conditions and let Ed restart.
