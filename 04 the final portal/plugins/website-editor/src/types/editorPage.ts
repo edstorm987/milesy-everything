@@ -4,12 +4,28 @@
 // - 02: keyed by `siteId`
 // - 04: still keyed by `siteId`, but every Site row carries
 //   `{ agencyId, clientId }` so queries can be tenant-scoped.
+//
+// Round-2 widening: extra fields (`publishedBlocks`, `customHead`,
+// `customFoot`, `customCss`, `seo`) lifted from 02 so the visual editor
+// admin page (`pages/EditorPage.tsx`) compiles unchanged.
 
 import type { AgencyId, ClientId } from "../lib/tenancy";
 import type { PortalRole } from "../lib/portalRole";
 import type { Block } from "./block";
 
 export type EditorPageStatus = "draft" | "published";
+
+// Per-page SEO meta — JSON-LD + Open Graph fragments injected at render.
+export interface EditorPageSeo {
+  metaTitle?: string;
+  metaDescription?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterCard?: "summary" | "summary_large_image";
+  schemaJsonLd?: string;
+  noIndex?: boolean;
+}
 
 export interface EditorPage {
   id: string;
@@ -29,15 +45,25 @@ export interface EditorPage {
   // one variant per (siteId, role) may have `isActivePortal=true`.
   portalRole?: PortalRole;
   isActivePortal?: boolean;
-  variantId?: string; // matches `src/starters/<id>.json` key
+  variantId?: string;
 
   blocks: Block[];
   draftBlocks?: Block[];
+  // Last-published snapshot. Lets the runtime serve the published
+  // version even while the admin edits a draft, and lets the editor
+  // revert.
+  publishedBlocks?: Block[];
 
   themeId?: string;
+  // Page-level custom CSS — both Round-1 alias `customCSS` and 02's
+  // `customCss` resolve to the same render output.
   customCSS?: string;
+  customCss?: string;
+  customHead?: string;
+  customFoot?: string;
   headInjection?: string;
   layoutOverrides?: Record<string, unknown>;
+  seo?: EditorPageSeo;
 
   createdAt: number;
   updatedAt: number;
@@ -65,11 +91,16 @@ export interface UpdatePagePatch {
   description?: string;
   blocks?: Block[];
   draftBlocks?: Block[];
+  publishedBlocks?: Block[];
   themeId?: string;
   customCSS?: string;
+  customCss?: string;
+  customHead?: string;
+  customFoot?: string;
   headInjection?: string;
   layoutOverrides?: Record<string, unknown>;
   portalRole?: PortalRole;
   isActivePortal?: boolean;
   isHomepage?: boolean;
+  seo?: EditorPageSeo;
 }
