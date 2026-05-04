@@ -57,6 +57,14 @@ When done:
 |------|--------|------|
 | **Chief commander** | [orchestrator-init.md](orchestrator-init.md) | Spawns the autonomous chief-commander session. Reads mesh state, replies to terminal questions, drafts new-round prompts, schedules itself via `/loop` + `ScheduleWakeup`. Full protocol in `../orchestrator.md`. |
 
+## Queued (drafted ahead — paste when current round hits DONE)
+
+| Terminal | Prompt | Trigger |
+|----------|--------|---------|
+| **T1 → R6** | [T1-round6-foundation-mass-wireup.md](T1-round6-foundation-mass-wireup.md) | Paste once T1 R5 (`T1-round5-end-customer.md`) hits DONE. Six goals: workspace deps + transpilePackages + side-effect-imports + `_registry.ts` appends + ActivityCategory unions + cross-plugin event router for the 5-6 plugins T2 has shipped (agency-HR, memberships, affiliates, agency-finance, agency-marketing, +client-crm if available). After R6 the foundation is ahead of the plugin catalogue again. |
+| **T2 → R9** | [T2-round9-forms-plugin.md](T2-round9-forms-plugin.md) | Paste once T2 R8 (`T2-round8-client-crm.md`) hits DONE. Ship `@aqua/plugin-forms` — cross-cutting form builder + submissions store. `scopePolicy: "either"`. Pairs with client-CRM (submissions become Contacts), affiliates (signup forms), memberships (plan-pick wizards). |
+| **T3 → R4** | [T3-round4-sites-and-pages.md](T3-round4-sites-and-pages.md) | Paste once T3 R3 (`T3-round3-admin-and-renderers.md`) hits DONE. Three goals: (A) Lift SitesPage (3264 lines — biggest single admin page), (B) port customPages backend (separate localStorage block system), (C) lift PageDetailPage. After R4 the website-editor admin surface is parity-with-`02`. |
+
 ## Archive
 
 Superseded prompts move to [old prompts/](old%20prompts/) once shipped.
