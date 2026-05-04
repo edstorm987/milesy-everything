@@ -1,0 +1,171 @@
+"use client";
+
+// MembershipSignupBlock — pricing-tier picker. Lists active plans from
+// `/api/portal/memberships/plans` (per-client) and posts to
+// `/api/portal/memberships/me/subscribe`. Layout supports horizontal
+// (cards in a row) or vertical (cards stacked).
+//
+// **Round-3 status**: T2's @aqua/plugin-memberships declares this block
+// id and delegates rendering here. Round-3 ships a fetching renderer
+// against the documented endpoints. Empty plan list → "No plans
+// available" placeholder; editor mode always shows the placeholder so
+// layout work doesn't require live data.
+
+import { useEffect, useState } from "react";
+import type { BlockRenderProps } from "../blockRegistry";
+import { blockStylesToCss } from "../blockStyles";
+
+interface MembershipPlan {
+  id: string;
+  name: string;
+  description?: string;
+  priceMonthly?: number;
+  priceAnnual?: number;
+  currency?: string;
+  features?: string[];
+}
+
+export default function MembershipSignupBlock({ block, editorMode }: BlockRenderProps) {
+  const layout = (block.props.layout as "horizontal" | "vertical" | undefined) ?? "horizontal";
+  const showAnnual = block.props.showAnnual !== false;
+
+  const [plans, setPlans] = useState<MembershipPlan[]>([]);
+  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
+  const [submitting, setSubmitting] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (editorMode) return;
+    let cancelled = false;
+    void fetch("/api/portal/memberships/plans", { cache: "no-store" })
+      .then(r => r.ok ? r.json() as Promise<{ plans?: MembershipPlan[] }> : { plans: [] })
+      .then(data => { if (!cancelled) setPlans(data.plans ?? []); })
+      .catch(() => { /* silent */ });
+    return () => { cancelled = true; };
+  }, [editorMode]);
+
+  async function subscribe(planId: string) {
+    if (editorMode) return;
+    setSubmitting(planId);
+    try {
+      const res = await fetch("/api/portal/memberships/me/subscribe", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ planId, billingPeriod }),
+      });
+      if (res.ok) {
+        const data = await res.json() as { redirectUrl?: string };
+        if (data.redirectUrl) window.location.href = data.redirectUrl;
+      }
+    } finally { setSubmitting(null); }
+  }
+
+  const isHorizontal = layout === "horizontal";
+  const containerStyle: React.CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: isHorizontal ? "repeat(auto-fit, minmax(220px, 1fr))" : "1fr",
+    gap: 16,
+    padding: "32px 24px",
+    ...blockStylesToCss(block.styles),
+  };
+
+  return (
+    <section data-block-type="membership-signup" style={containerStyle}>
+      {showAnnual && plans.length > 0 && (
+        <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center", gap: 8, marginBottom: 12 }}>
+          <button
+            type="button"
+            onClick={() => setBillingPeriod("monthly")}
+            disabled={editorMode}
+            style={{
+              padding: "6px 12px",
+              borderRadius: 6,
+              border: "none",
+              background: billingPeriod === "monthly" ? "var(--brand-orange, #ff6b35)" : "rgba(255,255,255,0.05)",
+              color: billingPeriod === "monthly" ? "#fff" : "rgba(255,255,255,0.7)",
+              fontSize: 12,
+              cursor: editorMode ? "default" : "pointer",
+            }}
+          >Monthly</button>
+          <button
+            type="button"
+            onClick={() => setBillingPeriod("annual")}
+            disabled={editorMode}
+            style={{
+              padding: "6px 12px",
+              borderRadius: 6,
+              border: "none",
+              background: billingPeriod === "annual" ? "var(--brand-orange, #ff6b35)" : "rgba(255,255,255,0.05)",
+              color: billingPeriod === "annual" ? "#fff" : "rgba(255,255,255,0.7)",
+              fontSize: 12,
+              cursor: editorMode ? "default" : "pointer",
+            }}
+          >Annual</button>
+        </div>
+      )}
+      {plans.length === 0 ? (
+        <div
+          style={{
+            gridColumn: "1 / -1",
+            padding: 24,
+            textAlign: "center",
+            color: "rgba(255,255,255,0.55)",
+            fontSize: 13,
+            border: "1px dashed rgba(255,255,255,0.15)",
+            borderRadius: 12,
+          }}
+        >
+          {editorMode ? "Membership signup — plans render here when published" : "No plans available right now."}
+        </div>
+      ) : plans.map(plan => {
+        const price = billingPeriod === "annual" ? plan.priceAnnual : plan.priceMonthly;
+        const currency = plan.currency ?? "USD";
+        return (
+          <article
+            key={plan.id}
+            style={{
+              padding: 24,
+              borderRadius: 12,
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700 }}>{plan.name}</h3>
+            {plan.description && <p style={{ margin: "0 0 12px", fontSize: 13, opacity: 0.7 }}>{plan.description}</p>}
+            {price !== undefined && (
+              <p style={{ margin: "0 0 16px", fontSize: 24, fontWeight: 700 }}>
+                {new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(price / 100)}
+                <span style={{ fontSize: 13, opacity: 0.6, fontWeight: 400 }}>/{billingPeriod === "annual" ? "yr" : "mo"}</span>
+              </p>
+            )}
+            {plan.features && plan.features.length > 0 && (
+              <ul style={{ margin: "0 0 16px", padding: 0, listStyle: "none", fontSize: 13 }}>
+                {plan.features.map((f, i) => (
+                  <li key={i} style={{ padding: "4px 0", opacity: 0.85 }}>✓ {f}</li>
+                ))}
+              </ul>
+            )}
+            <button
+              type="button"
+              onClick={() => subscribe(plan.id)}
+              disabled={editorMode || submitting === plan.id}
+              style={{
+                width: "100%",
+                padding: "10px 18px",
+                borderRadius: 8,
+                border: "none",
+                background: "var(--brand-orange, #ff6b35)",
+                color: "#fff",
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: editorMode ? "default" : "pointer",
+                opacity: submitting === plan.id ? 0.6 : 1,
+              }}
+            >
+              {submitting === plan.id ? "…" : "Subscribe"}
+            </button>
+          </article>
+        );
+      })}
+    </section>
+  );
+}

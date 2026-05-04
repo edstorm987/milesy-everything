@@ -81,6 +81,17 @@ import TimelineBlock from "./blocks/TimelineBlock";
 import VariantPickerBlock from "./blocks/VariantPickerBlock";
 import VideoBlock from "./blocks/VideoBlock";
 
+// ─── External-plugin block renderers (registered by this plugin) ──────────
+// T2's @aqua/plugin-ecommerce + @aqua/plugin-memberships declare block
+// descriptors with delegated rendering. Components live under blocks/*
+// alongside the native 58 — but they aren't members of BLOCK_REGISTRY
+// (which carries the editor metadata for the native palette). They show
+// up only in RENDERER_REGISTRATIONS so the runtime renderer can resolve
+// them by id.
+import MembershipPaywallBlock from "./blocks/MembershipPaywallBlock";
+import MembershipSignupBlock from "./blocks/MembershipSignupBlock";
+import MembershipTierGridBlock from "./blocks/MembershipTierGridBlock";
+
 // ─── Registry shape ────────────────────────────────────────────────────────
 
 export interface BlockRenderProps {
@@ -808,4 +819,95 @@ export function getBlockEntry(type: string): BlockRegistryEntry | undefined {
     descriptor: BLOCK_DESCRIPTORS.find(d => d.type === type)!,
     component: def.Component,
   };
+}
+
+// ─── Cross-plugin renderer registrations ───────────────────────────────────
+//
+// Other plugins (ecommerce, memberships, blog, etc.) can declare
+// `BlockDescriptor[]` in their manifest's `storefront.blocks` to add
+// new block types to the editor palette. Per the architecture decision
+// in T2 R2, **rendering is delegated to this plugin** — descriptors
+// from external plugins carry only metadata + defaultProps, not a
+// React component.
+//
+// `RENDERER_REGISTRATIONS` is the single source of truth for which
+// React component renders which block id, regardless of which plugin
+// declared it. It seeds with:
+//   - The native 58 BlockDefinition.Component values
+//   - The 8 ecommerce block components (already lifted in R2 Phase A)
+//   - The 3 memberships block components (added in R3 Goal B)
+//
+// Foundation calls `registerExternalBlockRenderers(plugins)` once at
+// boot to validate that every external block descriptor with
+// `requiresPlugin` set has a matching renderer here. Missing renderers
+// log a clear warning so the operator notices in dev.
+
+export type BlockComponentType = ComponentType<BlockRenderProps>;
+
+const NATIVE_RENDERERS: Record<string, BlockComponentType> = Object.fromEntries(
+  Object.entries(BLOCK_REGISTRY).map(([type, def]) => [type, def.Component]),
+);
+
+export const RENDERER_REGISTRATIONS: Record<string, BlockComponentType> = {
+  ...NATIVE_RENDERERS,
+
+  // ecommerce (T2's @aqua/plugin-ecommerce — declared in its manifest)
+  "product-card":      ProductCardBlock,
+  "product-grid":      ProductGridBlock,
+  "cart-summary":      CartSummaryBlock,
+  "checkout-summary":  CheckoutSummaryBlock,
+  "payment-button":    PaymentButtonBlock,
+  "order-success":     OrderSuccessBlock,
+  "variant-picker":    VariantPickerBlock,
+  "product-search":    ProductSearchBlock,
+
+  // memberships (T2 R4 — @aqua/plugin-memberships)
+  "membership-paywall":    MembershipPaywallBlock,
+  "membership-signup":     MembershipSignupBlock,
+  "membership-tier-grid":  MembershipTierGridBlock,
+};
+
+export function getBlockRenderer(type: string): BlockComponentType | undefined {
+  return RENDERER_REGISTRATIONS[type];
+}
+
+// Minimal AquaPlugin shape used by the registration helper. Importing
+// the full type would create a foundation-side cycle; declaring the
+// subset we read here keeps this module standalone.
+interface PluginWithBlocks {
+  id: string;
+  storefront?: {
+    blocks?: Array<{
+      type?: string;
+      id?: string;
+      requiresPlugin?: string;
+    }>;
+  };
+}
+
+// Walks each installed plugin manifest and validates that every block
+// it contributes (excluding native ones declared by this plugin) has a
+// renderer registered above. Logs a console warning for each missing
+// renderer so operators in dev mode notice immediately.
+//
+// Returns the list of ids that were missing — useful for tests and
+// boot-time health checks. Idempotent.
+export function registerExternalBlockRenderers(plugins: PluginWithBlocks[]): string[] {
+  const missing: string[] = [];
+  for (const plugin of plugins) {
+    if (plugin.id === "website-editor") continue;
+    for (const descriptor of plugin.storefront?.blocks ?? []) {
+      const blockId = descriptor.type ?? descriptor.id;
+      if (!blockId) continue;
+      if (RENDERER_REGISTRATIONS[blockId]) continue;
+      missing.push(blockId);
+      if (typeof console !== "undefined") {
+        console.warn(
+          `[website-editor] No renderer registered for block id "${blockId}" ` +
+          `contributed by plugin "${plugin.id}". Add it to RENDERER_REGISTRATIONS.`,
+        );
+      }
+    }
+  }
+  return missing;
 }

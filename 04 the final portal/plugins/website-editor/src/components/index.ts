@@ -11,14 +11,18 @@ export {
   BLOCK_REGISTRY,
   BLOCK_DESCRIPTORS,
   BLOCK_TYPES,
+  RENDERER_REGISTRATIONS,
   getBlockDefinition,
+  getBlockRenderer,
   listBlockDefinitions,
   listBlocksByCategory,
   getBlockEntry,
   getBlockDescriptor,
+  registerExternalBlockRenderers,
 } from "./blockRegistry";
 export type {
   BlockComponentProps,
+  BlockComponentType,
   BlockRegistryEntry,
   BlockRenderProps,
   BlockDefinition,

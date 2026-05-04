@@ -12,7 +12,13 @@
 // Run via `npm test`. Exits non-zero on any assertion failure.
 
 import manifest from "../../index";
-import { BLOCK_REGISTRY, BLOCK_DESCRIPTORS } from "../components/blockRegistry";
+import {
+  BLOCK_REGISTRY,
+  BLOCK_DESCRIPTORS,
+  RENDERER_REGISTRATIONS,
+  getBlockRenderer,
+  registerExternalBlockRenderers,
+} from "../components/blockRegistry";
 import { listStarterIds, loadStarterTree } from "../server/starterLoader";
 import { applyStarterVariant } from "../server/portalVariants";
 import type { PluginStorage } from "../lib/aquaPluginTypes";
@@ -79,6 +85,47 @@ async function main(): Promise<void> {
     if (typeof def.Component === "function" && def.type === type) evaluated++;
   }
   expect("every block component is callable", evaluated === 58, `actual: ${evaluated}`);
+
+  console.log("\nrenderer registrations (cross-plugin)");
+  expect(
+    "RENDERER_REGISTRATIONS covers all 58 native blocks",
+    Object.keys(BLOCK_REGISTRY).every(type => typeof RENDERER_REGISTRATIONS[type] === "function"),
+  );
+  // 8 ecommerce + 3 memberships should be in the map even though they
+  // aren't in BLOCK_REGISTRY (BLOCK_REGISTRY also includes the 8
+  // ecommerce because they were lifted in R2 Phase A — but memberships
+  // is the strict cross-plugin check).
+  const externalIds = ["membership-paywall", "membership-signup", "membership-tier-grid"];
+  for (const id of externalIds) {
+    expect(
+      `getBlockRenderer("${id}") returns a function`,
+      typeof getBlockRenderer(id) === "function",
+    );
+  }
+  // registerExternalBlockRenderers — feed a synthetic manifest with a
+  // missing block id; expect it surfaces in the return value.
+  const missing = registerExternalBlockRenderers([
+    { id: "fake-plugin", storefront: { blocks: [{ type: "missing-block-xyz" }] } },
+  ]);
+  expect(
+    "registerExternalBlockRenderers reports missing renderers",
+    missing.includes("missing-block-xyz"),
+    `got: ${JSON.stringify(missing)}`,
+  );
+  // Feeding a plugin whose blocks ARE all registered (e.g. ecommerce)
+  // should produce no warnings.
+  const okMissing = registerExternalBlockRenderers([
+    { id: "ecommerce", storefront: { blocks: [
+      { type: "product-card" }, { type: "product-grid" }, { type: "cart-summary" },
+      { type: "checkout-summary" }, { type: "payment-button" }, { type: "order-success" },
+      { type: "variant-picker" }, { type: "product-search" },
+    ] } },
+  ]);
+  expect(
+    "all 8 ecommerce block ids are registered",
+    okMissing.length === 0,
+    `unexpected missing: ${JSON.stringify(okMissing)}`,
+  );
 
   console.log("\nstarter trees");
   const ids = listStarterIds();

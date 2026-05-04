@@ -10,7 +10,7 @@
 
 import { Fragment, useEffect } from "react";
 import type { Block, SplitTestGroup } from "../types/block";
-import { getBlockDefinition } from "./blockRegistry";
+import { getBlockDefinition, getBlockRenderer } from "./blockRegistry";
 import AnimateOnScroll from "./AnimateOnScroll";
 import { overridesToCssText } from "./blockStyles";
 import { applyVariant, recordExposure, resolveVariant } from "./variantResolver";
@@ -74,8 +74,14 @@ function BlockNode({
   if (themeOverlay) {
     block = { ...block, styles: { ...(block.styles ?? {}), ...themeOverlay } };
   }
+  // Resolve renderer: cross-plugin RENDERER_REGISTRATIONS map first
+  // (covers external plugin blocks like ecommerce + memberships), then
+  // fall back to BLOCK_REGISTRY (the native 58). Missing renderer →
+  // visible warning in editor mode, silent fragment on live.
+  const externalRenderer = getBlockRenderer(block.type);
   const def = getBlockDefinition(block.type);
-  if (!def) {
+  const Component = externalRenderer ?? def?.Component;
+  if (!Component) {
     if (editorMode) {
       return (
         <div style={{ padding: 8, border: "1px dashed #ef4444", color: "#ef4444", fontSize: 12, borderRadius: 6 }}>
@@ -85,7 +91,6 @@ function BlockNode({
     }
     return null;
   }
-  const Component = def.Component;
   const componentNode = (
     <Component
       block={block}
