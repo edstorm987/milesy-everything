@@ -8,13 +8,7 @@
       **NOTE 22:50Z**: T1's loop appears to have ended post-R4 DONE
       before TASK landed (no STARTED entry across two wakes). Ed needs
       to re-paste the R5 prompt to restart the loop.
-- [ ] **T2 R5 — Affiliates plugin + ecommerce↔memberships discount
-      integration** — prompt
-      `terminal-prompts/T2-round5-affiliates-and-discounts.md` dropped
-      22:50Z. (A) Extend ecommerce DiscountService chain for membership
-      discount benefits via injected MembershipBenefitsPort.
-      (B) Ship `@aqua/plugin-affiliates` (referral codes + attributions
-      + manual payouts + per-end-customer dashboard).
+_(T2 R5 done — see `Done — Round 5` below)_
 - [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
       renderers** — prompt
       `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.
@@ -133,6 +127,36 @@
       extended with `"ecommerce"`. Demo seed installs both client-scoped
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
+
+## Done — Round 5
+- [x] **T2 R5 — Affiliates plugin + ecommerce↔memberships discount
+      integration** — shipped.
+      Goal A (ecommerce edit, commit `640d98b`): extended
+      `DiscountService` chain with a 5th step keyed on userId — calls
+      injected `MembershipBenefitsPort.getDiscountPercentForUser` and
+      applies the largest membership discount, persisting
+      `order.discountSource: "membership"` + planId snapshot. New
+      `DiscountType: "membership"`. `ServerOrder` gains
+      discountSource/discountAmount/discountCode/discountSnapshot/
+      endCustomerUserId with idempotent webhook-retry preservation.
+      Backward-compat: port absent → null. New ecommerce smoke at
+      `src/__smoke__/discount-membership.test.ts`, 7/7 pass.
+      Goal B: `@aqua/plugin-affiliates` at
+      `04 the final portal/plugins/affiliates/`. `scopePolicy: "client"`,
+      `requires: ["ecommerce"]`, `core: false`. Domain
+      Affiliate/ReferralCode/Attribution/Payout. Four services.
+      Six ports including new `EcommerceOrdersPort` (cross-plugin
+      order projection — reads `metadata.referralCodeId` until
+      ecommerce ships first-class field). 16 API routes, 6 admin
+      pages + 1 customer page. 3 storefront block ids. Heavy use of
+      secondary indexes for O(1) lookups. tsc-clean; 9/9 smoke pass.
+      Foundation pending: workspace dep + transpilePackages +
+      side-effect-import + `_registry.ts` append +
+      `ActivityCategory` += "affiliates" + UserPort projection (shared
+      with memberships) + ecommerceOrders adapter + cross-plugin
+      event subscription routing ecommerce `order.created` →
+      affiliates `attributions/record`. See
+      `context/prior research/04-plugin-affiliates.md`.
 
 ## Done — Round 4
 - [x] **T2 R4 — Memberships plugin** — shipped.
