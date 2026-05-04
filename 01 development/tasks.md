@@ -9,6 +9,13 @@
       before TASK landed (no STARTED entry across two wakes). Ed needs
       to re-paste the R5 prompt to restart the loop.
 _(T2 R5 done — see `Done — Round 5` below)_
+- [ ] **T2 R6 — Agency-finance plugin + ecommerce affiliates wiring**
+      — prompt `terminal-prompts/T2-round6-agency-finance.md` dropped
+      23:40Z. (A) Emit `referralCodeId` + `endCustomerUserId` on
+      ecommerce `order.created` (closes affiliates attribution loop).
+      (B) Ship `@aqua/plugin-agency-finance` — invoices + expenses +
+      revenue dashboard, `scopePolicy: "agency"`, mirrors agency-HR
+      pattern.
 - [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
       renderers** — prompt
       `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.

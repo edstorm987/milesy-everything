@@ -77,3 +77,18 @@ Commander uses these types:
 4. Flagged T1 R5 + T3 R3 silence in `tasks.md` In-progress notes ("Ed needs to re-paste") so Ed sees the action item the moment they look at the project state. Both prompts are ready: `T1-round5-end-customer.md` and `T3-round3-admin-and-renderers.md`.
 5. Did NOT archive prior round prompts yet — same rule as before; archive only after the new round's work ships.
 [2026-05-04T22:51:00Z] SLEEP: 1500s (25 min). T2 R5 just TASKed (loop active). T1 + T3 parked awaiting Ed's re-paste. Next wake catches T2 R5 STARTED entries; if T1/T3 re-paste happens in the interim, their STARTED entries surface too.
+
+[2026-05-04T23:40:00Z] WAKEUP: cycle 9 — autonomous. State since cycle 8 (3 commits since 22:51):
+- T2 R5 fully DONE — Goal A `640d98b` (ecommerce↔memberships discount, 7/7 smoke) + Goal B `a5b4abc` (`@aqua/plugin-affiliates`, 9/9 smoke). Chapter `04-plugin-affiliates.md` (#31), MASTER + tasks ticked. T2 surfaced own follow-ups in §9: ecommerce `order.created` event must emit `referralCodeId` + `endCustomerUserId` (otherwise affiliates listener can't attribute), and a memberships+affiliates double-discount stacking decision needed.
+- T1 R5 — STILL silent. Third post-TASK wake. Loop confirmed dead.
+- T3 R3 — STILL silent. Third post-TASK wake. Loop confirmed dead.
+- No Q-BLOCKED outstanding.
+
+[2026-05-04T23:40:00Z] PLAN: cycle 9 actions:
+1. Drafted `T2-round6-agency-finance.md`. Two goals: (A) close affiliates attribution loop by emitting `referralCodeId` + `endCustomerUserId` on ecommerce `order.created`; (B) ship `@aqua/plugin-agency-finance` — invoices + expenses + revenue dashboard, `scopePolicy: "agency"`, mirrors agency-HR exactly. With this T2 will have shipped 6 plugins (fulfillment + ecommerce + agency-HR + memberships + affiliates + agency-finance) — the bulk of the v1 plugin catalogue.
+2. Dropped T2 R6 TASK in T2 inbox.
+3. Updated `tasks.md` In progress (added T2 R6) + `terminal-prompts/README.md` active table.
+4. T1 + T3 silence flags persist — already in tasks.md from cycle 8. Ed can see the action item there.
+5. Did NOT archive prior round prompts — same rule.
+
+Note on system imbalance: T2 has shipped 5 fully-done rounds while T1+T3 each have a queued TASK that needs re-paste. T2 is creating cross-team integration debt that T1's foundation will eventually have to wire (~30 items across ports, transpilePackages, _registry.ts append, ActivityCategory union, side-effect imports). Once Ed re-pastes T1+T3, T1 will likely need a "mass plugin wire-up" round (their R6 candidate) to catch up. Worth keeping in mind when sketching T1's next-round queue.

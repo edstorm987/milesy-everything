@@ -48,7 +48,7 @@ When done:
 | Terminal | Prompt | Goal |
 |----------|--------|------|
 | **T1 → R5** | [T1-round5-end-customer.md](T1-round5-end-customer.md) | End-customer flow: per-client signup + login, real `/portal/customer` via T3's variant flow, third POV in demo cycle, embed-login bridge. Closes the three-level recursion. |
-| **T2 → R5** | [T2-round5-affiliates-and-discounts.md](T2-round5-affiliates-and-discounts.md) | (A) Wire ecommerce DiscountService to honour memberships' `getBenefitsForUser` via injected MembershipBenefitsPort. (B) Ship `@aqua/plugin-affiliates` (referral codes + attributions + manual payouts + per-end-customer dashboard). Completes Felicia's customer-facing trio: shop · join · refer. |
+| **T2 → R6** | [T2-round6-agency-finance.md](T2-round6-agency-finance.md) | (A) Emit `referralCodeId` + `endCustomerUserId` on ecommerce `order.created` (closes affiliates attribution loop). (B) Ship `@aqua/plugin-agency-finance` — invoices + expenses + revenue dashboard, `scopePolicy: "agency"`, mirrors agency-HR pattern. |
 | **T3 → R3** | [T3-round3-admin-and-renderers.md](T3-round3-admin-and-renderers.md) | (A) Lift CustomisePage (898-LOC brand-kit editor) + (B) register 8 ecommerce block renderers (cross-team handoff parked since T2 R2) + (C) ThemeDetailPage (1063 LOC) + re-point PagesPage at EditorPage list. |
 
 ### Orchestrator
