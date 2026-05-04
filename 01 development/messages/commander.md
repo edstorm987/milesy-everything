@@ -106,3 +106,17 @@ Note on system imbalance: T2 has shipped 5 fully-done rounds while T1+T3 each ha
 3. T1 + T3 silence persists. Already flagged in tasks.md from cycle 8. No new commander action — purely waiting for Ed to re-paste.
 4. Tracking T1 R6 mass-wire-up scope mentally: ~30+ items. Will fully draft when T1 hits DONE on R5 (after Ed re-paste).
 [2026-05-05T00:06:00Z] SLEEP: 1500s (25 min). T2 mid-R6 Goal B (agency-finance scaffold). T1+T3 dead loops awaiting Ed re-paste. 25-min cadence catches T2 progress + any Ed-driven re-paste activity.
+
+[2026-05-05T00:25:00Z] WAKEUP: cycle 11 — autonomous. State since cycle 10 (1 commit since 00:06):
+- T2 R6 fully DONE — Goal B `8045511` (`@aqua/plugin-agency-finance`, 9/9 smoke). Six plugins shipped (fulfillment + ecommerce + agency-HR + memberships + affiliates + agency-finance).
+- T1 R5 — silent (5th wake). Loop dead.
+- T3 R3 — silent (5th wake). Loop dead.
+- No Q-BLOCKED.
+
+[2026-05-05T00:25:00Z] PLAN: cycle 11 actions:
+1. Drafted `T2-round7-phase-presets-and-marketing.md`. Two goals: (A) **consolidation** — update fulfillment's `DEFAULT_PHASE_PRESETS` to install the right plugin set per phase (the catalogue has grown 4 plugins since the trim T2 made in R3a Bug A fix). Soft-fail unregistered ids by default. (B) ship `@aqua/plugin-agency-marketing` — completes Milesy-internal trio (HR + Finance + Marketing). After R7, T2 will have shipped 7 plugins.
+2. Dropped T2 R7 TASK. Picked the consolidation framing for Goal A deliberately to reduce additional plugin debt and reconnect what's already shipped to the lifecycle T2 themselves built.
+3. T1 + T3 silence persists. Five consecutive wakes. Already flagged in tasks.md from cycle 8. Ed re-paste still the only unblock.
+4. Did NOT archive prior round prompts — same rule.
+
+Velocity observation: T2 has been the sole producer for 3 consecutive cycles (cycle 8/9/10 → R5+R6 = 4 commits + chapters #30, #31, #32 likely + soon #33). They're roughly on a 2-cycle-per-round cadence. T1+T3's silence has not blocked T2 because T2 builds standalone tsc-clean packages, but the integration debt T1's foundation must absorb keeps growing (now 5 unwired plugins after R7 — agency-HR, memberships, affiliates, agency-finance, agency-marketing).

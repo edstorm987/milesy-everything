@@ -10,6 +10,15 @@
       to re-paste the R5 prompt to restart the loop.
 _(T2 R5 done — see `Done — Round 5` below)_
 _(T2 R6 done — see `Done — Round 6` below)_
+- [ ] **T2 R7 — Phase presets + agency-marketing plugin** — prompt
+      `terminal-prompts/T2-round7-phase-presets-and-marketing.md`
+      dropped 00:25Z. (A) Update fulfillment phase preset definitions
+      to install the right plugins per phase (Discovery →
+      website-editor only; Live → website-editor + ecommerce +
+      memberships + affiliates). Soft-fail unregistered ids.
+      (B) Ship `@aqua/plugin-agency-marketing` (campaigns + leads +
+      email templates + reports), `scopePolicy: "agency"`, mirrors
+      agency-finance pattern. After R7 T2 will have shipped 7 plugins.
 - [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
       renderers** — prompt
       `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.
