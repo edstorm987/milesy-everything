@@ -10,15 +10,7 @@
       to re-paste the R5 prompt to restart the loop.
 _(T2 R5 done — see `Done — Round 5` below)_
 _(T2 R6 done — see `Done — Round 6` below)_
-- [ ] **T2 R7 — Phase presets + agency-marketing plugin** — prompt
-      `terminal-prompts/T2-round7-phase-presets-and-marketing.md`
-      dropped 00:25Z. (A) Update fulfillment phase preset definitions
-      to install the right plugins per phase (Discovery →
-      website-editor only; Live → website-editor + ecommerce +
-      memberships + affiliates). Soft-fail unregistered ids.
-      (B) Ship `@aqua/plugin-agency-marketing` (campaigns + leads +
-      email templates + reports), `scopePolicy: "agency"`, mirrors
-      agency-finance pattern. After R7 T2 will have shipped 7 plugins.
+_(T2 R7 done — see `Done — Round 7` below)_
 - [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
       renderers** — prompt
       `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.
@@ -137,6 +129,45 @@ _(T2 R6 done — see `Done — Round 6` below)_
       extended with `"ecommerce"`. Demo seed installs both client-scoped
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
+
+## Done — Round 7
+- [x] **T2 R7 — Phase preset consolidation + agency-marketing
+      plugin** — shipped.
+      Goal A (commit `a80daa9`): updated `DEFAULT_PHASE_PRESETS` in
+      fulfillment/src/server/presets.ts to reflect the actual plugin
+      lifecycle — Discovery=[website-editor], Design=[website-editor],
+      Development=[website-editor, ecommerce], Onboarding=[+memberships],
+      Live=[+affiliates], Churned=[]. Added soft-fail in
+      TransitionService.advancePhase + ClientLifecycleService.createWithPhase:
+      when runtime returns "not found"/"not in registry"/"not registered"
+      error, the install is SKIPPED (WARN activity entry +
+      `phase.preset_plugin_skipped` event), phase still advances.
+      AdvancePhaseResult gains `skipped: { pluginId, error }[]`;
+      installs[i] gains optional `skipped:true`. Real registry-side
+      errors (auth/scope/dep) still hard-fail. Lifecycle smoke
+      extended with R7 describe-block: catalogue assertion + soft-fail
+      walkthrough (REGISTRY=[website-editor, ecommerce] only; onboarding
+      hop skips memberships, live hop skips memberships+affiliates).
+      11/11 smoke (9 original + 2 R7).
+      Goal B: `@aqua/plugin-agency-marketing` at
+      `04 the final portal/plugins/agency-marketing/`.
+      `scopePolicy: "agency"`, `core: false`. Domain Campaign (state
+      machine draft→scheduled→running→paused/completed→archived,
+      budget+goal+result rollup), Lead (funnel new→contacted→qualified
+      →converted/unqualified/lost with re-engage paths, append-only
+      contactHistory, secondary indexes by email/campaign/staff),
+      EmailTemplate (3 seeded defaults Welcome/Re-engagement/Newsletter,
+      `{{placeholder}}` substitution). Four services
+      (Campaign/Lead/Template/Report). Six ports. 13 API routes.
+      5 admin pages. campaignSnapshot + leadFunnel reports.
+      tsc-clean; 8/8 smoke. Foundation pending: workspace dep +
+      transpilePackages + side-effect-import + `_registry.ts` append +
+      `ActivityCategory` += "marketing" + UserPort projection.
+      T2 plugin catalogue now: 7 shipped (fulfillment / ecommerce /
+      agency-HR / memberships / affiliates / agency-finance /
+      agency-marketing) — full Milesy-internal trio + customer-facing
+      trio. See
+      `context/prior research/04-plugin-agency-marketing.md`.
 
 ## Done — Round 6
 - [x] **T2 R6 — Agency-finance plugin + ecommerce affiliates wiring**
