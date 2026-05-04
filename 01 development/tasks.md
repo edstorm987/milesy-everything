@@ -9,13 +9,7 @@
       before TASK landed (no STARTED entry across two wakes). Ed needs
       to re-paste the R5 prompt to restart the loop.
 _(T2 R5 done — see `Done — Round 5` below)_
-- [ ] **T2 R6 — Agency-finance plugin + ecommerce affiliates wiring**
-      — prompt `terminal-prompts/T2-round6-agency-finance.md` dropped
-      23:40Z. (A) Emit `referralCodeId` + `endCustomerUserId` on
-      ecommerce `order.created` (closes affiliates attribution loop).
-      (B) Ship `@aqua/plugin-agency-finance` — invoices + expenses +
-      revenue dashboard, `scopePolicy: "agency"`, mirrors agency-HR
-      pattern.
+_(T2 R6 done — see `Done — Round 6` below)_
 - [ ] **T3 R3 — CustomisePage + ThemeDetailPage + ecommerce block
       renderers** — prompt
       `terminal-prompts/T3-round3-admin-and-renderers.md` dropped 22:00Z.
@@ -134,6 +128,40 @@ _(T2 R5 done — see `Done — Round 5` below)_
       extended with `"ecommerce"`. Demo seed installs both client-scoped
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
+
+## Done — Round 6
+- [x] **T2 R6 — Agency-finance plugin + ecommerce affiliates wiring**
+      — shipped.
+      Goal A (commit `db60015`): closes the affiliates attribution
+      loop. ecommerce now persists `referralCodeId` on `ServerOrder`,
+      reads `metadata.referralCodeId` + `metadata.endCustomerUserId`
+      from Stripe sessions, and emits `order.created` exactly once
+      with full payload (orderId, clientId, amountTotal, currency,
+      subtotal=amountTotal+discountAmount, referralCodeId,
+      endCustomerUserId, discountSource). `upsertOrderByStripeSession`
+      now returns `{ order, isNew }` so the handler can dedupe across
+      Stripe webhook retries. New ecommerce smoke at
+      `src/__smoke__/order-created-event.test.ts`, 5/5 pass.
+      Goal B: `@aqua/plugin-agency-finance` at
+      `04 the final portal/plugins/agency-finance/`.
+      `scopePolicy: "agency"`, `core: false`. Domain Invoice (per-year
+      sequence INV-YYYY-NNNN, state machine draft→sent→paid/overdue/
+      void/refunded with markPaid as the sole path into paid),
+      Expense (pending→approved/rejected→reimbursed, secondary indexes
+      by category + staff), ExpenseCategory (six seeded defaults).
+      Four services (Category/Invoice/Expense/Report). Six ports
+      (Storage/Tenant/User/Activity/Events/PluginInstallStore). 15
+      API routes. 5 admin pages including InvoiceDetail with
+      renderInvoiceHtml output. RevenueSnapshot reports
+      trailing-window invoicesIssued/Paid/Overdue, expensesByCategory,
+      monthly aggregate, netCents. tsc-clean; 9/9 smoke pass via
+      `npm run smoke`. Foundation pending: workspace dep +
+      transpilePackages + side-effect-import + `_registry.ts` append +
+      `ActivityCategory` += "finance" + UserPort projection (shared
+      with memberships/affiliates). T2 plugin catalogue now: 6
+      shipped (fulfillment / ecommerce / agency-HR / memberships /
+      affiliates / agency-finance). See
+      `context/prior research/04-plugin-agency-finance.md`.
 
 ## Done — Round 5
 - [x] **T2 R5 — Affiliates plugin + ecommerce↔memberships discount
