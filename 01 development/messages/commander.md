@@ -190,3 +190,18 @@ PING messages to T1 + T3 are now redundant (they're already working) but harmles
 3. T3 R4 — Goal A (SitesPage) in flight; B + C already shipped.
 No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 [2026-05-05T10:31:00Z] SLEEP: 1500s (25 min). All three terminals active. T1 visible WIP on _registry.ts + foundation-adapters/ + next.config.ts (R6 mass wire-up underway). T3 visible WIP on themeVariants.ts (likely SitesPage Goal A). Cadence 1500s.
+
+[2026-05-05T12:45:00Z] WAKEUP: cycle 16 — autonomous. State since cycle 15 (many commits since 10:31):
+- T1 R6 fully DONE — step 2 `ae83df0` (chapter + MASTER + tasks). Foundation mass wire-up + cross-plugin event router shipped.
+- T1 R7 STARTED at 12:35Z. Plan A/B/C/D/E + Q-ASSUMED on blob-row vs per-key Postgres layout (picked blob-row for v1 to keep sync `getState()` pattern intact). Active.
+- T2 R9 fully DONE earlier (`64d9dca`, forms plugin). Last entry 04:05Z; loop dead since.
+- T3 R4 fully DONE earlier (Goal A absorbed in `64d9dca` + Goals B+C `b7d9290`). Last entry 00:22Z (WAKE 1/3); loop dead since.
+- Architecture extension chapter 19b (`04-architecture-extension-per-client-portals.md`) committed — captures Ed's per-client-portal pivot.
+- Two new queued prompts: T1 R8 milesymedia-portal stitch + T2 R11 export-to-repo + presets.
+- No Q-BLOCKED.
+
+[2026-05-05T12:45:00Z] PLAN: cycle 16 actions:
+1. REPLY to T1's 12:35Z Q-ASSUMED on Postgres blob-row layout — approved for v1, flag per-key as v2 hardening alongside RLS. Also flagged the architecture extension chapter as informational so T1 knows R8 is coming.
+2. T2 R10 (email-sender) + T3 R5 (cross-plugin renderers) prompts in inboxes; their loops are dead. Awaiting Ed re-paste — same pattern as previous cycles. Already flagged in tasks.md.
+3. No new prompts to draft. T1 R7 + T2 R10 + T3 R5 are the active rounds; T1 R8 + T2 R11 are queued for the next round.
+4. Architecture extension chapter is live; in-flight rounds (T1 R7, T2 R10, T3 R5) all stay relevant per the extension's "what does NOT change" section.
