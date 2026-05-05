@@ -1,13 +1,30 @@
 # Tasks
 
-## In progress (post-cleanup 2026-05-05T02:15Z — Ed re-engaging all three terminals)
+## In progress
 
-Active prompts at `terminal-prompts/` (all shipped prompts archived to
-`old prompts/`):
+All three terminals just received fresh prompts (R6 / R9 / R4). Prior
+rounds (T1 R5, T2 R8, T3 R3) shipped + archived to `old prompts/`.
 
-_(T1 R5 done — see `Done — Round 5` below)_
-_(T2 R8 done — see `Done — Round 8` below)_
-_(T3 R3 done — see `Done — Round 3` below)_
+- [ ] **T1 R6 — Foundation mass plugin wire-up** — prompt
+      `terminal-prompts/T1-round6-foundation-mass-wireup.md`. Six
+      goals: workspace deps + transpilePackages + side-effect-imports
+      + `_registry.ts` appends + ActivityCategory unions + cross-plugin
+      event router for the 5-6 standalone plugins (agency-HR,
+      memberships, affiliates, agency-finance, agency-marketing,
+      client-crm). After R6 the foundation is ahead of the plugin
+      catalogue again.
+- [ ] **T2 R9 — Forms plugin** — prompt
+      `terminal-prompts/T2-round9-forms-plugin.md`. Ship
+      `@aqua/plugin-forms` — cross-cutting form builder + submissions
+      store. `scopePolicy: "either"`, no hard deps. Pairs with CRM
+      (submissions → Contacts), affiliates (signup forms),
+      memberships (plan-pick wizards).
+- [ ] **T3 R4 — SitesPage + PageDetailPage + customPages backend** —
+      prompt `terminal-prompts/T3-round4-sites-and-pages.md`. Three
+      goals: (A) Lift SitesPage (3264 LOC, biggest single admin
+      page), (B) port customPages backend (separate localStorage
+      block system distinct from EditorPage), (C) lift PageDetailPage.
+      After R4 the website-editor admin surface is parity-with-`02`.
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
