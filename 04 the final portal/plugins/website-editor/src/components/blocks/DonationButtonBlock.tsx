@@ -28,13 +28,28 @@ export default function DonationButtonBlock({ block }: BlockRenderProps) {
     try {
       const amount = picked === "custom" ? Number(custom) : picked;
       if (!Number.isFinite(amount) || amount <= 0) { setBusy(false); return; }
-      const res = await fetch("/api/donations/checkout", {
+      // Route through ecommerce's Stripe checkout with a single
+      // line-item priced in cents. recurring=true is a Round-6 follow-up
+      // (needs a Stripe Price object + Subscription mode); for R5 we
+      // submit one-off charges in either case and tag the description.
+      const amountCents = Math.round(amount * 100);
+      const res = await fetch("/api/portal/ecommerce/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, currency, recurring }),
+        credentials: "include",
+        body: JSON.stringify({
+          lineItems: [{ name: recurring ? "Donation (monthly)" : "Donation", quantity: 1, priceCents: amountCents }],
+          successUrl: `${window.location.origin}/order-confirmed?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: window.location.href,
+          amountCents,
+          description: recurring ? "Recurring donation" : "Donation",
+          mode: "donation",
+          recurring,
+        }),
       });
       const data = await res.json();
-      if (data?.url) window.location.href = data.url;
+      const url = (data?.url ?? data?.redirectUrl) as string | undefined;
+      if (url) window.location.href = url;
     } finally { setBusy(false); }
   }
 

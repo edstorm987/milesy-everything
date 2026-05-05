@@ -21,9 +21,15 @@ export default function ProductSearchBlock({ block, editorMode }: BlockRenderPro
     if (timer.current) clearTimeout(timer.current);
     if (!q.trim()) { setResults([]); return; }
     timer.current = setTimeout(async () => {
-      const res = await fetch(`/api/portal/products?q=${encodeURIComponent(q)}`, { cache: "no-store" });
-      const data = await res.json();
-      setResults((data.items as CatalogProduct[]) ?? []);
+      try {
+        const res = await fetch(`/api/portal/ecommerce/products?q=${encodeURIComponent(q)}&limit=12`, {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!res.ok) { setResults([]); return; }
+        const data = await res.json();
+        setResults((data.items ?? data.products ?? []) as CatalogProduct[]);
+      } catch { setResults([]); }
     }, 200);
     return () => { if (timer.current) clearTimeout(timer.current); };
   }, [q]);
