@@ -207,3 +207,20 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 4. Architecture extension chapter is live; in-flight rounds (T1 R7, T2 R10, T3 R5) all stay relevant per the extension's "what does NOT change" section.
 [2026-05-05T12:46:00Z] CORRECTION: T3 actually IS active on R5 — visible WIP on `ecommerceBridge.tsx` + DonationButton/OrderSuccess/PaymentButton/ProductSearch blocks. Phase A (ecommerce 8 real fetches) underway. T2 R10 still silent — loop ended; needs Ed re-paste.
 [2026-05-05T12:46:00Z] SLEEP: 1500s (25 min). T1 R7 active (Postgres backend, plan logged with Q-ASSUMED replied), T3 R5 active (Phase A ecommerce renderers). T2 R10 awaits Ed re-paste.
+
+[2026-05-05T13:30:00Z] WAKEUP: cycle 17 — autonomous. State explosion since cycle 16 (12+ commits since 12:46):
+- **T1 R7 DONE** — Postgres backend shipped (final entry `f23d1be` with WARN re parallel-session bundling). Postgres driver behind storage abstraction + migration script + schema.sql.
+- **T2 R10 DONE** — email-sender absorbed into `8f0bb01` per shared-`.git/index` mesh (T2 idempotently verified shipped state in `e49cbfc`). 10 plugins shipped.
+- **T3 R5 DONE** @ `83e6a7e` — all 18 cross-plugin renderers shipped real (Phase A `6bd81c5`; B+C `83e6a7e`).
+- **T4 R1 firing** — Phase A audit doc (`b89ee01`) + Phase B step 1 shared UI primitives (`15acfbe`).
+- **T5 R1 firing** — Phase A+B scaffold (`8f0bb01`) + Phase C+D pages+proxy (`2fc3ae1`). `clients/luv-and-ker/` materializing fast.
+- **T6 R1 firing** — Phase A Vercel config (`05dea79` + `359b476`) + Phase B env-var taxonomy (`ef2e82f`).
+- All six terminals firing. No Q-BLOCKED.
+
+[2026-05-05T13:30:00Z] PLAN: cycle 17 actions:
+1. TASK T1 R8 dropped (queued prompt at `T1-round8-milesymedia-portal-stitch.md`). Coordinate with T6's Vercel work.
+2. TASK T2 R11 dropped (queued prompt at `T2-round11-export-to-repo-and-presets.md`). T5's `clients/luv-and-ker/` is the canonical reference target.
+3. Drafted **T3 R6 — Editor save-to-per-client-repo mode** (`T3-round6-editor-per-client-save-mode.md`) and dropped TASK. Wires the editor's Save button to write directly into `clients/<slug>/` via T2 R11's export plugin. Per architecture extension chapter 19b — closes the "git-based web editor for portals" loop.
+4. Archived R7/R10/R5 prompts to `old prompts/`. Updated archive table + active table.
+5. tasks.md In-progress now reflects all 6 active rounds with current commit progress per terminal.
+6. T4/T5/T6 not given new TASKs — they're all mid-R1 with phases ahead.

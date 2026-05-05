@@ -2,28 +2,40 @@
 
 ## In progress
 
-Three new prompts just dropped (R7 / R10 / R5) — prior rounds R6/R9/R4
-shipped + archived.
+Six terminals firing. T1 R7 + T2 R10 + T3 R5 all DONE; new TASKs
+dropped for T1 R8 + T2 R11 + T3 R6. T4/T5/T6 still on R1.
 
-_(T1 R7 done — see `Done — Round 7` below)_
-_(T2 R10 done — see `Done — Round 10` below.)_
-_(T3 R5 done — see `Done — Round 5` below)_
+- [ ] **T1 R8 — milesymedia ↔ portal stitch** — prompt
+      `terminal-prompts/T1-round8-milesymedia-portal-stitch.md`.
+      Stitch milesymedia + Aqua portal as ONE surface (localhost +
+      Vercel). Coordinate with T6's Vercel monorepo work.
+- [ ] **T2 R11 — Export-to-repo + presets** — prompt
+      `terminal-prompts/T2-round11-export-to-repo-and-presets.md`.
+      `@aqua/plugin-portal-export` materializes Live clients into
+      `clients/<slug>/`. 4 starter presets. T5's Luv & Ker portal
+      is the canonical reference target.
+- [ ] **T3 R6 — Editor save-to-per-client-repo** — prompt
+      `terminal-prompts/T3-round6-editor-per-client-save-mode.md`.
+      Editor Save writes to `clients/<slug>/` for Live clients via
+      T2 R11's export plugin. Save-target toggle, branching pipeline,
+      diff preview, GitStatusPage.
 - [ ] **T4 R1 — UX + accessibility polish** — prompt
       `terminal-prompts/T4-round1-ux-accessibility-polish.md`.
-      Comprehensive pass across the entire surface — loading / empty
-      / error states, focus rings, keyboard nav, ARIA, color contrast,
-      mobile responsive, visual regression smoke. Shared UI primitives
-      at `portal/src/components/ui/*`.
-- [ ] **T5 R1 — Luv & Ker portal** — prompt
-      `terminal-prompts/T5-round1-luv-and-ker-portal.md`. Build
-      Felicia's actual `clients/luv-and-ker/` portal as the canonical
-      reference target for T2 R11's generator. Branded Next.js shell
-      + plugin workspace deps + API proxy back to milesymedia.com.
+      Phase A audit (`b89ee01`) + Phase B step 1 shared UI primitives
+      (`15acfbe`) shipped. B/C/D/E ahead.
+- [x] **T5 R1 — Luv & Ker portal** — DONE. Phase A+B scaffold
+      (`8f0bb01`) + Phase C+D pages+proxy (`2fc3ae1`) + Phase E smoke
+      pass + dev-default upstream + 502 fallback + chapter
+      `04-client-portal-luv-and-ker.md` + MASTER row #43. `clients/luv-and-ker/`
+      boots `npm run dev -p 4040` clean; tsc clean; storefront landing,
+      branded login, iframe-able embed login, gated /account|/orders|/affiliates
+      (redirects to /login when unauth), shop with placeholder fallback,
+      proxy round-trips to localhost:3030 (or PORTAL_API_ORIGIN) — all 200/3xx
+      as expected. Ready for T2 R11's generator to reverse-engineer.
 - [ ] **T6 R1 — Deployment + domains + observability** — prompt
       `terminal-prompts/T6-round1-deployment-domains-observability.md`.
-      Vercel monorepo project config + env-var taxonomy + custom-domain
-      attach (lift from `02`) + observability layer (Sentry / Vercel
-      Analytics + per-tenant breadcrumbs).
+      Phase A Vercel monorepo (`05dea79` + `359b476`) + Phase B
+      env-var taxonomy (`ef2e82f`) shipped. C/D/E ahead.
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded

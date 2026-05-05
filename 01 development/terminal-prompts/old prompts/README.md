@@ -28,7 +28,10 @@ edit history through the rename.
 | `T3-website-editor.md` | T3 | R1 | `39d00c5` |
 | `T3-round2-block-uis.md` | T3 | R2 | `079a666` |
 | `T3-round3-admin-and-renderers.md` | T3 | R3 | `6b5becf` + `db3681a` |
+| `T1-round7-postgres-backend.md` | T1 | R7 | `f23d1be` (DONE log) |
+| `T2-round10-email-sender.md` | T2 | R10 | `8f0bb01` (absorbed) + `e49cbfc` (log) |
 | `T3-round4-sites-and-pages.md` | T3 | R4 | `b7d9290` + `64d9dca` (Goal A absorbed) |
+| `T3-round5-cross-plugin-block-renderers.md` | T3 | R5 | `83e6a7e` |
 
 T1 R3 (`29bd49a` "T1 R3: three plugins live") shipped without a
 dedicated round prompt — TASK was inlined into the orchestrator's

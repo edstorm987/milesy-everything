@@ -47,9 +47,9 @@ When done:
 
 | Terminal | Prompt | Goal |
 |----------|--------|------|
-| **T1 → R7** | [T1-round7-postgres-backend.md](T1-round7-postgres-backend.md) | Swap file backend → Postgres for production. Architecture §13 parked v1-required. Five goals: Postgres driver behind storage abstraction (single `portal_kv` JSONB table) + migration script + connection pooling + RLS scoping defense + smoke against both backends. `DATABASE_URL` unset → file backend stays default for dev. |
-| **T2 → R10** | [T2-round10-email-sender.md](T2-round10-email-sender.md) | Ship `@aqua/plugin-email-sender` — cross-cutting delivery engine for all other plugins (agency-marketing templates, forms notifications, memberships welcome, affiliates payout, end-customer signup confirmations). Postmark + no-op driver for v1. `scopePolicy: "agency"`. After R10 T2 has shipped 10 plugins. |
-| **T3 → R5** | [T3-round5-cross-plugin-block-renderers.md](T3-round5-cross-plugin-block-renderers.md) | Real React components for the 18 cross-plugin storefront blocks (ecommerce 8 + memberships 3 + affiliates 3 + forms 1 + CRM 1 + donation-button). Replaces the stubs from R3 with real fetches against each plugin's API namespace. |
+| **T1 → R8** | [T1-round8-milesymedia-portal-stitch.md](T1-round8-milesymedia-portal-stitch.md) | Stitch milesymedia + Aqua portal as ONE surface (localhost + Vercel). milesymedia.com is the front door, portal lives at `/portal/*` same origin. Files separate in repo, stitched at edge. Coordinate with T6's Vercel monorepo work. |
+| **T2 → R11** | [T2-round11-export-to-repo-and-presets.md](T2-round11-export-to-repo-and-presets.md) | Ship `@aqua/plugin-portal-export` — generator that materializes a Live client's content into `clients/<slug>/` as a self-contained Next.js app. 4 starter presets (skincare-brand / service-portal / membership-only / affiliate-only). T5's Luv & Ker portal is the canonical reference target. |
+| **T3 → R6** | [T3-round6-editor-per-client-save-mode.md](T3-round6-editor-per-client-save-mode.md) | Editor's Save button writes to `clients/<slug>/` for Live clients via T2 R11's export plugin. Save-target toggle, branching pipeline, diff preview, GitStatusPage. New optional ports (PortalExportPort, GitOpsPort) — graceful degradation when missing. |
 | **T4 → R1** | [T4-round1-ux-accessibility-polish.md](T4-round1-ux-accessibility-polish.md) | UX + accessibility pass across the entire surface — loading / empty / error states, focus rings, keyboard nav, ARIA, color contrast, mobile responsive, visual regression smoke. Shared UI primitives at `portal/src/components/ui/*`. |
 | **T5 → R1** | [T5-round1-luv-and-ker-portal.md](T5-round1-luv-and-ker-portal.md) | Build Felicia's actual `clients/luv-and-ker/` portal — the canonical reference target for T2 R11's generator. Branded Next.js shell + plugin workspace deps + API proxy back to milesymedia.com for auth + storage. |
 | **T6 → R1** | [T6-round1-deployment-domains-observability.md](T6-round1-deployment-domains-observability.md) | Production infrastructure: Vercel monorepo project config + env-var taxonomy + custom-domain attach (lift from `02`) + observability layer (Sentry / Vercel Analytics + per-tenant breadcrumbs). |
@@ -59,13 +59,6 @@ When done:
 | Role | Prompt | Goal |
 |------|--------|------|
 | **Chief commander** | [orchestrator-init.md](orchestrator-init.md) | Spawns the autonomous chief-commander session. Reads mesh state, replies to terminal questions, drafts new-round prompts, schedules itself via `/loop` + `ScheduleWakeup`. Full protocol in `../orchestrator.md`. |
-
-## Queued (drafted ahead — paste when current round hits DONE)
-
-| Terminal | Prompt | Trigger |
-|----------|--------|---------|
-| **T1 → R8** | [T1-round8-milesymedia-portal-stitch.md](T1-round8-milesymedia-portal-stitch.md) | Paste once T1 R7 (Postgres) hits DONE. Stitch milesymedia + Aqua portal as ONE surface (localhost + Vercel). milesymedia.com is the front door, portal lives at `/portal/*` same origin. Files separate in repo, stitched at edge. Per architecture extension chapter 19b. |
-| **T2 → R11** | [T2-round11-export-to-repo-and-presets.md](T2-round11-export-to-repo-and-presets.md) | Paste once T2 R10 (email-sender) hits DONE. Ship `@aqua/plugin-portal-export` — generator that materializes a Live client's content into `clients/<slug>/` as a self-contained Next.js app. 4 starter presets (skincare-brand / service-portal / membership-only / affiliate-only). Per architecture extension chapter 19b. |
 
 ## Archive
 
