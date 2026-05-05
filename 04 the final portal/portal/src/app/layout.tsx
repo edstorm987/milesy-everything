@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { SkipToContent } from "@/components/ui/SkipToContent";
 
 export const metadata: Metadata = {
   title: "Aqua portal",
@@ -10,7 +11,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SkipToContent />
+        {children}
+      </body>
     </html>
   );
 }

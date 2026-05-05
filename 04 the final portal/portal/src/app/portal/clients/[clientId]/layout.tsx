@@ -16,6 +16,7 @@ import { buildSidebar } from "@/lib/chrome/sidebarLayout";
 import { ThemeInjector } from "@/components/chrome/ThemeInjector";
 import { Sidebar } from "@/components/chrome/Sidebar";
 import { Topbar } from "@/components/chrome/Topbar";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 export default async function ClientLayout({
   children,
@@ -62,7 +63,9 @@ export default async function ClientLayout({
             role={session.role}
             email={session.email}
           />
-          <main className="flex-1 px-8 py-6">{children}</main>
+          <main id="main-content" className="flex-1 px-8 py-6">
+            <ErrorBoundary label={`${client.name} workspace`}>{children}</ErrorBoundary>
+          </main>
         </div>
       </div>
     </>

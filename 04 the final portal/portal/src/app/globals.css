@@ -25,3 +25,59 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--brand-font-heading);
 }
+
+/* ─────────── Accessibility · global focus ring ─────────────────────────
+   Every interactive element gets a visible 2px brand-coloured ring on
+   keyboard focus. Mouse users keep the no-ring behaviour because we use
+   :focus-visible (not :focus). Plugins inherit this for free — no per-
+   plugin focus styling needed.
+
+   Falls back to currentColor when --brand-accent isn't injected (so the
+   public marketing page + login also light up). */
+:where(a, button, input, select, textarea, [tabindex]:not([tabindex='-1'])):focus-visible {
+  outline: 2px solid var(--brand-accent, currentColor);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Hide visually but keep accessible to screen readers. */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Show only when focused (used by SkipToContent). */
+.focus-visible\:not-sr-only:focus-visible {
+  position: static !important;
+  width: auto; height: auto;
+  padding: revert; margin: revert;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Inline-skeleton keyframes — used by storefront blocks rendering
+   outside Tailwind's reach (they apply `animation: aqua-pulse ...`
+   inline). Mirrors Tailwind's animate-pulse for parity. */
+@keyframes aqua-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Reduced-motion respect — kill the pulse animation when the user
+   has prefers-reduced-motion set. Tailwind's animate-pulse already
+   honours this, but our inline-keyframes class needs an explicit
+   override. */
+@media (prefers-reduced-motion: reduce) {
+  .aqua-skeleton, [style*="aqua-pulse"] {
+    animation: none !important;
+  }
+  .animate-pulse {
+    animation: none !important;
+  }
+}
