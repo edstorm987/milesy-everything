@@ -18,9 +18,25 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 - [ ] **T5 R2 — Second per-client portal** — coaching/membership
       industry, slim plugin set (no ecommerce/affiliates). Validates
       multi-client variation for T2 R11's generator.
-- [ ] **T6 R2 — Real deploy + custom domains** — operator runbook +
-      Vercel domain-attach client (lift from `02`) +
-      `@aqua/plugin-domains` admin UI + end-to-end smoke.
+- [x] **T6 R2 — Real deploy + custom domains** — DONE. Phase A
+      operator runbook (`2f93a18`) + Phase B foundation Vercel
+      client + CLI helper + 11/11 mock smoke (`b61f587`) + Phase C
+      DNS-verify polling badge (`14c5b2a`) + Phase D chapter +
+      MASTER row #50 + this row done. `01 development/runbooks/deploy.md`
+      is the operator-facing ship doc (10 sections incl. custom-
+      domain runbook + rollback). Foundation Vercel client at
+      `portal/src/lib/server/vercelDomain.{ts,impl.ts}` (server-only
+      re-export over plain-JS impl so the smoke runs via tsx). CLI
+      helper `scripts/attach-domain.mjs` mirrors the same surface
+      as pure JS. `@aqua/plugin-domains` admin badge auto-polls
+      `/verify` every 30s up to 5 min — flips Pending → Active or
+      Failed without manual re-check. tsc clean. Real-creds smoke
+      against a sandbox Vercel project deferred (no token in the
+      autonomous loop; manual runbook in chapter §3f).
+      R3 candidates: real-creds smoke run + bake into deploy.md,
+      foundation-plugin client dedup, `scripts/stitch-rewrites.json`
+      single source-of-truth (per T1 R8 §9), polling refinements,
+      demo cron wiring.
 - [x] **T4 R1 — UX + accessibility polish** — DONE. Phase A audit
       (`b89ee01`) + Phase B step 1 shared UI primitives + a11y hooks +
       layout adoption (`15acfbe`) + Phase B step 2 plugin-admin
