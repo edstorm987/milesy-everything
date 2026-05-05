@@ -22,10 +22,15 @@ interface LeaderboardRow {
 export default function AffiliateLeaderboardBlock({ block, editorMode }: BlockRenderProps) {
   const limit = (block.props.limit as number | undefined) ?? 10;
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
+  const [loading, setLoading] = useState(!editorMode);
+  const [error, setError] = useState<string | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
 
   useEffect(() => {
     if (editorMode) return;
     let cancelled = false;
+    setLoading(true);
+    setError(null);
     // Q-ASSUMED (R5): T2's @aqua/plugin-affiliates doesn't yet expose
     // a /leaderboard endpoint. The block degrades gracefully when 404
     // — empty state with a placeholder. T2 R10 follow-up: add
@@ -34,11 +39,16 @@ export default function AffiliateLeaderboardBlock({ block, editorMode }: BlockRe
       cache: "no-store",
       credentials: "include",
     })
-      .then(r => r.ok ? r.json() as Promise<{ rows?: LeaderboardRow[] }> : { rows: [] })
+      .then(async r => {
+        if (r.status === 404) return { rows: [] as LeaderboardRow[] };
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json() as Promise<{ rows?: LeaderboardRow[] }>;
+      })
       .then(data => { if (!cancelled) setRows(data.rows ?? []); })
-      .catch(() => { /* silent — affiliates plugin not installed */ });
+      .catch(e => { if (!cancelled) setError(e instanceof Error ? e.message : "Network error"); })
+      .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [editorMode, limit]);
+  }, [editorMode, limit, retryNonce]);
 
   const containerStyle: React.CSSProperties = {
     padding: 24,
@@ -49,11 +59,29 @@ export default function AffiliateLeaderboardBlock({ block, editorMode }: BlockRe
   };
 
   return (
-    <section data-block-type="affiliate-leaderboard" style={containerStyle}>
-      <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--brand-orange, #ff6b35)", margin: "0 0 8px" }}>
+    <section data-block-type="affiliate-leaderboard" aria-label="Top affiliates leaderboard" style={containerStyle}>
+      <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--brand-accent, #ff6b35)", margin: "0 0 8px" }}>
         Top affiliates
       </p>
-      {rows.length === 0 ? (
+      {loading ? (
+        <div role="status" aria-live="polite" aria-busy="true" style={{ display: "flex", flexDirection: "column", gap: 8, padding: "12px 0", position: "relative" }}>
+          <span style={{ position: "absolute", left: -9999, width: 1, height: 1 }}>Loading leaderboard</span>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ height: 24, background: "rgba(255,255,255,0.05)", borderRadius: 6, animation: "aqua-pulse 1.6s ease-in-out infinite" }} aria-hidden />
+          ))}
+        </div>
+      ) : error ? (
+        <div role="alert" style={{ padding: "16px 0", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+          <p style={{ fontSize: 13, color: "#fca5a5", margin: 0 }}>Couldn&apos;t load the leaderboard.</p>
+          <button
+            type="button"
+            onClick={() => setRetryNonce(n => n + 1)}
+            style={{ minHeight: 36, padding: "8px 16px", fontSize: 13, fontWeight: 500, borderRadius: 8, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "inherit", cursor: "pointer" }}
+          >
+            Retry
+          </button>
+        </div>
+      ) : rows.length === 0 ? (
         <p style={{ fontSize: 13, opacity: 0.6, margin: 0, padding: "16px 0" }}>
           {editorMode ? "Leaderboard rows render here when published" : "No data yet — be the first!"}
         </p>

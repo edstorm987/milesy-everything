@@ -35,7 +35,7 @@ export default function FeatureGridBlock({ block }: BlockRenderProps) {
               {f.icon && (
                 <div style={{
                   fontSize: 28, marginBottom: 12,
-                  color: "var(--brand-orange, #ff6b35)",
+                  color: "var(--brand-accent, #ff6b35)",
                 }}>
                   {f.icon}
                 </div>

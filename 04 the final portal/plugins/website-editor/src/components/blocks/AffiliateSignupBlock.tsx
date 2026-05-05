@@ -84,45 +84,57 @@ export default function AffiliateSignupBlock({ block, editorMode }: BlockRenderP
       <p style={{ fontSize: 13, opacity: 0.65, margin: "0 0 20px", textAlign: "center" }}>
         Sign up below — we'll send your referral link to your inbox.
       </p>
-      <form onSubmit={handleSubmit} style={{ maxWidth: 380, margin: "0 auto", display: "grid", gap: 10 }}>
-        <input
-          name="name"
-          type="text"
-          required
-          placeholder="Your name"
-          disabled={editorMode || submitting}
-          style={{
-            padding: "10px 14px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.05)",
-            color: "inherit",
-            fontSize: 14,
-          }}
-        />
-        <input
-          name="email"
-          type="email"
-          required
-          placeholder="you@example.com"
-          disabled={editorMode || submitting}
-          style={{
-            padding: "10px 14px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.05)",
-            color: "inherit",
-            fontSize: 14,
-          }}
-        />
+      <form onSubmit={handleSubmit} aria-label="Affiliate enrolment" style={{ maxWidth: 380, margin: "0 auto", display: "grid", gap: 10 }}>
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ position: "absolute", left: -9999, width: 1, height: 1 }}>Your name</span>
+          <input
+            name="name"
+            type="text"
+            required
+            autoComplete="name"
+            placeholder="Your name"
+            disabled={editorMode || submitting}
+            style={{
+              minHeight: 44,
+              padding: "10px 14px",
+              borderRadius: 10,
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.05)",
+              color: "inherit",
+              fontSize: 14,
+            }}
+          />
+        </label>
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ position: "absolute", left: -9999, width: 1, height: 1 }}>Email address</span>
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="you@example.com"
+            disabled={editorMode || submitting}
+            aria-invalid={error ? true : undefined}
+            style={{
+              minHeight: 44,
+              padding: "10px 14px",
+              borderRadius: 10,
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.05)",
+              color: "inherit",
+              fontSize: 14,
+            }}
+          />
+        </label>
         <button
           type="submit"
           disabled={editorMode || submitting}
           style={{
+            minHeight: 44,
             padding: "12px 20px",
             borderRadius: 10,
             border: "none",
-            background: "var(--brand-orange, #ff6b35)",
+            background: "var(--brand-accent, #ff6b35)",
             color: "#fff",
             fontSize: 14,
             fontWeight: 600,
@@ -132,7 +144,7 @@ export default function AffiliateSignupBlock({ block, editorMode }: BlockRenderP
         >
           {submitting ? "Enrolling…" : "Become an affiliate"}
         </button>
-        {error && <p style={{ fontSize: 12, color: "#ef4444", textAlign: "center", margin: 0 }}>{error}</p>}
+        {error && <p role="alert" style={{ fontSize: 12, color: "#ef4444", textAlign: "center", margin: 0 }}>{error}</p>}
       </form>
     </section>
   );

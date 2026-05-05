@@ -33,7 +33,7 @@ export default function TimelineBlock({ block }: BlockRenderProps) {
               <div style={{
                 position: "absolute", left: -28, top: 4,
                 width: 18, height: 18, borderRadius: "50%",
-                background: "var(--brand-orange, #ff6b35)",
+                background: "var(--brand-accent, #ff6b35)",
                 border: "3px solid #0a0a0a",
               }} />
               <p style={{ fontSize: 11, opacity: 0.55, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 }}>

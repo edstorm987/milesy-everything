@@ -68,7 +68,7 @@ export default function VariantPickerBlock({ block, editorMode }: BlockRenderPro
           data-portal-add-to-cart={handle}
           data-variant-id={resolved?.variant?.id ?? ""}
           data-custom-hex={resolved?.customHex ?? ""}
-          style={{ marginTop: 12, padding: "12px 20px", borderRadius: 12, border: "none", background: "var(--brand-orange, #ff6b35)", color: "#fff", fontSize: 14, fontWeight: 600, cursor: editorMode ? "default" : "pointer", width: "100%" }}
+          style={{ marginTop: 12, padding: "12px 20px", borderRadius: 12, border: "none", background: "var(--brand-accent, #ff6b35)", color: "#fff", fontSize: 14, fontWeight: 600, cursor: editorMode ? "default" : "pointer", width: "100%" }}
         >
           {ctaLabel}
         </button>

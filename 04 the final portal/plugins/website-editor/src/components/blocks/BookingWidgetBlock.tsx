@@ -177,7 +177,7 @@ export default function BookingWidgetBlock({ block }: BlockRenderProps) {
             <span key={s} style={{
               padding: "4px 10px",
               borderRadius: 999,
-              background: step === s ? "var(--brand-orange, #ff6b35)" : "rgba(255,255,255,0.05)",
+              background: step === s ? "var(--brand-accent, #ff6b35)" : "rgba(255,255,255,0.05)",
               color: step === s ? "#fff" : "inherit",
             }}>
               {i + 1}. {s}
@@ -303,7 +303,7 @@ export default function BookingWidgetBlock({ block }: BlockRenderProps) {
                   flex: 1,
                   padding: "10px 18px",
                   borderRadius: 10,
-                  background: "var(--brand-orange, #ff6b35)",
+                  background: "var(--brand-accent, #ff6b35)",
                   color: "#fff",
                   fontSize: 14, fontWeight: 600,
                   border: "none",
@@ -360,8 +360,8 @@ function pillStyle(active: boolean): React.CSSProperties {
     padding: "6px 12px",
     borderRadius: 999,
     border: "1px solid",
-    borderColor: active ? "var(--brand-orange, #ff6b35)" : "rgba(255,255,255,0.15)",
-    background: active ? "var(--brand-orange, #ff6b35)" : "transparent",
+    borderColor: active ? "var(--brand-accent, #ff6b35)" : "rgba(255,255,255,0.15)",
+    background: active ? "var(--brand-accent, #ff6b35)" : "transparent",
     color: active ? "#fff" : "inherit",
     fontSize: 12,
     cursor: "pointer",

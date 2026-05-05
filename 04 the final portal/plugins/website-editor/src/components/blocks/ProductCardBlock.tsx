@@ -48,7 +48,7 @@ export default function ProductCardBlock({ block, editorMode }: BlockRenderProps
           : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, opacity: 0.4 }}>{loading && handle && !editorMode ? "Loading…" : "Product image"}</div>
         }
         {product?.onSale && (
-          <span style={{ position: "absolute", top: 8, left: 8, background: "var(--brand-orange, #ff6b35)", color: "#fff", fontSize: 10, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>SALE</span>
+          <span style={{ position: "absolute", top: 8, left: 8, background: "var(--brand-accent, #ff6b35)", color: "#fff", fontSize: 10, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>SALE</span>
         )}
       </a>
       <div>
@@ -58,7 +58,7 @@ export default function ProductCardBlock({ block, editorMode }: BlockRenderProps
         {product?.tagline && <p style={{ fontSize: 11, opacity: 0.6, margin: "0 0 4px" }}>{product.tagline}</p>}
         <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>
           {product?.onSale && product.salePrice
-            ? <><span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: 6 }}>{formatPrice(product.price)}</span><span style={{ color: "var(--brand-orange, #ff6b35)", fontWeight: 600 }}>{price}</span></>
+            ? <><span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: 6 }}>{formatPrice(product.price)}</span><span style={{ color: "var(--brand-accent, #ff6b35)", fontWeight: 600 }}>{price}</span></>
             : price}
         </p>
       </div>
@@ -66,7 +66,7 @@ export default function ProductCardBlock({ block, editorMode }: BlockRenderProps
         type="button"
         data-portal-add-to-cart={handle}
         disabled={!handle}
-        style={{ padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand-orange, #ff6b35)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: handle ? "pointer" : "not-allowed", opacity: handle ? 1 : 0.5 }}
+        style={{ padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand-accent, #ff6b35)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: handle ? "pointer" : "not-allowed", opacity: handle ? 1 : 0.5 }}
       >
         {ctaLabel}
       </button>

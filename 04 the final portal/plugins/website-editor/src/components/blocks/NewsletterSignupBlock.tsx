@@ -41,7 +41,7 @@ export default function NewsletterSignupBlock({ block }: BlockRenderProps) {
         <h2 style={{ fontFamily: "var(--font-playfair, Georgia, serif)", fontSize: 28, fontWeight: 700, marginBottom: 8 }}>{heading}</h2>
         {subheading && <p style={{ opacity: 0.65, fontSize: 14, marginBottom: 24 }}>{subheading}</p>}
         {done ? (
-          <p style={{ fontSize: 15, color: "var(--brand-orange, #ff6b35)" }}>✓ {successMessage}</p>
+          <p style={{ fontSize: 15, color: "var(--brand-accent, #ff6b35)" }}>✓ {successMessage}</p>
         ) : (
           <form onSubmit={submit} style={{ display: "flex", gap: 8, maxWidth: 420, margin: "0 auto" }}>
             <input
@@ -66,7 +66,7 @@ export default function NewsletterSignupBlock({ block }: BlockRenderProps) {
               style={{
                 padding: "10px 18px",
                 borderRadius: 10,
-                background: "var(--brand-orange, #ff6b35)",
+                background: "var(--brand-accent, #ff6b35)",
                 color: "#fff",
                 fontSize: 14, fontWeight: 600,
                 border: "none",

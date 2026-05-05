@@ -48,7 +48,7 @@ export default function NavbarBlock({ block }: BlockRenderProps) {
         ))}
       </ul>
       {ctaLabel && (
-        <a href={ctaHref} style={{ padding: "8px 16px", borderRadius: 8, background: "var(--brand-orange, #ff6b35)", color: "#fff", fontSize: 13, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+        <a href={ctaHref} style={{ padding: "8px 16px", borderRadius: 8, background: "var(--brand-accent, #ff6b35)", color: "#fff", fontSize: 13, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
           {ctaLabel}
         </a>
       )}

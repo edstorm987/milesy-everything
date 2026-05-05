@@ -88,7 +88,7 @@ export default function ContactFormBlock({ block }: BlockRenderProps) {
             style={{
               padding: "12px 20px",
               borderRadius: 10,
-              background: "var(--brand-orange, #ff6b35)",
+              background: "var(--brand-accent, #ff6b35)",
               color: "#fff",
               fontSize: 14, fontWeight: 600,
               border: "none",

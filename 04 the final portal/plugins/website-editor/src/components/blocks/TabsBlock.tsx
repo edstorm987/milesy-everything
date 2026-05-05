@@ -31,7 +31,7 @@ export default function TabsBlock({ block }: BlockRenderProps) {
                 padding: "10px 16px",
                 background: "transparent",
                 border: "none",
-                borderBottom: i === active ? "2px solid var(--brand-orange, #ff6b35)" : "2px solid transparent",
+                borderBottom: i === active ? "2px solid var(--brand-accent, #ff6b35)" : "2px solid transparent",
                 color: i === active ? "inherit" : "rgba(255,255,255,0.55)",
                 fontSize: 13,
                 fontWeight: i === active ? 600 : 400,

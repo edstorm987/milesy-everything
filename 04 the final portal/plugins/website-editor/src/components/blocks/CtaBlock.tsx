@@ -12,7 +12,7 @@ export default function CtaBlock({ block }: BlockRenderProps) {
   const style: React.CSSProperties = {
     width: "100%",
     padding: "64px 32px",
-    background: "linear-gradient(135deg, var(--brand-orange, #ff6b35) 0%, #ff9a5a 100%)",
+    background: "linear-gradient(135deg, var(--brand-accent, #ff6b35) 0%, #ff9a5a 100%)",
     color: "#fff",
     borderRadius: 16,
     textAlign: "center",

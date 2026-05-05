@@ -55,7 +55,7 @@ export default function MemberGateBlock({ block, renderChildren }: BlockRenderPr
             display: "inline-block",
             padding: "10px 18px",
             borderRadius: 10,
-            background: "var(--brand-orange, #ff6b35)",
+            background: "var(--brand-accent, #ff6b35)",
             color: "#fff",
             fontSize: 14, fontWeight: 600,
             textDecoration: "none",

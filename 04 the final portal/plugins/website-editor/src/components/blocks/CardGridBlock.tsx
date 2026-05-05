@@ -65,7 +65,7 @@ export default function CardGridBlock({ block }: BlockRenderProps) {
                     style={{
                       marginTop: 12,
                       fontSize: 13,
-                      color: "var(--brand-orange, #ff6b35)",
+                      color: "var(--brand-accent, #ff6b35)",
                       textDecoration: "none",
                       fontWeight: 600,
                     }}

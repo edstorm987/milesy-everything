@@ -78,7 +78,7 @@ export default function CartSummaryBlock({ block, editorMode }: BlockRenderProps
         <span style={{ fontSize: 18, fontWeight: 700 }}>{formatPrice(editorMode && previewItems[0]?.id === "demo" ? 25 : subtotal)}</span>
       </div>
       {!editorMode && previewItems.length > 0 && (
-        <a href="/checkout" style={{ marginTop: 16, display: "block", textAlign: "center", padding: "12px 20px", borderRadius: 12, background: "var(--brand-orange, #ff6b35)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+        <a href="/checkout" style={{ marginTop: 16, display: "block", textAlign: "center", padding: "12px 20px", borderRadius: 12, background: "var(--brand-accent, #ff6b35)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
           Checkout →
         </a>
       )}

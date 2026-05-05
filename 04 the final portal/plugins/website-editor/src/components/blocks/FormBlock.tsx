@@ -41,7 +41,7 @@ export default function FormBlock({ block }: BlockRenderProps) {
             }
           </label>
         ))}
-        <button type="submit" style={{ marginTop: 8, padding: "12px 20px", borderRadius: 12, border: "none", background: "var(--brand-orange, #ff6b35)", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+        <button type="submit" style={{ marginTop: 8, padding: "12px 20px", borderRadius: 12, border: "none", background: "var(--brand-accent, #ff6b35)", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
           {submitLabel}
         </button>
       </form>

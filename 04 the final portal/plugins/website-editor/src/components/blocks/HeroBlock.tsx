@@ -30,7 +30,7 @@ export default function HeroBlock({ block }: BlockRenderProps) {
     <section data-block-type="hero" style={style}>
       <div style={{ maxWidth: 800 }}>
         {eyebrow && (
-          <p style={{ textTransform: "uppercase", letterSpacing: "0.28em", fontSize: 11, opacity: 0.75, marginBottom: 16, color: "var(--brand-orange, #ff6b35)" }}>
+          <p style={{ textTransform: "uppercase", letterSpacing: "0.28em", fontSize: 11, opacity: 0.75, marginBottom: 16, color: "var(--brand-accent, #ff6b35)" }}>
             {eyebrow}
           </p>
         )}
@@ -45,7 +45,7 @@ export default function HeroBlock({ block }: BlockRenderProps) {
           </p>
         )}
         {ctaLabel && (
-          <a href={ctaHref} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 24px", borderRadius: 12, background: "var(--brand-orange, #ff6b35)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+          <a href={ctaHref} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 24px", borderRadius: 12, background: "var(--brand-accent, #ff6b35)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
             {ctaLabel}
             <span aria-hidden="true">→</span>
           </a>

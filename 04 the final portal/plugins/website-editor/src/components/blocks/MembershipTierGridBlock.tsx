@@ -85,7 +85,7 @@ export default function MembershipTierGridBlock({ block, editorMode }: BlockRend
             }}
           >
             {isHighlight && (
-              <p style={{ margin: "0 0 8px", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--brand-orange, #ff6b35)" }}>
+              <p style={{ margin: "0 0 8px", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--brand-accent, #ff6b35)" }}>
                 Most popular
               </p>
             )}
@@ -110,7 +110,7 @@ export default function MembershipTierGridBlock({ block, editorMode }: BlockRend
                 display: "block",
                 padding: "12px 20px",
                 borderRadius: 10,
-                background: isHighlight ? "var(--brand-orange, #ff6b35)" : "rgba(255,255,255,0.06)",
+                background: isHighlight ? "var(--brand-accent, #ff6b35)" : "rgba(255,255,255,0.06)",
                 color: isHighlight ? "#fff" : "rgba(255,255,255,0.85)",
                 fontSize: 14,
                 fontWeight: 600,

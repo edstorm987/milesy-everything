@@ -93,18 +93,20 @@ export default function MembershipSignupBlock({ block, editorMode }: BlockRender
   };
 
   return (
-    <section data-block-type="membership-signup" style={containerStyle}>
+    <section data-block-type="membership-signup" aria-label="Membership plans" style={containerStyle}>
       {showAnnual && plans.length > 0 && (
-        <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center", gap: 8, marginBottom: 12 }}>
+        <div role="group" aria-label="Billing period" style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center", gap: 8, marginBottom: 12 }}>
           <button
             type="button"
             onClick={() => setBillingPeriod("monthly")}
             disabled={editorMode}
+            aria-pressed={billingPeriod === "monthly"}
             style={{
-              padding: "6px 12px",
+              minHeight: 36,
+              padding: "8px 16px",
               borderRadius: 6,
               border: "none",
-              background: billingPeriod === "monthly" ? "var(--brand-orange, #ff6b35)" : "rgba(255,255,255,0.05)",
+              background: billingPeriod === "monthly" ? "var(--brand-accent, #ff6b35)" : "rgba(255,255,255,0.05)",
               color: billingPeriod === "monthly" ? "#fff" : "rgba(255,255,255,0.7)",
               fontSize: 12,
               cursor: editorMode ? "default" : "pointer",
@@ -114,11 +116,13 @@ export default function MembershipSignupBlock({ block, editorMode }: BlockRender
             type="button"
             onClick={() => setBillingPeriod("annual")}
             disabled={editorMode}
+            aria-pressed={billingPeriod === "annual"}
             style={{
-              padding: "6px 12px",
+              minHeight: 36,
+              padding: "8px 16px",
               borderRadius: 6,
               border: "none",
-              background: billingPeriod === "annual" ? "var(--brand-orange, #ff6b35)" : "rgba(255,255,255,0.05)",
+              background: billingPeriod === "annual" ? "var(--brand-accent, #ff6b35)" : "rgba(255,255,255,0.05)",
               color: billingPeriod === "annual" ? "#fff" : "rgba(255,255,255,0.7)",
               fontSize: 12,
               cursor: editorMode ? "default" : "pointer",
@@ -127,21 +131,26 @@ export default function MembershipSignupBlock({ block, editorMode }: BlockRender
         </div>
       )}
       {submitError && (
-        <div style={{ gridColumn: "1 / -1", padding: 12, fontSize: 12, color: "#fca5a5", textAlign: "center" }}>
+        <div role="alert" style={{ gridColumn: "1 / -1", padding: 12, fontSize: 12, color: "#fca5a5", textAlign: "center" }}>
           {submitError}
         </div>
       )}
       {(loading && !editorMode) ? (
         <div
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
           style={{
             gridColumn: "1 / -1",
-            padding: 24,
-            textAlign: "center",
-            color: "rgba(255,255,255,0.55)",
-            fontSize: 13,
+            display: "grid",
+            gridTemplateColumns: isHorizontal ? "repeat(auto-fit, minmax(220px, 1fr))" : "1fr",
+            gap: 16,
           }}
         >
-          Loading plans…
+          <span style={{ position: "absolute", left: -9999, width: 1, height: 1 }}>Loading plans</span>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ height: 200, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, animation: "aqua-pulse 1.6s ease-in-out infinite" }} aria-hidden />
+          ))}
         </div>
       ) : plans.length === 0 ? (
         <div
@@ -193,12 +202,14 @@ export default function MembershipSignupBlock({ block, editorMode }: BlockRender
               type="button"
               onClick={() => subscribe(plan.id)}
               disabled={editorMode || submitting === plan.id}
+              aria-label={`Subscribe to ${plan.name}`}
               style={{
                 width: "100%",
+                minHeight: 44,
                 padding: "10px 18px",
                 borderRadius: 8,
                 border: "none",
-                background: "var(--brand-orange, #ff6b35)",
+                background: "var(--brand-accent, #ff6b35)",
                 color: "#fff",
                 fontSize: 14,
                 fontWeight: 600,

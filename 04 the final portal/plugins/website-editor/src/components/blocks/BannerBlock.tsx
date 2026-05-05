@@ -28,7 +28,7 @@ export default function BannerBlock({ block }: BlockRenderProps) {
 
   const palette: Record<string, { bg: string; fg: string }> = {
     info:  { bg: "rgba(56,189,248,0.15)", fg: "#bae6fd" },
-    promo: { bg: "var(--brand-orange, #ff6b35)", fg: "#fff" },
+    promo: { bg: "var(--brand-accent, #ff6b35)", fg: "#fff" },
     alert: { bg: "rgba(239,68,68,0.18)",  fg: "#fecaca" },
   };
   const colours = palette[tone] ?? palette.info!;

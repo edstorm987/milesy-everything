@@ -52,7 +52,7 @@ export default function LanguageSwitcherBlock({ block }: BlockRenderProps) {
               borderRadius: 6,
               fontSize: 12,
               border: "none",
-              background: l === current ? "var(--brand-orange, #ff6b35)" : "transparent",
+              background: l === current ? "var(--brand-accent, #ff6b35)" : "transparent",
               color: l === current ? "#fff" : "inherit",
               cursor: "pointer",
             }}

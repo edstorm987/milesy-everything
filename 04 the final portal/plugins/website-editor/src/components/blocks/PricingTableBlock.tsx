@@ -44,7 +44,7 @@ export default function PricingTableBlock({ block }: BlockRenderProps) {
               style={{
                 padding: 28,
                 borderRadius: 16,
-                border: tier.highlight ? "2px solid var(--brand-orange, #ff6b35)" : "1px solid rgba(255,255,255,0.1)",
+                border: tier.highlight ? "2px solid var(--brand-accent, #ff6b35)" : "1px solid rgba(255,255,255,0.1)",
                 background: tier.highlight ? "rgba(255,107,53,0.05)" : "rgba(255,255,255,0.02)",
                 position: "relative",
               }}
@@ -52,7 +52,7 @@ export default function PricingTableBlock({ block }: BlockRenderProps) {
               {tier.highlight && (
                 <span style={{
                   position: "absolute", top: -12, right: 20,
-                  background: "var(--brand-orange, #ff6b35)",
+                  background: "var(--brand-accent, #ff6b35)",
                   color: "#fff", fontSize: 10, padding: "4px 10px",
                   borderRadius: 999, letterSpacing: 1.5, fontWeight: 700,
                 }}>POPULAR</span>
@@ -66,7 +66,7 @@ export default function PricingTableBlock({ block }: BlockRenderProps) {
               <ul style={{ listStyle: "none", padding: 0, margin: 0, marginBottom: 24, display: "flex", flexDirection: "column", gap: 8 }}>
                 {tier.features.map((f, j) => (
                   <li key={j} style={{ fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ color: "var(--brand-orange, #ff6b35)", fontSize: 12 }}>✓</span>
+                    <span style={{ color: "var(--brand-accent, #ff6b35)", fontSize: 12 }}>✓</span>
                     {f}
                   </li>
                 ))}
@@ -78,7 +78,7 @@ export default function PricingTableBlock({ block }: BlockRenderProps) {
                   textAlign: "center",
                   padding: "10px 16px",
                   borderRadius: 10,
-                  background: tier.highlight ? "var(--brand-orange, #ff6b35)" : "rgba(255,255,255,0.06)",
+                  background: tier.highlight ? "var(--brand-accent, #ff6b35)" : "rgba(255,255,255,0.06)",
                   color: tier.highlight ? "#fff" : "inherit",
                   fontSize: 14, fontWeight: 600,
                   textDecoration: "none",

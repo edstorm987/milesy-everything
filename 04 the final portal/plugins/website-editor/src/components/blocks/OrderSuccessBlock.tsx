@@ -145,7 +145,7 @@ export default function OrderSuccessBlock({ block, editorMode }: BlockRenderProp
               gap: 8,
               padding: "12px 24px",
               borderRadius: 12,
-              background: "var(--brand-orange, #ff6b35)",
+              background: "var(--brand-accent, #ff6b35)",
               color: "#fff",
               fontSize: 14,
               fontWeight: 600,

@@ -32,7 +32,7 @@ export default function AuthorBioBlock({ block }: BlockRenderProps) {
           /* eslint-disable-next-line @next/next/no-img-element */
           <img src={avatarUrl} alt={name} style={{ width: 72, height: 72, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
         ) : (
-          <div style={{ width: 72, height: 72, borderRadius: "50%", background: "var(--brand-orange, #ff6b35)", flexShrink: 0,
+          <div style={{ width: 72, height: 72, borderRadius: "50%", background: "var(--brand-accent, #ff6b35)", flexShrink: 0,
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 700, color: "#fff" }}>
             {name.charAt(0)}
           </div>

@@ -120,6 +120,7 @@ function BuiltInContactForm({ block, editorMode }: BlockRenderProps) {
 
   const baseInput: React.CSSProperties = {
     width: "100%",
+    minHeight: 44,
     padding: "10px 14px",
     borderRadius: 10,
     border: "1px solid rgba(255,255,255,0.12)",
@@ -129,44 +130,55 @@ function BuiltInContactForm({ block, editorMode }: BlockRenderProps) {
   };
 
   return (
-    <form data-block-type="crm-contact-form" style={containerStyle} onSubmit={handleSubmit}>
+    <form data-block-type="crm-contact-form" aria-label={heading} style={containerStyle} onSubmit={handleSubmit}>
       <p style={{ fontSize: 22, fontWeight: 700, margin: "0 0 4px" }}>{heading}</p>
       {subheading && <p style={{ fontSize: 13, opacity: 0.7, margin: "0 0 16px" }}>{subheading}</p>}
 
       <div style={{ display: "grid", gap: 10 }}>
-        <input
-          name="name"
-          type="text"
-          required
-          placeholder="Name"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          disabled={editorMode || submitting}
-          style={baseInput}
-        />
-        <input
-          name="email"
-          type="email"
-          required
-          placeholder="you@example.com"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          disabled={editorMode || submitting}
-          style={baseInput}
-        />
-        <textarea
-          name="message"
-          required
-          rows={5}
-          placeholder="How can we help?"
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-          disabled={editorMode || submitting}
-          style={baseInput}
-        />
+        <label>
+          <span style={{ position: "absolute", left: -9999, width: 1, height: 1 }}>Name</span>
+          <input
+            name="name"
+            type="text"
+            required
+            autoComplete="name"
+            placeholder="Name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            disabled={editorMode || submitting}
+            style={baseInput}
+          />
+        </label>
+        <label>
+          <span style={{ position: "absolute", left: -9999, width: 1, height: 1 }}>Email</span>
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            disabled={editorMode || submitting}
+            style={baseInput}
+          />
+        </label>
+        <label>
+          <span style={{ position: "absolute", left: -9999, width: 1, height: 1 }}>Message</span>
+          <textarea
+            name="message"
+            required
+            rows={5}
+            placeholder="How can we help?"
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            disabled={editorMode || submitting}
+            style={{ ...baseInput, minHeight: 96 }}
+          />
+        </label>
       </div>
 
-      {error && <p style={{ fontSize: 12, color: "#fca5a5", marginTop: 12 }}>{error}</p>}
+      {error && <p role="alert" style={{ fontSize: 12, color: "#fca5a5", marginTop: 12 }}>{error}</p>}
 
       <button
         type="submit"
@@ -174,10 +186,11 @@ function BuiltInContactForm({ block, editorMode }: BlockRenderProps) {
         style={{
           marginTop: 16,
           width: "100%",
+          minHeight: 44,
           padding: "12px 20px",
           borderRadius: 10,
           border: "none",
-          background: "var(--brand-orange, #ff6b35)",
+          background: "var(--brand-accent, #ff6b35)",
           color: "#fff",
           fontSize: 14,
           fontWeight: 600,

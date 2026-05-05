@@ -47,7 +47,7 @@ export default function PaymentButtonBlock({ block, editorMode }: BlockRenderPro
     paypal:   "#003087",
     applepay: "#000",
   };
-  const bg = colors[provider] ?? "var(--brand-orange, #ff6b35)";
+  const bg = colors[provider] ?? "var(--brand-accent, #ff6b35)";
 
   const style: React.CSSProperties = {
     display: "inline-flex",

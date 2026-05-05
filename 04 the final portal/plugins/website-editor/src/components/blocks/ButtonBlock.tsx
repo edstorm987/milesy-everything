@@ -12,7 +12,7 @@ export default function ButtonBlock({ block, editorMode }: BlockRenderProps) {
   const hoverAnim = ((block.props.hoverAnim as HoverAnim | undefined) ?? "lift");
 
   const variantStyle =
-    variant === "primary"   ? { background: "var(--brand-orange, #ff6b35)", color: "#fff", border: "none" }
+    variant === "primary"   ? { background: "var(--brand-accent, #ff6b35)", color: "#fff", border: "none" }
     : variant === "secondary" ? { background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.25)" }
     : { background: "transparent", color: "rgba(255,255,255,0.85)", border: "none", padding: "8px 12px" };
 

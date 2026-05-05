@@ -26,11 +26,22 @@ export default function ProductGridBlock({ block, editorMode }: BlockRenderProps
 
   const items = products.length > 0 ? products : Array.from({ length: limit }).map((_, i) => null);
 
+  const isLoading = loading && !editorMode && products.length === 0;
+
   return (
-    <div data-block-type="product-grid" data-collection={collection} data-limit={limit} style={style}>
+    <div
+      data-block-type="product-grid"
+      data-collection={collection}
+      data-limit={limit}
+      role={isLoading ? "status" : undefined}
+      aria-busy={isLoading ? "true" : undefined}
+      aria-live={isLoading ? "polite" : undefined}
+      aria-label={collection === "all" ? "Product grid" : `Product grid: ${collection}`}
+      style={style}
+    >
       {items.map((p, i) => p ? (
         <article key={p.id} style={{ padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <a href={`/products/${p.slug}`} style={{ display: "block", aspectRatio: "1/1", background: "rgba(255,255,255,0.04)", borderRadius: 8, overflow: "hidden", marginBottom: 8 }}>
+          <a href={`/products/${p.slug}`} aria-label={p.name} style={{ display: "block", aspectRatio: "1/1", background: "rgba(255,255,255,0.04)", borderRadius: 8, overflow: "hidden", marginBottom: 8 }}>
             {p.image && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={p.image} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
@@ -41,14 +52,26 @@ export default function ProductGridBlock({ block, editorMode }: BlockRenderProps
           </p>
           <p style={{ fontSize: 11, opacity: 0.7, margin: 0 }}>
             {p.onSale && p.salePrice
-              ? <><span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: 4 }}>{formatPrice(p.price)}</span><span style={{ color: "var(--brand-orange, #ff6b35)", fontWeight: 600 }}>{formatPrice(p.salePrice)}</span></>
+              ? <><span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: 4 }}>{formatPrice(p.price)}</span><span style={{ color: "var(--brand-accent, #ff6b35)", fontWeight: 600 }}>{formatPrice(p.salePrice)}</span></>
               : formatPrice(p.price)}
           </p>
         </article>
       ) : (
-        <article key={i} style={{ padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <div style={{ aspectRatio: "1/1", background: "rgba(255,255,255,0.04)", borderRadius: 8, marginBottom: 8 }} />
-          <p style={{ fontSize: 12, fontWeight: 600, margin: "0 0 2px" }}>{loading && !editorMode ? "Loading…" : `Product ${i + 1}`}</p>
+        <article
+          key={i}
+          aria-hidden={isLoading || undefined}
+          style={{ padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <div
+            style={{
+              aspectRatio: "1/1",
+              background: "rgba(255,255,255,0.04)",
+              borderRadius: 8,
+              marginBottom: 8,
+              animation: isLoading ? "aqua-pulse 1.6s ease-in-out infinite" : undefined,
+            }}
+          />
+          <p style={{ fontSize: 12, fontWeight: 600, margin: "0 0 2px" }}>{isLoading ? "Loading…" : `Product ${i + 1}`}</p>
           <p style={{ fontSize: 11, opacity: 0.6, margin: 0 }}>£0.00</p>
         </article>
       ))}

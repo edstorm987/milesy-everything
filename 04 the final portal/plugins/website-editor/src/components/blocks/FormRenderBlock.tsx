@@ -130,7 +130,7 @@ export default function FormRenderBlock({ block, editorMode }: BlockRenderProps)
   if (editorMode) {
     return (
       <section data-block-type="form-render" style={containerStyle}>
-        <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--brand-orange, #ff6b35)", margin: "0 0 8px" }}>
+        <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--brand-accent, #ff6b35)", margin: "0 0 8px" }}>
           Form
         </p>
         <p style={{ fontSize: 13, opacity: 0.7, margin: 0 }}>
@@ -142,7 +142,18 @@ export default function FormRenderBlock({ block, editorMode }: BlockRenderProps)
     );
   }
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <section data-block-type="form-render" aria-label="Form" style={containerStyle}>
+        <div role="status" aria-live="polite" aria-busy="true" style={{ display: "grid", gap: 12, position: "relative" }}>
+          <span style={{ position: "absolute", left: -9999, width: 1, height: 1 }}>Loading form</span>
+          <div style={{ height: 24, width: "60%", background: "rgba(255,255,255,0.05)", borderRadius: 6, animation: "aqua-pulse 1.6s ease-in-out infinite" }} aria-hidden />
+          <div style={{ height: 44, background: "rgba(255,255,255,0.05)", borderRadius: 10, animation: "aqua-pulse 1.6s ease-in-out infinite" }} aria-hidden />
+          <div style={{ height: 44, background: "rgba(255,255,255,0.05)", borderRadius: 10, animation: "aqua-pulse 1.6s ease-in-out infinite" }} aria-hidden />
+        </div>
+      </section>
+    );
+  }
 
   if (!formId) {
     return (
@@ -162,8 +173,19 @@ export default function FormRenderBlock({ block, editorMode }: BlockRenderProps)
 
   if (error || !form) {
     return (
-      <section data-block-type="form-render" style={containerStyle}>
-        <p style={{ fontSize: 13, color: "#fca5a5", margin: 0 }}>{error ?? "Form not found."}</p>
+      <section data-block-type="form-render" aria-label="Form" style={containerStyle}>
+        <div role="alert" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+          <p style={{ fontSize: 13, color: "#fca5a5", margin: 0 }}>{error ?? "Form not found."}</p>
+          {error && (
+            <button
+              type="button"
+              onClick={() => { setError(null); setLoading(true); /* re-trigger fetch via formId-effect */ window.location.reload(); }}
+              style={{ minHeight: 36, padding: "8px 16px", fontSize: 13, fontWeight: 500, borderRadius: 8, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "inherit", cursor: "pointer" }}
+            >
+              Retry
+            </button>
+          )}
+        </div>
       </section>
     );
   }
@@ -184,7 +206,7 @@ export default function FormRenderBlock({ block, editorMode }: BlockRenderProps)
   }
 
   return (
-    <form data-block-type="form-render" style={containerStyle} onSubmit={handleSubmit}>
+    <form data-block-type="form-render" aria-label={form.name} style={containerStyle} onSubmit={handleSubmit}>
       <p style={{ fontSize: 18, fontWeight: 700, margin: "0 0 4px" }}>{form.name}</p>
       {form.description && <p style={{ fontSize: 13, opacity: 0.7, margin: "0 0 16px" }}>{form.description}</p>}
 
@@ -194,7 +216,7 @@ export default function FormRenderBlock({ block, editorMode }: BlockRenderProps)
         ))}
       </div>
 
-      {submitError && <p style={{ fontSize: 12, color: "#fca5a5", marginTop: 12 }}>{submitError}</p>}
+      {submitError && <p role="alert" style={{ fontSize: 12, color: "#fca5a5", marginTop: 12 }}>{submitError}</p>}
 
       <button
         type="submit"
@@ -202,10 +224,11 @@ export default function FormRenderBlock({ block, editorMode }: BlockRenderProps)
         style={{
           marginTop: 16,
           width: "100%",
+          minHeight: 44,
           padding: "12px 20px",
           borderRadius: 10,
           border: "none",
-          background: "var(--brand-orange, #ff6b35)",
+          background: "var(--brand-accent, #ff6b35)",
           color: "#fff",
           fontSize: 14,
           fontWeight: 600,
@@ -232,6 +255,7 @@ function FormFieldInput({
   const inputCls = "w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-brand-cream";
   const baseInputStyle: React.CSSProperties = {
     width: "100%",
+    minHeight: 44,
     padding: "10px 14px",
     borderRadius: 10,
     border: "1px solid rgba(255,255,255,0.12)",
@@ -287,7 +311,7 @@ function FormFieldInput({
                       style={{
                         padding: "6px 12px",
                         borderRadius: 8,
-                        border: active ? "1px solid var(--brand-orange, #ff6b35)" : "1px solid rgba(255,255,255,0.12)",
+                        border: active ? "1px solid var(--brand-accent, #ff6b35)" : "1px solid rgba(255,255,255,0.12)",
                         background: active ? "rgba(255,107,53,0.15)" : "rgba(255,255,255,0.04)",
                         color: "inherit",
                         fontSize: 13,
