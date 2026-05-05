@@ -7,7 +7,7 @@ Prior rounds (T3 R6 + T4 R1 + T5 R1 + T6 R1) just hit DONE; their
 prompts archived to `old prompts/`. T1 R8 + T2 R11 still in flight
 from cycle 17.
 
-- [ ] **T1 R8 — milesymedia ↔ portal stitch** — in flight (STARTED 15:00Z).
+_(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
 - [ ] **T3 R7 — AI page builder** — `@aqua/plugin-ai-builder`. Claude
       Haiku 4.5 default + Sonnet 4.6 fallback. Editor topbar gets
