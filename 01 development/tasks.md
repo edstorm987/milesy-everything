@@ -19,10 +19,30 @@ dropped for T1 R8 + T2 R11 + T3 R6. T4/T5/T6 still on R1.
       Editor Save writes to `clients/<slug>/` for Live clients via
       T2 R11's export plugin. Save-target toggle, branching pipeline,
       diff preview, GitStatusPage.
-- [ ] **T4 R1 — UX + accessibility polish** — prompt
-      `terminal-prompts/T4-round1-ux-accessibility-polish.md`.
-      Phase A audit (`b89ee01`) + Phase B step 1 shared UI primitives
-      (`15acfbe`) shipped. B/C/D/E ahead.
+- [x] **T4 R1 — UX + accessibility polish** — DONE. Phase A audit
+      (`b89ee01`) + Phase B step 1 shared UI primitives + a11y hooks +
+      layout adoption (`15acfbe`) + Phase B step 2 plugin-admin
+      baseline + ErrorBoundary on the 3 catch-all resolvers + 6 list
+      empty states (landed under `a943673` due to T5 autostash mesh
+      hazard — content shipped + tsc clean) + Phase C+D chrome a11y +
+      mobile sidebar drawer + Topbar wrap + contrast validator wired
+      (`24f2cd0`). 5 UI primitives (LoadingSkeleton + EmptyState +
+      ErrorBoundary + SkipToContent + ConfirmDialog) at
+      `portal/src/components/ui/`; 4 a11y hooks (useFocusTrap +
+      useArrowNav + useViewport + contrastValidator) at
+      `portal/src/lib/a11y/`. Global focus-visible ring lights up
+      every interactive element across all 9 plugins for free; the
+      `globals.css` plugin-admin baseline brings the 9 plugins'
+      prefixed CSS classes (`affiliates-*` / `ecom-*` / etc.) to a
+      polished brand-aware default with zero plugin-side churn.
+      Mobile collapse via `MobileNav.tsx` slide-over (focus-trapped,
+      Esc-to-close, auto-close on route change). Smoke harness
+      `scripts/smoke-ux.mjs` + `npm run smoke:ux` hits 8 pages × 3
+      viewports (375/768/1280). Chapter
+      `04-ux-accessibility-pass.md` + audit `04-ux-audit.md` + MASTER
+      rows #45 / #46. tsc clean. R2 deferred: ConfirmDialog adoption
+      across 29 `confirm()` sites, useArrowNav adoption, toast system,
+      brand-orange→accent rewrite, real Playwright visual regression.
 - [x] **T5 R1 — Luv & Ker portal** — DONE. Phase A+B scaffold
       (`8f0bb01`) + Phase C+D pages+proxy (`2fc3ae1`) + Phase E smoke
       pass + dev-default upstream + 502 fallback + chapter
@@ -32,10 +52,23 @@ dropped for T1 R8 + T2 R11 + T3 R6. T4/T5/T6 still on R1.
       (redirects to /login when unauth), shop with placeholder fallback,
       proxy round-trips to localhost:3030 (or PORTAL_API_ORIGIN) — all 200/3xx
       as expected. Ready for T2 R11's generator to reverse-engineer.
-- [ ] **T6 R1 — Deployment + domains + observability** — prompt
-      `terminal-prompts/T6-round1-deployment-domains-observability.md`.
-      Phase A Vercel monorepo (`05dea79` + `359b476`) + Phase B
-      env-var taxonomy (`ef2e82f`) shipped. C/D/E ahead.
+- [x] **T6 R1 — Deployment + domains + observability** — DONE.
+      Phase A Vercel monorepo (`359b476`) + Phase B env-var taxonomy
+      (`ef2e82f`) + Phase C `@aqua/plugin-domains` (`a943673`,
+      mislabel-bundled under T5's outbox commit due to parallel
+      staging — content correct, 8/8 smoke pass, tsc clean) +
+      Phase D observability wrapper (`6045568`) + Phase E chapter
+      `04-deployment-domains-observability.md` + MASTER row #44.
+      Single Vercel project deploys portal + bundled milesymedia
+      static; per-Live-client portals = separate Vercel projects.
+      `@aqua/plugin-domains` lifted from 02; without VERCEL_TOKEN it
+      captures hostname locally + manual-DNS runbook applies.
+      Sentry server wrapper is env-gated optional-dep — no rewire of
+      existing routes; production turn-on = npm install
+      @sentry/nextjs + set SENTRY_DSN + redeploy. Foundation pending:
+      domains plugin workspace dep + transpilePackages +
+      side-effect-import + `_registry.ts` append +
+      `ActivityCategory` += "domains".
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded

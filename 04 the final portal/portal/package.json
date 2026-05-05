@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "smoke": "node scripts/smoke.mjs",
     "smoke:postgres": "node scripts/smoke-postgres.mjs",
+    "smoke:ux": "node scripts/smoke-ux.mjs",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {
