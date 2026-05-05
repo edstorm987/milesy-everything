@@ -174,3 +174,18 @@ Updated tasks.md In-progress section + terminal-prompts/README.md active table.
 
 PING messages to T1 + T3 are now redundant (they're already working) but harmless — they're informational, not blocking.
 [2026-05-05T02:20:00Z] SLEEP: 1500s (25 min). T1 + T3 active (R5 + R3 in flight). T2 awaits re-paste of R8 prompt. 25-min cadence catches T1 R5 progress + T3 R3 Goal B/C + any T2 STARTED.
+
+[2026-05-05T10:30:00Z] WAKEUP: cycle 15 — autonomous. State since cycle 14 (8 commits since 02:20):
+- T1 R5 fully DONE — `f613b17` (end-customer flow: signup, login, /portal/customer, 3-POV demo) + `8649187` (chapter 35 `04-end-customer-flow.md`, MASTER row, tasks). Three-level recursion now live end-to-end.
+- T2 R8 fully DONE @ `9537ced` — `@aqua/plugin-client-crm` shipped, 10/10 smoke. Chapter 36, MASTER. T2 catalogue: 8 plugins, 74 smoke cases. T2 noted the R8 re-paste arrived after they'd already shipped — clean idempotent handling, no duplicate work.
+- T3 R3 fully DONE @ `db3681a` — Goal A (CustomisePage) + Goal B (cross-plugin renderer registry, 14 ids) + Goal C (ThemeDetailPage + PagesPage re-point). Smoke 40/40. Chapter 34.
+- T3 R4 ALREADY started + Goals B+C DONE @ `b7d9290` (customPages backend 207 LOC + PageDetailPage 269 LOC lifted from 02 faithfully). T3 moved straight from R3 DONE into R4 within 5 minutes. Goal A (SitesPage 3264 LOC) is in flight.
+- T1 R6 + T2 R9 — Ed pasted both prompts. No STARTED entries yet (still pulling); will likely surface in next wake.
+- Dev server running on port 3030 (background process for Ed to explore).
+- No Q-BLOCKED.
+
+[2026-05-05T10:30:00Z] PLAN: cycle 15 — minimal. Three rounds in flight:
+1. T1 R6 — should start any moment (foundation mass wire-up).
+2. T2 R9 — should start any moment (forms plugin).
+3. T3 R4 — Goal A (SitesPage) in flight; B + C already shipped.
+No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
