@@ -6,11 +6,7 @@ Active prompts at `terminal-prompts/` (all shipped prompts archived to
 `old prompts/`):
 
 _(T1 R5 done — see `Done — Round 5` below)_
-- [ ] **T2 R8 — Client-CRM plugin** — prompt
-      `terminal-prompts/T2-round8-client-crm.md`. `@aqua/plugin-client-crm`
-      (`scopePolicy: "client"`, no hard deps). Contacts + segments +
-      activity timeline. Pairs with T1 R5 (end-customer signups
-      auto-appear as Contacts).
+_(T2 R8 done — see `Done — Round 8` below)_
 _(T3 R3 done — see `Done — Round 3` below)_
 
 ## Done — Round 1
@@ -138,6 +134,34 @@ _(T3 R3 done — see `Done — Round 3` below)_
       extended with `"ecommerce"`. Demo seed installs both client-scoped
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
+
+## Done — Round 8
+- [x] **T2 R8 — Client-CRM plugin** — shipped.
+      `@aqua/plugin-client-crm` at
+      `04 the final portal/plugins/client-crm/`. `scopePolicy: "client"`,
+      `core: false`, no hard deps (soft-integrates with memberships +
+      ecommerce via OPTIONAL injected ports). Pairs with T1 R5:
+      end-customer signups auto-appear as Contacts via `mergeFromUser`.
+      Domain Contact (per-(agency,client) email uniqueness, optional
+      endCustomerUserId link, status active/unsubscribed/bounced/deleted,
+      tags + attributes, firstSeenAt + lastSeenAt with engagement bumps),
+      Segment (4 seeded defaults All/New/Engaged/Dormant with sliding
+      `{{now-Nd}}` window resolution, AND-of-conditions evaluator),
+      ActivityRecord (10 kinds, idempotent cross-plugin ingest).
+      Three services (Contact/Segment/Activity). Six standard ports +
+      two OPTIONAL (MembershipBenefits / EcommerceOrders).
+      14 API routes including `/events/ingest` for foundation event
+      router. 6 admin/customer pages including auto-bootstrapping
+      `MyProfilePage`. 1 storefront block id `crm-contact-form`.
+      Bulk import (≤1000 rows). tsc-clean; 10/10 smoke pass via
+      `npm run smoke`. Foundation pending: workspace dep +
+      transpilePackages + side-effect-import + `_registry.ts` append +
+      `ActivityCategory` += "crm" + UserPort projection +
+      MembershipBenefitsPort + EcommerceOrdersPort wiring + cross-plugin
+      event router. T2 plugin catalogue now: 8 shipped (fulfillment /
+      ecommerce / agency-HR / memberships / affiliates / agency-finance /
+      agency-marketing / client-crm); 74 smoke cases all green. See
+      `context/prior research/04-plugin-client-crm.md`.
 
 ## Done — Round 7
 - [x] **T2 R7 — Phase preset consolidation + agency-marketing
