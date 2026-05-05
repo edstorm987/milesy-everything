@@ -58,8 +58,8 @@ async function main(): Promise<void> {
   console.log("manifest");
   expect("id is website-editor", manifest.id === "website-editor");
   expect("category is content", manifest.category === "content");
-  expect("navItems has 8 entries", manifest.navItems.length === 8, `actual: ${manifest.navItems.length}`);
-  expect("pages has 11 entries", manifest.pages.length === 11, `actual: ${manifest.pages.length}`);
+  expect("navItems has 9 entries (R6 +git-status)", manifest.navItems.length === 9, `actual: ${manifest.navItems.length}`);
+  expect("pages has 12 entries (R6 +git-status)", manifest.pages.length === 12, `actual: ${manifest.pages.length}`);
   expect(
     "api has at least 30 entries",
     manifest.api.length >= 30,

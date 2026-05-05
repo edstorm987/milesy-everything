@@ -32,6 +32,7 @@ const websiteEditorPlugin: AquaPlugin = {
     { id: "assets", label: "Assets", href: "/portal/clients/[clientId]/assets", panelId: "content" },
     { id: "sections", label: "Sections", href: "/portal/clients/[clientId]/sections", panelId: "content" },
     { id: "popups", label: "Popups", href: "/portal/clients/[clientId]/popups", panelId: "content" },
+    { id: "git-status", label: "Git status", href: "/portal/clients/[clientId]/git-status", panelId: "growth" },
   ],
 
   pages: [
@@ -89,6 +90,11 @@ const websiteEditorPlugin: AquaPlugin = {
       path: "/portal/clients/[clientId]/popups",
       title: "Popups",
       component: () => import("./src/pages/PopupsPage"),
+    },
+    {
+      path: "/portal/clients/[clientId]/git-status",
+      title: "Git status",
+      component: () => import("./src/pages/GitStatusPage"),
     },
   ],
 

@@ -14,11 +14,7 @@ dropped for T1 R8 + T2 R11 + T3 R6. T4/T5/T6 still on R1.
       `@aqua/plugin-portal-export` materializes Live clients into
       `clients/<slug>/`. 4 starter presets. T5's Luv & Ker portal
       is the canonical reference target.
-- [ ] **T3 R6 — Editor save-to-per-client-repo** — prompt
-      `terminal-prompts/T3-round6-editor-per-client-save-mode.md`.
-      Editor Save writes to `clients/<slug>/` for Live clients via
-      T2 R11's export plugin. Save-target toggle, branching pipeline,
-      diff preview, GitStatusPage.
+_(T3 R6 done — see `Done — Round 6` below)_
 - [x] **T4 R1 — UX + accessibility polish** — DONE. Phase A audit
       (`b89ee01`) + Phase B step 1 shared UI primitives + a11y hooks +
       layout adoption (`15acfbe`) + Phase B step 2 plugin-admin
@@ -385,6 +381,30 @@ dropped for T1 R8 + T2 R11 + T3 R6. T4/T5/T6 still on R1.
       `context/prior research/04-plugin-agency-marketing.md`.
 
 ## Done — Round 6
+- [x] **T3 R6 — Editor save-to-per-client-repo** — DONE. Four
+      goals shipped against ports T2 R11/T6 haven't yet provided —
+      graceful degradation hides UI when ports absent so dev mode
+      still works. Goal A: SaveTargetToggle topbar widget +
+      `lib/saveTarget.ts` (per-client localStorage cursor +
+      default-per-phase resolver). Goal B: `lib/savePipeline.ts`
+      branches savePage/publishPage/saveTheme/saveCustomPage/
+      setActivePortalVariant on save target; auto-falls-back to
+      `materialize()` when port returns `fallbackToFullReexport`.
+      `server/extensionPorts.ts` declares PortalExportPort + GitOpsPort
+      contracts with injection helpers. Goal C: DiffPreviewPane +
+      SaveResultBanner ("Saved. N files changed in clients/<slug>/.
+      Open commit →"). Goal D: GitStatusPage admin page (panelId
+      growth, route `/portal/clients/[clientId]/git-status`) with
+      branch + ahead/behind + staged/unstaged file lists + Stage/
+      Unstage/Commit/Push/Open PR; `lib/gitOps.ts` 404→
+      `{available:false}` graceful degradation. New smoke
+      `save-target.test.ts` (25 assertions). Total smoke 92/92 pass
+      (42 + 25 + 25). tsc clean. Manifest +1 navItem +1 page.
+      Chapter `04-plugin-website-editor-round6.md`, MASTER row #47.
+      R7+ deferred: real-time collab, domain-attach UI, auto-stage
+      saved files toggle, SSR/static export. Cross-team: T1 brokers
+      ports + mounts /api/portal/website-editor/git/* HTTP proxy;
+      T2 R11 implements PortalExportPort; T6 R1 implements GitOpsPort.
 - [x] **T1 R6 — Foundation mass plugin wire-up + cross-plugin event
       router** — shipped. After R5 the foundation hosted 3 plugins
       live while T2 had 6 more on disk un-wired. R6 catches up — all
