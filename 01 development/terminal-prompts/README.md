@@ -47,9 +47,9 @@ When done:
 
 | Terminal | Prompt | Goal |
 |----------|--------|------|
-| **T1 → R6** | [T1-round6-foundation-mass-wireup.md](T1-round6-foundation-mass-wireup.md) | Foundation mass wire-up. Six goals: workspace deps + transpilePackages + side-effect-imports + `_registry.ts` appends + ActivityCategory unions + cross-plugin event router for the 5-6 standalone plugins (agency-HR, memberships, affiliates, agency-finance, agency-marketing, client-crm). After R6 the foundation is ahead of the plugin catalogue again. |
-| **T2 → R9** | [T2-round9-forms-plugin.md](T2-round9-forms-plugin.md) | Ship `@aqua/plugin-forms` — cross-cutting form builder + submissions store. `scopePolicy: "either"`. Pairs with client-CRM (submissions → Contacts), affiliates (signup forms), memberships (plan-pick wizards). |
-| **T3 → R4** | [T3-round4-sites-and-pages.md](T3-round4-sites-and-pages.md) | Three goals: (A) Lift SitesPage (3264 LOC — biggest single admin page), (B) port customPages backend (separate localStorage block system), (C) lift PageDetailPage. After R4 the website-editor admin surface is parity-with-`02`. |
+| **T1 → R7** | [T1-round7-postgres-backend.md](T1-round7-postgres-backend.md) | Swap file backend → Postgres for production. Architecture §13 parked v1-required. Five goals: Postgres driver behind storage abstraction (single `portal_kv` JSONB table) + migration script + connection pooling + RLS scoping defense + smoke against both backends. `DATABASE_URL` unset → file backend stays default for dev. |
+| **T2 → R10** | [T2-round10-email-sender.md](T2-round10-email-sender.md) | Ship `@aqua/plugin-email-sender` — cross-cutting delivery engine for all other plugins (agency-marketing templates, forms notifications, memberships welcome, affiliates payout, end-customer signup confirmations). Postmark + no-op driver for v1. `scopePolicy: "agency"`. After R10 T2 has shipped 10 plugins. |
+| **T3 → R5** | [T3-round5-cross-plugin-block-renderers.md](T3-round5-cross-plugin-block-renderers.md) | Real React components for the 18 cross-plugin storefront blocks (ecommerce 8 + memberships 3 + affiliates 3 + forms 1 + CRM 1 + donation-button). Replaces the stubs from R3 with real fetches against each plugin's API namespace. |
 
 ### Orchestrator
 

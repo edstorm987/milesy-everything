@@ -2,12 +2,23 @@
 
 ## In progress
 
-All three terminals just received fresh prompts (R6 / R9 / R4). Prior
-rounds (T1 R5, T2 R8, T3 R3) shipped + archived to `old prompts/`.
+Three new prompts just dropped (R7 / R10 / R5) — prior rounds R6/R9/R4
+shipped + archived.
 
-_(T1 R6 done — see `Done — Round 6` below)_
-_(T2 R9 done — see `Done — Round 9` below)_
-_(T3 R4 done — see `Done — Round 4` below)_
+- [ ] **T1 R7 — Postgres backend** — prompt
+      `terminal-prompts/T1-round7-postgres-backend.md`. Swap file
+      backend → Postgres for production (architecture §13 parked
+      v1-required). Single `portal_kv` JSONB table + migration script.
+      `DATABASE_URL` unset → file backend stays default for dev.
+- [ ] **T2 R10 — Email-sender plugin** — prompt
+      `terminal-prompts/T2-round10-email-sender.md`. Cross-cutting
+      delivery engine for all other plugins. Postmark + no-op driver,
+      4 cross-plugin event subscribers. After R10, T2 has 10 plugins.
+- [ ] **T3 R5 — Real cross-plugin block renderers** — prompt
+      `terminal-prompts/T3-round5-cross-plugin-block-renderers.md`.
+      18 real React components replacing R3's stubs (ecommerce 8 +
+      memberships 3 + affiliates 3 + forms 1 + CRM 1 + donation-button).
+      Real fetches against each plugin's API namespace.
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
