@@ -205,3 +205,5 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 2. T2 R10 (email-sender) + T3 R5 (cross-plugin renderers) prompts in inboxes; their loops are dead. Awaiting Ed re-paste — same pattern as previous cycles. Already flagged in tasks.md.
 3. No new prompts to draft. T1 R7 + T2 R10 + T3 R5 are the active rounds; T1 R8 + T2 R11 are queued for the next round.
 4. Architecture extension chapter is live; in-flight rounds (T1 R7, T2 R10, T3 R5) all stay relevant per the extension's "what does NOT change" section.
+[2026-05-05T12:46:00Z] CORRECTION: T3 actually IS active on R5 — visible WIP on `ecommerceBridge.tsx` + DonationButton/OrderSuccess/PaymentButton/ProductSearch blocks. Phase A (ecommerce 8 real fetches) underway. T2 R10 still silent — loop ended; needs Ed re-paste.
+[2026-05-05T12:46:00Z] SLEEP: 1500s (25 min). T1 R7 active (Postgres backend, plan logged with Q-ASSUMED replied), T3 R5 active (Phase A ecommerce renderers). T2 R10 awaits Ed re-paste.
