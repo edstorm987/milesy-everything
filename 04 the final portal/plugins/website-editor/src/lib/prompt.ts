@@ -12,6 +12,10 @@ export interface PromptOpts {
   placeholder?: string;
   confirmLabel?: string;
   cancelLabel?: string;
+  // Hint that the value is a multi-line block (textarea). The native
+  // window.prompt fallback ignores this; styled hosts can switch to a
+  // textarea control.
+  multiline?: boolean;
 }
 
 export async function prompt(opts: PromptOpts): Promise<string | null> {

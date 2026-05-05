@@ -13,18 +13,8 @@ rounds (T1 R5, T2 R8, T3 R3) shipped + archived to `old prompts/`.
       memberships, affiliates, agency-finance, agency-marketing,
       client-crm). After R6 the foundation is ahead of the plugin
       catalogue again.
-- [ ] **T2 R9 — Forms plugin** — prompt
-      `terminal-prompts/T2-round9-forms-plugin.md`. Ship
-      `@aqua/plugin-forms` — cross-cutting form builder + submissions
-      store. `scopePolicy: "either"`, no hard deps. Pairs with CRM
-      (submissions → Contacts), affiliates (signup forms),
-      memberships (plan-pick wizards).
-- [ ] **T3 R4 — SitesPage + PageDetailPage + customPages backend** —
-      prompt `terminal-prompts/T3-round4-sites-and-pages.md`. Three
-      goals: (A) Lift SitesPage (3264 LOC, biggest single admin
-      page), (B) port customPages backend (separate localStorage
-      block system distinct from EditorPage), (C) lift PageDetailPage.
-      After R4 the website-editor admin surface is parity-with-`02`.
+_(T2 R9 done — see `Done — Round 9` below)_
+_(T3 R4 done — see `Done — Round 4` below)_
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
@@ -151,6 +141,43 @@ rounds (T1 R5, T2 R8, T3 R3) shipped + archived to `old prompts/`.
       extended with `"ecommerce"`. Demo seed installs both client-scoped
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
+
+## Done — Round 9
+- [x] **T2 R9 — Forms plugin** — shipped.
+      `@aqua/plugin-forms` at `04 the final portal/plugins/forms/`.
+      `scopePolicy: "either"`, `core: false`, no hard deps.
+      Soft-integrates with client-CRM/affiliates/memberships via
+      cross-plugin event payloads + admin-configurable webhook URLs
+      (zero source coupling).
+      Domain FormDefinition (11 field kinds, state machine
+      draft→published→archived, per-form submissionCount), FormField
+      (validation rules + per-kind checks + attributeKey hint for
+      CRM), SubmitAction (4 kinds incl. external-webhook),
+      Submission (idempotent on fnv1a hash of
+      formId+identifier+sortedValues — collapsed re-submits don't
+      bump count), FormTemplate (3 seeded defaults Contact /
+      Newsletter Signup / Lead Capture).
+      Four services (Form/Submission/Notification/Template). Six
+      standard ports + one OPTIONAL EmailQueuePort (agency-marketing
+      brokers when installed). 13 API routes including 2 PUBLIC
+      (`POST public/submit/:formId` + `GET public/form/:formId`).
+      5 admin pages — structured FormBuilderPage (no drag-drop in
+      v1). 1 storefront block id (`form-render` — T3 owns).
+      Stable event payloads (`forms.submission.created`,
+      `forms.submission.validation_failed`,
+      `forms.submission.status_changed`,
+      `forms.notification.requested`).
+      tsc-clean; 8/8 smoke pass via `npm run smoke`. Foundation
+      pending: workspace dep + transpilePackages + side-effect-import +
+      `_registry.ts` append + `ActivityCategory` += "forms" + catch-all
+      `public: true` honouring + cross-plugin event router fan-out +
+      EmailQueuePort wiring (no-op stub until agency-marketing
+      send-time integration ships).
+      T2 plugin catalogue now: 9 shipped (fulfillment / ecommerce /
+      agency-HR / memberships / affiliates / agency-finance /
+      agency-marketing / client-crm / forms); 82 smoke cases
+      catalogue-wide. See
+      `context/prior research/04-plugin-forms.md`.
 
 ## Done — Round 8
 - [x] **T2 R8 — Client-CRM plugin** — shipped.
@@ -310,6 +337,22 @@ rounds (T1 R5, T2 R8, T3 R3) shipped + archived to `old prompts/`.
       `context/prior research/04-plugin-affiliates.md`.
 
 ## Done — Round 4
+- [x] **T3 R4 — SitesPage + PageDetailPage + customPages backend** —
+      DONE. Goal A: 3,264-LOC SitesPage faithful port with new libs
+      (`sitesAdmin`, `portalSettings`, `themeVariants` rebuilt,
+      `portalEditMode`, `domains` Vercel stub). Goal B: faithful port
+      of 02's `customPages.ts` (9 typed block kinds, full CRUD,
+      onCustomPagesChange listener). Goal C: 269-LOC PageDetailPage
+      faithful port consuming customPages — title/slug/nav inputs +
+      per-block editors + SEO panel (title/description/OG/canonical/
+      robots/JSON-LD) + publish/duplicate/delete + sticky footer;
+      RichEditor stub at `components/RichEditor.tsx`. After R4 the
+      website-editor admin surface is parity-with-02. tsc clean;
+      smoke 40/40 unchanged. Chapter
+      `context/prior research/04-plugin-website-editor-round4.md`,
+      MASTER row #37. R5 deferred: server-side persistence for
+      sitesAdmin/customPages/customise/loginCustomisation; Vercel
+      domain proxy; portal-settings persistence; real RichEditor host.
 - [x] **T2 R4 — Memberships plugin** — shipped.
       `@aqua/plugin-memberships` at `04 the final portal/plugins/memberships/`.
       `scopePolicy: "client"`, `requires: ["ecommerce"]`, `core: false`.
