@@ -4,6 +4,7 @@ import { Hero } from "@/components/storefront/Hero";
 import { FeaturedProducts } from "@/components/storefront/FeaturedProducts";
 import { BrandStory } from "@/components/storefront/BrandStory";
 import { Newsletter } from "@/components/storefront/Newsletter";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { getPortalConfig } from "@/lib/portalConfig";
 
 export default function StorefrontLanding() {
@@ -11,14 +12,16 @@ export default function StorefrontLanding() {
   return (
     <>
       <Header />
-      <main>
-        <Hero />
-        <FeaturedProducts />
-        <BrandStory />
-        <Newsletter
-          headline={cfg.content["newsletter.headline"]}
-          body={cfg.content["newsletter.body"]}
-        />
+      <main id="main-content">
+        <ErrorBoundary label="storefront">
+          <Hero />
+          <FeaturedProducts />
+          <BrandStory />
+          <Newsletter
+            headline={cfg.content["newsletter.headline"]}
+            body={cfg.content["newsletter.body"]}
+          />
+        </ErrorBoundary>
       </main>
       <Footer />
     </>

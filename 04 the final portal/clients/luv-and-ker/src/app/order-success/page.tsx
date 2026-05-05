@@ -8,7 +8,7 @@ export default function OrderSuccessPage() {
   return (
     <>
       <Header />
-      <main className="mx-auto max-w-2xl px-6 py-24 text-center">
+      <main id="main-content" className="mx-auto max-w-2xl px-6 py-24 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary)]">
           Thank you
         </p>

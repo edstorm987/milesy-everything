@@ -13,7 +13,7 @@ export default function LoginPage() {
   return (
     <>
       <Header />
-      <main className="mx-auto flex max-w-6xl flex-col items-center px-6 py-20">
+      <main id="main-content" className="mx-auto flex max-w-6xl flex-col items-center px-6 py-20">
         <div className="w-full max-w-md">
           <div className="mb-6 text-center">
             <Link href="/" className="text-xs uppercase tracking-[0.2em] text-[var(--brand-ink)]/60 hover:text-[var(--brand-primary)]">

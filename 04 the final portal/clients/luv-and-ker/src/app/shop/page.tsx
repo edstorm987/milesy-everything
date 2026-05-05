@@ -54,7 +54,7 @@ export default async function ShopPage() {
   return (
     <>
       <Header />
-      <main className="mx-auto max-w-6xl px-6 py-16">
+      <main id="main-content" className="mx-auto max-w-6xl px-6 py-16">
         <header className="mb-10">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary)]">
             Shop

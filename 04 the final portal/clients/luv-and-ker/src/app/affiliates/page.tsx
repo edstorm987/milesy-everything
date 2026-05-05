@@ -48,7 +48,7 @@ export default async function AffiliatesPage() {
     return (
       <>
         <Header />
-        <main className="mx-auto max-w-3xl px-6 py-20 text-center">
+        <main id="main-content" className="mx-auto max-w-3xl px-6 py-20 text-center">
           <h1 className="font-[family-name:var(--brand-font-heading)] text-3xl font-semibold tracking-tight">
             Refer & earn coming soon.
           </h1>
@@ -67,7 +67,7 @@ export default async function AffiliatesPage() {
   return (
     <>
       <Header />
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-8 md:grid-cols-12">
           <MemberDrawer email={user.email} />
           <section className="md:col-span-9 space-y-6">
