@@ -19,6 +19,22 @@ shipped + archived.
       18 real React components replacing R3's stubs (ecommerce 8 +
       memberships 3 + affiliates 3 + forms 1 + CRM 1 + donation-button).
       Real fetches against each plugin's API namespace.
+- [ ] **T4 R1 — UX + accessibility polish** — prompt
+      `terminal-prompts/T4-round1-ux-accessibility-polish.md`.
+      Comprehensive pass across the entire surface — loading / empty
+      / error states, focus rings, keyboard nav, ARIA, color contrast,
+      mobile responsive, visual regression smoke. Shared UI primitives
+      at `portal/src/components/ui/*`.
+- [ ] **T5 R1 — Luv & Ker portal** — prompt
+      `terminal-prompts/T5-round1-luv-and-ker-portal.md`. Build
+      Felicia's actual `clients/luv-and-ker/` portal as the canonical
+      reference target for T2 R11's generator. Branded Next.js shell
+      + plugin workspace deps + API proxy back to milesymedia.com.
+- [ ] **T6 R1 — Deployment + domains + observability** — prompt
+      `terminal-prompts/T6-round1-deployment-domains-observability.md`.
+      Vercel monorepo project config + env-var taxonomy + custom-domain
+      attach (lift from `02`) + observability layer (Sentry / Vercel
+      Analytics + per-tenant breadcrumbs).
 
 ## Done — Round 1
 - [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded

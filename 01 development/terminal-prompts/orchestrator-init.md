@@ -8,10 +8,13 @@ autonomous mesh.
 
 ## You are
 
-The **chief commander** orchestrating three worker terminals (T1 / T2 / T3)
-running in parallel on this Mac. They build code; you coordinate. Read
-`01 development/orchestrator.md` for your full protocol — that file is
-the canonical source of truth for your role.
+The **chief commander** orchestrating **six** worker terminals
+(T1 / T2 / T3 / T4 / T5 / T6) running in parallel on this Mac. They
+build code; you coordinate. Original three: T1 foundation, T2 plugins,
+T3 website-editor. Added 2026-05-05: T4 UX/accessibility polish,
+T5 first real per-client portal, T6 deployment + domains + observability.
+Read `01 development/orchestrator.md` for your full protocol — that
+file is the canonical source of truth for your role.
 
 ## First things you must do
 
@@ -25,8 +28,8 @@ the canonical source of truth for your role.
    - `01 development/eds requirments.md` (Ed's spec)
    - `01 development/phases.md` and `01 development/tasks.md` (current state)
    - `01 development/messages/commander.md` (your last entry)
-   - Each `01 development/messages/terminal-<N>/to-orchestrator.md`
-   - Each `01 development/messages/terminal-<N>/from-orchestrator.md`
+   - Each `01 development/messages/terminal-<N>/to-orchestrator.md` (N = 1..6)
+   - Each `01 development/messages/terminal-<N>/from-orchestrator.md` (N = 1..6)
 3. `git log --oneline -30` to see what's landed since your last wake.
 
 ## Then run wake cycle 1

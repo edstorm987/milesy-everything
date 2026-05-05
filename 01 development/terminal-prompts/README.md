@@ -15,7 +15,7 @@ prompts for each terminal, integrates their output back into the dev folder.
 ## How to use
 
 1. Open a fresh Claude Code terminal in `~/Desktop/ker-v3/`.
-2. Paste the contents of `T1-foundation.md` (or T2 / T3) at the prompt.
+2. Paste the contents of the active prompt for that terminal (T1 / T2 / T3 / T4 / T5 / T6) at the prompt.
 3. The terminal works the task, writes its outputs into the repo, updates
    the relevant chapter file in `01 development/context/prior research/`,
    updates `tasks.md`, commits + pushes.
@@ -50,6 +50,9 @@ When done:
 | **T1 → R7** | [T1-round7-postgres-backend.md](T1-round7-postgres-backend.md) | Swap file backend → Postgres for production. Architecture §13 parked v1-required. Five goals: Postgres driver behind storage abstraction (single `portal_kv` JSONB table) + migration script + connection pooling + RLS scoping defense + smoke against both backends. `DATABASE_URL` unset → file backend stays default for dev. |
 | **T2 → R10** | [T2-round10-email-sender.md](T2-round10-email-sender.md) | Ship `@aqua/plugin-email-sender` — cross-cutting delivery engine for all other plugins (agency-marketing templates, forms notifications, memberships welcome, affiliates payout, end-customer signup confirmations). Postmark + no-op driver for v1. `scopePolicy: "agency"`. After R10 T2 has shipped 10 plugins. |
 | **T3 → R5** | [T3-round5-cross-plugin-block-renderers.md](T3-round5-cross-plugin-block-renderers.md) | Real React components for the 18 cross-plugin storefront blocks (ecommerce 8 + memberships 3 + affiliates 3 + forms 1 + CRM 1 + donation-button). Replaces the stubs from R3 with real fetches against each plugin's API namespace. |
+| **T4 → R1** | [T4-round1-ux-accessibility-polish.md](T4-round1-ux-accessibility-polish.md) | UX + accessibility pass across the entire surface — loading / empty / error states, focus rings, keyboard nav, ARIA, color contrast, mobile responsive, visual regression smoke. Shared UI primitives at `portal/src/components/ui/*`. |
+| **T5 → R1** | [T5-round1-luv-and-ker-portal.md](T5-round1-luv-and-ker-portal.md) | Build Felicia's actual `clients/luv-and-ker/` portal — the canonical reference target for T2 R11's generator. Branded Next.js shell + plugin workspace deps + API proxy back to milesymedia.com for auth + storage. |
+| **T6 → R1** | [T6-round1-deployment-domains-observability.md](T6-round1-deployment-domains-observability.md) | Production infrastructure: Vercel monorepo project config + env-var taxonomy + custom-domain attach (lift from `02`) + observability layer (Sentry / Vercel Analytics + per-tenant breadcrumbs). |
 
 ### Orchestrator
 

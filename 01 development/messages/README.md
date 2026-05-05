@@ -1,9 +1,18 @@
 # Messages — autonomous comms hub
 
-Three terminals (T1 / T2 / T3) and one chief commander operate
-asynchronously on this repo. They coordinate by appending to log files in
-this folder. The chief commander runs on a self-paced `/loop` that wakes
-periodically, pulls the repo, reads the logs, responds, and re-schedules.
+**Six** terminals (T1 / T2 / T3 / T4 / T5 / T6) and one chief
+commander operate asynchronously on this repo. They coordinate by
+appending to log files in this folder. The chief commander runs on a
+self-paced `/loop` that wakes periodically, pulls the repo, reads the
+logs, responds, and re-schedules.
+
+Terminal split (current):
+- **T1** — foundation (auth / chrome / plugin runtime / Postgres / stitch)
+- **T2** — plugins (fulfillment / ecommerce / agency-* / memberships / affiliates / forms / email-sender / portal-export / ...)
+- **T3** — website-editor (blocks / editor admin / cross-plugin renderers)
+- **T4** — UX + accessibility polish across all admin pages + storefront (added 2026-05-05)
+- **T5** — first real per-client portal (Felicia / Luv & Ker) at `clients/luv-and-ker/` (added 2026-05-05)
+- **T6** — production deployment + custom domains + observability (added 2026-05-05)
 
 ## Layout
 
@@ -14,12 +23,11 @@ periodically, pulls the repo, reads the logs, responds, and re-schedules.
 ├── terminal-1/
 │   ├── to-orchestrator.md     ← T1 writes here (status + questions)
 │   └── from-orchestrator.md   ← commander writes here (replies + new tasks)
-├── terminal-2/
-│   ├── to-orchestrator.md
-│   └── from-orchestrator.md
-└── terminal-3/
-    ├── to-orchestrator.md
-    └── from-orchestrator.md
+├── terminal-2/  (same shape)
+├── terminal-3/  (same shape)
+├── terminal-4/  (same shape)
+├── terminal-5/  (same shape)
+└── terminal-6/  (same shape)
 ```
 
 Each file is **append-only**. Never rewrite earlier entries; only add new ones at the bottom.

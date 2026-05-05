@@ -10,15 +10,23 @@ your runtime:
 ### Mode A — Mac terminal (Claude Code)
 
 You're running on Ed's Mac with full shell + filesystem access, can spawn
-subagents, can use `/loop` and `ScheduleWakeup`. **Multiple terminals run
-in parallel** (T1 / T2 / T3 / chief commander). You coordinate via append-
-only logs at `01 development/messages/`.
+subagents, can use `/loop` and `ScheduleWakeup`. **Six worker terminals
+run in parallel** (T1 / T2 / T3 / T4 / T5 / T6) plus chief commander.
+You coordinate via append-only logs at `01 development/messages/`.
+
+Terminal split (current):
+- **T1** — foundation (auth / chrome / plugin runtime / Postgres / stitch)
+- **T2** — plugins (fulfillment / ecommerce / agency-* / memberships / affiliates / forms / email-sender / portal-export / ...)
+- **T3** — website-editor (blocks / editor admin / cross-plugin renderers)
+- **T4** — UX + accessibility polish across the entire surface
+- **T5** — first real per-client portal (Felicia / Luv & Ker) at `clients/luv-and-ker/`
+- **T6** — production deployment + custom domains + observability
 
 → **Read `01 development/messages/README.md`** for the full autonomous-
 mesh protocol. Then read the rest of this file.
 
 Within Mode A there are two roles:
-- **Worker terminal (T1 / T2 / T3)** — paste a prompt from `01 development/terminal-prompts/T<N>-...md`. You build code in your assigned slice.
+- **Worker terminal (T1 / T2 / T3 / T4 / T5 / T6)** — paste a prompt from `01 development/terminal-prompts/T<N>-...md`. You build code in your assigned slice.
 - **Chief commander (orchestrator)** — paste `01 development/terminal-prompts/orchestrator-init.md`. You coordinate the workers; full protocol in `01 development/orchestrator.md`. You don't write product code.
 
 ### Mode B — Claude web (claude.ai with GitHub connector)
