@@ -5,11 +5,7 @@
 Three new prompts just dropped (R7 / R10 / R5) — prior rounds R6/R9/R4
 shipped + archived.
 
-- [ ] **T1 R7 — Postgres backend** — prompt
-      `terminal-prompts/T1-round7-postgres-backend.md`. Swap file
-      backend → Postgres for production (architecture §13 parked
-      v1-required). Single `portal_kv` JSONB table + migration script.
-      `DATABASE_URL` unset → file backend stays default for dev.
+_(T1 R7 done — see `Done — Round 7` below)_
 _(T2 R10 done — see `Done — Round 10` below.)_
 _(T3 R5 done — see `Done — Round 5` below)_
 - [ ] **T4 R1 — UX + accessibility polish** — prompt
@@ -274,6 +270,37 @@ _(T3 R5 done — see `Done — Round 5` below)_
       `context/prior research/04-plugin-client-crm.md`.
 
 ## Done — Round 7
+- [x] **T1 R7 — Postgres backend (production storage)** — shipped.
+      Architecture §13's parked v1-required item closed. New
+      `src/server/storagePostgres.ts` driver — lazy `pg.Pool` from
+      `DATABASE_URL` with TLS auto-detect (Neon / Supabase /
+      Vercel Postgres); `loadBlob` / `saveBlob` against a single-row
+      JSONB blob in `portal_kv` keyed `__portal_state__`. Slotted
+      into the existing `Backend` abstraction in `storage.ts` next to
+      file/memory/kv via dynamic import (so `pg` stays out of the
+      parse-time path when PORTAL_BACKEND=file). Implicit promotion:
+      `DATABASE_URL` set + `PORTAL_BACKEND` unset → postgres takes
+      over (prod is "set DATABASE_URL and go"; dev stays on file).
+      `scripts/schema.sql` (key/value/updated_at + `portal_kv_key_prefix`
+      btree on `text_pattern_ops`), `scripts/migrate-file-to-postgres.mjs`
+      (idempotent ON CONFLICT upsert, DRY_RUN=1 supported, exit codes
+      0–4), `scripts/smoke-postgres.mjs` (8/8 pass — schema + index +
+      round-trip + idempotent re-write + prefix scan + payload-size
+      sanity + cleanup). RLS deferred to R8 — single-row blob layout
+      would gate the row not the in-blob fields; existing
+      `withTenantScope` is the operating defense. Q-ASSUMED documented:
+      blob-row over per-key rows so every existing `getState()` call
+      site keeps working without consumer refactor. `npm run
+      smoke:postgres` + `npm run migrate:file-to-postgres` aliases.
+      `.env.example` documents DATABASE_URL + pool tunables. tsc clean.
+      Verified end-to-end against a local Postgres (eds@localhost):
+      schema applied + migration moved 24KB blob from
+      `.data/portal-state.json` into `portal_kv`. Production runbook
+      in chapter. The Next-hosted HTTP smoke against postgres was
+      blocked by a parallel session holding the Next single-instance
+      dev lock; the postgres-direct smoke covers the driver surface
+      independently. See
+      `context/prior research/04-foundation-round7-postgres.md`.
 - [x] **T2 R7 — Phase preset consolidation + agency-marketing
       plugin** — shipped.
       Goal A (commit `a80daa9`): updated `DEFAULT_PHASE_PRESETS` in
