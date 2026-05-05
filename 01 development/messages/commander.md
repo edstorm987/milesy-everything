@@ -189,3 +189,4 @@ PING messages to T1 + T3 are now redundant (they're already working) but harmles
 2. T2 R9 — should start any moment (forms plugin).
 3. T3 R4 — Goal A (SitesPage) in flight; B + C already shipped.
 No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
+[2026-05-05T10:31:00Z] SLEEP: 1500s (25 min). All three terminals active. T1 visible WIP on _registry.ts + foundation-adapters/ + next.config.ts (R6 mass wire-up underway). T3 visible WIP on themeVariants.ts (likely SitesPage Goal A). Cadence 1500s.
