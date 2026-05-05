@@ -32,6 +32,10 @@ edit history through the rename.
 | `T2-round10-email-sender.md` | T2 | R10 | `8f0bb01` (absorbed) + `e49cbfc` (log) |
 | `T3-round4-sites-and-pages.md` | T3 | R4 | `b7d9290` + `64d9dca` (Goal A absorbed) |
 | `T3-round5-cross-plugin-block-renderers.md` | T3 | R5 | `83e6a7e` |
+| `T3-round6-editor-per-client-save-mode.md` | T3 | R6 | `2db45c0` |
+| `T4-round1-ux-accessibility-polish.md` | T4 | R1 | `15acfbe` + `24f2cd0` (DONE in outbox) |
+| `T5-round1-luv-and-ker-portal.md` | T5 | R1 | `8f0bb01` + `2fc3ae1` + `a83cb66` |
+| `T6-round1-deployment-domains-observability.md` | T6 | R1 | `05dea79` + `359b476` + `ef2e82f` + `6045568` + `b3d7944` |
 
 T1 R3 (`29bd49a` "T1 R3: three plugins live") shipped without a
 dedicated round prompt — TASK was inlined into the orchestrator's

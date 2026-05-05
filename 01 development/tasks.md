@@ -2,16 +2,25 @@
 
 ## In progress
 
-Six terminals firing. T1 R7 + T2 R10 + T3 R5 all DONE; new TASKs
-dropped for T1 R8 + T2 R11 + T3 R6. T4/T5/T6 still on R1.
+Active prompts (R8 / R11 / R7 / R2 / R2 / R2 across the 6 terminals).
+Prior rounds (T3 R6 + T4 R1 + T5 R1 + T6 R1) just hit DONE; their
+prompts archived to `old prompts/`. T1 R8 + T2 R11 still in flight
+from cycle 17.
 
-_(T1 R8 done — see `Done — Round 8` below)_
-- [ ] **T2 R11 — Export-to-repo + presets** — prompt
-      `terminal-prompts/T2-round11-export-to-repo-and-presets.md`.
-      `@aqua/plugin-portal-export` materializes Live clients into
-      `clients/<slug>/`. 4 starter presets. T5's Luv & Ker portal
-      is the canonical reference target.
-_(T3 R6 done — see `Done — Round 6` below)_
+- [ ] **T1 R8 — milesymedia ↔ portal stitch** — in flight (STARTED 15:00Z).
+- [ ] **T2 R11 — Export-to-repo + presets** — in flight (STARTED 03:00Z).
+- [ ] **T3 R7 — AI page builder** — `@aqua/plugin-ai-builder`. Claude
+      Haiku 4.5 default + Sonnet 4.6 fallback. Editor topbar gets
+      ✨ Generate button + streaming preview modal. Per-install API key.
+- [ ] **T4 R2 — Storefront + per-client portal polish + perf pass** —
+      apply R1's primitives + a11y patterns to storefront / end-customer /
+      per-client portal surfaces; add Lighthouse-style smoke.
+- [ ] **T5 R2 — Second per-client portal** — coaching/membership
+      industry, slim plugin set (no ecommerce/affiliates). Validates
+      multi-client variation for T2 R11's generator.
+- [ ] **T6 R2 — Real deploy + custom domains** — operator runbook +
+      Vercel domain-attach client (lift from `02`) +
+      `@aqua/plugin-domains` admin UI + end-to-end smoke.
 - [x] **T4 R1 — UX + accessibility polish** — DONE. Phase A audit
       (`b89ee01`) + Phase B step 1 shared UI primitives + a11y hooks +
       layout adoption (`15acfbe`) + Phase B step 2 plugin-admin
@@ -188,6 +197,55 @@ _(T3 R6 done — see `Done — Round 6` below)_
       extended with `"ecommerce"`. Demo seed installs both client-scoped
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
+
+## Done — Round 11
+- [x] **T2 R11 — Portal-export plugin** — shipped.
+      `@aqua/plugin-portal-export` at
+      `04 the final portal/plugins/portal-export/`. `scopePolicy: "either"`,
+      `core: false`, no hard deps (soft-reads website-editor via
+      optional `WebsiteEditorReaderPort`). Generator that materializes
+      a Live client's content into `clients/<slug>/` as a self-contained
+      Next.js app — mirrors T5's `clients/luv-and-ker/` shape exactly
+      (package.json with file:.. plugin workspace deps, next.config.ts
+      with security headers + CSP, tsconfig + postcss + tailwind with
+      brand injected, src/app/{layout, page, globals.css}, src/lib/
+      {brandKit, portalConfig}, portal-config.json with
+      `_generatedFingerprints` ledger).
+      **Idempotent re-export** via fingerprint ledger: on re-run the
+      diff classifies each planned file as added (write) / changed
+      (we owned, overwrite) / preserved (operator hand-edited, KEEP) /
+      unchanged. Operator hand-edits to materialized files are
+      preserved byte-for-byte; first-time runs treat all existing
+      files as preserved (no ledger means no claim of authorship).
+      Domain: PortalPreset, CollectedClientState, MaterializedFile,
+      ExportPlan/Diff/Record, PortalConfigDoc. Two services
+      (PresetService + ExportService — collect → plan → diff →
+      export(write); HistoryService folded into ExportService.
+      listHistory/getHistory). Five standard ports + 2 OPTIONAL:
+      `WebsiteEditorReaderPort` (active variants + custom content +
+      theme tokens), `FilesystemPort` (foundation supplies real
+      `fs/promises` in dev; smoke injects in-memory Map).
+      8 API routes (presets list/get + state preview + plan + export +
+      history + pr/open stub). 3 admin pages (Export / Presets /
+      History). 4 v1 preset starters bundled JSON: `skincare-brand`,
+      `service-portal`, `membership-only`, `affiliate-only`.
+      Brand-kit override on plan(): client wins over preset default;
+      explicit brandOverride beats both. Editor-supplied portal
+      variants override preset where they overlap; preset fills
+      missing roles.
+      tsc-clean; 5/5 smoke pass via
+      `npx tsx --test src/__smoke__/export.test.ts`. Foundation
+      pending: workspace dep + transpilePackages + side-effect-import +
+      `_registry.ts` append + `ActivityCategory` += "export" +
+      FilesystemPort wiring (real `fs/promises`, root at
+      `04 the final portal/clients/`) + WebsiteEditorReaderPort
+      projection from website-editor + GitHub PR-open integration
+      (replaces `pr/open` stub; out of scope for v1).
+      T2 plugin catalogue now: 11 shipped (fulfillment / ecommerce /
+      agency-HR / memberships / affiliates / agency-finance /
+      agency-marketing / client-crm / forms / email-sender /
+      portal-export); 94 smoke cases catalogue-wide. See
+      `context/prior research/04-plugin-portal-export.md`.
 
 ## Done — Round 10
 - [x] **T2 R10 — Email-sender plugin** — shipped.

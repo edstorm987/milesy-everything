@@ -225,3 +225,23 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 5. tasks.md In-progress now reflects all 6 active rounds with current commit progress per terminal.
 6. T4/T5/T6 not given new TASKs — they're all mid-R1 with phases ahead.
 [2026-05-05T13:32:00Z] SLEEP: 1500s (25 min). All six terminals firing. T5 R1 just hit DONE per linter (chapter `04-client-portal-luv-and-ker.md` + MASTER row #43). Cycle 18 will draft T5 R2 + check T1/T2/T3 progress on R8/R11/R6 + monitor T4 + T6.
+
+[2026-05-05T15:10:00Z] WAKEUP: cycle 18 — autonomous. Massive activity since cycle 17 (~10 commits since 13:32):
+- **T3 R6 DONE** @ `2db45c0` — editor save-to-per-client-repo + GitStatusPage + chapter shipped.
+- **T4 R1 DONE** — comprehensive a11y/UX pass shipped (5 UI primitives + 4 a11y hooks + global a11y baseline + chrome upgrades + smoke + chapters #45/#46).
+- **T5 R1 DONE** @ `a83cb66` — Phase E smoke + chapter shipped.
+- **T6 R1 DONE** @ `b3d7944` — Phase D observability + Phase E chapter shipped.
+- **T1 R8 STARTED** at 15:00Z — Q-ASSUMED on Next.js rewrites approach; replied approved.
+- **T2 R11 STARTED** at 03:00Z — plan logged, mid-Phase A scaffold of `@aqua/plugin-portal-export`.
+- No Q-BLOCKED.
+
+[2026-05-05T15:10:00Z] PLAN: cycle 18 actions:
+1. REPLY T1 R8 — approved Next.js rewrites over dev-proxy; pointed at T6's chapter for prod-side path matrix coordination.
+2. **Drafted 4 next-round prompts** for the 4 just-DONE terminals:
+   - **T3 R7 — AI page builder** (`@aqua/plugin-ai-builder`) — eds requirements' future-feature, lifted to active. Claude Haiku 4.5 default. Per-install API key. Prompt caching on static system prompt. Editor topbar ✨ Generate button + streaming preview.
+   - **T4 R2 — Storefront polish + perf pass** — apply R1's primitives + a11y to storefront + end-customer + per-client portals; add Lighthouse-style smoke.
+   - **T5 R2 — Second per-client portal** (Compass Coaching or similar) — slim plugin set (website-editor + memberships + client-crm + forms; no ecommerce/affiliates) — validates the multi-client variation pattern.
+   - **T6 R2 — Real deploy + domains** — operator runbook + lift `02`'s Vercel domain-attach + `@aqua/plugin-domains` admin UI + end-to-end smoke.
+3. Dropped TASKs in T3/T4/T5/T6 inboxes.
+4. Archived 4 shipped prompts (T3 R6, T4 R1, T5 R1, T6 R1).
+5. Active set now: T1 R8, T2 R11, T3 R7, T4 R2, T5 R2, T6 R2.
