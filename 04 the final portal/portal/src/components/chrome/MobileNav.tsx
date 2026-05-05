@@ -9,6 +9,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Sidebar } from "@/components/chrome/Sidebar";
 import { useFocusTrap } from "@/lib/a11y/useFocusTrap";
+import { useIsEmbedded } from "@/lib/a11y/isEmbedded";
 import type { NavPanel } from "@/lib/chrome/sidebarLayout";
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
 export function MobileNav({ panels, tenantLabel, currentPath }: Props) {
   const [open, setOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const embedded = useIsEmbedded();
   useFocusTrap(drawerRef, open);
 
   useEffect(() => {
@@ -59,7 +61,12 @@ export function MobileNav({ panels, tenantLabel, currentPath }: Props) {
 
       {open && (
         <div
-          className="fixed inset-0 z-[60] md:hidden"
+          // When embedded, use absolute positioning so the drawer stays
+          // inside the iframe rather than overlaying the parent frame.
+          className={[
+            embedded ? "absolute" : "fixed",
+            "inset-0 z-[60] md:hidden",
+          ].join(" ")}
           onClick={() => setOpen(false)}
         >
           <div className="absolute inset-0 bg-black/40" aria-hidden />

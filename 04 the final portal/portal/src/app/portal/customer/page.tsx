@@ -170,7 +170,7 @@ export default async function CustomerHome() {
 
 function FallbackCard({ heading, body }: { heading: string; body: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-black/15 bg-white/60 p-6">
+    <div role="status" className="rounded-lg border border-dashed border-black/15 bg-white/60 p-6">
       <h1 className="text-lg font-semibold tracking-tight text-black/90">{heading}</h1>
       <p className="mt-1 text-sm text-black/60">{body}</p>
     </div>

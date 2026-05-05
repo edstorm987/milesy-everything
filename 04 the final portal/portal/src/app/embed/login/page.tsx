@@ -52,15 +52,24 @@ export default async function EmbedLoginPage({
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[var(--brand-surface,_#fff)] px-4 py-8">
+    <main
+      id="main-content"
+      className="flex min-h-screen flex-col items-center justify-center bg-[var(--brand-surface,_#fff)] px-4 py-8"
+      data-embed="true"
+    >
       {brand && <ThemeInjector brand={brand} scope="client" />}
       <div className="w-full max-w-xs">
         <div className="mb-5 text-center">
           {brand?.logoUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={brand.logoUrl}
-              alt=""
+              alt={`${title}`}
               className="mx-auto mb-3 h-10 w-auto"
+              // Reserve a fixed height so the form below doesn't jump
+              // when the logo finishes loading. width=auto + h-10 keeps
+              // the visual size; the height attr removes the flash.
+              height={40}
             />
           )}
           <h1 className="text-lg font-semibold tracking-tight text-black/90">
@@ -68,7 +77,16 @@ export default async function EmbedLoginPage({
           </h1>
           {subtitle && <p className="mt-1 text-xs text-black/60">{subtitle}</p>}
         </div>
-        <Suspense fallback={<div className="h-40" aria-hidden />}>
+        <Suspense
+          fallback={
+            <div role="status" aria-live="polite" aria-busy="true" className="flex flex-col gap-2">
+              <span className="sr-only">Loading sign-in form</span>
+              <div className="h-9 rounded-md bg-black/5 animate-pulse" aria-hidden />
+              <div className="h-9 rounded-md bg-black/5 animate-pulse" aria-hidden />
+              <div className="h-10 mt-1 rounded-md bg-black/10 animate-pulse" aria-hidden />
+            </div>
+          }
+        >
           <LoginForm
             embedded
             clientId={resolvedClientId}
