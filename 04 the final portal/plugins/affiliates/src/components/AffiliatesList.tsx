@@ -54,25 +54,37 @@ export function AffiliatesList({ affiliates, apiBase, canMutate }: AffiliatesLis
         </div>
       </header>
 
-      <ul className="affiliates-grid">
-        {filtered.map(a => (
-          <li key={a.id}>
-            <article className={`affiliates-card affiliates-card-${a.status}`}>
-              <header>
-                <h3>{a.displayName}</h3>
-                <span className={`affiliates-pill affiliates-pill-${a.status}`}>{STATUS_LABEL[a.status]}</span>
-              </header>
-              <p className="affiliates-meta">{a.payoutEmail}</p>
-              <p className="affiliates-meta">
-                {a.totalReferred} referrals · {(a.lifetimeEarnings / 100).toFixed(2)} earned
-              </p>
-              {canMutate && a.status === "pending" && (
-                <ApproveButton apiBase={apiBase} affiliateId={a.id} />
-              )}
-            </article>
-          </li>
-        ))}
-      </ul>
+      {affiliates.length === 0 ? (
+        <div className="affiliates-empty" role="status">
+          <h3>No affiliates yet</h3>
+          <p>Affiliates will appear here once they sign up via your storefront affiliate signup block.</p>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="affiliates-empty" role="status">
+          <h3>No matches</h3>
+          <p>No affiliates match the current filters.</p>
+        </div>
+      ) : (
+        <ul className="affiliates-grid">
+          {filtered.map(a => (
+            <li key={a.id}>
+              <article className={`affiliates-card affiliates-card-${a.status}`}>
+                <header>
+                  <h3>{a.displayName}</h3>
+                  <span className={`affiliates-pill affiliates-pill-${a.status}`}>{STATUS_LABEL[a.status]}</span>
+                </header>
+                <p className="affiliates-meta">{a.payoutEmail}</p>
+                <p className="affiliates-meta">
+                  {a.totalReferred} referrals · {(a.lifetimeEarnings / 100).toFixed(2)} earned
+                </p>
+                {canMutate && a.status === "pending" && (
+                  <ApproveButton apiBase={apiBase} affiliateId={a.id} />
+                )}
+              </article>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

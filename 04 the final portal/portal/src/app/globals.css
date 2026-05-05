@@ -81,3 +81,291 @@ h1, h2, h3, h4, h5, h6 {
     animation: none !important;
   }
 }
+
+/* ─────────── Plugin admin baseline ────────────────────────────────────
+   The 9 plugins ship with prefixed CSS class names (`affiliates-*`,
+   `ecom-*`, `forms-*`, `fulfillment-*`, `hr-*`, `memberships-*`,
+   `marketing-*`, `crm-*`, `finance-*`) but no actual CSS rules — the
+   styles never shipped (audit `04-ux-audit.md`). Until each plugin's
+   CSS lands proper, this block provides a polished, brand-aware
+   baseline for all of them at once via attribute-suffix selectors.
+   Touch min, win max — every plugin admin page becomes legible without
+   editing one line of plugin code. */
+
+/* List header — flex row with title + actions. */
+[class$="-list-header"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+[class$="-list-header"] h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(0, 0, 0, 0.9);
+  margin: 0;
+}
+[class$="-list-header"] p {
+  font-size: 0.8125rem;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0.25rem 0 0;
+}
+
+/* List actions — search + filters + new-button row. */
+[class$="-list-actions"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+[class$="-list-actions"] input[type="search"],
+[class$="-list-actions"] input[type="text"],
+[class$="-list-actions"] select {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: var(--brand-surface, #fff);
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  min-height: 36px;
+}
+
+/* Card grid — responsive 1/2/3-up. */
+[class$="-grid"],
+[class$="-product-grid"] {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+@media (min-width: 768px) {
+  [class$="-grid"],
+  [class$="-product-grid"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  [class$="-grid"],
+  [class$="-product-grid"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Card — anything ending in `-card` (or `-card-<status>`). */
+[class*="-card"] {
+  background: var(--brand-surface, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--brand-radius, 12px);
+  padding: 1rem;
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+[class*="-card"] h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* Pills (status chips). */
+[class*="-pill"] {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.7);
+}
+[class*="-pill-active"], [class*="-pill-published"], [class*="-pill-paid"] {
+  background: rgb(220, 252, 231);
+  color: rgb(22, 101, 52);
+}
+[class*="-pill-pending"], [class*="-pill-draft"], [class*="-pill-trialing"] {
+  background: rgb(254, 243, 199);
+  color: rgb(120, 53, 15);
+}
+[class*="-pill-suspended"], [class*="-pill-canceled"], [class*="-pill-failed"], [class*="-pill-overdue"] {
+  background: rgb(254, 226, 226);
+  color: rgb(127, 29, 29);
+}
+[class*="-pill-archived"], [class*="-pill-removed"] {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* Meta text. */
+[class*="-meta"] {
+  font-size: 0.8125rem;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0.25rem 0;
+}
+
+/* Buttons — anything containing `-button`. */
+[class*="-button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: var(--brand-surface, #fff);
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  text-decoration: none;
+  min-height: 36px;
+  transition: background 120ms ease;
+}
+[class*="-button"]:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+[class*="-button-primary"] {
+  background: var(--brand-primary);
+  color: #fff;
+  border-color: transparent;
+}
+[class*="-button-primary"]:hover {
+  opacity: 0.92;
+  background: var(--brand-primary);
+}
+[class*="-button"]:disabled,
+[class*="-button"][disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Form fields. */
+[class$="-field"] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+[class$="-field"] > span {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+}
+[class$="-field"] input,
+[class$="-field"] select,
+[class$="-field"] textarea {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: var(--brand-surface, #fff);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  min-height: 40px;
+  width: 100%;
+}
+[class$="-field"] textarea { min-height: 96px; }
+[class$="-field"] input[aria-invalid="true"] {
+  border-color: rgb(220, 38, 38);
+}
+[class$="-field-row"] {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  [class$="-field-row"] {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Errors / alerts inside plugin admin. */
+[class$="-error"] {
+  font-size: 0.8125rem;
+  color: rgb(185, 28, 28);
+  background: rgb(254, 226, 226);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin: 0.5rem 0;
+}
+
+/* Modals. Plugins declare `<div className="...-modal" role="dialog">` */
+[class$="-modal"] {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+[class$="-modal-card"],
+[class$="-modal"] form {
+  background: var(--brand-surface, #fff);
+  border-radius: var(--brand-radius, 12px);
+  padding: 1.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+}
+@media (max-width: 640px) {
+  /* Mobile fullscreen modals. */
+  [class$="-modal-card"],
+  [class$="-modal"] form {
+    max-width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+  }
+}
+[class$="-modal-actions"] {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Tap targets — bump small inline buttons to a11y-friendly size on
+   touch devices. */
+@media (pointer: coarse) {
+  button:not([class*="-pill"]), a:not([class*="-pill"]):not([class*="-meta"]) {
+    min-height: 44px;
+  }
+}
+
+/* Empty-state helper for plugins (consumed via the inline pattern;
+   matches our shared <EmptyState>). */
+[class$="-empty"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1.5rem;
+  border: 1px dashed rgba(0, 0, 0, 0.15);
+  border-radius: var(--brand-radius, 12px);
+  background: rgba(0, 0, 0, 0.02);
+  color: rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+[class$="-empty"] h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.8);
+}
+[class$="-empty"] p {
+  font-size: 0.8125rem;
+  margin: 0;
+  max-width: 28rem;
+}
+
+/* Reset List. */
+[class$="-list"] ul,
+[class$="-list"] ol {
+  list-style: none;
+  padding: 0;
+}

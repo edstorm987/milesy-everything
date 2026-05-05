@@ -15,6 +15,7 @@ import { FOUNDATION_SERVICES } from "@/plugins/foundation-adapters";
 import { pluginPageAllowedRoles } from "@/plugins/_types";
 import type { PluginPageProps } from "@/plugins/_types";
 import { makePluginStorage } from "@/lib/server/pluginStorage";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 interface RouteProps {
   params: Promise<{ rest: string[] }>;
@@ -46,5 +47,9 @@ export default async function AgencyPluginCatchAll({ params, searchParams }: Rou
     services: FOUNDATION_SERVICES,
     storage: makePluginStorage(install.id),
   };
-  return <Component {...props} />;
+  return (
+    <ErrorBoundary label={`${install.pluginId}${page.path ? `/${page.path}` : ""}`}>
+      <Component {...props} />
+    </ErrorBoundary>
+  );
 }

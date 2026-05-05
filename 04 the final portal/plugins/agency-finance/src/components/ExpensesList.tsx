@@ -37,6 +37,12 @@ export function ExpensesList({ expenses, categories, apiBase, canMutate }: Expen
         </select>
       </header>
 
+      {expenses.length === 0 ? (
+        <div className="finance-empty" role="status">
+          <h3>No expenses yet</h3>
+          <p>Submit an expense below to start tracking reimbursable costs.</p>
+        </div>
+      ) : null}
       <ul className="finance-expense-grid">
         {filtered.map(e => (
           <li key={e.id}>

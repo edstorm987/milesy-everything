@@ -46,23 +46,35 @@ export function InvoicesList({ invoices, apiBase, canMutate }: InvoicesListProps
         </div>
       </header>
 
-      <ul className="finance-invoice-grid">
-        {filtered.map(i => (
-          <li key={i.id}>
-            <article className="finance-invoice-card">
-              <header>
-                <h3>{i.number}</h3>
-                <span className={`finance-pill finance-pill-${i.status}`}>{STATUS_LABEL[i.status]}</span>
-              </header>
-              <p className="finance-meta">{(i.totalCents / 100).toFixed(2)} {i.currency}</p>
-              <p className="finance-meta">Issued {new Date(i.issuedAt).toISOString().slice(0, 10)} · Due {new Date(i.dueAt).toISOString().slice(0, 10)}</p>
-              {canMutate && i.status === "sent" && (
-                <MarkPaidButton apiBase={apiBase} invoiceId={i.id} />
-              )}
-            </article>
-          </li>
-        ))}
-      </ul>
+      {invoices.length === 0 ? (
+        <div className="finance-empty" role="status">
+          <h3>No invoices yet</h3>
+          <p>Issue your first invoice to start tracking client payments.</p>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="finance-empty" role="status">
+          <h3>No matches</h3>
+          <p>No invoices match the current filters.</p>
+        </div>
+      ) : (
+        <ul className="finance-invoice-grid">
+          {filtered.map(i => (
+            <li key={i.id}>
+              <article className="finance-invoice-card">
+                <header>
+                  <h3>{i.number}</h3>
+                  <span className={`finance-pill finance-pill-${i.status}`}>{STATUS_LABEL[i.status]}</span>
+                </header>
+                <p className="finance-meta">{(i.totalCents / 100).toFixed(2)} {i.currency}</p>
+                <p className="finance-meta">Issued {new Date(i.issuedAt).toISOString().slice(0, 10)} · Due {new Date(i.dueAt).toISOString().slice(0, 10)}</p>
+                {canMutate && i.status === "sent" && (
+                  <MarkPaidButton apiBase={apiBase} invoiceId={i.id} />
+                )}
+              </article>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
