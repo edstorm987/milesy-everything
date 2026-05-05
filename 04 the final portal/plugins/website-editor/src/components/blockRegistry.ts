@@ -94,6 +94,8 @@ import MembershipTierGridBlock from "./blocks/MembershipTierGridBlock";
 import AffiliateSignupBlock from "./blocks/AffiliateSignupBlock";
 import AffiliatePayoutMeterBlock from "./blocks/AffiliatePayoutMeterBlock";
 import AffiliateLeaderboardBlock from "./blocks/AffiliateLeaderboardBlock";
+import FormRenderBlock from "./blocks/FormRenderBlock";
+import CrmContactFormBlock from "./blocks/CrmContactFormBlock";
 
 // ─── Registry shape ────────────────────────────────────────────────────────
 
@@ -873,6 +875,12 @@ export const RENDERER_REGISTRATIONS: Record<string, BlockComponentType> = {
   "affiliate-signup":         AffiliateSignupBlock,
   "affiliate-payout-meter":   AffiliatePayoutMeterBlock,
   "affiliate-leaderboard":    AffiliateLeaderboardBlock,
+
+  // forms (T2 R9 — @aqua/plugin-forms)
+  "form-render":              FormRenderBlock,
+
+  // client-crm (T2 R8 — @aqua/plugin-client-crm)
+  "crm-contact-form":         CrmContactFormBlock,
 };
 
 export function getBlockRenderer(type: string): BlockComponentType | undefined {

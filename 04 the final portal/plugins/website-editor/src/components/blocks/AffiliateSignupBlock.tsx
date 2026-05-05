@@ -27,13 +27,19 @@ export default function AffiliateSignupBlock({ block, editorMode }: BlockRenderP
       const res = await fetch("/api/portal/affiliates/me/enroll", {
         method: "POST",
         headers: { "content-type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
-          email: form.get("email"),
-          name: form.get("name"),
+          payoutEmail: form.get("email"),
+          displayName: form.get("name"),
         }),
       });
-      if (res.ok) setSubmitted(true);
-      else {
+      if (res.status === 401) {
+        setError("Sign in to enrol as an affiliate.");
+      } else if (res.ok) {
+        setSubmitted(true);
+      } else if (res.status === 404) {
+        setError("Affiliate program is not enabled on this site.");
+      } else {
         const data = await res.json().catch(() => ({}));
         setError(data.error ?? "Couldn't enrol — try again later.");
       }

@@ -14,11 +14,7 @@ shipped + archived.
       `terminal-prompts/T2-round10-email-sender.md`. Cross-cutting
       delivery engine for all other plugins. Postmark + no-op driver,
       4 cross-plugin event subscribers. After R10, T2 has 10 plugins.
-- [ ] **T3 R5 — Real cross-plugin block renderers** — prompt
-      `terminal-prompts/T3-round5-cross-plugin-block-renderers.md`.
-      18 real React components replacing R3's stubs (ecommerce 8 +
-      memberships 3 + affiliates 3 + forms 1 + CRM 1 + donation-button).
-      Real fetches against each plugin's API namespace.
+_(T3 R5 done — see `Done — Round 5` below)_
 - [ ] **T4 R1 — UX + accessibility polish** — prompt
       `terminal-prompts/T4-round1-ux-accessibility-polish.md`.
       Comprehensive pass across the entire surface — loading / empty
@@ -331,6 +327,29 @@ shipped + archived.
       `context/prior research/04-plugin-agency-finance.md`.
 
 ## Done — Round 5
+- [x] **T3 R5 — Real cross-plugin block renderers** — DONE.
+      Phase A: ecommerceBridge upgraded (real localStorage cart with
+      cross-tab sync, real ProductVariantPicker swatch UI,
+      goToStripeCheckout adapter); OrderSuccess fetches by
+      ?session_id, PaymentButton invokes Stripe, DonationButton
+      re-pointed at ecommerce, ProductSearch credentials + correct
+      URL. Phase B: 6 stub renderers replaced with real fetches:
+      MembershipPaywall consults /memberships/me, MembershipSignup
+      corrected body shape `{planId, billing}` + 401/404 flows,
+      MembershipTierGrid display-only, AffiliateSignup body shape
+      `{payoutEmail, displayName}`, AffiliatePayoutMeter rolls up
+      attributions + payouts, AffiliateLeaderboard graceful 404.
+      NEW FormRenderBlock (renders 11 field kinds from
+      /forms/public/form/:id, submits with thank-you/redirect),
+      NEW CrmContactFormBlock (delegates to FormRenderBlock when
+      formId set, else built-in contact form). RENDERER_REGISTRATIONS
+      grew to 66 entries. New cross-plugin smoke (25 tests); total
+      67/67 pass. tsc clean. Chapter
+      `context/prior research/04-plugin-website-editor-round5.md`,
+      MASTER row #40. R6 deferred: server-side cart, Stripe
+      Subscription mode for recurring donations, storefront SSR.
+      T2 R10 cross-team: /affiliates/leaderboard,
+      /client-crm/public/contact endpoints.
 - [x] **T1 R5 — End-customer flow** — shipped. Closes the architecture's
       three-level recursion (Agency → Client → End-customer).
       `users.ts` storage key for end-customers becomes

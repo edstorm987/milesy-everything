@@ -31,16 +31,19 @@ export default function MembershipTierGridBlock({ block, editorMode }: BlockRend
   const highlightPlanId = block.props.highlightPlanId as string | undefined;
 
   const [plans, setPlans] = useState<MembershipPlan[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (editorMode) return;
+    if (editorMode) { setLoading(false); return; }
     let cancelled = false;
-    void fetch("/api/portal/memberships/plans", { cache: "no-store" })
+    void fetch("/api/portal/memberships/plans", { cache: "no-store", credentials: "include" })
       .then(r => r.ok ? r.json() as Promise<{ plans?: MembershipPlan[] }> : { plans: [] })
       .then(data => { if (!cancelled) setPlans(data.plans ?? []); })
-      .catch(() => { /* silent */ });
+      .catch(() => { /* silent */ })
+      .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [editorMode]);
+  void loading;
 
   const containerStyle: React.CSSProperties = {
     display: "grid",

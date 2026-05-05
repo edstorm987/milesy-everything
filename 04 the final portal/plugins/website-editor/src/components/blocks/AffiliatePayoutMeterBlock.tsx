@@ -27,9 +27,24 @@ export default function AffiliatePayoutMeterBlock({ block, editorMode }: BlockRe
   useEffect(() => {
     if (editorMode) return;
     let cancelled = false;
-    void fetch("/api/portal/affiliates/me", { cache: "no-store" })
-      .then(r => r.ok ? r.json() as Promise<{ affiliate?: AffiliateSummary }> : { affiliate: undefined })
-      .then(data => { if (!cancelled) setSummary(data.affiliate ?? null); })
+    void fetch("/api/portal/affiliates/me", { cache: "no-store", credentials: "include" })
+      .then(r => r.ok ? r.json() as Promise<{ affiliate?: AffiliateSummary | null; attributions?: { status: string; commissionCents: number }[]; payouts?: { status: string; amountCents: number; scheduledFor?: number }[] }> : { affiliate: null })
+      .then(data => {
+        if (cancelled) return;
+        if (!data?.affiliate) { setSummary(null); return; }
+        // Roll up attribution + payout totals into the meter snapshot.
+        const pendingCents = (data.attributions ?? []).filter(a => a.status === "pending").reduce((acc, a) => acc + (a.commissionCents ?? 0), 0);
+        const approvedCents = (data.attributions ?? []).filter(a => a.status === "approved").reduce((acc, a) => acc + (a.commissionCents ?? 0), 0);
+        const paidCents = (data.payouts ?? []).filter(p => p.status === "completed").reduce((acc, p) => acc + (p.amountCents ?? 0), 0);
+        const nextScheduledPayout = (data.payouts ?? []).filter(p => p.status === "scheduled" || p.status === "in_progress").sort((a, b) => (a.scheduledFor ?? 0) - (b.scheduledFor ?? 0))[0];
+        setSummary({
+          ...data.affiliate,
+          pendingCents,
+          approvedCents,
+          paidCents,
+          nextPayoutAt: nextScheduledPayout?.scheduledFor,
+        });
+      })
       .catch(() => { /* silent */ });
     return () => { cancelled = true; };
   }, [editorMode]);

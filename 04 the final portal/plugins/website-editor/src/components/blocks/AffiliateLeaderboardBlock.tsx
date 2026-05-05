@@ -26,10 +26,17 @@ export default function AffiliateLeaderboardBlock({ block, editorMode }: BlockRe
   useEffect(() => {
     if (editorMode) return;
     let cancelled = false;
-    void fetch(`/api/portal/affiliates/leaderboard?limit=${encodeURIComponent(limit)}`, { cache: "no-store" })
+    // Q-ASSUMED (R5): T2's @aqua/plugin-affiliates doesn't yet expose
+    // a /leaderboard endpoint. The block degrades gracefully when 404
+    // — empty state with a placeholder. T2 R10 follow-up: add
+    // /leaderboard returning top-N by lifetimeEarnings.
+    void fetch(`/api/portal/affiliates/leaderboard?limit=${encodeURIComponent(limit)}`, {
+      cache: "no-store",
+      credentials: "include",
+    })
       .then(r => r.ok ? r.json() as Promise<{ rows?: LeaderboardRow[] }> : { rows: [] })
       .then(data => { if (!cancelled) setRows(data.rows ?? []); })
-      .catch(() => { /* silent */ });
+      .catch(() => { /* silent — affiliates plugin not installed */ });
     return () => { cancelled = true; };
   }, [editorMode, limit]);
 

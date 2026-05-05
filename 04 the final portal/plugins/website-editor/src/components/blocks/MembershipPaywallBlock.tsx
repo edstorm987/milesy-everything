@@ -3,38 +3,86 @@
 // MembershipPaywallBlock — gates rendered children unless the visitor
 // has an active subscription on a plan in `props.requirePlanIds`.
 //
-// **Round-3 status**: T2's @aqua/plugin-memberships declares this block
-// id and delegates rendering to this plugin per architecture. The
-// real-time gate consults a session endpoint
-// (`/api/portal/memberships/me`) that doesn't ship with R3 — until it
-// does, the block renders its children only when the visitor's
-// localStorage flag matches one of the required plan ids. Editor mode
-// always renders children so layout work is possible.
+// **Round-5 status**: real fetch against `GET /api/portal/memberships/me`.
+// Renders one of three states:
+//   - editor mode → always shows children + a notice strip
+//   - loading → no flicker; renders nothing while the fetch is in flight
+//   - active subscription matches → renders children
+//   - no/wrong subscription → renders an "Upgrade to access" CTA
+// Returns gracefully when the memberships plugin isn't installed
+// (404 / 401 → upgrade CTA with a soft "Members only" message).
 
 import { useEffect, useState } from "react";
 import type { BlockRenderProps } from "../blockRegistry";
 import { blockStylesToCss } from "../blockStyles";
 
+interface MeSubscription {
+  status: "trialing" | "active" | "past_due" | "canceled" | "paused" | "incomplete";
+  planId: string;
+  currentPeriodEnd?: number;
+}
+
+interface MeResponse {
+  subscription?: MeSubscription;
+}
+
+const ACTIVE_STATES = new Set(["trialing", "active"]);
+
 export default function MembershipPaywallBlock({ block, editorMode, renderChildren }: BlockRenderProps) {
   const requirePlanIds = (block.props.requirePlanIds as string[] | undefined) ?? [];
-  const [hasAccess, setHasAccess] = useState<boolean>(false);
+  const lockMessage = (block.props.lockMessage as string | undefined) ?? "Members only — upgrade to access this content.";
+  const ctaLabel = (block.props.ctaLabel as string | undefined) ?? "See plans";
+  const upgradeUrl = (block.props.upgradeUrl as string | undefined) ?? "/membership";
+
+  const [loading, setLoading] = useState(true);
+  const [hasAccess, setHasAccess] = useState(false);
 
   useEffect(() => {
-    if (editorMode) return;
-    try {
-      const planId = window.localStorage.getItem("lk_member_plan_id");
-      if (!planId) return;
-      if (requirePlanIds.length === 0 || requirePlanIds.includes(planId)) {
-        setHasAccess(true);
-      }
-    } catch { /* sealed-off browser */ }
+    if (editorMode) { setLoading(false); return; }
+    let cancelled = false;
+    void fetch("/api/portal/memberships/me", { cache: "no-store", credentials: "include" })
+      .then(async r => {
+        if (!r.ok) return null;
+        return r.json() as Promise<MeResponse>;
+      })
+      .then(data => {
+        if (cancelled) return;
+        const sub = data?.subscription;
+        if (sub && ACTIVE_STATES.has(sub.status)) {
+          if (requirePlanIds.length === 0 || requirePlanIds.includes(sub.planId)) {
+            setHasAccess(true);
+          }
+        }
+      })
+      .catch(() => { /* silent — treat as locked */ })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [editorMode, requirePlanIds]);
 
-  const showChildren = editorMode || hasAccess;
-
-  if (showChildren) {
-    return <>{renderChildren?.(block.children)}</>;
+  if (editorMode) {
+    return (
+      <>
+        <div
+          style={{
+            padding: "8px 12px",
+            margin: "0 0 8px",
+            borderRadius: 6,
+            background: "rgba(34,197,94,0.08)",
+            border: "1px solid rgba(34,197,94,0.25)",
+            color: "rgba(220,252,231,0.9)",
+            fontSize: 11,
+            display: "inline-block",
+          }}
+        >
+          🔒 Paywall — gated for members. Children render below in editor mode.
+        </div>
+        {renderChildren?.(block.children)}
+      </>
+    );
   }
+
+  if (loading) return null;
+  if (hasAccess) return <>{renderChildren?.(block.children)}</>;
 
   return (
     <section
@@ -50,11 +98,9 @@ export default function MembershipPaywallBlock({ block, editorMode, renderChildr
     >
       <div style={{ maxWidth: 480, margin: "0 auto" }}>
         <p style={{ fontSize: 32, marginBottom: 16 }}>🔒</p>
-        <p style={{ fontSize: 15, opacity: 0.85, marginBottom: 16 }}>
-          Members only — subscribe to access this content.
-        </p>
+        <p style={{ fontSize: 15, opacity: 0.85, marginBottom: 16 }}>{lockMessage}</p>
         <a
-          href="/membership"
+          href={upgradeUrl}
           style={{
             display: "inline-block",
             padding: "10px 18px",
@@ -66,7 +112,7 @@ export default function MembershipPaywallBlock({ block, editorMode, renderChildr
             textDecoration: "none",
           }}
         >
-          See plans
+          {ctaLabel}
         </a>
       </div>
     </section>

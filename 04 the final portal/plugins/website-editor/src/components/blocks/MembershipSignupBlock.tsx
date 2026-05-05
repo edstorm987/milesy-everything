@@ -30,32 +30,56 @@ export default function MembershipSignupBlock({ block, editorMode }: BlockRender
   const showAnnual = block.props.showAnnual !== false;
 
   const [plans, setPlans] = useState<MembershipPlan[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [pluginMissing, setPluginMissing] = useState(false);
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
   const [submitting, setSubmitting] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (editorMode) return;
+    if (editorMode) { setLoading(false); return; }
     let cancelled = false;
-    void fetch("/api/portal/memberships/plans", { cache: "no-store" })
-      .then(r => r.ok ? r.json() as Promise<{ plans?: MembershipPlan[] }> : { plans: [] })
+    void fetch("/api/portal/memberships/plans", { cache: "no-store", credentials: "include" })
+      .then(async r => {
+        if (r.status === 404) { setPluginMissing(true); return { plans: [] as MembershipPlan[] }; }
+        if (!r.ok) return { plans: [] as MembershipPlan[] };
+        return r.json() as Promise<{ plans?: MembershipPlan[] }>;
+      })
       .then(data => { if (!cancelled) setPlans(data.plans ?? []); })
-      .catch(() => { /* silent */ });
+      .catch(() => { /* silent */ })
+      .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [editorMode]);
 
   async function subscribe(planId: string) {
     if (editorMode) return;
     setSubmitting(planId);
+    setSubmitError(null);
     try {
       const res = await fetch("/api/portal/memberships/me/subscribe", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ planId, billingPeriod }),
+        credentials: "include",
+        body: JSON.stringify({ planId, billing: billingPeriod }),
       });
-      if (res.ok) {
-        const data = await res.json() as { redirectUrl?: string };
-        if (data.redirectUrl) window.location.href = data.redirectUrl;
+      if (res.status === 401) {
+        setSubmitError("Sign in to subscribe.");
+        return;
       }
+      const data = await res.json().catch(() => ({}));
+      const url = (data?.redirectUrl ?? data?.url) as string | undefined;
+      if (res.ok && url) {
+        window.location.href = url;
+        return;
+      }
+      if (res.ok && !url) {
+        // Free-tier path returns no redirect; show success message + reload.
+        window.location.reload();
+        return;
+      }
+      setSubmitError(data?.error ?? "Subscription failed — please try again.");
+    } catch (e) {
+      setSubmitError(e instanceof Error ? e.message : "Network error.");
     } finally { setSubmitting(null); }
   }
 
@@ -102,7 +126,24 @@ export default function MembershipSignupBlock({ block, editorMode }: BlockRender
           >Annual</button>
         </div>
       )}
-      {plans.length === 0 ? (
+      {submitError && (
+        <div style={{ gridColumn: "1 / -1", padding: 12, fontSize: 12, color: "#fca5a5", textAlign: "center" }}>
+          {submitError}
+        </div>
+      )}
+      {(loading && !editorMode) ? (
+        <div
+          style={{
+            gridColumn: "1 / -1",
+            padding: 24,
+            textAlign: "center",
+            color: "rgba(255,255,255,0.55)",
+            fontSize: 13,
+          }}
+        >
+          Loading plans…
+        </div>
+      ) : plans.length === 0 ? (
         <div
           style={{
             gridColumn: "1 / -1",
@@ -114,7 +155,11 @@ export default function MembershipSignupBlock({ block, editorMode }: BlockRender
             borderRadius: 12,
           }}
         >
-          {editorMode ? "Membership signup — plans render here when published" : "No plans available right now."}
+          {editorMode
+            ? "Membership signup — plans render here when published"
+            : pluginMissing
+              ? "Memberships are not enabled on this site."
+              : "No plans available right now."}
         </div>
       ) : plans.map(plan => {
         const price = billingPeriod === "annual" ? plan.priceAnnual : plan.priceMonthly;

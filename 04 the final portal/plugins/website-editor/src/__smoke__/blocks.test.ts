@@ -100,6 +100,10 @@ async function main(): Promise<void> {
     "membership-paywall", "membership-signup", "membership-tier-grid",
     // affiliates (T2 R5)
     "affiliate-signup", "affiliate-payout-meter", "affiliate-leaderboard",
+    // forms (T2 R9)
+    "form-render",
+    // client-crm (T2 R8)
+    "crm-contact-form",
   ];
   for (const id of externalIds) {
     expect(
