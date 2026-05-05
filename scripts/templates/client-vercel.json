@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "npm install --include=dev --no-audit --no-fund && npm run build",
+  "installCommand": "echo 'install handled inside buildCommand to keep workspace plugin file:.. deps in scope'",
+  "cleanUrls": true,
+  "trailingSlash": false
+}

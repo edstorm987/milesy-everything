@@ -1,12 +1,21 @@
-# Vercel only deploys the Milesy Media static landing page.
-# Everything else is preserved in git but not uploaded to Vercel.
+# Vercel deploys the Next.js portal at `04 the final portal/portal/`,
+# bundling the milesymedia static files into its public/ via the
+# build-portal.mjs prebuild step. Per-client portals at
+# `04 the final portal/clients/<slug>/` deploy as SEPARATE Vercel
+# projects (one per Live client), each with rootDirectory pinned to
+# their own folder — this file isn't read for those.
 
+# Reference codebases — not part of any deployment.
 01 development/
 02 felicias aqua portal work/
 03 old portal/
+
+# Per-client portals — each is a separate Vercel project.
+# Excluded from the main portal deploy so its bundle stays small.
 04 the final portal/clients/
-04 the final portal/plugins/
-04 the final portal/portal/
+
+# Local + build artefacts.
 node_modules/
 .next/
 .data/
+.vercel/

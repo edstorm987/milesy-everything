@@ -1,11 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": "echo 'static deploy — Milesy Media website only'",
-  "installCommand": "echo 'no install needed'",
-  "outputDirectory": "04 the final portal/milesymedia website",
-  "ignoreCommand": "exit 0",
+  "framework": "nextjs",
+  "buildCommand": "node scripts/build-portal.mjs",
+  "installCommand": "echo 'install handled inside build-portal.mjs so workspace plugin file:.. deps resolve correctly'",
+  "outputDirectory": "04 the final portal/portal/.next",
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": []
+  "rewrites": [
+    { "source": "/", "destination": "/_milesy/index.html" },
+    { "source": "/index.html", "destination": "/_milesy/index.html" },
+    { "source": "/login.html", "destination": "/_milesy/login.html" },
+    { "source": "/admin.html", "destination": "/_milesy/admin.html" },
+    { "source": "/styles.css", "destination": "/_milesy/styles.css" }
+  ]
 }
