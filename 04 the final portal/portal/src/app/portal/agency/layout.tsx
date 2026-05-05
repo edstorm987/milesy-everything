@@ -50,6 +50,9 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
             subtitle="Agency workspace"
             role={session.role}
             email={session.email}
+            panels={panels}
+            tenantLabel={agency.name}
+            currentPath={currentPath}
           />
           <main id="main-content" className="flex-1 px-8 py-6">
             <ErrorBoundary label="agency workspace">{children}</ErrorBoundary>

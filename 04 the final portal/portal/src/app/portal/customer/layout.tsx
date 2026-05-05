@@ -49,6 +49,9 @@ export default async function CustomerLayout({ children }: { children: ReactNode
             subtitle={client.name}
             role={session.role}
             email={session.email}
+            panels={panels}
+            tenantLabel={client.name}
+            currentPath={currentPath}
           />
           <main id="main-content" className="flex-1 px-8 py-6">
             <ErrorBoundary label="account">{children}</ErrorBoundary>

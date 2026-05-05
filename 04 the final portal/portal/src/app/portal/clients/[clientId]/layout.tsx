@@ -62,6 +62,9 @@ export default async function ClientLayout({
             subtitle={`Stage · ${client.stage}`}
             role={session.role}
             email={session.email}
+            panels={panels}
+            tenantLabel={client.name}
+            currentPath={currentPath}
           />
           <main id="main-content" className="flex-1 px-8 py-6">
             <ErrorBoundary label={`${client.name} workspace`}>{children}</ErrorBoundary>

@@ -125,7 +125,7 @@ export function LoginForm({ embedded = false, clientId, allowSignup = false }: P
           className="rounded-md border border-black/15 bg-white px-3 py-2 outline-none focus:border-[var(--brand-primary)]"
         />
       </label>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
       <button
         type="submit"
         disabled={busy}
