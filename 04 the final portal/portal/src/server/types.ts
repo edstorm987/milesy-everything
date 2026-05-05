@@ -190,6 +190,14 @@ export type ActivityCategory =
   | "phase"
   | "fulfillment"
   | "ecommerce"     // T2 ecommerce plugin
+  // R6 plugin wire-up — extend as new plugins land. Each plugin's
+  // chapter §"Foundation pending" lists the category it stamps.
+  | "hr"            // T2 agency-hr
+  | "memberships"   // T2 memberships
+  | "affiliates"    // T2 affiliates
+  | "finance"       // T2 agency-finance
+  | "marketing"     // T2 agency-marketing
+  | "crm"           // T2 client-crm
   | "settings"
   | "system";
 

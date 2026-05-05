@@ -58,6 +58,7 @@ export interface SeedDemoResult {
   customerUser: ServerUser;
   bootstrapped: { agency: boolean; client: boolean; customer: boolean };
   installedClientPlugins: string[];
+  installedAgencyPlugins: string[];
   seededChecklist: { phaseId: string; ticked: number; total: number } | null;
 }
 
@@ -156,11 +157,15 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
   }
 
   // Install client-scoped plugins on the Felicia mirror so the per-client
-  // surfaces (editor, products, orders) are reachable in the smoke flow.
-  // website-editor must install before ecommerce because ecommerce
-  // declares `requires: ["website-editor"]`.
+  // surfaces (editor, products, orders, memberships, affiliates, CRM)
+  // are reachable in the smoke flow. Order is significant — dep-bearing
+  // plugins must install after their deps:
+  //   website-editor → ecommerce (ecommerce.requires=[website-editor])
+  //   ecommerce → memberships    (memberships.requires=[ecommerce])
+  //   ecommerce → affiliates     (affiliates.requires=[ecommerce])
+  //   client-crm last (no hard deps but reads optional cross-plugin ports)
   const installedClientPlugins: string[] = [];
-  for (const pluginId of ["website-editor", "ecommerce"]) {
+  for (const pluginId of ["website-editor", "ecommerce", "memberships", "affiliates", "client-crm"]) {
     if (!getInstall({ agencyId: agency.id, clientId: client.id }, pluginId)) {
       const result = await runtimeInstallPlugin(pluginId, {
         scope: { agencyId: agency.id, clientId: client.id },
@@ -170,7 +175,7 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
         installedClientPlugins.push(pluginId);
       } else {
         // Don't crash the seed — log and continue. The Demo banner still
-        // works without ecommerce; the editor/products pages just 404.
+        // works without each plugin; missing plugin pages 404.
         logActivity({
           agencyId: agency.id,
           clientId: client.id,
@@ -178,6 +183,31 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
           category: "plugin",
           action: "demo.install.failed",
           message: `Demo seed: failed to install '${pluginId}' for client: ${result.error}`,
+          metadata: { pluginId, error: result.error },
+        });
+      }
+    }
+  }
+
+  // Install agency-scoped plugins (HR / finance / marketing). These are
+  // `scopePolicy: "agency"` and `core: false` — the demo opts in
+  // explicitly so the agency POV shows the full Milesy-internal surface.
+  const installedAgencyPlugins: string[] = [];
+  for (const pluginId of ["agency-hr", "agency-finance", "agency-marketing"]) {
+    if (!getInstall({ agencyId: agency.id }, pluginId)) {
+      const result = await runtimeInstallPlugin(pluginId, {
+        scope: { agencyId: agency.id },
+        installedBy: actor ?? "demo-seed",
+      });
+      if (result.ok) {
+        installedAgencyPlugins.push(pluginId);
+      } else {
+        logActivity({
+          agencyId: agency.id,
+          actorUserId: actor,
+          category: "plugin",
+          action: "demo.install.failed",
+          message: `Demo seed: failed to install '${pluginId}' agency-wide: ${result.error}`,
           metadata: { pluginId, error: result.error },
         });
       }
@@ -237,6 +267,7 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
     customerUser,
     bootstrapped: { agency: createdAgency, client: createdClient, customer: createdCustomer },
     installedClientPlugins,
+    installedAgencyPlugins,
     seededChecklist,
   };
 }

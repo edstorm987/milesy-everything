@@ -11,38 +11,26 @@ import "server-only";
 // module at boot, so the registration happens before any handler runs.
 
 import { registerEcommerceFoundation } from "@aqua/plugin-ecommerce/server";
-import { getClient, getClientForAgency } from "@/server/tenants";
-import { logActivity, listActivity } from "@/server/activity";
-import { emit } from "@/server/eventBus";
-import { getInstall } from "@/server/pluginInstalls";
-import type { AquaEventName } from "@/server/eventBus";
+import {
+  tenantPort, activityPort, eventBusPort, pluginInstallStorePort,
+} from "./_foundationPorts";
 
 let registered = false;
 
 export function ensureEcommerceFoundationRegistered(): void {
   if (registered) return;
+  // The plugin's `EcommerceFoundation` interface uses its own vendored
+  // type aliases (ActivityEntry / ActivityCategory / Client / etc.).
+  // Each foundation port we hand it is structurally compatible at
+  // runtime; the cast bridges structural-vs-vendored TS drift that
+  // grows whenever foundation's ActivityCategory adds a new union
+  // member ahead of the plugin's vendored copy.
   registerEcommerceFoundation({
-    tenant: {
-      getClient(id) { return getClient(id); },
-      getClientForAgency(agencyId, clientId) { return getClientForAgency(agencyId, clientId); },
-    },
-    activity: {
-      logActivity(input) { return logActivity(input); },
-      listActivity(filter) { return listActivity(filter); },
-    },
-    events: {
-      emit(scope, name, payload) {
-        // EcommerceEventName ⊂ AquaEventName for foundation-emitted names;
-        // ecommerce-specific names (order.*, product.*, inventory.*,
-        // discount.*) extend the foundation set. Cast through the wider
-        // bus type — eventBus.ts doesn't reject unknown names.
-        emit(scope, name as AquaEventName, payload);
-      },
-    },
-    pluginInstalls: {
-      getInstall(scope, pluginId) { return getInstall(scope, pluginId); },
-    },
-  });
+    tenant: tenantPort,
+    activity: activityPort,
+    events: eventBusPort,
+    pluginInstalls: pluginInstallStorePort,
+  } as unknown as Parameters<typeof registerEcommerceFoundation>[0]);
   registered = true;
 }
 

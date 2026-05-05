@@ -13,8 +13,17 @@ import type { AquaPlugin, NavItem, PluginFeature, SettingsField, SettingsGroup }
 const PLUGIN_ID_PATTERN = /^[a-z][a-z0-9-]*$/;
 const SEMVER_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 const VALID_STATUSES = new Set(["stable", "beta", "alpha"]);
+// R6 widening — plugin authors ship `category` values that the
+// foundation hadn't anticipated. Each new id matches a manifest
+// already in flight (see chapter notes for who emits what):
+//   • "growth"   → @aqua/plugin-client-crm
+//   • "hr"       → @aqua/plugin-agency-hr
+//   • "finance"  → @aqua/plugin-agency-finance
+// Membership/affiliate plugins reuse the existing "commerce" / "marketing"
+// values, so no new entries needed for those.
 const VALID_CATEGORIES = new Set([
   "core", "content", "commerce", "marketing", "support", "ops", "fulfillment",
+  "growth", "hr", "finance",
 ]);
 const VALID_FIELD_TYPES = new Set([
   "text", "password", "url", "email", "select", "boolean", "textarea", "number", "color",
@@ -22,6 +31,13 @@ const VALID_FIELD_TYPES = new Set([
 const VALID_PLAN_IDS = new Set(["free", "starter", "pro", "enterprise"]);
 const VALID_PANEL_IDS = new Set([
   "main", "fulfillment", "store", "content", "marketing", "settings", "ops", "tools",
+  // R5: end-customer surface.
+  "customer",
+  // R6: plugin-specific panels in flight (warn-only — sidebar's scope
+  // filter was tightened in R5 to only show items that match the
+  // current scope's panelId/href anyway, so unknown panels are inert).
+  "agency-hr", "agency-finance", "agency-marketing", "memberships", "affiliates",
+  "growth",
 ]);
 const VALID_SCOPE_POLICIES = new Set(["client", "agency", "either"]);
 

@@ -45,8 +45,14 @@ const nextConfig: NextConfig = {
   // step). transpilePackages tells Next/Turbopack to compile them rather
   // than treat them as pre-built node_modules.
   transpilePackages: [
+    "@aqua/plugin-affiliates",
+    "@aqua/plugin-agency-finance",
+    "@aqua/plugin-agency-hr",
+    "@aqua/plugin-agency-marketing",
+    "@aqua/plugin-client-crm",
     "@aqua/plugin-ecommerce",
     "@aqua/plugin-fulfillment",
+    "@aqua/plugin-memberships",
     "@aqua/plugin-website-editor",
   ],
   async headers() {

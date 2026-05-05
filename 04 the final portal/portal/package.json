@@ -7,11 +7,18 @@
     "dev": "next dev -p 3030",
     "build": "next build",
     "start": "next start -p 3030",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
+    "@aqua/plugin-affiliates": "file:../plugins/affiliates",
+    "@aqua/plugin-agency-finance": "file:../plugins/agency-finance",
+    "@aqua/plugin-agency-hr": "file:../plugins/agency-hr",
+    "@aqua/plugin-agency-marketing": "file:../plugins/agency-marketing",
+    "@aqua/plugin-client-crm": "file:../plugins/client-crm",
     "@aqua/plugin-ecommerce": "file:../plugins/ecommerce",
     "@aqua/plugin-fulfillment": "file:../plugins/fulfillment",
+    "@aqua/plugin-memberships": "file:../plugins/memberships",
     "@aqua/plugin-website-editor": "file:../plugins/website-editor",
     "next": "16.2.4",
     "react": "19.2.4",

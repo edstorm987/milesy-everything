@@ -18,11 +18,29 @@ import { validatePlugin, validateRegistry } from "./_validate";
 import fulfillmentManifest from "@aqua/plugin-fulfillment";
 import websiteEditorManifest from "@aqua/plugin-website-editor";
 import ecommerceManifest from "@aqua/plugin-ecommerce";
+import agencyHrManifest from "@aqua/plugin-agency-hr";
+import membershipsManifest from "@aqua/plugin-memberships";
+import affiliatesManifest from "@aqua/plugin-affiliates";
+import agencyFinanceManifest from "@aqua/plugin-agency-finance";
+import agencyMarketingManifest from "@aqua/plugin-agency-marketing";
+import clientCrmManifest from "@aqua/plugin-client-crm";
 
-// Side-effect import: registers the ecommerce plugin's foundation
-// adapter via `registerEcommerceFoundation` at module load. Must run
-// before any ecommerce route handler executes.
+// Side-effect imports — each side-effect file binds the plugin's
+// register-once foundation adapter to T1's modules at boot. Order is
+// significant: `clientCrmFoundation` reads cross-plugin ports from
+// memberships + ecommerce, so those two register first.
 import "./foundation-adapters/ecommerceFoundation";
+import "./foundation-adapters/membershipsFoundation";
+import "./foundation-adapters/agencyHrFoundation";
+import "./foundation-adapters/affiliatesFoundation";
+import "./foundation-adapters/agencyFinanceFoundation";
+import "./foundation-adapters/agencyMarketingFoundation";
+import "./foundation-adapters/clientCrmFoundation";
+
+// R6 cross-plugin event-bus subscriber registrations. Each plugin's
+// adapter file declared what it cares about; the side-effect import
+// below binds concrete subscribers via `subscribeForPlugin`.
+import "./foundation-adapters/_eventSubscribers";
 
 export { validatePlugin, validateRegistry } from "./_validate";
 export type { PluginValidationResult } from "./_validate";
@@ -40,6 +58,12 @@ const PLUGINS: AquaPlugin[] = [
   fulfillmentManifest as unknown as AquaPlugin,
   websiteEditorManifest as unknown as AquaPlugin,
   ecommerceManifest as unknown as AquaPlugin,
+  agencyHrManifest as unknown as AquaPlugin,
+  membershipsManifest as unknown as AquaPlugin,
+  affiliatesManifest as unknown as AquaPlugin,
+  agencyFinanceManifest as unknown as AquaPlugin,
+  agencyMarketingManifest as unknown as AquaPlugin,
+  clientCrmManifest as unknown as AquaPlugin,
 ];
 
 // Validate every shipped plugin once on module load. Authoring mistakes

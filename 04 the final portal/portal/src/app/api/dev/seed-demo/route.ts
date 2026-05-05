@@ -61,8 +61,9 @@ async function performSeedFlow(req: NextRequest, actor?: string) {
     },
     seededChecklist: seed.seededChecklist,
     installedClientPlugins: seed.installedClientPlugins,
+    installedAgencyPlugins: seed.installedAgencyPlugins,
     installedScope: listInstalledFor({ agencyId: seed.agency.id, clientId: seed.client.id })
-      .map(p => ({ pluginId: p.pluginId, enabled: p.enabled })),
+      .map(p => ({ pluginId: p.pluginId, enabled: p.enabled, agencyWide: !p.clientId })),
     bootstrapped: seed.bootstrapped,
     correlationId: crypto.randomBytes(4).toString("hex"),
   });

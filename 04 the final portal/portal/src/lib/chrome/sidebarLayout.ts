@@ -38,6 +38,22 @@ const DEFAULT_PANELS: { id: PanelId; label: string; order: number }[] = [
   { id: "settings", label: "Settings", order: 90 },
 ];
 
+// R6 — plugins ship nav items under panel ids the foundation hadn't
+// reserved (e.g. client-crm uses `panelId: "growth"`,
+// agency-marketing uses `panelId: "agency-marketing"`). Rather than
+// gate every new plugin on a foundation edit, the assembly loop now
+// renders any non-empty panel — known ones at their declared order,
+// unknown ones in a "Discovered" range slotted between Tools and
+// Settings. Future plugins land without a foundation patch.
+const DISCOVERED_PANEL_LABELS: Record<string, string> = {
+  "agency-hr":        "People",
+  "agency-finance":   "Finance",
+  "agency-marketing": "Marketing operations",
+  "memberships":      "Memberships",
+  "affiliates":       "Affiliates",
+  "growth":           "Growth",
+};
+
 export interface BuildSidebarInput {
   role: Role;
   scope: "agency" | "client" | "customer";
@@ -130,6 +146,7 @@ export function buildSidebar(input: BuildSidebarInput): NavPanel[] {
 
   // Assemble panels in defined order, dropping empties.
   const result: NavPanel[] = [];
+  const knownPanelIds = new Set(DEFAULT_PANELS.map(p => p.id));
   for (const panel of DEFAULT_PANELS) {
     const items = itemsByPanel.get(panel.id) ?? [];
     if (items.length === 0) continue;
@@ -138,7 +155,26 @@ export function buildSidebar(input: BuildSidebarInput): NavPanel[] {
       items: items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.label.localeCompare(b.label)),
     });
   }
-  return result;
+  // Surface plugin-defined panels the foundation never registered.
+  // Slotted between Tools (60) and Settings (90) so they land below
+  // the chrome essentials but above the settings tail.
+  let discoveredOrder = 70;
+  for (const [panelId, items] of itemsByPanel.entries()) {
+    if (knownPanelIds.has(panelId as PanelId)) continue;
+    if (items.length === 0) continue;
+    const label = DISCOVERED_PANEL_LABELS[panelId]
+      ?? panelId.replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    result.push({
+      id: panelId as PanelId,
+      label,
+      order: discoveredOrder,
+      items: items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.label.localeCompare(b.label)),
+    });
+    discoveredOrder += 1;
+  }
+  // Re-sort the assembled list by panel order so discovered panels
+  // land in their declared range even if they entered before Settings.
+  return result.sort((a, b) => a.order - b.order);
 }
 
 function appendIntoPanel(map: Map<PanelId, NavItem[]>, item: NavItem) {
