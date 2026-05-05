@@ -5,10 +5,7 @@
 Six terminals firing. T1 R7 + T2 R10 + T3 R5 all DONE; new TASKs
 dropped for T1 R8 + T2 R11 + T3 R6. T4/T5/T6 still on R1.
 
-- [ ] **T1 R8 — milesymedia ↔ portal stitch** — prompt
-      `terminal-prompts/T1-round8-milesymedia-portal-stitch.md`.
-      Stitch milesymedia + Aqua portal as ONE surface (localhost +
-      Vercel). Coordinate with T6's Vercel monorepo work.
+_(T1 R8 done — see `Done — Round 8` below)_
 - [ ] **T2 R11 — Export-to-repo + presets** — prompt
       `terminal-prompts/T2-round11-export-to-repo-and-presets.md`.
       `@aqua/plugin-portal-export` materializes Live clients into
@@ -283,6 +280,32 @@ _(T3 R6 done — see `Done — Round 6` below)_
       `context/prior research/04-plugin-forms.md`.
 
 ## Done — Round 8
+- [x] **T1 R8 — milesymedia ↔ portal stitch** — shipped.
+      Stitch milesymedia static site + Aqua portal as ONE origin in
+      both dev (`localhost:3030`) and production (Vercel single
+      project). Files stay separate in repo per Ed's "puzzle piece"
+      requirement (`milesymedia website/` + `portal/`).
+      `portal/scripts/prepare-milesy.mjs` copies the static site →
+      `portal/public/_milesy/` (idempotent; runs as `predev` and
+      `prebuild` so dev + Vercel build use one canonical copy step).
+      `next.config.ts` `rewrites().beforeFiles` mirrors the production
+      `vercel.json` rewrites (`/`, `/index.html`, `/login.html`,
+      `/admin.html`, `/styles.css` → `/_milesy/<file>`). T6 R1 Phase A
+      shipped the production-side root `vercel.json` +
+      `build-portal.mjs` (commit `359b476`); R8 mirrors the surface
+      in dev. `npm run dev:all` is an alias for `npm run dev` —
+      Q-ASSUMED single-port single-server over the prompt's
+      two-server `concurrently` pattern (simpler, no extra script,
+      no config drift). Static site `data-portal-base` meta defaults
+      to `""` (same-origin) since R8 across all 3 pages
+      (index/login/admin); `?portalBase=…` query overrides for
+      standalone-preview workflows. R4 demo + R5 end-customer
+      chapters appended with same-origin notes. `public/_milesy/`
+      added to portal `.gitignore`. Smoke green: `/` → milesymedia
+      landing, `/styles.css` → 200 text/css, `/login` → Next.js
+      login, `/login.html` → static login mock, `/admin.html` →
+      static admin mock, `/demo` → 307 + isDemo cookie. tsc clean.
+      See `context/prior research/04-milesymedia-portal-stitch.md`.
 - [x] **T2 R8 — Client-CRM plugin** — shipped.
       `@aqua/plugin-client-crm` at
       `04 the final portal/plugins/client-crm/`. `scopePolicy: "client"`,

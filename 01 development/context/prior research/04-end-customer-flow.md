@@ -319,3 +319,33 @@ GET  /portal/customer (no auth)      → 307 → /login ✓
 | Variant render              | "powered by T3's variant flow"          | Direct import of T3's `getActivePortalVariant` + render via `<BlockRenderer>` | T3 doesn't yet expose a one-call host-side renderer; minimal surface needed |
 | Customer route prefix match | "mirror existing /portal/clients/[clientId]/[...rest] resolver pattern" | Added `resolveCustomerPluginPage` next to it; relative-path branch requires explicit plugin prefix | Avoid ambiguity when multiple plugins have a top-level relative-path page |
 | EndCustomer demo wipe       | "?reset=1 must wipe the demo end-customer too" | Already covered — users loop walks all keys by `agencyId` | No code change needed beyond seeding the customer |
+
+---
+
+## Round 8 update — same-origin stitch (chapter 49)
+
+R8 makes milesymedia + Aqua portal one origin (chapter
+`04-milesymedia-portal-stitch.md`). Two notes for the end-customer
+flow:
+
+- **`/embed/login` is also same-origin under the stitch.** The portal
+  origin (`milesymedia.com` in prod, `localhost:3030` in dev) hosts
+  both the marketing landing and the iframe-able login surface. The
+  iframe is still cross-origin from the embedding client's website
+  (e.g. `luvandker.com`), so the existing R5 contract is unchanged:
+  the iframe loads `https://milesymedia.com/embed/login?client=<id>`,
+  the form submits cross-origin to `/api/auth/end-customer/signup` or
+  `/api/auth/login`, the `lk_session_v1` cookie scopes to the portal
+  origin, and `window.parent.location.href = returnUrl` drives the
+  parent frame post-login.
+- **`?return=<url>`** on the embed form still routes to wherever the
+  embedding site wants the visitor to land. Default behaviour
+  (`${origin}/portal/customer`) now uses the portal origin —
+  `milesymedia.com/portal/customer` in prod — which is the exact
+  surface end-customers are meant to land on. No code change in
+  `LoginForm.tsx` for R8; the `${origin}` expression already resolves
+  to the same-origin host.
+
+The R5 cookie shape (`isDemo` flag, scoped per-client `email|c:<clientId>`
+key), the variant-driven `/portal/customer` resolution, and the customer
+route family at `/portal/customer/[...rest]` are unchanged.

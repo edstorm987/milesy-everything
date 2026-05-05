@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Milesy Media — Marketing that performs</title>
   <meta name="description" content="A modern performance marketing agency. Strategy, content, and paid media that move the needle." />
-  <!-- Aqua portal base. Override at deploy time (e.g. set to https://portal.milesymedia.com).
-       The inline script at the bottom of <body> rewrites every [data-aqua-action] href to point here. -->
-  <meta name="aqua-portal-base" content="http://localhost:3000" />
+  <!-- Aqua portal base. Empty content = same-origin (R8 stitch — milesymedia
+       and the Aqua portal both deploy from one Vercel project + same origin
+       in dev via Next.js rewrites). Override only when serving the static
+       site from a different origin than the portal (rare; mostly a fallback
+       for `python3 -m http.server` style local previews of the static site
+       alone). The inline script at the bottom of <body> rewrites every
+       [data-aqua-action] href against this value. -->
+  <meta name="aqua-portal-base" content="" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
@@ -151,13 +156,20 @@
   </footer>
 
   <script>
-    // Rewrite [data-aqua-action] hrefs to the configured Aqua portal.
-    // The base URL comes from <meta name="aqua-portal-base"> so it can be
-    // overridden at deploy time without rebuilding the marketing site.
+    // R8 stitch — milesymedia + Aqua portal share one origin in both
+    // dev (Next.js rewrites) and prod (single Vercel project with the
+    // static site bundled into portal/public/_milesy/). Empty meta
+    // content = same-origin paths (the default since R8). When the
+    // static site is previewed standalone (e.g. python3 -m http.server)
+    // a separate-origin portal can be selected via the `?portalBase=`
+    // query param OR by setting the meta content explicitly.
     (function () {
       var meta = document.querySelector('meta[name="aqua-portal-base"]');
-      var base = (meta && meta.getAttribute('content')) || 'http://localhost:3000';
-      base = base.replace(/\/+$/, '');
+      var queryBase = new URLSearchParams(window.location.search).get('portalBase');
+      var base = queryBase != null
+        ? queryBase
+        : (meta ? meta.getAttribute('content') : null);
+      base = (base || '').replace(/\/+$/, '');
       var routes = {
         'sign-in': '/login',
         'demo': '/demo?source=milesymedia'

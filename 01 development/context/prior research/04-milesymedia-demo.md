@@ -281,3 +281,27 @@ POST /api/auth/login (demo creds)   → real session, NO isDemo,
 - A future Vercel cron entry that hits `GET /api/dev/seed-demo?reset=1`
   will need either `NEXT_PUBLIC_DEV_BYPASS=1` for that environment or a
   service token. Out of scope for R4.
+
+---
+
+## Round 8 update — same-origin stitch (chapter 49)
+
+R8 stitches milesymedia and the Aqua portal as one origin (chapter
+`04-milesymedia-portal-stitch.md`). Two implications for the demo
+flow:
+
+- **Demo button now hits same-origin `/demo`.** The static site's
+  `data-portal-base` meta defaults to `""` (empty) since R8, so the
+  inline rewriter produces `'/demo?source=milesymedia'` (root-relative)
+  instead of `'http://localhost:3000/demo?...'`. Visiting
+  `localhost:3030/` and clicking Demo lands at `localhost:3030/demo`;
+  visiting `milesymedia.com/` and clicking Demo lands at
+  `milesymedia.com/demo`. No cross-origin cookie dance.
+- **`?portalBase=` query override** still lets standalone-preview
+  workflows point Demo at a separately-hosted portal (e.g. `python3 -m
+  http.server` in `milesymedia website/` for design review against a
+  staging portal).
+
+The `isDemo` cookie payload, the POV cycle, and the reset endpoint
+are unchanged. The `/demo` route handler is unchanged. R8 is purely
+a URL-surface change.

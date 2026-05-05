@@ -30,6 +30,24 @@ const SECURITY_HEADERS = [
   },
 ];
 
+// R8 — milesymedia ↔ portal stitch. Static milesymedia files live at
+// `04 the final portal/milesymedia website/` in the repo and get
+// copied to `portal/public/_milesy/` by `scripts/prepare-milesy.mjs`
+// (run as `predev` in dev + as part of `build-portal.mjs` on Vercel).
+// These rewrites then expose the static files at root paths so the
+// dev server matches the production Vercel surface 1:1 — visiting
+// `localhost:3030/` shows the marketing landing, `/login.html` shows
+// the static login mock, `/styles.css` resolves the relative reference,
+// and Next.js handlers (`/login`, `/demo`, `/portal/*`, `/embed/*`,
+// `/api/*`) keep their normal routes.
+const MILESYMEDIA_REWRITES = [
+  { source: "/",            destination: "/_milesy/index.html" },
+  { source: "/index.html",  destination: "/_milesy/index.html" },
+  { source: "/login.html",  destination: "/_milesy/login.html" },
+  { source: "/admin.html",  destination: "/_milesy/admin.html" },
+  { source: "/styles.css",  destination: "/_milesy/styles.css" },
+];
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Pin the Turbopack root so a parent-folder lockfile doesn't get
@@ -55,6 +73,18 @@ const nextConfig: NextConfig = {
     "@aqua/plugin-memberships",
     "@aqua/plugin-website-editor",
   ],
+  async rewrites() {
+    return {
+      // `beforeFiles` fires before Next's filesystem static-file matching,
+      // so `/` rewrites to /_milesy/index.html cleanly even when there's
+      // no app/page.tsx for `/`. (This portal uses app/page.tsx today
+      // for a placeholder landing — `beforeFiles` lets the milesymedia
+      // marketing page win.)
+      beforeFiles: MILESYMEDIA_REWRITES,
+      afterFiles: [],
+      fallback: [],
+    };
+  },
   async headers() {
     return [{ source: "/:path*", headers: SECURITY_HEADERS }];
   },
