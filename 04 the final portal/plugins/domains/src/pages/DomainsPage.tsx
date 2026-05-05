@@ -1,16 +1,18 @@
 // Admin page for the domains plugin.
 //
-// V1 surface (per prompt — UI can be a follow-up round): server-
-// rendered list of attached domains with their status + the DNS
-// records the operator must add. Add-domain form is a plain HTML
-// `<form>` POSTing to `/api/portal/domains/attach`. Verify + remove
-// are also plain forms — no client-side JS required for the v1 path.
-//
-// Looks intentionally plain — T4's UX polish round will refine.
+// V1 (R1) surface: server-rendered list of attached domains with
+// their status + the DNS records the operator must add. Add-domain
+// form is a plain HTML `<form>`; verify + remove are also plain
+// forms. R2 swaps the static status pill for the auto-polling
+// `<DomainStatusBadge>` (client component) so a freshly-attached
+// domain auto-flips from "pending" → "verified" without a manual
+// re-check, up to a 5-minute window. Beyond that, the operator
+// uses the manual "Re-check verify" form.
 
 import type { PluginPageProps } from "../lib/aquaPluginTypes";
 import { containerFor } from "../server/foundationAdapter";
 import type { DomainRecord } from "../lib/domain";
+import { DomainStatusBadge } from "../components/DomainStatusBadge";
 
 export default async function DomainsPage(props: PluginPageProps): Promise<React.JSX.Element> {
   const c = containerFor({
@@ -120,7 +122,7 @@ function ConfiguredBanner({ configured }: { configured: boolean }): React.JSX.El
   );
 }
 
-function DomainRow({ domain, apiBase: _apiBase }: { domain: DomainRecord; apiBase: string }): React.JSX.Element {
+function DomainRow({ domain, apiBase }: { domain: DomainRecord; apiBase: string }): React.JSX.Element {
   return (
     <li className="rounded-md border border-black/10 bg-white/70 p-4">
       <div className="flex items-baseline justify-between gap-4">
@@ -131,27 +133,13 @@ function DomainRow({ domain, apiBase: _apiBase }: { domain: DomainRecord; apiBas
             {domain.vercelTeamId ? <> · team <code>{domain.vercelTeamId}</code></> : null}
           </p>
         </div>
-        <StatusBadge status={domain.status} />
+        {/* Client component — auto-polls /verify while pending. The
+            R1 server-rendered pill is preserved as a fallback inside
+            the badge if hydration fails. */}
+        <DomainStatusBadge initial={domain} apiBase={apiBase} />
       </div>
-      {domain.lastError ? (
-        <p className="mt-2 text-xs text-rose-700">last error: {domain.lastError}</p>
-      ) : null}
-      {domain.pending.length > 0 ? (
-        <div className="mt-3 rounded border border-black/10 bg-black/5 p-3 text-xs">
-          <p className="mb-1 font-medium">DNS records to add at your registrar:</p>
-          <ul className="space-y-1 font-mono">
-            {domain.pending.map((r, idx) => (
-              <li key={idx}>
-                <strong>{r.type}</strong> <code>{r.name}</code> →{" "}
-                <code>{r.value}</code>
-                {r.reason ? <span className="text-black/50"> ({r.reason})</span> : null}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
       <div className="mt-3 flex gap-2">
-        <form action="/api/portal/domains/verify" method="post" className="contents">
+        <form action={`${withQuery(apiBase, "/verify")}`} method="post" className="contents">
           <input type="hidden" name="id" value={domain.id} />
           <button
             type="submit"
@@ -160,7 +148,7 @@ function DomainRow({ domain, apiBase: _apiBase }: { domain: DomainRecord; apiBas
             Re-check verify
           </button>
         </form>
-        <form action={`/api/portal/domains?id=${encodeURIComponent(domain.id)}`} method="post" className="contents">
+        <form action={`${apiBase}${apiBase.includes("?") ? "&" : "?"}id=${encodeURIComponent(domain.id)}&_method=DELETE`} method="post" className="contents">
           <input type="hidden" name="_method" value="DELETE" />
           <button
             type="submit"
@@ -174,16 +162,10 @@ function DomainRow({ domain, apiBase: _apiBase }: { domain: DomainRecord; apiBas
   );
 }
 
-function StatusBadge({ status }: { status: DomainRecord["status"] }): React.JSX.Element {
-  const tone =
-    status === "verified"
-      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-      : status === "error"
-        ? "border-rose-200 bg-rose-50 text-rose-800"
-        : "border-amber-200 bg-amber-50 text-amber-800";
-  return (
-    <span className={`rounded-full border px-2 py-0.5 text-xs font-medium ${tone}`}>
-      {status}
-    </span>
-  );
+// Append `path` to a URL that may already have a query string —
+// produces `/api/portal/domains/verify?clientId=x` from
+// (`/api/portal/domains?clientId=x`, `/verify`).
+function withQuery(apiBase: string, path: string): string {
+  const [base, qs] = apiBase.split("?");
+  return qs ? `${base}${path}?${qs}` : `${base}${path}`;
 }
