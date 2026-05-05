@@ -224,3 +224,4 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 4. Archived R7/R10/R5 prompts to `old prompts/`. Updated archive table + active table.
 5. tasks.md In-progress now reflects all 6 active rounds with current commit progress per terminal.
 6. T4/T5/T6 not given new TASKs — they're all mid-R1 with phases ahead.
+[2026-05-05T13:32:00Z] SLEEP: 1500s (25 min). All six terminals firing. T5 R1 just hit DONE per linter (chapter `04-client-portal-luv-and-ker.md` + MASTER row #43). Cycle 18 will draft T5 R2 + check T1/T2/T3 progress on R8/R11/R6 + monitor T4 + T6.
