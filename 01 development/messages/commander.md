@@ -245,3 +245,5 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 3. Dropped TASKs in T3/T4/T5/T6 inboxes.
 4. Archived 4 shipped prompts (T3 R6, T4 R1, T5 R1, T6 R1).
 5. Active set now: T1 R8, T2 R11, T3 R7, T4 R2, T5 R2, T6 R2.
+[2026-05-05T15:13:00Z] NOTE: tasks.md linter just confirmed T2 R11 also DONE (Done — Round 11 section). T2 will need R12 next cycle. Commander cycle 19 will draft.
+[2026-05-05T15:13:00Z] SLEEP: 1500s (25 min). Six terminals firing. T2 R12 + T1 R9 (after R8) on the queue for next cycle.

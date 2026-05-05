@@ -8,7 +8,7 @@ prompts archived to `old prompts/`. T1 R8 + T2 R11 still in flight
 from cycle 17.
 
 - [ ] **T1 R8 — milesymedia ↔ portal stitch** — in flight (STARTED 15:00Z).
-- [ ] **T2 R11 — Export-to-repo + presets** — in flight (STARTED 03:00Z).
+_(T2 R11 done — see `Done — Round 11` below.)_
 - [ ] **T3 R7 — AI page builder** — `@aqua/plugin-ai-builder`. Claude
       Haiku 4.5 default + Sonnet 4.6 fallback. Editor topbar gets
       ✨ Generate button + streaming preview modal. Per-install API key.
