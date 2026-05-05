@@ -69,7 +69,7 @@ const memoryBackend: Backend = {
   async saveBlob(content) { memoryBlob = content; },
 };
 
-// ─── Stubs (KV + Postgres land in later rounds) ───────────────────────────
+// ─── Stub (KV lands in a later round) ─────────────────────────────────────
 
 const kvStub: Backend = {
   kind: "kv",
@@ -79,12 +79,26 @@ const kvStub: Backend = {
   async saveBlob() { throw new Error("PORTAL_BACKEND=kv: not yet wired."); },
 };
 
-const postgresStub: Backend = {
+// ─── Postgres backend (R7) ────────────────────────────────────────────────
+//
+// Real driver shipped in `storagePostgres.ts`. The backend wrapper
+// keeps storage.ts free of the `pg` dependency at parse-time — the
+// dynamic import only fires when this driver is actually selected,
+// so a dev server with `PORTAL_BACKEND=file` (the default) doesn't
+// pull `pg` into the bundle path.
+
+const postgresBackend: Backend = {
   kind: "postgres",
-  persistent: false,
-  description: "Postgres backend slot — not yet wired in foundation.",
-  async loadBlob() { throw new Error("PORTAL_BACKEND=postgres: not yet wired."); },
-  async saveBlob() { throw new Error("PORTAL_BACKEND=postgres: not yet wired."); },
+  persistent: true,
+  description: "Postgres (single-row JSONB blob in `portal_kv` keyed `__portal_state__`).",
+  async loadBlob() {
+    const { loadBlob } = await import("./storagePostgres");
+    return loadBlob();
+  },
+  async saveBlob(content) {
+    const { saveBlob } = await import("./storagePostgres");
+    return saveBlob(content);
+  },
 };
 
 function pickBackend(): Backend {
@@ -92,10 +106,17 @@ function pickBackend(): Backend {
   switch (explicit) {
     case "memory":   return memoryBackend;
     case "kv":       return kvStub;
-    case "postgres": return postgresStub;
+    case "postgres": return postgresBackend;
     case "file":
     case "":
-    default:         return fileBackend;
+    default: {
+      // Implicit promotion: when `DATABASE_URL` is set but PORTAL_BACKEND
+      // wasn't explicitly chosen, prefer Postgres over file. This makes
+      // production deploys "set DATABASE_URL and go" while keeping
+      // local dev (no DATABASE_URL) on the file backend.
+      if (!explicit && process.env.DATABASE_URL) return postgresBackend;
+      return fileBackend;
+    }
   }
 }
 
