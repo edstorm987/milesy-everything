@@ -85,6 +85,7 @@ Synthesised from 6 parallel explore agents.
 | # | Title | File | Summary |
 |---|-------|------|---------|
 | 19 | `04` architecture | [prior research/04-architecture.md](prior%20research/04-architecture.md) | The locked design for `04 the final portal/`. Pool-model multi-tenancy (Agency → Client → End-customer), Aqua manifest plugins, server-rendered chrome, single-cookie auth, phase lifecycle, brand kit per client. Round 1 terminal split. Decisions log. |
+| 19b | `04` architecture extension — per-client portals + milesymedia stitch | [prior research/04-architecture-extension-per-client-portals.md](prior%20research/04-architecture-extension-per-client-portals.md) | Operating reality refines v1: milesymedia.com is the front door; Aqua portal is shared for pre-Live work + is the editor/generator for Live clients' custom portals. Each Live client gets `clients/<slug>/` as a separate Next.js app generated via "Export to repo" + edited via the same web editor. Iframe-embedded into client domains for performance; same auth origin. Preset portal library. |
 
 ### Round 1 implementation chapters
 

@@ -57,6 +57,13 @@ When done:
 |------|--------|------|
 | **Chief commander** | [orchestrator-init.md](orchestrator-init.md) | Spawns the autonomous chief-commander session. Reads mesh state, replies to terminal questions, drafts new-round prompts, schedules itself via `/loop` + `ScheduleWakeup`. Full protocol in `../orchestrator.md`. |
 
+## Queued (drafted ahead — paste when current round hits DONE)
+
+| Terminal | Prompt | Trigger |
+|----------|--------|---------|
+| **T1 → R8** | [T1-round8-milesymedia-portal-stitch.md](T1-round8-milesymedia-portal-stitch.md) | Paste once T1 R7 (Postgres) hits DONE. Stitch milesymedia + Aqua portal as ONE surface (localhost + Vercel). milesymedia.com is the front door, portal lives at `/portal/*` same origin. Files separate in repo, stitched at edge. Per architecture extension chapter 19b. |
+| **T2 → R11** | [T2-round11-export-to-repo-and-presets.md](T2-round11-export-to-repo-and-presets.md) | Paste once T2 R10 (email-sender) hits DONE. Ship `@aqua/plugin-portal-export` — generator that materializes a Live client's content into `clients/<slug>/` as a self-contained Next.js app. 4 starter presets (skincare-brand / service-portal / membership-only / affiliate-only). Per architecture extension chapter 19b. |
+
 ## Archive
 
 Superseded prompts move to [old prompts/](old%20prompts/) once shipped.
