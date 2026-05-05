@@ -14,6 +14,7 @@
     "smoke": "node scripts/smoke.mjs",
     "smoke:postgres": "node scripts/smoke-postgres.mjs",
     "smoke:ux": "node scripts/smoke-ux.mjs",
+    "smoke:perf": "node scripts/smoke-perf.mjs",
     "smoke:vercel-domain": "tsx --test scripts/smoke-vercel-domain.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
