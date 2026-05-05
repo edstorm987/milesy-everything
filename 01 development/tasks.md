@@ -10,10 +10,7 @@ shipped + archived.
       backend → Postgres for production (architecture §13 parked
       v1-required). Single `portal_kv` JSONB table + migration script.
       `DATABASE_URL` unset → file backend stays default for dev.
-- [ ] **T2 R10 — Email-sender plugin** — prompt
-      `terminal-prompts/T2-round10-email-sender.md`. Cross-cutting
-      delivery engine for all other plugins. Postmark + no-op driver,
-      4 cross-plugin event subscribers. After R10, T2 has 10 plugins.
+_(T2 R10 done — see `Done — Round 10` below.)_
 _(T3 R5 done — see `Done — Round 5` below)_
 - [ ] **T4 R1 — UX + accessibility polish** — prompt
       `terminal-prompts/T4-round1-ux-accessibility-polish.md`.
@@ -157,6 +154,59 @@ _(T3 R5 done — see `Done — Round 5` below)_
       extended with `"ecommerce"`. Demo seed installs both client-scoped
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
+
+## Done — Round 10
+- [x] **T2 R10 — Email-sender plugin** — shipped.
+      `@aqua/plugin-email-sender` at
+      `04 the final portal/plugins/email-sender/`. `scopePolicy: "agency"`,
+      `core: false`, no hard deps. Single point of egress for every
+      transactional / notification email across the agency portal.
+      Domain EmailMessage (state machine queued→sending→sent/failed/bounced,
+      idempotency key `${triggeredByPlugin}:${externalRef}` else
+      `${plugin}:${sortedTo}:${fnv1a(body)}` — collapses event-bus
+      retries), SenderIdentity (per-agency, isDefault flag, status
+      active/pending/failed, verifyDomain stub), ProviderConfig
+      (postmark/sendgrid/resend/smtp/none, masked apiKeyMasked + full
+      key kept at `provider/api-key`, webhookSecret, status
+      active/unconfigured/error).
+      Four services: EmailService (enqueue + state transitions + 4
+      cross-plugin subscribers), DeliveryService (queued→sending→
+      sent/failed via active driver, retry path via resetForRetry),
+      WebhookService (verify-by-driver + dedupe by
+      `${RecordType}:${MessageID}` + status update + emit),
+      IdentityService, ProviderService.
+      Driver pattern: PostmarkDriver (live; injectable fetchImpl,
+      query-param `?secret=` exact-match webhook verify), NoopDriver
+      (live; synthetic `noop_<id>` ref), StubDriver (sendgrid/resend/
+      smtp throw "R11 stub"). Five standard ports + one OPTIONAL
+      MarketingTemplatePort (agency-marketing's EmailTemplate store +
+      optional render fn — absent → templateless enqueue still works,
+      templateId throws cleanly).
+      12 API routes including 1 PUBLIC (`POST public/webhook/postmark`).
+      3 admin pages (Outbox / Settings / Logs). No storefront blocks
+      (server-side only).
+      Cross-plugin subscribers declared via `EVENT_SUBSCRIPTIONS` const
+      array on the foundation adapter — foundation R6 router reads at
+      boot + subscribes 4 handlers on the live EmailService:
+      forms.notification.requested → onFormsNotificationRequested,
+      membership.subscription_changed → onMembershipSubscriptionChanged
+      (welcome/cancellation), affiliate.payout_completed →
+      onAffiliatePayoutCompleted, auth.bootstrap.signup →
+      onAuthBootstrapSignup. `onInstall` bootstraps default sender
+      identity from settings (defaultFromName/defaultFromEmail).
+      tsc-clean; 7/7 smoke pass via
+      `npx tsx --test src/__smoke__/email-sender.test.ts`. Foundation
+      pending: workspace dep + transpilePackages + side-effect-import +
+      `_registry.ts` append + `ActivityCategory` += "email" +
+      cross-plugin event router subscriber wiring (now load-bearing
+      across forms/memberships/affiliates/auth) +
+      MarketingTemplatePort projection from agency-marketing +
+      catch-all `public: true` honouring for the Postmark webhook.
+      T2 plugin catalogue now: 10 shipped (fulfillment / ecommerce /
+      agency-HR / memberships / affiliates / agency-finance /
+      agency-marketing / client-crm / forms / email-sender); 89
+      smoke cases catalogue-wide. See
+      `context/prior research/04-plugin-email-sender.md`.
 
 ## Done — Round 9
 - [x] **T2 R9 — Forms plugin** — shipped.

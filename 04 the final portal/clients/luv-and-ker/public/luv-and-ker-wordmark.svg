@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56" role="img" aria-label="Luv & Ker">
+  <style>
+    .wm { font-family: 'Playfair Display', ui-serif, Georgia, serif; font-weight: 700; }
+    .a { fill: #F97316; }
+    .b { fill: #7C3AED; }
+    .sub { font-family: ui-sans-serif, system-ui, sans-serif; font-weight: 500; letter-spacing: 0.18em; }
+  </style>
+  <text x="0" y="34" class="wm a" font-size="32">LUV</text>
+  <text x="68" y="34" class="wm" font-size="32" fill="#1f1f1f">&amp;</text>
+  <text x="92" y="34" class="wm b" font-size="32">KER</text>
+  <text x="0" y="50" class="sub" font-size="9" fill="#1f1f1f">ODO BY FELICIA</text>
+</svg>

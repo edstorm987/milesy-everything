@@ -1,0 +1,62 @@
+{
+  "$schema": "https://aqua.milesymedia.com/schemas/portal-config.v1.json",
+  "client": {
+    "id": "luv-and-ker",
+    "slug": "luv-and-ker",
+    "name": "Luv & Ker",
+    "tagline": "Odo by Felicia",
+    "agencyId": "milesy",
+    "websiteUrl": "https://luvandker.com"
+  },
+  "brand": {
+    "logoUrl": "/luv-and-ker-wordmark.svg",
+    "primaryColor": "#F97316",
+    "secondaryColor": "#FFF7ED",
+    "accentColor": "#7C3AED",
+    "fontHeading": "Playfair Display, ui-serif, Georgia",
+    "fontBody": "ui-sans-serif, system-ui",
+    "borderRadius": "8px",
+    "customCSS": ""
+  },
+  "auth": {
+    "origin": "https://milesymedia.com",
+    "embedLoginPath": "/embed/login",
+    "loginPath": "/login",
+    "cookieName": "lk_session_v1"
+  },
+  "installedPlugins": [
+    { "id": "website-editor", "version": "0.1.0" },
+    { "id": "ecommerce", "version": "0.1.0" },
+    { "id": "memberships", "version": "0.1.0" },
+    { "id": "affiliates", "version": "0.1.0" },
+    { "id": "client-crm", "version": "0.1.0" },
+    { "id": "forms", "version": "0.1.0" }
+  ],
+  "portalVariants": {
+    "login": "felicia-login-v1",
+    "account": "felicia-account-v1",
+    "orders": "felicia-orders-v1",
+    "affiliates": "felicia-affiliates-v1"
+  },
+  "content": {
+    "site.name": "Luv & Ker",
+    "site.tagline": "Odo by Felicia",
+    "site.description": "Pure, natural, hormone-safe Ghanaian heritage skincare. No parabens, no phthalates, no sulphates, no synthetic fragrance.",
+    "navbar.wordmark1": "LUV",
+    "navbar.wordmark2": "KER",
+    "navbar.subtitle": "Odo by Felicia",
+    "footer.tagline": "Odo by Felicia",
+    "footer.description": "Pure. Sacred. Alive. Ghanaian heritage skincare for those who demand honesty from everything they put on their skin.",
+    "hero.eyebrow": "Heritage skincare",
+    "hero.headline1": "Pure. Sacred.",
+    "hero.headline2": "Alive.",
+    "hero.body": "Black soap, shea, and rituals carried across generations — sourced direct from Ghanaian farmers, made for skin that demands honesty.",
+    "hero.ctaPrimary": "Shop the ritual",
+    "hero.ctaSecondary": "Read the story",
+    "featured.eyebrow": "Featured",
+    "featured.headline": "Start your ritual.",
+    "featured.tagline": "Three products. One for every skin need.",
+    "newsletter.headline": "Join the circle",
+    "newsletter.body": "Drops, recipes, and field notes from Felicia. No spam — just honest skincare."
+  }
+}

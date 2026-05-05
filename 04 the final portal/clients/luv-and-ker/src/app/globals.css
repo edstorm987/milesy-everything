@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: var(--brand-font-heading);
+  --font-body: var(--brand-font-body);
+}
+
+:root {
+  --brand-primary: #F97316;
+  --brand-secondary: #FFF7ED;
+  --brand-accent: #7C3AED;
+  --brand-font-heading: "Playfair Display", ui-serif, Georgia, serif;
+  --brand-font-body: ui-sans-serif, system-ui, sans-serif;
+  --brand-radius: 8px;
+  --brand-ink: #1A1A1A;
+  --brand-ink-soft: #4B4B4B;
+}
+
+html, body {
+  background: var(--brand-secondary);
+  color: var(--brand-ink);
+  font-family: var(--brand-font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--brand-font-heading);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--brand-primary);
+  color: #fff;
+  border-radius: var(--brand-radius);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: filter 0.15s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(0.92);
+}
+
+.btn-ghost {
+  border: 1px solid var(--brand-ink);
+  color: var(--brand-ink);
+  border-radius: var(--brand-radius);
+  padding: 0.65rem 1.4rem;
+  font-weight: 500;
+  background: transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background: var(--brand-ink);
+  color: var(--brand-secondary);
+}
