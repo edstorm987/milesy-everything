@@ -5,14 +5,7 @@
 All three terminals just received fresh prompts (R6 / R9 / R4). Prior
 rounds (T1 R5, T2 R8, T3 R3) shipped + archived to `old prompts/`.
 
-- [ ] **T1 R6 — Foundation mass plugin wire-up** — prompt
-      `terminal-prompts/T1-round6-foundation-mass-wireup.md`. Six
-      goals: workspace deps + transpilePackages + side-effect-imports
-      + `_registry.ts` appends + ActivityCategory unions + cross-plugin
-      event router for the 5-6 standalone plugins (agency-HR,
-      memberships, affiliates, agency-finance, agency-marketing,
-      client-crm). After R6 the foundation is ahead of the plugin
-      catalogue again.
+_(T1 R6 done — see `Done — Round 6` below)_
 _(T2 R9 done — see `Done — Round 9` below)_
 _(T3 R4 done — see `Done — Round 4` below)_
 
@@ -247,6 +240,36 @@ _(T3 R4 done — see `Done — Round 4` below)_
       `context/prior research/04-plugin-agency-marketing.md`.
 
 ## Done — Round 6
+- [x] **T1 R6 — Foundation mass plugin wire-up + cross-plugin event
+      router** — shipped. After R5 the foundation hosted 3 plugins
+      live while T2 had 6 more on disk un-wired. R6 catches up — all
+      9 plugins installable end-to-end. 6 file:.. workspace deps + 9
+      transpilePackages, 6 new `foundation-adapters/<plugin>Foundation.ts`
+      side-effect-imports, `_registry.ts` append for all 6 manifests.
+      Shared `_foundationPorts.ts` (tenant/activity/events/pluginInstalls
+      /user) + `_crossPluginPorts.ts` (ecommerceOrders projections +
+      membershipBenefits) keep per-plugin adapters small. `ActivityCategory`
+      += hr/memberships/affiliates/finance/marketing/crm. Each
+      `register*Foundation` call uses `as unknown as Parameters<...>` to
+      bridge plugin-vendored ActivityCategory drift. **Cross-plugin
+      event router**: `eventBus.subscribeForPlugin(pluginId, eventName,
+      handler)` with tenant-filtered fan-out (only fires for plugins
+      installed in the emit's scope). `_eventSubscribers.ts` wires
+      affiliates ← `order.created`, client-crm ← order.created /
+      affiliate.attribution_recorded / membership.subscription_*. R6
+      also widens `_validate.ts` (categories + panel ids) and adds a
+      "discovered panels" render path in `sidebarLayout.ts` so
+      future plugins ship new panel ids without a foundation patch.
+      `membershipsFoundation.stripeFor` returns a NOOP StripePort so
+      memberships's containerFor builds in dev (paid flows throw
+      clearly; real Stripe SDK adapter is foundation-pending).
+      `seedDemoAgency` extended to install 5 client-side
+      (website-editor → ecommerce → memberships → affiliates →
+      client-crm) + 3 agency-side (agency-hr / agency-finance /
+      agency-marketing) for a 9-plugin demo. `scripts/smoke.mjs`
+      35/35 pass: /demo cold + 9 install entries + 11 nav URLs 200 +
+      6 API surfaces 200 + full POV cycle. tsc + build clean. See
+      `context/prior research/04-foundation-round6.md`.
 - [x] **T2 R6 — Agency-finance plugin + ecommerce affiliates wiring**
       — shipped.
       Goal A (commit `db60015`): closes the affiliates attribution
