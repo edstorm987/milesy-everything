@@ -63,7 +63,16 @@ async function proxy(req: NextRequest, segments: string[]): Promise<Response> {
     // @ts-expect-error — Node fetch needs duplex: "half" when body is a stream
     init.duplex = "half";
   }
-  const upstream = await fetch(url, init);
+  let upstream: Response;
+  try {
+    upstream = await fetch(url, init);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "upstream unreachable";
+    return NextResponse.json(
+      { error: "portal-upstream-unreachable", upstream: url, detail: message },
+      { status: 502 },
+    );
+  }
   return new NextResponse(upstream.body, {
     status: upstream.status,
     statusText: upstream.statusText,

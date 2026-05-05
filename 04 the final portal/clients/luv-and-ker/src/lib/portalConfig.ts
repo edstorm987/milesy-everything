@@ -52,6 +52,11 @@ export function hasPlugin(id: string): boolean {
 }
 
 export function getAuthOrigin(): string {
-  const fromEnv = process.env.NEXT_PUBLIC_PORTAL_AUTH_ORIGIN ?? process.env.PORTAL_API_ORIGIN;
-  return fromEnv ?? getPortalConfig().auth.origin;
+  const fromEnv = process.env.PORTAL_API_ORIGIN ?? process.env.NEXT_PUBLIC_PORTAL_AUTH_ORIGIN;
+  if (fromEnv) return fromEnv;
+  // In dev, default to the shared portal at localhost:3030 so the proxy
+  // works against a local stack. Production uses whatever portal-config
+  // declares.
+  if (process.env.NODE_ENV !== "production") return "http://localhost:3030";
+  return getPortalConfig().auth.origin;
 }
