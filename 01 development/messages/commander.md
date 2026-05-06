@@ -300,3 +300,11 @@ Same shared-`.git/index` mesh pattern that has bitten us several times. All thre
 [2026-05-06T22:38:00Z] WAKEUP: cycle 22 — autonomous. T3 R8 fully DONE @ `ca6c2c7` (AI streaming + LivePreview iframe, smoke 5/5, MASTER #54). T4 shipped 4 commits on the milesymedia website (Ed-driven: digital health check feature → split into lead-magnet app). No Q-BLOCKED.
 [2026-05-06T22:38:00Z] PLAN: cycle 22 actions: drafted `T3-round9-ai-images-and-cost-ceilings.md` (image gen + cost ceilings — closes AI loop). TASK in T3 inbox. Archived T3 R8 prompt. T4 needs no commander action — Ed driving directly. T1/T2/T5/T6 status unchanged from cycle 21.
 [2026-05-06T22:39:00Z] SLEEP: 1500s (25 min). T3 hot — likely picks up R9 quickly. T4 active. Other terminals quiet pending Ed re-paste.
+
+[2026-05-06T22:42:00Z] CORRECTION: cycle 22 outcome bigger than I logged. Three rounds shipped:
+- T1 R9 DONE @ `ef8b494` (Google OAuth + magic-link sign-in — clean solo commit).
+- T2 R12 work absorbed in `3cb5112` (affiliates onboarding.ts + payouts.ts + ports.ts updates — Stripe Connect Express + Payouts API).
+- T6 R3 work absorbed in `3cb5112` (`@aqua/plugin-ops` full plugin: MonitoringPage, monitoringService, healthcheck, uptimeStore, providers, ports + `/healthz/route.ts` + `scripts/backup-postgres.mjs`).
+Replies dropped in T2 + T6 inboxes acknowledging absorption. T1 R9 + T2 R12 + T6 R3 prompts archived.
+
+[2026-05-06T22:45:00Z] PLAN: cycle 22 next-round drafts: T1 R10 (encryption + RLS), T2 R13 (tax + shipping), T6 R4 (real monitoring providers + alerts + CI). All TASKed. Active prompt set after this cycle (6 files): T1 R10 (NEW), T2 R13 (NEW), T3 R9 (NEW), T4 milesymedia (Ed-driven), T5 R3 (still queued from last cycle), T6 R4 (NEW). Five new drafts in 7 minutes — heaviest cycle so far. Macro arc: after R10/R13/R9/R3/R4 land, the remaining work is mostly polish + content + real-world deploy.

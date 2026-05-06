@@ -104,6 +104,36 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       6→4 plugin variation, ecommerce-led vs memberships-led
       homepage, font-pair variation. Open Q logged: keep presets as
       install-time scaffolding hints only.
+- [x] **T6 R3 — CI/CD + monitoring + backups** — DONE. Goal A:
+      `.github/workflows/ci.yml` (typecheck-portal + typecheck-plugins
+      matrix×14 + smoke-plugins matrix×13 + smoke-portal +
+      smoke-vercel-domain + smoke-ux + smoke-perf + ci-status
+      aggregator; per-package node_modules cache); `preview-deploy.yml`
+      (Vercel preview on PR, no-op when secrets unset; bot upserts
+      one PR comment with the URL). Goal B: new `@aqua/plugin-ops`
+      at `04-the-final-portal/plugins/ops/` — server-rendered
+      MonitoringPage with four panels (uptime / Sentry errors /
+      slow routes / cost MTD), PluginStorage-backed UptimeStore
+      with 24h sample window, Sentry/Vercel/Stripe/Postmark
+      provider stubs that return null until R4 wires real REST
+      calls; `runHealthcheckPass` pings each target's /healthz
+      with 10s timeout. 9/9 smoke pass via `npm run smoke`.
+      tsc clean standalone. NEW `/healthz` route in portal app at
+      `04-the-final-portal/portal/src/app/healthz/route.ts`
+      (force-dynamic, no-store, never touches Postgres). Goal C:
+      `scripts/backup-postgres.mjs` (pg_dump | gzip | retain 30
+      days; BACKUP_DEST=s3://… stub for R4); runbook §8 extended
+      with unified `crons` block proposal (demo-reset + healthcheck
+      hourly + backup 03:30) — block stays commented in vercel.json
+      until Ed flips on. Chapter `04-cicd-and-monitoring.md` +
+      MASTER row #56 + this row done. R4 candidates: real provider
+      integrations (Stripe → Postmark → Vercel → Sentry), foundation
+      registration of @aqua/plugin-ops (5-step pattern),
+      per-client healthz via T2 R11 generator, un-comment vercel.json
+      crons block + add `/api/portal/ops/backup` route, real S3 /
+      Vercel Blob upload, Lighthouse smoke workflow (Puppeteer +
+      Chromium, label-gated), restore-test cron, healthcheck
+      escalation channel.
 - [x] **T6 R2 — Real deploy + custom domains** — DONE. Phase A
       operator runbook (`2f93a18`) + Phase B foundation Vercel
       client + CLI helper + 11/11 mock smoke (`b61f587`) + Phase C
