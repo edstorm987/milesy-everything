@@ -33,6 +33,21 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 Lift Inventory — `02` + `03` audit** — DONE.
+      Pure documentation chapter `04-lift-inventory.md` + MASTER row
+      #58. Goal A: 9 sections covering `02 felicias aqua portal work/`
+      (config / storefront marketing / 61 admin sub-areas / 34 in-tree
+      plugins / 41+ components / lib / portal runtime / 72 API route
+      dirs / public assets) — each row marked PORTED / PARTIAL /
+      NOT-PORTED / OBSOLETE with pointer. Goal B: 6-row index over
+      existing `old-portal-*.md` chapters for `03`. Goal C: prioritised
+      revival list (19 entries across 4 tiers — reservations / KB+wiki
+      / marketplace / forum+livechat / CRM deals+tasks / reviews / i18n
+      / SEO / webhooks / compliance / blog / brand-page templates /
+      consent / force-password-change / chatbot / A/B / automation runs /
+      funnel split-tests / notification channels). Hard boundary
+      honoured: read-only on `02` + `03`; did NOT touch
+      `04-the-final-portal/milesymedia website/` or `business-os/`.
 - [x] **T3 R9 — AI image generation + cost ceilings** — DONE.
       Goal A: NEW `imageService.ts` with pluggable `ImageProviderPort`
       + `setImageProviderPort()` injection + `stubImageProvider`
