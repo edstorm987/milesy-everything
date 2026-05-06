@@ -19,6 +19,7 @@
         <span class="brand-name">Milesy<span class="a">Media</span></span>
       </a>
       <div class="nav-cta">
+        <a href="tel:+441234567890" class="btn btn-ghost" data-hc-call>📞 Call us</a>
         <a href="https://milesymedia.co" class="btn btn-ghost">milesymedia.co ↗</a>
       </div>
     </div>
@@ -33,14 +34,14 @@
           <span class="eyebrow">Free · Interactive · No signup</span>
           <h1>Where is your business <span class="accent">quietly leaking</span> customers?</h1>
           <p class="lead">
-            Four short experiments. You'll do them with us — not fill out a form.
+            Five short topics. You'll do them with us — not fill out a form.
             By the end you'll have a real picture of what new customers see when
             they look for you, and where the money is slipping.
           </p>
           <div class="hc-bullets">
             <div><span class="dot"></span> Pick a comfort level for each topic — beginner, dabbler or pro.</div>
-            <div><span class="dot"></span> Beginner = no jargon, we do mini-experiments together.</div>
-            <div><span class="dot"></span> Pro = paste your URL, we run a live audit.</div>
+            <div><span class="dot"></span> Beginner = no jargon, mini-experiments together.</div>
+            <div><span class="dot"></span> Skip to your results at any point. Talk to us at any point.</div>
           </div>
           <div class="hc-actions">
             <button class="btn btn-primary btn-lg" data-hc-action="start">Let's go →</button>
@@ -48,25 +49,63 @@
         </div>
       </section>
 
-      <!-- ─── AREA OVERVIEW (between areas) ─────── -->
+      <!-- ─── GATE: business type ───────────────── -->
+      <section class="hc-step" data-step="gate" hidden>
+        <div class="hc-tier-head">
+          <span class="eyebrow">First — quick context</span>
+          <h2>Which sounds most like you?</h2>
+          <p class="muted">We'll tweak the questions so they actually fit. You can change this later.</p>
+        </div>
+        <div class="hc-tiers hc-gate-cards">
+          <button class="hc-tier-card hc-tier-beginner" data-hc-pick-type="service">
+            <div class="hc-tier-tag">Service business</div>
+            <h3>I sell my time / a service</h3>
+            <div class="hc-tier-time">Trades · agencies · consultants · therapists · salons</div>
+            <p>Bookings, enquiries, quotes, retainers.</p>
+            <span class="hc-tier-cta">That's me →</span>
+          </button>
+          <button class="hc-tier-card hc-tier-intermediate" data-hc-pick-type="product">
+            <div class="hc-tier-tag">Product business</div>
+            <h3>I sell physical or digital products</h3>
+            <div class="hc-tier-time">Ecom · DTC · marketplace · digital downloads</div>
+            <p>Carts, SKUs, repeat orders, fulfilment.</p>
+            <span class="hc-tier-cta">That's me →</span>
+          </button>
+          <button class="hc-tier-card hc-tier-professional" data-hc-pick-type="hybrid">
+            <div class="hc-tier-tag">A bit of both</div>
+            <h3>Mixed — services + products</h3>
+            <div class="hc-tier-time">Studios · clinics · brands with installs · hybrid offers</div>
+            <p>We'll cover both sides where it matters.</p>
+            <span class="hc-tier-cta">That's me →</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ─── AREA OVERVIEW ─────────────────────── -->
       <section class="hc-step" data-step="overview" hidden>
         <div class="hc-overview">
-          <span class="eyebrow" data-hc-overview-eyebrow>Topic 1 of 4</span>
+          <span class="eyebrow" data-hc-overview-eyebrow>Topic 1 of 5</span>
           <h2 data-hc-overview-title>Up next: Visibility &amp; Search</h2>
           <p class="muted" data-hc-overview-blurb></p>
           <div class="hc-area-progress" data-hc-area-progress></div>
-          <button class="btn btn-primary btn-lg" data-hc-action="open-tiers">Pick how we explore this →</button>
+          <div class="hc-actions" style="justify-content:center">
+            <button class="btn btn-primary btn-lg" data-hc-action="open-tiers">Pick how we explore this →</button>
+            <button class="btn btn-secondary btn-lg" data-hc-action="skip-results">See my results so far</button>
+          </div>
         </div>
       </section>
 
       <!-- ─── TIER SELECT ───────────────────────── -->
       <section class="hc-step" data-step="tiers" hidden>
         <div class="hc-tier-head">
-          <span class="eyebrow" data-hc-tier-eyebrow>Topic 1 of 4 · Visibility &amp; Search</span>
+          <span class="eyebrow" data-hc-tier-eyebrow>Topic 1 of 5 · Visibility &amp; Search</span>
           <h2 data-hc-tier-prompt>How would you like to look at this?</h2>
-          <p class="muted">No wrong answer — we'll make it fit. You can pick a different level for each topic.</p>
+          <p class="muted">No wrong answer. Pick a different level for each topic.</p>
         </div>
         <div class="hc-tiers" data-hc-tiers></div>
+        <div class="hc-mid-actions">
+          <button class="btn btn-ghost" data-hc-action="skip-area">Skip this topic →</button>
+        </div>
       </section>
 
       <!-- ─── EXERCISE RUNNER ───────────────────── -->
@@ -79,9 +118,17 @@
           <div class="hc-progress-bar"><span data-hc-progress-fill style="width:0%"></span></div>
         </div>
         <div class="hc-question-card" data-hc-step-body></div>
+
         <div class="hc-actions hc-nav">
           <button class="btn btn-secondary" data-hc-action="step-back">← Back</button>
           <button class="btn btn-primary" data-hc-action="step-next" disabled>Next →</button>
+        </div>
+
+        <!-- Persistent action row -->
+        <div class="hc-floating-actions">
+          <a href="tel:+441234567890" class="floating-pill"><span>📞</span> Call us</a>
+          <button class="floating-pill" data-hc-action="skip-results"><span>📊</span> Skip to my results</button>
+          <button class="floating-pill" data-hc-action="skip-area"><span>↷</span> Skip this topic</button>
         </div>
       </section>
 
@@ -90,7 +137,7 @@
         <div class="hc-building">
           <div class="hc-spinner" aria-hidden="true"></div>
           <h2>Pulling it all together…</h2>
-          <p class="muted">Looking at your answers · estimating the leak · picking the three biggest moves.</p>
+          <p class="muted">Looking at your answers · estimating the leak · picking the quick wins.</p>
         </div>
       </section>
 
@@ -99,7 +146,7 @@
         <div class="hc-results-head">
           <span class="eyebrow">The mirror</span>
           <h1 data-hc-money-headline>You're leaving an estimated <span class="accent">£3,200/month</span> on the table.</h1>
-          <p class="muted" data-hc-money-sub>Based on your answers, here's where the leaks are — and what we'd fix first.</p>
+          <p class="muted" data-hc-money-sub>Based on what you told us, here's where the leaks are — and the quick wins that'd plug them.</p>
         </div>
 
         <div class="hc-leak-cards">
@@ -120,20 +167,45 @@
           </div>
         </div>
 
-        <h2 class="hc-pillars-head">By topic</h2>
-        <div class="hc-pillars" data-hc-pillars></div>
-
-        <div class="hc-recos">
-          <h2>The three moves we'd make first</h2>
-          <ol class="hc-reco-list" data-hc-recos></ol>
+        <!-- Quick wins -->
+        <div class="hc-section-block">
+          <div class="hc-section-block-head">
+            <h2>Your quick wins</h2>
+            <p class="muted">Each one is a small fix that compounds. Pick how you want to act — read, call, or hand it over.</p>
+          </div>
+          <div class="hc-quickwins" data-hc-quickwins></div>
         </div>
 
+        <!-- Section navigator: explored vs unlock -->
+        <div class="hc-section-block">
+          <div class="hc-section-block-head">
+            <h2>Topics</h2>
+            <p class="muted">Tap any topic to deepen your answers — your quick wins update as you go.</p>
+          </div>
+          <div class="hc-section-nav" data-hc-section-nav></div>
+        </div>
+
+        <!-- Assistant tease -->
+        <div class="hc-assistant-card">
+          <div class="hc-assistant-icon">🤖</div>
+          <div class="hc-assistant-body">
+            <div class="hc-assistant-eyebrow">Free · 10 minutes</div>
+            <h3>Talk to your implementation assistant</h3>
+            <p>It's been briefed on every answer you've given here. It can walk you through claiming a Google Business Profile, drafting your first review-request message, or sketching out a homepage hero — live, on a call.</p>
+            <div class="hc-actions">
+              <a href="mailto:hello@milesymedia.co?subject=Implementation%20assistant" class="btn btn-primary">Book the assistant →</a>
+              <a href="tel:+441234567890" class="btn btn-secondary">📞 Or call us instead</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final CTA -->
         <div class="hc-cta">
-          <span class="eyebrow">Next step</span>
-          <h2>Want the real numbers behind this?</h2>
+          <span class="eyebrow">Bigger conversation</span>
+          <h2>Want the full strategy version of this?</h2>
           <p>Book a free 30-minute strategy call. We'll walk through your live data, pressure-test the leaks above, and leave you with a costed quarterly plan — even if you don't hire us.</p>
           <div class="hc-actions hc-cta-actions">
-            <a href="mailto:hello@milesymedia.co?subject=Strategy%20call%20after%20health%20check" class="btn btn-primary btn-lg">Book a strategy call →</a>
+            <a href="mailto:hello@milesymedia.co?subject=Strategy%20call" class="btn btn-primary btn-lg">Book a strategy call →</a>
             <button class="btn btn-secondary btn-lg" data-hc-action="restart">Start over</button>
           </div>
         </div>
@@ -153,15 +225,13 @@
   </footer>
 
   <script>
-  /* ─── DATA ──────────────────────────────────────
-     AREAS = topics. Each topic has 3 tiers (beginner / intermediate /
-     professional). Each tier has an `exercise` array of step objects.
-     Step types: 'task', 'choice', 'multi', 'text', 'slider', 'url',
-     'reveal'. Each step that produces a score sets `score` on the
-     option (0–100). Tier score = avg of scored steps. */
+  /* ─── DATA ──────────────────────────────────── */
+  /* Each AREA has 3 tiers and a `quickwins` builder that takes the slot
+     (chosen tier + raw answers) and returns 0-N quick-win objects:
+     { title, why, actions: [{ label, type:'guide'|'callus'|'diy'|'doitforme', href? }] }.
+     This is what populates the action-rich quick-wins section on results. */
 
   var AREAS = [
-    /* ─── 1 · VISIBILITY & SEARCH ──────────── */
     {
       id: 'seo',
       name: 'Visibility & Search',
@@ -169,117 +239,129 @@
       blurb: "Can the right people find you when they go looking?",
       tiers: {
         beginner: {
-          label: 'Just show me',
-          time: '~3 min',
+          label: 'Just show me', time: '~3 min',
           summary: 'No jargon. Two mini-experiments using Google.',
           exercise: [
-            { type: 'task',
-              title: 'Mini-experiment #1 — the pub test',
-              body: 'Open a new tab. Go to Google. Type <strong>"pub near me"</strong>. Look at the results for a few seconds, then come back here.',
+            { type: 'task', title: 'Mini-experiment #1 — the pub test',
+              body: 'Open a new tab. Go to Google. Type <strong>"pub near me"</strong>. Look for a few seconds, then come back.',
               done: 'Done — I looked' },
-            { type: 'choice',
-              prompt: 'Where did your eyes go first?',
+            { type: 'choice', prompt: 'Where did your eyes go first?',
+              scoring: false,
               options: [
                 { label: 'The top result', score: 0 },
-                { label: 'The map / the places box', score: 0 },
+                { label: 'The map / places box', score: 0 },
                 { label: 'The 2nd or 3rd link', score: 0 },
-                { label: 'I scrolled past page one', score: 0 }
-              ],
-              scoring: false },
-            { type: 'reveal',
-              title: 'Now imagine your customer doing exactly that.',
+                { label: 'I scrolled past page one', score: 0 } ] },
+            { type: 'reveal', title: 'Now imagine your customer doing exactly that.',
               body: '~75% of clicks go to the top three results. Less than 1% reach page two. Whatever you just felt looking for a pub, your customer feels looking for you.' },
-            { type: 'task',
-              title: 'Mini-experiment #2 — your turn',
-              body: 'Open a new tab. Google <strong>what you sell + your town</strong> (e.g. "plumber Colchester"). Don\'t scroll yet.',
+            { type: 'task', title: 'Mini-experiment #2 — your turn',
+              body: 'Open a new tab. Google <strong>what you sell + your town</strong>. Don\'t scroll yet.',
               done: 'Done — I looked' },
-            { type: 'choice',
-              prompt: 'Where did YOU appear?',
+            { type: 'choice', prompt: 'Where did YOU appear?',
               options: [
                 { label: 'Top of the page — easy to find', score: 90 },
                 { label: 'On the page somewhere — had to look', score: 60 },
                 { label: 'Page 2 or further', score: 30 },
-                { label: "I couldn't see myself at all", score: 10 }
-              ] },
-            { type: 'choice',
-              prompt: "Honest gut check — would you scroll past page one to find yourself?",
+                { label: "I couldn't see myself at all", score: 10 } ] },
+            { type: 'choice', prompt: 'Do you have a Google Business Profile?',
               options: [
-                { label: 'Yes, of course', score: 80 },
-                { label: 'Probably not', score: 35 },
-                { label: 'No way', score: 15 }
-              ] }
+                { label: 'Yes — and I keep it updated', score: 90, tag: 'gmb-good' },
+                { label: 'Yes — but I never touch it', score: 50, tag: 'gmb-stale' },
+                { label: "No / I'm not sure", score: 15, tag: 'gmb-missing' } ] }
           ]
         },
         intermediate: {
-          label: 'I dabble',
-          time: '~4 min',
-          summary: 'A few targeted checks — light use of jargon.',
+          label: 'I dabble', time: '~4 min',
+          summary: 'Targeted checks. Light jargon.',
           exercise: [
-            { type: 'choice',
-              prompt: 'How many search terms do you actively want to rank for?',
+            { type: 'choice', prompt: 'How many search terms do you actively want to rank for?',
               options: [
                 { label: 'A clear list — 5+ priority terms', score: 85 },
                 { label: 'A vague idea', score: 55 },
-                { label: 'None — never thought about it', score: 20 }
-              ] },
-            { type: 'choice',
-              prompt: 'When did you last check your Google ranking?',
+                { label: 'None — never thought about it', score: 20 } ] },
+            { type: 'choice', prompt: 'When did you last check your Google ranking?',
               options: [
                 { label: 'This week', score: 90 },
                 { label: 'This month', score: 70 },
                 { label: 'This year', score: 40 },
-                { label: 'Never', score: 10 }
-              ] },
-            { type: 'choice',
-              prompt: 'Do you have a Google Business Profile, claimed and active?',
+                { label: 'Never', score: 10 } ] },
+            { type: 'choice', prompt: 'Do you have a Google Business Profile, claimed and active?',
               options: [
-                { label: 'Yes — kept up to date', score: 95 },
-                { label: 'Yes — but neglected', score: 55 },
-                { label: 'No / not sure', score: 15 }
-              ] },
-            { type: 'multi',
-              prompt: 'Which of these have you done in the last 90 days? (pick any)',
+                { label: 'Yes — kept up to date', score: 95, tag: 'gmb-good' },
+                { label: 'Yes — but neglected', score: 55, tag: 'gmb-stale' },
+                { label: 'No / not sure', score: 15, tag: 'gmb-missing' } ] },
+            { type: 'multi', prompt: 'Done in the last 90 days? (pick any)',
               options: [
                 { label: 'Posted to Google Business Profile', score: 20 },
                 { label: 'Got a new review', score: 25 },
                 { label: 'Added a page targeting a search term', score: 25 },
-                { label: 'Audited backlinks / mentions', score: 15 },
-                { label: 'None of these', score: -50 }
-              ] }
+                { label: 'None of these', score: -50 } ] }
           ]
         },
         professional: {
-          label: 'Run the audit',
-          time: '~5 min',
-          summary: 'Paste your URL. We run a live read on visibility, indexing and on-page signal.',
+          label: 'Run the audit', time: '~5 min',
+          summary: 'Paste your URL. Live read on visibility, indexing, on-page signal.',
           exercise: [
-            { type: 'url',
-              prompt: 'Your website URL',
-              body: "We'll use this to simulate a visibility scan. (Live audit endpoint coming next round.)",
+            { type: 'url', prompt: 'Your website URL',
+              body: "We'll use this to simulate a visibility scan. (Real audit endpoint coming next round.)",
               placeholder: 'https://yourbusiness.co.uk' },
-            { type: 'reveal',
-              title: 'Sample scan output',
-              body: '<div class="hc-mock-scan"><div><span>Indexed pages</span><strong>12</strong></div><div><span>Mobile speed</span><strong>62</strong></div><div><span>Title tag coverage</span><strong>8 / 12</strong></div><div><span>Schema markup</span><strong>None detected</strong></div><div><span>Estimated keywords ranking top-10</span><strong>3</strong></div></div><p class="muted" style="margin-top:14px">Placeholder values — real audit hooks are queued for the next sprint.</p>' },
-            { type: 'choice',
-              prompt: 'Of the 12 indexed pages, how many target a specific search intent?',
+            { type: 'reveal', title: 'Sample scan output',
+              body: '<div class="hc-mock-scan"><div><span>Indexed pages</span><strong>12</strong></div><div><span>Mobile speed</span><strong>62</strong></div><div><span>Title tag coverage</span><strong>8 / 12</strong></div><div><span>Schema markup</span><strong>None detected</strong></div><div><span>Estimated keywords ranking top-10</span><strong>3</strong></div></div>' },
+            { type: 'choice', prompt: 'Of those indexed pages, how many target a specific search intent?',
               options: [
                 { label: 'Most of them', score: 85 },
                 { label: 'A handful', score: 55 },
-                { label: 'None — they\'re all "about us" / "services"', score: 20 }
-              ] },
-            { type: 'choice',
-              prompt: "What's your weekly review cadence on Search Console?",
+                { label: 'None — they\'re all "about us" / "services"', score: 20 } ] },
+            { type: 'choice', prompt: 'Search Console review cadence?',
               options: [
                 { label: 'Weekly with documented actions', score: 95 },
                 { label: 'Monthly glance', score: 60 },
-                { label: 'I don\'t use it', score: 15 }
-              ] }
+                { label: 'I don\'t use it', score: 15 } ] }
           ]
         }
+      },
+      quickwins: function (slot) {
+        var wins = [];
+        var gmbStep = slot.tier === 'beginner' ? 5 : slot.tier === 'intermediate' ? 2 : null;
+        if (gmbStep != null) {
+          var raw = slot.raw[gmbStep];
+          var tier = AREAS.find(function(a){return a.id==='seo';}).tiers[slot.tier];
+          var tag = raw != null ? tier.exercise[gmbStep].options[raw].tag : null;
+          if (tag === 'gmb-missing') {
+            wins.push({
+              title: 'Claim your Google Business Profile',
+              why: "It's free, takes 15 minutes, and is the single biggest local-search lever you're not pulling.",
+              actions: [
+                { label: 'Read our 10-minute guide', type: 'guide', href: 'https://milesymedia.co/blog/gmb-setup' },
+                { label: "We'll do it for you", type: 'doitforme' },
+                { label: 'Talk it through', type: 'callus' }
+              ]
+            });
+          } else if (tag === 'gmb-stale') {
+            wins.push({
+              title: 'Optimise your Google Business Profile',
+              why: 'Stale profiles rank below active ones. Photos, posts and review replies all move the needle.',
+              actions: [
+                { label: 'Read the optimisation checklist', type: 'guide', href: 'https://milesymedia.co/blog/gmb-optimise' },
+                { label: 'Need photos? Call us', type: 'callus' },
+                { label: 'Want us to run it for you?', type: 'doitforme' }
+              ]
+            });
+          }
+        }
+        wins.push({
+          title: "Get found for the searches your customers actually type",
+          why: "Most service businesses target the wrong words. Two tweaks usually shifts page rank within weeks.",
+          actions: [
+            { label: 'Read the keyword starter guide', type: 'guide', href: 'https://milesymedia.co/blog/seo-keywords' },
+            { label: "Help me work out my list", type: 'callus' },
+            { label: "Build me the plan", type: 'doitforme' }
+          ]
+        });
+        return wins;
       }
     },
 
-    /* ─── 2 · YOUR WEBSITE ─────────────────── */
     {
       id: 'site',
       name: 'Your Website',
@@ -287,84 +369,93 @@
       blurb: 'When someone lands on you for the first time, do they stay?',
       tiers: {
         beginner: {
-          label: 'Just show me',
-          time: '~3 min',
+          label: 'Just show me', time: '~3 min',
           summary: 'A 5-second test of your own site.',
           exercise: [
-            { type: 'task',
-              title: 'The 5-second test',
+            { type: 'task', title: 'The 5-second test',
               body: 'Open your website in a new tab. Look at the homepage for <strong>5 seconds</strong>. Then close the tab and come back.',
               done: 'Done' },
-            { type: 'choice',
-              prompt: 'In one breath — could a stranger tell what you sell?',
+            { type: 'choice', prompt: 'In one breath — could a stranger tell what you sell?',
               options: [
                 { label: 'Yes, instantly', score: 90 },
                 { label: 'Probably, with a squint', score: 55 },
-                { label: 'No — they\'d have to read carefully', score: 25 },
-                { label: 'No idea', score: 10 }
-              ] },
-            { type: 'choice',
-              prompt: 'Was the next thing to do (call, book, buy) obvious?',
+                { label: 'No — they\'d have to read', score: 25 },
+                { label: 'No idea', score: 10 } ] },
+            { type: 'choice', prompt: 'Was the next thing to do (call, book, buy) obvious?',
               options: [
-                { label: 'Big button, hard to miss', score: 90 },
-                { label: 'Somewhere — they\'d find it', score: 55 },
-                { label: 'Honestly no', score: 20 }
-              ] },
-            { type: 'choice',
-              prompt: 'Did the site feel trustworthy?',
+                { label: 'Big button, hard to miss', score: 90, tag: 'cta-clear' },
+                { label: 'Somewhere — they\'d find it', score: 55, tag: 'cta-weak' },
+                { label: 'Honestly no', score: 20, tag: 'cta-missing' } ] },
+            { type: 'choice', prompt: 'Did the site feel trustworthy?',
               options: [
                 { label: 'Yes — looks current', score: 85 },
-                { label: 'Bit dated but OK', score: 55 },
-                { label: 'It looks neglected', score: 25 }
-              ] }
+                { label: 'Bit dated but OK', score: 55, tag: 'site-dated' },
+                { label: 'It looks neglected', score: 25, tag: 'site-dated' } ] }
           ]
         },
         intermediate: {
-          label: 'I dabble',
-          time: '~3 min',
+          label: 'I dabble', time: '~3 min',
           summary: 'Quick targeted checks on conversion.',
           exercise: [
-            { type: 'choice',
-              prompt: 'When did you last test something on your site (heading, button, layout)?',
+            { type: 'choice', prompt: 'When did you last test something on your site?',
               options: [
                 { label: 'This month', score: 90 },
                 { label: 'This year', score: 60 },
-                { label: 'Never', score: 20 }
-              ] },
-            { type: 'choice',
-              prompt: 'Is your homepage hero benefit-led or feature-led?',
+                { label: 'Never', score: 20 } ] },
+            { type: 'choice', prompt: 'Is your homepage hero benefit-led or feature-led?',
               options: [
                 { label: 'Benefit, with proof', score: 90 },
                 { label: 'A mix', score: 60 },
-                { label: 'Mostly features / "welcome" copy', score: 30 }
-              ] },
-            { type: 'slider',
-              prompt: 'How would you rate your site\'s mobile experience?',
+                { label: 'Mostly features / "welcome" copy', score: 30, tag: 'hero-weak' } ] },
+            { type: 'slider', prompt: 'Rate your site\'s mobile experience',
               min: 0, max: 100, value: 50, suffix: '/100' }
           ]
         },
         professional: {
-          label: 'Run the audit',
-          time: '~5 min',
+          label: 'Run the audit', time: '~5 min',
           summary: 'Mock Lighthouse-style read of your site.',
           exercise: [
             { type: 'url', prompt: 'Your website URL', placeholder: 'https://yourbusiness.co.uk' },
-            { type: 'reveal',
-              title: 'Sample Lighthouse-style read',
+            { type: 'reveal', title: 'Sample Lighthouse-style read',
               body: '<div class="hc-mock-scan"><div><span>Performance</span><strong>62</strong></div><div><span>Accessibility</span><strong>78</strong></div><div><span>SEO</span><strong>71</strong></div><div><span>Best practices</span><strong>83</strong></div><div><span>LCP</span><strong>3.4s</strong></div><div><span>CLS</span><strong>0.18</strong></div></div>' },
-            { type: 'choice',
-              prompt: 'Are conversion events instrumented (book / buy / call) on your site?',
+            { type: 'choice', prompt: 'Conversion events instrumented?',
               options: [
                 { label: 'Yes — server-side', score: 95 },
                 { label: 'Yes — GA / pixel only', score: 70 },
-                { label: 'No', score: 15 }
-              ] }
+                { label: 'No', score: 15 } ] }
           ]
         }
+      },
+      quickwins: function (slot) {
+        var wins = [];
+        var ctaStep = slot.tier === 'beginner' ? 2 : null;
+        if (ctaStep != null) {
+          var tier = AREAS.find(function(a){return a.id==='site';}).tiers[slot.tier];
+          var tag = slot.raw[ctaStep] != null ? tier.exercise[ctaStep].options[slot.raw[ctaStep]].tag : null;
+          if (tag === 'cta-missing' || tag === 'cta-weak') {
+            wins.push({
+              title: 'Make the next action obvious',
+              why: "If a stranger can't see the button in 5 seconds, they're gone. One clear primary action lifts conversions 8–14% on average.",
+              actions: [
+                { label: 'Read the homepage hero playbook', type: 'guide', href: 'https://milesymedia.co/blog/homepage-hero' },
+                { label: "We'll redesign it for you", type: 'doitforme' },
+                { label: 'Struggling? Call us', type: 'callus' }
+              ]
+            });
+          }
+        }
+        wins.push({
+          title: "5-second test your site every quarter",
+          why: "First impressions don't get a second chance. A 5-second test is the cheapest UX research you'll ever run.",
+          actions: [
+            { label: 'Read the 5-second-test guide', type: 'guide', href: 'https://milesymedia.co/blog/5-second-test' },
+            { label: "Run one for me", type: 'doitforme' }
+          ]
+        });
+        return wins;
       }
     },
 
-    /* ─── 3 · WHERE CUSTOMERS COME FROM ────── */
     {
       id: 'flow',
       name: 'Where Customers Come From',
@@ -372,80 +463,169 @@
       blurb: "If your biggest source dried up tomorrow, how long do you last?",
       tiers: {
         beginner: {
-          label: 'Just show me',
-          time: '~2 min',
+          label: 'Just show me', time: '~2 min',
           summary: 'Three sliders. Brutal honesty time.',
           exercise: [
             { type: 'slider', prompt: 'What % of last month\'s customers were word-of-mouth or repeat?', min: 0, max: 100, value: 50, suffix: '%' },
-            { type: 'slider', prompt: 'What % came from one specific channel (e.g. one Facebook page, one referrer)?', min: 0, max: 100, value: 50, suffix: '%' },
-            { type: 'choice',
-              prompt: 'If that biggest source stopped tomorrow, how long until it hurts?',
+            { type: 'slider', prompt: 'What % came from one specific channel?', min: 0, max: 100, value: 50, suffix: '%' },
+            { type: 'choice', prompt: 'If that biggest source stopped tomorrow, how long until it hurts?',
               options: [
                 { label: 'A few months — we\'d be fine', score: 85 },
                 { label: 'A month or so', score: 55 },
-                { label: 'Within weeks', score: 30 },
-                { label: 'Honestly… immediately', score: 10 }
-              ] },
-            { type: 'choice',
-              prompt: 'When was your last new enquiry that wasn\'t a referral or repeat?',
+                { label: 'Within weeks', score: 30, tag: 'channel-fragile' },
+                { label: 'Honestly… immediately', score: 10, tag: 'channel-fragile' } ] },
+            { type: 'choice', prompt: 'When was your last new enquiry that wasn\'t a referral or repeat?',
               options: [
                 { label: 'This week', score: 90 },
                 { label: 'This month', score: 60 },
-                { label: 'This year', score: 30 },
-                { label: "Can't remember", score: 10 }
-              ] }
+                { label: 'This year', score: 30, tag: 'cold-pipe-empty' },
+                { label: "Can't remember", score: 10, tag: 'cold-pipe-empty' } ] }
           ]
         },
         intermediate: {
-          label: 'I dabble',
-          time: '~3 min',
+          label: 'I dabble', time: '~3 min',
           summary: 'Channel-by-channel breakdown.',
           exercise: [
-            { type: 'multi',
-              prompt: 'Which channels currently bring in customers? (pick any)',
+            { type: 'multi', prompt: 'Which channels currently bring in customers?',
               options: [
                 { label: 'Search (Google)', score: 20 },
                 { label: 'Word of mouth', score: 10 },
                 { label: 'Paid ads', score: 20 },
                 { label: 'Social organic', score: 15 },
                 { label: 'Email / SMS', score: 15 },
-                { label: 'Partnerships', score: 10 }
-              ] },
-            { type: 'choice',
-              prompt: 'Do you know your cost per new customer?',
+                { label: 'Partnerships', score: 10 } ] },
+            { type: 'choice', prompt: 'Do you know your cost per new customer?',
               options: [
                 { label: 'Yes — to the pound', score: 95 },
                 { label: 'Roughly', score: 60 },
-                { label: 'No', score: 15 }
-              ] }
+                { label: 'No', score: 15 } ] }
           ]
         },
         professional: {
-          label: 'Run the audit',
-          time: '~5 min',
-          summary: 'Channel concentration + payback period read.',
+          label: 'Run the audit', time: '~5 min',
+          summary: 'Channel concentration + payback period.',
           exercise: [
             { type: 'slider', prompt: 'Top channel concentration (% of revenue)', min: 0, max: 100, value: 70, suffix: '%' },
-            { type: 'choice',
-              prompt: 'Is your customer payback period documented?',
+            { type: 'choice', prompt: 'Payback period documented?',
               options: [
                 { label: 'Yes — segmented by channel', score: 95 },
                 { label: 'Yes — overall only', score: 65 },
-                { label: 'No', score: 20 }
-              ] },
-            { type: 'choice',
-              prompt: 'Is attribution multi-touch or last-click?',
-              options: [
-                { label: 'Multi-touch / modelled', score: 90 },
-                { label: 'Last-click platform reports', score: 55 },
-                { label: 'Not tracked', score: 15 }
-              ] }
+                { label: 'No', score: 20 } ] }
           ]
         }
+      },
+      quickwins: function (slot) {
+        var wins = [];
+        wins.push({
+          title: 'Open a second viable channel',
+          why: 'One bad month on your biggest source becomes existential when there\'s no plan B. The cheapest second channel is usually the one your competitors are quietly winning on.',
+          actions: [
+            { label: 'Read: how to pick a second channel', type: 'guide', href: 'https://milesymedia.co/blog/second-channel' },
+            { label: "Help me decide which one", type: 'callus' },
+            { label: "Build it with me", type: 'doitforme' }
+          ]
+        });
+        return wins;
       }
     },
 
-    /* ─── 4 · KEEPING THEM ─────────────────── */
+    {
+      id: 'business',
+      name: 'My Business',
+      icon: '✪',
+      blurb: 'The bits only you know — your offer, your fans, your unfair advantage.',
+      tiers: {
+        beginner: {
+          label: 'Just show me', time: '~3 min',
+          summary: 'Tell us about your offer in plain words.',
+          exercise: [
+            { type: 'choice', prompt: 'Do you have a clear "best seller" or flagship offer?',
+              options: [
+                { label: 'Yes — and I push it', score: 90 },
+                { label: 'Yes — but I don\'t lead with it', score: 60, tag: 'hero-product-hidden' },
+                { label: 'No — we sell everything equally', score: 30, tag: 'no-hero-product' } ] },
+            { type: 'url', prompt: 'Got a link to your highest-value offer? (optional)',
+              body: 'Helps us see exactly what your customers see. Skip if you\'d rather.',
+              placeholder: 'https://yourbusiness.co.uk/your-best-seller', optional: true },
+            { type: 'choice', prompt: 'Do you actively encourage referrals?',
+              options: [
+                { label: 'Yes — there\'s a system', score: 90 },
+                { label: 'Sort of — when I remember', score: 55, tag: 'referrals-passive' },
+                { label: 'No — it\'s blind faith', score: 20, tag: 'referrals-blind' } ] },
+            { type: 'choice', prompt: 'Do you go an extraordinary mile for customers?',
+              options: [
+                { label: 'Always — it\'s our thing', score: 90, tag: 'extra-mile-strong' },
+                { label: 'Sometimes', score: 55 },
+                { label: 'We do the job and that\'s it', score: 25 } ] },
+            { type: 'text', prompt: 'In one sentence — why do customers pick you over a competitor?',
+              optional: true }
+          ]
+        },
+        intermediate: {
+          label: 'I dabble', time: '~3 min',
+          summary: 'Sharper offer questions.',
+          exercise: [
+            { type: 'choice', prompt: 'Is your highest-margin offer also your most marketed?',
+              options: [
+                { label: 'Yes — deliberately', score: 90 },
+                { label: 'No — we lead with the cheap one', score: 30, tag: 'wrong-front-door' } ] },
+            { type: 'choice', prompt: 'Do you have testimonials or case studies on the highest-value offer specifically?',
+              options: [
+                { label: 'Multiple, recent', score: 90 },
+                { label: 'A couple, old', score: 55 },
+                { label: 'None', score: 20, tag: 'no-social-proof' } ] }
+          ]
+        },
+        professional: {
+          label: 'Run the audit', time: '~4 min',
+          summary: 'Offer architecture + referral mechanics.',
+          exercise: [
+            { type: 'choice', prompt: 'Is there a documented referral mechanism (incentive, ask, tracking)?',
+              options: [
+                { label: 'Yes — all three', score: 95 },
+                { label: 'One of three', score: 60 },
+                { label: 'None', score: 15, tag: 'referrals-blind' } ] },
+            { type: 'choice', prompt: 'Do you tier customers (best vs everyone) for retention attention?',
+              options: [
+                { label: 'Yes', score: 90 },
+                { label: 'No', score: 30 } ] }
+          ]
+        }
+      },
+      quickwins: function (slot) {
+        var wins = [];
+        var area = AREAS.find(function(a){return a.id==='business';});
+        var tier = area.tiers[slot.tier];
+        var tags = [];
+        tier.exercise.forEach(function (st, i) {
+          var raw = slot.raw[i];
+          if (st.type === 'choice' && raw != null && st.options[raw].tag) tags.push(st.options[raw].tag);
+        });
+        if (tags.indexOf('referrals-blind') !== -1 || tags.indexOf('referrals-passive') !== -1) {
+          wins.push({
+            title: 'Turn referrals from a hope into a system',
+            why: 'A referred customer is 4× more likely to buy and stay. The fix is usually one message + one moment of asking.',
+            actions: [
+              { label: 'Read: the 1-message referral script', type: 'guide', href: 'https://milesymedia.co/blog/referral-script' },
+              { label: 'Help me write mine', type: 'callus' },
+              { label: 'Build the whole programme', type: 'doitforme' }
+            ]
+          });
+        }
+        if (tags.indexOf('hero-product-hidden') !== -1 || tags.indexOf('no-hero-product') !== -1) {
+          wins.push({
+            title: 'Pick one flagship offer and lead with it',
+            why: 'Businesses with a clear front-door offer convert 2-3× higher. "We do everything" is a 0-conversion strategy.',
+            actions: [
+              { label: 'Read: how to pick your flagship', type: 'guide', href: 'https://milesymedia.co/blog/flagship-offer' },
+              { label: 'Talk it through with us', type: 'callus' }
+            ]
+          });
+        }
+        return wins;
+      }
+    },
+
     {
       id: 'retain',
       name: 'Keeping Them',
@@ -453,75 +633,85 @@
       blurb: 'Once someone buys once, what happens next?',
       tiers: {
         beginner: {
-          label: 'Just show me',
-          time: '~2 min',
+          label: 'Just show me', time: '~2 min',
           summary: 'Two simple questions.',
           exercise: [
-            { type: 'choice',
-              prompt: 'After someone buys, what do you send them?',
+            { type: 'choice', prompt: 'After someone buys, what do you send them?',
               options: [
                 { label: 'A friendly thank-you and a follow-up later', score: 85 },
-                { label: 'A receipt — that\'s it', score: 40 },
-                { label: 'Nothing', score: 15 }
-              ] },
-            { type: 'choice',
-              prompt: 'How often does a past customer hear from you?',
+                { label: 'A receipt — that\'s it', score: 40, tag: 'no-followup' },
+                { label: 'Nothing', score: 15, tag: 'no-followup' } ] },
+            { type: 'choice', prompt: 'How often does a past customer hear from you?',
               options: [
                 { label: 'Regularly — emails or messages', score: 85 },
                 { label: 'Now and then', score: 55 },
-                { label: 'Only if I bump into them', score: 20 }
-              ] }
+                { label: 'Only if I bump into them', score: 20, tag: 'no-lifecycle' } ] }
           ]
         },
         intermediate: {
-          label: 'I dabble',
-          time: '~3 min',
+          label: 'I dabble', time: '~3 min',
           summary: 'Email/SMS basics.',
           exercise: [
-            { type: 'choice',
-              prompt: 'Do you have an active mailing list?',
+            { type: 'choice', prompt: 'Do you have an active mailing list?',
               options: [
                 { label: 'Yes — segmented', score: 90 },
                 { label: 'Yes — flat', score: 55 },
-                { label: 'No', score: 15 }
-              ] },
-            { type: 'choice',
-              prompt: 'Do you have a welcome flow when someone signs up?',
+                { label: 'No', score: 15, tag: 'no-list' } ] },
+            { type: 'choice', prompt: 'Welcome flow when someone signs up?',
               options: [
                 { label: 'Yes — multi-step', score: 90 },
                 { label: 'A single welcome email', score: 60 },
-                { label: 'Nothing', score: 15 }
-              ] }
+                { label: 'Nothing', score: 15, tag: 'no-welcome' } ] }
           ]
         },
         professional: {
-          label: 'Run the audit',
-          time: '~4 min',
+          label: 'Run the audit', time: '~4 min',
           summary: 'Lifecycle revenue share + flow coverage.',
           exercise: [
-            { type: 'slider', prompt: 'What % of revenue comes from email / SMS today?', min: 0, max: 60, value: 10, suffix: '%' },
-            { type: 'multi',
-              prompt: 'Which flows are live? (pick any)',
+            { type: 'slider', prompt: '% of revenue from email / SMS today?', min: 0, max: 60, value: 10, suffix: '%' },
+            { type: 'multi', prompt: 'Which flows are live?',
               options: [
                 { label: 'Welcome', score: 20 },
                 { label: 'Browse abandon', score: 20 },
                 { label: 'Cart / enquiry abandon', score: 25 },
                 { label: 'Post-purchase', score: 20 },
-                { label: 'Win-back', score: 15 }
-              ] }
+                { label: 'Win-back', score: 15 } ] }
           ]
         }
+      },
+      quickwins: function (slot) {
+        var wins = [];
+        var area = AREAS.find(function(a){return a.id==='retain';});
+        var tier = area.tiers[slot.tier];
+        var tags = [];
+        tier.exercise.forEach(function (st, i) {
+          var raw = slot.raw[i];
+          if (st.type === 'choice' && raw != null && st.options[raw].tag) tags.push(st.options[raw].tag);
+        });
+        if (tags.indexOf('no-followup') !== -1 || tags.indexOf('no-welcome') !== -1) {
+          wins.push({
+            title: 'Ship a 3-step post-purchase flow',
+            why: 'The cheapest revenue you\'ll ever earn comes from someone who already trusted you once.',
+            actions: [
+              { label: 'Read: the 3-email flow template', type: 'guide', href: 'https://milesymedia.co/blog/post-purchase-flow' },
+              { label: "Write it with us", type: 'callus' },
+              { label: "Build it for me", type: 'doitforme' }
+            ]
+          });
+        }
+        return wins;
       }
     }
   ];
 
-  /* ─── STATE & HELPERS ───────────────────────── */
+  /* ─── STATE ─────────────────────────────────── */
   var state = {
     step: 'intro',
+    type: null,             // 'service' | 'product' | 'hybrid'
     areaIdx: 0,
     tier: null,
     exerciseIdx: 0,
-    answers: {} // { areaId: { tier, scores: [], stepIdx -> rawAnswer } }
+    answers: {}
   };
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -540,7 +730,7 @@
     return state.answers[aid];
   }
 
-  /* ─── OVERVIEW SCREEN ───────────────────────── */
+  /* ─── OVERVIEW ──────────────────────────────── */
   function renderOverview() {
     var a = currentArea();
     $("[data-hc-overview-eyebrow]").textContent = "Topic " + (state.areaIdx + 1) + " of " + AREAS.length;
@@ -548,7 +738,8 @@
     $("[data-hc-overview-blurb]").textContent = a.blurb;
     var prog = $("[data-hc-area-progress]");
     prog.innerHTML = AREAS.map(function (x, i) {
-      var s = i < state.areaIdx ? 'done' : (i === state.areaIdx ? 'active' : 'pending');
+      var done = !!state.answers[x.id];
+      var s = done ? 'done' : (i === state.areaIdx ? 'active' : 'pending');
       return '<div class="hc-pill hc-pill-' + s + '"><span class="hc-pill-icon">' + x.icon + '</span>' + x.name + '</div>';
     }).join('');
   }
@@ -560,9 +751,9 @@
     $("[data-hc-tier-prompt]").textContent = a.blurb;
     var tierIds = ['beginner', 'intermediate', 'professional'];
     var tierMeta = {
-      beginner:     { tag: 'Beginner',     accent: 'good' },
-      intermediate: { tag: 'Intermediate', accent: 'warn' },
-      professional: { tag: 'Professional', accent: 'bad'  } // 'bad' = orange/red accent class — repurposed for "spicy"
+      beginner:     { tag: 'Beginner' },
+      intermediate: { tag: 'Intermediate' },
+      professional: { tag: 'Professional' }
     };
     $("[data-hc-tiers]").innerHTML = tierIds.map(function (id) {
       var t = a.tiers[id], m = tierMeta[id];
@@ -585,7 +776,7 @@
     });
   }
 
-  /* ─── EXERCISE STEP RENDERER ────────────────── */
+  /* ─── EXERCISE STEP ─────────────────────────── */
   function renderStep() {
     var step = currentStep();
     var slot = ensureAnswerSlot();
@@ -599,13 +790,11 @@
         + '<p class="hc-step-body">' + step.body + '</p>'
         + '<button class="btn btn-secondary hc-task-done' + (raw === true ? ' is-on' : '') + '" data-hc-task-done>'
         + (raw === true ? '✓ ' : '') + (step.done || 'Done') + '</button>';
-    }
-    else if (step.type === 'reveal') {
+    } else if (step.type === 'reveal') {
       html = '<div class="hc-step-eyebrow">A small truth</div>'
         + '<h2 class="hc-q-prompt">' + step.title + '</h2>'
         + '<div class="hc-step-body">' + step.body + '</div>';
-    }
-    else if (step.type === 'choice') {
+    } else if (step.type === 'choice') {
       html = '<h2 class="hc-q-prompt">' + step.prompt + '</h2><div class="hc-q-options" role="radiogroup">';
       step.options.forEach(function (opt, i) {
         var on = raw === i;
@@ -613,8 +802,7 @@
           + '<span class="hc-opt-dot"></span><span class="hc-opt-label">' + opt.label + '</span></button>';
       });
       html += '</div>';
-    }
-    else if (step.type === 'multi') {
+    } else if (step.type === 'multi') {
       var picked = Array.isArray(raw) ? raw : [];
       html = '<h2 class="hc-q-prompt">' + step.prompt + '</h2><div class="hc-q-chips">';
       step.options.forEach(function (opt, i) {
@@ -622,21 +810,18 @@
         html += '<button class="hc-chip' + (on ? ' is-on' : '') + '" data-hc-multi="' + i + '">' + opt.label + '</button>';
       });
       html += '</div>';
-    }
-    else if (step.type === 'slider') {
+    } else if (step.type === 'slider') {
       var v = (raw == null ? step.value : raw);
       html = '<h2 class="hc-q-prompt">' + step.prompt + '</h2>'
         + '<div class="hc-slider-wrap">'
         + '<input type="range" min="' + step.min + '" max="' + step.max + '" value="' + v + '" data-hc-slider />'
         + '<div class="hc-slider-val"><span data-hc-slider-val>' + v + '</span>' + (step.suffix || '') + '</div>'
         + '</div>';
-    }
-    else if (step.type === 'url') {
+    } else if (step.type === 'url') {
       html = '<h2 class="hc-q-prompt">' + step.prompt + '</h2>'
         + (step.body ? '<p class="hc-step-body">' + step.body + '</p>' : '')
         + '<input type="url" class="hc-url-input" placeholder="' + (step.placeholder || '') + '" value="' + (raw || '') + '" data-hc-url />';
-    }
-    else if (step.type === 'text') {
+    } else if (step.type === 'text') {
       html = '<h2 class="hc-q-prompt">' + step.prompt + '</h2>'
         + '<textarea class="hc-text-input" rows="3" data-hc-text>' + (raw || '') + '</textarea>';
     }
@@ -650,58 +835,40 @@
   function wireStepInputs(step, slot) {
     var i = state.exerciseIdx;
     if (step.type === 'task') {
-      $("[data-hc-task-done]").addEventListener('click', function () {
-        slot.raw[i] = true;
-        renderStep();
-      });
-    }
-    else if (step.type === 'choice') {
+      $("[data-hc-task-done]").addEventListener('click', function () { slot.raw[i] = true; renderStep(); });
+    } else if (step.type === 'choice') {
       $$("[data-hc-opt]").forEach(function (b) {
         b.addEventListener('click', function () {
-          slot.raw[i] = parseInt(b.getAttribute('data-hc-opt'), 10);
-          renderStep();
+          slot.raw[i] = parseInt(b.getAttribute('data-hc-opt'), 10); renderStep();
         });
       });
-    }
-    else if (step.type === 'multi') {
+    } else if (step.type === 'multi') {
       $$("[data-hc-multi]").forEach(function (b) {
         b.addEventListener('click', function () {
           var idx = parseInt(b.getAttribute('data-hc-multi'), 10);
           var arr = Array.isArray(slot.raw[i]) ? slot.raw[i].slice() : [];
-          var p = arr.indexOf(idx);
-          if (p === -1) arr.push(idx); else arr.splice(p, 1);
-          slot.raw[i] = arr;
-          renderStep();
+          var p = arr.indexOf(idx); if (p === -1) arr.push(idx); else arr.splice(p, 1);
+          slot.raw[i] = arr; renderStep();
         });
       });
-    }
-    else if (step.type === 'slider') {
+    } else if (step.type === 'slider') {
       var s = $("[data-hc-slider]");
       s.addEventListener('input', function () {
-        var v = parseInt(s.value, 10);
-        slot.raw[i] = v;
-        $("[data-hc-slider-val]").textContent = v;
-        updateNav(step, v);
+        var v = parseInt(s.value, 10); slot.raw[i] = v;
+        $("[data-hc-slider-val]").textContent = v; updateNav(step, v);
       });
       if (slot.raw[i] == null) slot.raw[i] = step.value;
-    }
-    else if (step.type === 'url') {
+    } else if (step.type === 'url') {
       var u = $("[data-hc-url]");
-      u.addEventListener('input', function () {
-        slot.raw[i] = u.value;
-        updateNav(step, u.value);
-      });
-    }
-    else if (step.type === 'text') {
+      u.addEventListener('input', function () { slot.raw[i] = u.value; updateNav(step, u.value); });
+    } else if (step.type === 'text') {
       var t = $("[data-hc-text]");
-      t.addEventListener('input', function () {
-        slot.raw[i] = t.value;
-        updateNav(step, t.value);
-      });
+      t.addEventListener('input', function () { slot.raw[i] = t.value; updateNav(step, t.value); });
     }
   }
 
   function stepIsAnswered(step, raw) {
+    if (step.optional) return true;
     if (step.type === 'task')   return raw === true;
     if (step.type === 'reveal') return true;
     if (step.type === 'choice') return raw != null;
@@ -726,8 +893,7 @@
 
   function updateProgress() {
     var ex = currentTier().exercise;
-    var done = state.exerciseIdx;
-    var pct = Math.round((done / ex.length) * 100);
+    var pct = Math.round((state.exerciseIdx / ex.length) * 100);
     $("[data-hc-step-label]").textContent = currentArea().name + " · Step " + (state.exerciseIdx + 1) + " of " + ex.length;
     $("[data-hc-step-pct]").textContent = pct + "%";
     $("[data-hc-progress-fill]").style.width = pct + "%";
@@ -736,7 +902,7 @@
   /* ─── SCORING ───────────────────────────────── */
   function scoreArea(areaId) {
     var slot = state.answers[areaId];
-    if (!slot) return 50;
+    if (!slot) return null;
     var area = AREAS.find(function (a) { return a.id === areaId; });
     var tier = area.tiers[slot.tier];
     var scores = [];
@@ -744,16 +910,11 @@
       var raw = slot.raw[i];
       if (step.type === 'choice' && raw != null && step.options[raw].score != null && (step.scoring !== false)) {
         scores.push(step.options[raw].score);
-      } else if (step.type === 'multi' && Array.isArray(raw)) {
+      } else if (step.type === 'multi' && Array.isArray(raw) && raw.length) {
         var s = 0;
         raw.forEach(function (idx) { s += step.options[idx].score || 0; });
-        s = Math.max(0, Math.min(100, 30 + s));
-        scores.push(s);
+        scores.push(Math.max(0, Math.min(100, 30 + s)));
       } else if (step.type === 'slider' && raw != null) {
-        // Default: lower = healthier-diversity for "concentration"-style sliders.
-        // We invert if the prompt mentions "%" of single-source — but to keep
-        // it simple, treat slider value as score directly and the area copy
-        // describes nuance. This is good enough for placeholder dashboards.
         scores.push(Math.max(0, Math.min(100, 100 - raw)));
       }
     });
@@ -763,71 +924,95 @@
 
   /* ─── RESULTS ───────────────────────────────── */
   function buildResults() {
+    var coveredCount = Object.keys(state.answers).length;
     var pillars = AREAS.map(function (a) {
       var score = scoreArea(a.id);
-      var status = score >= 75 ? 'good' : score >= 50 ? 'warn' : 'bad';
-      var slot = state.answers[a.id];
-      return { area: a, score: score, status: status, tier: slot ? slot.tier : '—' };
+      var status = score == null ? 'pending' : score >= 75 ? 'good' : score >= 50 ? 'warn' : 'bad';
+      var slot = state.answers[a.id] || null;
+      return { area: a, score: score, status: status, slot: slot };
     });
-    var overall = Math.round(pillars.reduce(function (s, p) { return s + p.score; }, 0) / pillars.length);
+    var scored = pillars.filter(function (p) { return p.score != null; });
+    var overall = scored.length
+      ? Math.round(scored.reduce(function (s, p) { return s + p.score; }, 0) / scored.length)
+      : 50;
 
-    // Money-loser headline — purely cosmetic placeholder driven by overall score.
     var moneyEstimate = Math.max(800, Math.round((100 - overall) * 95));
-    $("[data-hc-money-headline]").innerHTML = "You're leaving an estimated <span class='accent'>£" + moneyEstimate.toLocaleString() + "/month</span> on the table.";
+    var unanswered = AREAS.length - coveredCount;
+    var unansweredHint = unanswered > 0
+      ? ' <span class="hc-headline-hint">(based on ' + coveredCount + '/' + AREAS.length + ' topics — answer the rest to sharpen this)</span>'
+      : '';
+    $("[data-hc-money-headline]").innerHTML = "You're leaving an estimated <span class='accent'>£" + moneyEstimate.toLocaleString() + "/month</span> on the table." + unansweredHint;
 
-    var seoSlot = state.answers['seo'], flowSlot = state.answers['flow'];
-    var leakVis = seoSlot ? Math.max(5, Math.min(95, scoreArea('seo'))) : 12;
+    var leakVis = state.answers['seo'] ? Math.max(5, Math.min(95, scoreArea('seo'))) : 12;
     $("[data-hc-leak-visibility]").innerHTML = leakVis + '<span>%</span>';
     $("[data-hc-leak-trust]").innerHTML = '5<span>s</span>';
-    var leakDep = flowSlot ? Math.max(20, Math.min(95, 100 - scoreArea('flow'))) : 78;
+    var leakDep = state.answers['flow'] ? Math.max(20, Math.min(95, 100 - scoreArea('flow'))) : 78;
     $("[data-hc-leak-dependence]").innerHTML = leakDep + '<span>%</span>';
 
-    var STATUS_LBL = { good: 'Strength', warn: 'Quick win', bad: 'Money leak' };
-    $("[data-hc-pillars]").innerHTML = pillars.map(function (p) {
-      return '<article class="hc-pillar hc-pillar-' + p.status + '">'
-        + '<div class="hc-pillar-head">'
-        +   '<div class="hc-pillar-icon">' + p.area.icon + '</div>'
-        +   '<div><div class="hc-pillar-cat">' + p.area.name + '</div>'
-        +   '<span class="badge badge-' + p.status + '">' + STATUS_LBL[p.status] + '</span> '
-        +   '<span class="hc-pillar-tier">' + p.tier + '</span></div>'
-        +   '<div class="hc-pillar-score">' + p.score + '</div>'
-        + '</div>'
-        + '<div class="hc-pillar-bar"><span style="width:' + p.score + '%"></span></div>'
-        + '</article>';
-    }).join('');
+    /* ── Quick wins (action-rich) ──────────────── */
+    var allWins = [];
+    pillars.forEach(function (p) {
+      if (!p.slot || !p.area.quickwins) return;
+      try {
+        var ws = p.area.quickwins(p.slot) || [];
+        ws.forEach(function (w) { allWins.push(Object.assign({ areaId: p.area.id, areaName: p.area.name, areaIcon: p.area.icon }, w)); });
+      } catch (e) { /* swallow — placeholder safety */ }
+    });
+    var qw = $("[data-hc-quickwins]");
+    if (!allWins.length) {
+      qw.innerHTML = '<div class="hc-quickwin-empty"><p class="muted">Answer at least one topic to see your quick wins.</p></div>';
+    } else {
+      qw.innerHTML = allWins.map(function (w, i) {
+        var actions = w.actions.map(function (a) {
+          if (a.type === 'guide') return '<a href="' + a.href + '" target="_blank" rel="noopener" class="qw-action qw-guide">📖 ' + a.label + '</a>';
+          if (a.type === 'callus') return '<a href="tel:+441234567890" class="qw-action qw-callus">📞 ' + a.label + '</a>';
+          if (a.type === 'doitforme') return '<a href="mailto:hello@milesymedia.co?subject=' + encodeURIComponent(w.title) + '" class="qw-action qw-doitforme">⚡ ' + a.label + '</a>';
+          return '<button class="qw-action qw-diy">' + a.label + '</button>';
+        }).join('');
+        return '<details class="qw-card" ' + (i === 0 ? 'open' : '') + '>'
+          + '<summary><span class="qw-icon">' + w.areaIcon + '</span><span class="qw-title">' + w.title + '</span><span class="qw-area-tag">' + w.areaName + '</span></summary>'
+          + '<div class="qw-body"><p>' + w.why + '</p><div class="qw-actions">' + actions + '</div></div>'
+          + '</details>';
+      }).join('');
+    }
 
-    // Top 3 — pick the three lowest-scoring areas.
-    var sorted = pillars.slice().sort(function (a, b) { return a.score - b.score; }).slice(0, 3);
-    var RECOS = {
-      seo:    'Get found on the first page for the searches your customers actually run.',
-      site:   'Rebuild the homepage hero so a stranger gets it in 5 seconds.',
-      flow:   'Diversify the channel mix so one bad month doesn\'t become an existential one.',
-      retain: 'Ship a simple post-purchase flow — the cheapest revenue you\'ll ever earn.'
-    };
-    $("[data-hc-recos]").innerHTML = sorted.map(function (p, i) {
-      return '<li><div class="reco-rank">' + String(i + 1).padStart(2, '0') + '</div>'
-        + '<div><h4>' + RECOS[p.area.id] + '</h4>'
-        + '<p class="muted">Topic: ' + p.area.name + ' · current score ' + p.score + '/100. Typical 90-day lift on this kind of move ranges 12–35%.</p></div></li>';
+    /* ── Section navigator ─────────────────────── */
+    var nav = $("[data-hc-section-nav]");
+    nav.innerHTML = pillars.map(function (p, i) {
+      var done = p.score != null;
+      var stateCls = done ? 'is-done' : 'is-pending';
+      var label = done ? 'Score: ' + p.score + '/100 · ' + (p.slot.tier) : 'Not explored yet';
+      var cta   = done ? 'Deepen — try a higher tier' : 'Unlock more wins';
+      return '<button class="hc-section-nav-card ' + stateCls + '" data-hc-jump="' + i + '">'
+        + '<div class="hc-section-nav-icon">' + p.area.icon + '</div>'
+        + '<div class="hc-section-nav-meta">'
+        +   '<div class="hc-section-nav-title">' + p.area.name + '</div>'
+        +   '<div class="hc-section-nav-sub">' + label + '</div>'
+        + '</div>'
+        + '<div class="hc-section-nav-cta">' + cta + ' →</div>'
+        + '</button>';
     }).join('');
+    $$("[data-hc-jump]").forEach(function (b) {
+      b.addEventListener('click', function () {
+        state.areaIdx = parseInt(b.getAttribute('data-hc-jump'), 10);
+        state.tier = null; state.exerciseIdx = 0;
+        show('overview'); renderOverview();
+      });
+    });
   }
 
   /* ─── NAVIGATION ────────────────────────────── */
   function startArea() {
-    state.tier = null;
-    state.exerciseIdx = 0;
-    show('overview');
-    renderOverview();
+    state.tier = null; state.exerciseIdx = 0;
+    show('overview'); renderOverview();
   }
 
   function nextStepOrArea() {
     if (state.exerciseIdx < currentTier().exercise.length - 1) {
-      state.exerciseIdx++;
-      renderStep();
+      state.exerciseIdx++; renderStep();
     } else {
-      // finished this area
       if (state.areaIdx < AREAS.length - 1) {
-        state.areaIdx++;
-        startArea();
+        state.areaIdx++; startArea();
       } else {
         show('building');
         setTimeout(function () { buildResults(); show('results'); }, 1200);
@@ -836,15 +1021,25 @@
   }
 
   document.addEventListener('click', function (ev) {
+    var pickType = ev.target.closest('[data-hc-pick-type]');
+    if (pickType) { state.type = pickType.getAttribute('data-hc-pick-type'); state.areaIdx = 0; startArea(); return; }
+
     var t = ev.target.closest('[data-hc-action]');
     if (!t) return;
     var a = t.getAttribute('data-hc-action');
-    if (a === 'start')      { state.areaIdx = 0; startArea(); }
+    if (a === 'start')           { show('gate'); }
     else if (a === 'open-tiers') { show('tiers'); renderTiers(); }
-    else if (a === 'step-back') { if (state.exerciseIdx > 0) { state.exerciseIdx--; renderStep(); } }
-    else if (a === 'step-next') { nextStepOrArea(); }
+    else if (a === 'step-back')  { if (state.exerciseIdx > 0) { state.exerciseIdx--; renderStep(); } }
+    else if (a === 'step-next')  { nextStepOrArea(); }
+    else if (a === 'skip-area')  {
+      if (state.areaIdx < AREAS.length - 1) { state.areaIdx++; startArea(); }
+      else { show('building'); setTimeout(function () { buildResults(); show('results'); }, 800); }
+    }
+    else if (a === 'skip-results') {
+      show('building'); setTimeout(function () { buildResults(); show('results'); }, 800);
+    }
     else if (a === 'restart') {
-      state = { step:'intro', areaIdx:0, tier:null, exerciseIdx:0, answers:{} };
+      state = { step:'intro', type:null, areaIdx:0, tier:null, exerciseIdx:0, answers:{} };
       show('intro');
     }
   });
