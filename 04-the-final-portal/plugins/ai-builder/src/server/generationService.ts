@@ -17,11 +17,14 @@ import type { AgencyId, ClientId, UserId } from "../lib/tenancy";
 import {
   computeCostCents,
   DEFAULT_CONFIG,
+  monthKeyForDate,
+  nextMonthResetIso,
   type AiBuilderConfig,
   type BlockTreeNode,
   type CacheUsage,
   type Generation,
   type ModelId,
+  type MonthlyUsage,
 } from "../lib/domain";
 import {
   listBlockSchemas,
@@ -92,6 +95,17 @@ export class GenerationService {
       retryCount: 0,
     };
 
+    // R9 ceiling check — token ceiling consults the same monthly
+    // usage roll-up the image service writes to. Over budget → return
+    // a synthetic "rejected" record with kind=ceiling-reached so the UI
+    // can surface a friendly banner without a separate error path.
+    const ceilingHit = await this.checkTokenCeiling(config);
+    if (ceilingHit) {
+      record = { ...record, status: "rejected", validationError: `ceiling-reached: ${ceilingHit.reason}; resets ${ceilingHit.resetsOn}`, completedAt: Date.now() };
+      await this.persist(record);
+      return record;
+    }
+
     try {
       record = await this.runOnce(record, input, initialModel, undefined);
       // First attempt rejected on validation? Retry once with the
@@ -117,6 +131,35 @@ export class GenerationService {
 
     await this.persist(record);
     return record;
+  }
+
+  // ─── R9: ceilings + usage ──────────────────────────────────────────────
+  async checkTokenCeiling(config: AiBuilderConfig): Promise<{ reason: string; resetsOn: string } | null> {
+    const ceiling = config.monthlyTokenCeiling ?? DEFAULT_CONFIG.monthlyTokenCeiling!;
+    const u = await this.usageThisMonth();
+    if (u.tokens >= ceiling) {
+      return { reason: `tokens used ${u.tokens} >= ceiling ${ceiling}`, resetsOn: nextMonthResetIso() };
+    }
+    return null;
+  }
+
+  async usageThisMonth(): Promise<MonthlyUsage> {
+    const monthKey = monthKeyForDate();
+    const cur = await this.deps.storage.get<MonthlyUsage>(this.usageKey(monthKey));
+    return cur ?? { monthKey, tokens: 0, images: 0 };
+  }
+
+  async bumpUsageTokens(by: number): Promise<void> {
+    const cur = await this.usageThisMonth();
+    await this.deps.storage.set(this.usageKey(cur.monthKey), {
+      monthKey: cur.monthKey,
+      tokens: cur.tokens + by,
+      images: cur.images,
+    });
+  }
+
+  private usageKey(monthKey: string): string {
+    return `${this.tenantPrefix}/metrics/usage/${monthKey}`;
   }
 
   // ─── Streaming (R8) ────────────────────────────────────────────────────
@@ -149,6 +192,13 @@ export class GenerationService {
       createdAt: startedAt,
       retryCount: 0,
     };
+
+    const ceilingHit = await this.checkTokenCeiling(config);
+    if (ceilingHit) {
+      record = { ...record, status: "rejected", validationError: `ceiling-reached: ${ceilingHit.reason}; resets ${ceilingHit.resetsOn}`, completedAt: Date.now() };
+      await this.persist(record);
+      return record;
+    }
 
     const schemas = listBlockSchemas();
     const system = buildSystemPrompt(schemas, config.cacheSystemPrompt !== false);
@@ -183,6 +233,8 @@ export class GenerationService {
     if ((usage.cacheReadInputTokens ?? 0) > 0) await this.bumpMetric("cache-hits", 1);
     const cost = computeCostCents(model, usage);
     await this.bumpMetric("cost-cents", cost);
+    // R9 — same per-month token roll-up the non-stream path uses.
+    await this.bumpUsageTokens(usage.inputTokens + usage.outputTokens + (usage.cacheReadInputTokens ?? 0) + (usage.cacheCreationInputTokens ?? 0));
 
     const parsed = parseBlockTreeFromText(raw);
     if (!parsed.ok) {
@@ -281,6 +333,8 @@ export class GenerationService {
 
     const cost = computeCostCents(model, usage);
     await this.bumpMetric("cost-cents", cost);
+    // R9 — roll into the per-month token counter that the ceiling consults.
+    await this.bumpUsageTokens(usage.inputTokens + usage.outputTokens + (usage.cacheReadInputTokens ?? 0) + (usage.cacheCreationInputTokens ?? 0));
 
     const parsed = parseBlockTreeFromText(raw);
     if (!parsed.ok) {

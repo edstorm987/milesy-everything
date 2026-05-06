@@ -190,6 +190,61 @@ test("R8 stream handler: SSE response emits delta + complete + DONE frames", asy
   }
 });
 
+// ─── R9: image-gen + ceilings ───────────────────────────────────────────────
+
+test("R9 image: stub provider returns picsum URLs + bumps usage", async () => {
+  const { ImageService, stubImageProvider } = await import("../server/imageService");
+  const d = deps();
+  const svc = new ImageService({
+    agencyId: d.agencyId,
+    actor: d.actor,
+    storage: d.storage,
+    config: { ...d.config, monthlyImageCeiling: 10 },
+  });
+  const out = await svc.generate({ prompt: "ocean sunset", size: "1024x768", count: 2, providerOverride: stubImageProvider });
+  assert.equal(out.length, 2);
+  assert.ok(out[0]!.url.startsWith("https://picsum.photos/seed/"), `unexpected URL ${out[0]!.url}`);
+  assert.equal(out[0]!.width, 1024);
+  assert.equal(out[0]!.height, 768);
+  const u = await svc.usageThisMonth();
+  assert.equal(u.images, 2, "image counter bumped by 2");
+});
+
+test("R9 image: ceiling-reached throws CeilingReachedError + reset is next month", async () => {
+  const { ImageService, CeilingReachedError, stubImageProvider } = await import("../server/imageService");
+  const d = deps();
+  const svc = new ImageService({
+    agencyId: d.agencyId,
+    actor: d.actor,
+    storage: d.storage,
+    config: { ...d.config, monthlyImageCeiling: 2 },
+  });
+  await svc.generate({ prompt: "x", count: 2, providerOverride: stubImageProvider });
+  let caught: unknown = null;
+  try {
+    await svc.generate({ prompt: "y", count: 1, providerOverride: stubImageProvider });
+  } catch (e) { caught = e; }
+  assert.ok(caught instanceof CeilingReachedError, "next call throws CeilingReachedError");
+  assert.equal((caught as InstanceType<typeof CeilingReachedError>).kind, "images");
+  // resetsOn should parse to a future ISO (next month UTC).
+  const reset = new Date((caught as InstanceType<typeof CeilingReachedError>).resetsOn);
+  assert.ok(reset.getTime() > Date.now(), "resetsOn is in the future");
+});
+
+test("R9 ceilings: token ceiling reached → generate returns rejected w/ ceiling-reached error", async () => {
+  const d = deps();
+  // Pre-seed usage for the current month at the ceiling.
+  const { monthKeyForDate } = await import("../lib/domain");
+  const monthKey = monthKeyForDate();
+  await d.storage.set(`t/${d.agencyId}/_agency/ai-builder/metrics/usage/${monthKey}`, {
+    monthKey, tokens: 10_000_000, images: 0,
+  });
+  const svc = new GenerationService({ ...d, config: { ...d.config, monthlyTokenCeiling: 10_000_000 } });
+  const out = await svc.generate({ prompt: "x", fakeRawResponse: VALID_TREE });
+  assert.equal(out.status, "rejected", `expected rejected, got ${out.status}`);
+  assert.ok(out.validationError?.startsWith("ceiling-reached:"), `unexpected msg ${out.validationError}`);
+});
+
 test("metrics: cache-hit counter increments on cacheReadInputTokens > 0", async () => {
   const d = deps();
   const svc = new GenerationService(d);

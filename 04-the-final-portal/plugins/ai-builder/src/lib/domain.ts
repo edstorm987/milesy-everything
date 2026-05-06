@@ -75,6 +75,25 @@ export interface AiBuilderConfig {
   cacheSystemPrompt?: boolean;
   // Hard ceiling on tokens per generation. v1 default 4096 output tokens.
   maxTokens?: number;
+  // R9 — image generation provider. "stub" returns picsum placeholders;
+  // "openai" calls OpenAI gpt-image-1 (foundation injects the port).
+  imageProvider?: "stub" | "openai";
+  openaiApiKey?: string;
+  // R9 — per-agency monthly cost ceilings. Both consult the same
+  // `metrics/usage/<YYYY-MM>` counter; over-ceiling → handler returns
+  // {ok:false, error:"ceiling-reached", resetsOn:<ISO>}.
+  monthlyTokenCeiling?: number;
+  monthlyImageCeiling?: number;
+}
+
+// R9 — usage roll-up for the current ISO month (YYYY-MM). Stored
+// under `metrics/usage/<key>` so a new month auto-rolls a fresh
+// counter — old months are kept for historical lookup. The settings
+// `currentMonthUsage` projection is just `usage(now())`.
+export interface MonthlyUsage {
+  monthKey: string;   // "2026-05"
+  tokens: number;
+  images: number;
 }
 
 export const DEFAULT_CONFIG: AiBuilderConfig = {
@@ -83,7 +102,23 @@ export const DEFAULT_CONFIG: AiBuilderConfig = {
   fallbackModel: "claude-sonnet-4-6",
   cacheSystemPrompt: true,
   maxTokens: 4096,
+  imageProvider: "stub",
+  monthlyTokenCeiling: 10_000_000,
+  monthlyImageCeiling: 200,
 };
+
+export function monthKeyForDate(d: Date = new Date()): string {
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  return `${y}-${m}`;
+}
+
+export function nextMonthResetIso(d: Date = new Date()): string {
+  const y = d.getUTCFullYear();
+  const m = d.getUTCMonth();
+  const next = new Date(Date.UTC(m === 11 ? y + 1 : y, (m + 1) % 12, 1, 0, 0, 0));
+  return next.toISOString();
+}
 
 // Per-model pricing (cents per 1M tokens). Used by the cost-cents
 // accumulator. Conservative defaults — operator can override per

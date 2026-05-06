@@ -2,6 +2,8 @@
 
 import type { PluginCtx } from "../lib/aquaPluginTypes";
 import { buildContainer } from "../server/generationService";
+import { buildImageContainer, CeilingReachedError } from "../server/imageService";
+import { nextMonthResetIso } from "../lib/domain";
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -110,6 +112,52 @@ export async function getGenerationHandler(req: Request, ctx: PluginCtx): Promis
   const record = await c.generations.get(id);
   if (!record) return json({ ok: false, error: "not found" }, 404);
   return json({ ok: true, generation: record });
+}
+
+// POST /image — R9. body { prompt, size?, count? } → { ok, images? }.
+// Over-ceiling returns { ok: false, error: "ceiling-reached", resetsOn }.
+export async function imageHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const body = await safeJson<{ prompt: string; size?: string; count?: number }>(req);
+  if (!body?.prompt) return json({ ok: false, error: "prompt required" }, 400);
+  const c = buildImageContainer(ctx);
+  try {
+    const images = await c.images.generate({
+      prompt: body.prompt,
+      ...(body.size ? { size: body.size } : {}),
+      ...(body.count ? { count: body.count } : {}),
+    });
+    return json({ ok: true, images });
+  } catch (e) {
+    if (e instanceof CeilingReachedError) {
+      return json({ ok: false, error: "ceiling-reached", kind: e.kind, resetsOn: e.resetsOn }, 429);
+    }
+    return json({ ok: false, error: e instanceof Error ? e.message : String(e) }, 500);
+  }
+}
+
+// GET /usage — R9. This-month tokens + images + ceilings + reset date.
+export async function usageHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  if (req.method !== "GET") return json({ ok: false, error: "method_not_allowed" }, 405);
+  const c = buildContainer(ctx);
+  const cImg = buildImageContainer(ctx);
+  const usage = await c.generations.usageThisMonth();
+  const config = (ctx.install.config ?? {}) as { monthlyTokenCeiling?: number; monthlyImageCeiling?: number };
+  // Coalesce — same data underneath, but guard against the rare race
+  // where a parallel image bump landed between the two reads.
+  const usageImg = await cImg.images.usageThisMonth();
+  return json({
+    ok: true,
+    usage: {
+      monthKey: usage.monthKey,
+      tokens: usage.tokens,
+      images: usageImg.images,
+      tokenCeiling: config.monthlyTokenCeiling ?? 10_000_000,
+      imageCeiling: config.monthlyImageCeiling ?? 200,
+      resetsOn: nextMonthResetIso(),
+    },
+  });
 }
 
 // GET /metrics — running cache-hit + cost-cents totals.

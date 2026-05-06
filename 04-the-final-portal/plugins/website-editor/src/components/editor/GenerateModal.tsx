@@ -111,7 +111,11 @@ export function GenerateModal({
           } else if (evt.type === "complete") {
             const gen = evt.generation;
             if (gen.status === "completed" && gen.blockTree) {
-              setFinalTree(gen.blockTree);
+              // R9 — auto-fill image blocks with generated URLs. Soft-
+              // fails to placeholder if the image endpoint errors or
+              // hits a ceiling.
+              const filled = await fillImageBlocks(gen.blockTree, prompt.trim());
+              setFinalTree(filled);
               setPhase("done");
             } else {
               setError(gen.validationError ?? `Generation status: ${gen.status}.`);
@@ -241,6 +245,43 @@ export function GenerateModal({
       </div>
     </div>
   );
+}
+
+// R9 — walk the tree, find image-bearing blocks with no src, request
+// one image per block from the ai-builder image endpoint, soft-fail to
+// the existing src (or empty) if the call fails. Block types we treat
+// as image-bearing: hero, image, productCard, gallery, banner.
+const IMAGE_BLOCK_TYPES = new Set(["hero", "image", "productCard", "product-card", "gallery", "banner"]);
+
+async function fillImageBlocks(tree: BlockNode[], promptHint: string): Promise<BlockNode[]> {
+  async function walk(node: BlockNode): Promise<BlockNode> {
+    let next: BlockNode = node;
+    if (IMAGE_BLOCK_TYPES.has(node.type)) {
+      const props = (node.props ?? {}) as Record<string, unknown>;
+      const hasSrc = typeof props.src === "string" && props.src.length > 0;
+      if (!hasSrc) {
+        const blockPrompt = (props.alt as string) || (props.title as string) || (props.heading as string) || promptHint;
+        try {
+          const res = await fetch("/api/portal/ai-builder/image", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ prompt: blockPrompt, count: 1 }),
+          });
+          const data = await res.json() as { ok: boolean; images?: { url: string }[] };
+          if (data.ok && data.images?.[0]?.url) {
+            next = { ...node, props: { ...props, src: data.images[0].url } };
+          }
+        } catch { /* soft-fail: leave src empty */ }
+      }
+    }
+    if (node.children?.length) {
+      const children = await Promise.all(node.children.map(walk));
+      next = { ...next, children };
+    }
+    return next;
+  }
+  return Promise.all(tree.map(walk));
 }
 
 function flatten(nodes: BlockNode[], depth = 0): string[] {

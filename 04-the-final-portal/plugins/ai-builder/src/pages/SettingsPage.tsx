@@ -12,20 +12,40 @@ interface Settings {
   fallbackModel?: string;
   cacheSystemPrompt?: boolean;
   maxTokens?: number;
+  imageProvider?: "stub" | "openai";
+  openaiApiKey?: string;
+  monthlyTokenCeiling?: number;
+  monthlyImageCeiling?: number;
+}
+
+interface UsageSnapshot {
+  monthKey: string;
+  tokens: number;
+  images: number;
+  tokenCeiling: number;
+  imageCeiling: number;
+  resetsOn: string;
 }
 
 export default function SettingsPage(_props: unknown) {
   const [settings, setSettings] = useState<Settings>({});
+  const [usage, setUsage] = useState<UsageSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    void fetch("/api/portal/ai-builder/settings", { cache: "no-store", credentials: "include" })
-      .then(r => (r.ok ? r.json() as Promise<{ ok: boolean; settings?: Settings }> : Promise.resolve({ ok: false } as { ok: boolean; settings?: Settings })))
-      .then(data => { if (!cancelled && data.ok && data.settings) setSettings(data.settings); })
-      .finally(() => { if (!cancelled) setLoading(false); });
+    void Promise.all([
+      fetch("/api/portal/ai-builder/settings", { cache: "no-store", credentials: "include" })
+        .then(r => (r.ok ? r.json() as Promise<{ ok: boolean; settings?: Settings }> : Promise.resolve({ ok: false } as { ok: boolean; settings?: Settings }))),
+      fetch("/api/portal/ai-builder/usage", { cache: "no-store", credentials: "include" })
+        .then(r => (r.ok ? r.json() as Promise<{ ok: boolean; usage?: UsageSnapshot }> : Promise.resolve({ ok: false } as { ok: boolean; usage?: UsageSnapshot }))),
+    ]).then(([s, u]) => {
+      if (cancelled) return;
+      if (s.ok && s.settings) setSettings(s.settings);
+      if (u.ok && u.usage) setUsage(u.usage);
+    }).finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, []);
 
@@ -121,6 +141,66 @@ export default function SettingsPage(_props: unknown) {
         </label>
       </section>
 
+      <section className="rounded-xl border border-white/8 bg-white/[0.02] p-4 space-y-3">
+        <h2 className="text-sm font-semibold text-brand-cream">Image generation (R9)</h2>
+        <Field label="Provider">
+          <select
+            value={settings.imageProvider ?? "stub"}
+            onChange={e => patch("imageProvider", e.target.value as "stub" | "openai")}
+            className="w-full bg-brand-black border border-white/10 rounded-lg px-3 py-2 text-sm text-brand-cream"
+          >
+            <option value="stub">Picsum placeholder (no key needed)</option>
+            <option value="openai">OpenAI gpt-image-1</option>
+          </select>
+        </Field>
+        {settings.imageProvider === "openai" && (
+          <Field label="OpenAI API key">
+            <input
+              type="password"
+              value={settings.openaiApiKey ?? ""}
+              onChange={e => patch("openaiApiKey", e.target.value)}
+              placeholder="sk-..."
+              className="w-full bg-brand-black border border-white/10 rounded-lg px-3 py-2 text-sm text-brand-cream font-mono"
+            />
+          </Field>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-white/8 bg-white/[0.02] p-4 space-y-3">
+        <h2 className="text-sm font-semibold text-brand-cream">Usage + ceilings (R9)</h2>
+        {usage ? (
+          <div className="grid grid-cols-2 gap-4 text-xs">
+            <UsageMeter label="Tokens this month" used={usage.tokens} ceiling={usage.tokenCeiling} unit="tokens" />
+            <UsageMeter label="Images this month" used={usage.images} ceiling={usage.imageCeiling} unit="images" />
+            <p className="col-span-2 text-brand-cream/45">
+              Period: {usage.monthKey}. Resets {new Date(usage.resetsOn).toLocaleString()}.
+            </p>
+          </div>
+        ) : (
+          <p className="text-xs text-brand-cream/45">Usage data unavailable.</p>
+        )}
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Monthly token ceiling">
+            <input
+              type="number"
+              min={usage?.tokens ?? 0}
+              value={settings.monthlyTokenCeiling ?? 10_000_000}
+              onChange={e => patch("monthlyTokenCeiling", Number(e.target.value))}
+              className="w-full bg-brand-black border border-white/10 rounded-lg px-3 py-2 text-sm text-brand-cream"
+            />
+          </Field>
+          <Field label="Monthly image ceiling">
+            <input
+              type="number"
+              min={usage?.images ?? 0}
+              value={settings.monthlyImageCeiling ?? 200}
+              onChange={e => patch("monthlyImageCeiling", Number(e.target.value))}
+              className="w-full bg-brand-black border border-white/10 rounded-lg px-3 py-2 text-sm text-brand-cream"
+            />
+          </Field>
+        </div>
+      </section>
+
       <div className="flex items-center gap-3">
         <button
           onClick={() => void save()}
@@ -130,6 +210,20 @@ export default function SettingsPage(_props: unknown) {
           {saving ? "Saving…" : "Save settings"}
         </button>
         {saved && <span className="text-xs text-green-300">✓ Saved</span>}
+      </div>
+    </div>
+  );
+}
+
+function UsageMeter({ label, used, ceiling, unit }: { label: string; used: number; ceiling: number; unit: string }) {
+  const pct = ceiling > 0 ? Math.min(100, Math.round((used / ceiling) * 100)) : 0;
+  const colour = pct >= 90 ? "bg-red-500" : pct >= 70 ? "bg-amber-400" : "bg-emerald-500";
+  return (
+    <div>
+      <p className="text-[11px] uppercase tracking-[0.18em] text-brand-amber mb-1">{label}</p>
+      <p className="text-brand-cream font-mono">{used.toLocaleString()} / {ceiling.toLocaleString()} {unit} ({pct}%)</p>
+      <div className="h-1.5 mt-1 bg-white/5 rounded">
+        <div className={`h-full rounded ${colour}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
