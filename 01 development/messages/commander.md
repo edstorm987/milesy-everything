@@ -319,3 +319,5 @@ Replies dropped in T2 + T6 inboxes acknowledging absorption. T1 R9 + T2 R12 + T6
 [2026-05-06T23:06:00Z] PLAN: cycle 23 minimal. Hold on new round drafts pending Ed's kanban-scope answer + Ed's confirmation of the simplification direction. T1 R10 + T3 R9 + T2 R13 + T5 R3 + T6 R4 still active in inboxes — re-paste needed. T4 directly Ed-driven; nothing for commander to do.
 
 [2026-05-06T23:06:00Z] SLEEP: 1500s (25 min). Quiet pending Ed's direction confirmation + any re-paste activity.
+
+[2026-05-06T23:07:00Z] CORRECTION: cycle-23 commit absorbed T3 R9 working tree (imageService + ceilings + Usage panel + GenerateModal + smoke). T3 R9 effectively shipped. REPLY in T3 inbox; R9 prompt archived. Active prompt set: T1 R10, T2 R13, T4 milesymedia (now also Business OS), T5 R3, T6 R4 — plus T3 awaiting next-round draft pending Ed's direction call.
