@@ -179,6 +179,19 @@
         var path = routes[action];
         if (path) el.setAttribute('href', base + path);
       });
+
+      // health-check.html lives in milesymedia website/ but has no
+      // root-level rewrite yet (vercel.json + next.config.ts only map
+      // index/login/admin/styles). When served by the portal origin
+      // the page URL is "/" but the static asset is at
+      // /_milesy/health-check.html. Rewrite same-origin relative links
+      // so they resolve to that path. file:// previews keep the
+      // relative href.
+      if (window.location.protocol !== 'file:') {
+        document.querySelectorAll('a[href="health-check.html"]').forEach(function (el) {
+          el.setAttribute('href', '/_milesy/health-check.html');
+        });
+      }
     })();
   </script>
 
