@@ -288,3 +288,5 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 - **T4 R2** — chapter `04-ux-storefront-perf-pass.md` + MASTER row (the four R2 phase commits already shipped 27c78ed/a223692/9023d95/da37a93; this completes the chapter).
 - **T5 R2** — `clients/compass-coaching/` full per-client portal scaffold.
 Same shared-`.git/index` mesh pattern that has bitten us several times. All three rounds are effectively DONE on origin — the work is on main. REPLY notes dropped in T3, T4, T5 inboxes acknowledging the absorption + confirming their rounds are shipped. tasks.md updated to reflect Done state.
+
+[2026-05-06T22:30:00Z] PLAN: T4 converted from UX/a11y polish → Milesy Media website terminal. New prompt drafted at `terminal-prompts/T4-milesymedia-website.md`; old `T4-round2-storefront-polish-and-perf.md` archived. Ed will give T4 his own prompts directly; rest of mesh (T1 R9, T2 R12, T3 R8 next, T5 R3 next, T6 R3) continues. UX polish folded back to "as-needed via Ed prompts" — no dedicated terminal owning it during this phase.
