@@ -3,6 +3,7 @@
 import type { PluginApiRoute } from "../lib/aquaPluginTypes";
 import {
   generateHandler,
+  generateStreamHandler,
   listGenerationsHandler,
   getGenerationHandler,
   metricsHandler,
@@ -16,6 +17,7 @@ const ADMIN_ROLES = ["agency-owner", "agency-manager", "agency-staff", "client-o
 export const ROUTES: PluginApiRoute[] = [
   { path: "status",         methods: ["GET"],  handler: statusHandler,          visibleToRoles: [...ADMIN_ROLES] },
   { path: "generate",       methods: ["POST"], handler: generateHandler,        visibleToRoles: [...ADMIN_ROLES] },
+  { path: "generate/stream", methods: ["POST"], handler: generateStreamHandler, visibleToRoles: [...ADMIN_ROLES] },
   { path: "generations",    methods: ["GET"],  handler: listGenerationsHandler, visibleToRoles: [...ADMIN_ROLES] },
   { path: "generations/get", methods: ["GET"], handler: getGenerationHandler,   visibleToRoles: [...ADMIN_ROLES] },
   { path: "metrics",        methods: ["GET"],  handler: metricsHandler,         visibleToRoles: [...ADMIN_ROLES] },

@@ -96,6 +96,100 @@ test("generate: invalid block → rejected then retried on fallback model", asyn
   assert.equal(out.retryCount, 1);
 });
 
+// ─── R8: streaming ──────────────────────────────────────────────────────────
+
+function sseStreamFromAnthropicChunks(chunks: string[]): ReadableStream<Uint8Array> {
+  // Mock Anthropic SSE: emit message_start, then a content_block_delta
+  // per chunk, then message_delta + message_stop. Produces one or more
+  // SSE frames that streamMessage() must parse.
+  const enc = new TextEncoder();
+  const frames: string[] = [];
+  frames.push(`event: message_start\ndata: ${JSON.stringify({ type: "message_start", message: { id: "msg_smoke", model: "claude-haiku-4-5-20251001", usage: { input_tokens: 50, cache_read_input_tokens: 0 } } })}\n\n`);
+  for (const c of chunks) {
+    frames.push(`event: content_block_delta\ndata: ${JSON.stringify({ type: "content_block_delta", delta: { type: "text_delta", text: c } })}\n\n`);
+  }
+  frames.push(`event: message_delta\ndata: ${JSON.stringify({ type: "message_delta", delta: { stop_reason: "end_turn" }, usage: { output_tokens: 30 } })}\n\n`);
+  frames.push(`event: message_stop\ndata: ${JSON.stringify({ type: "message_stop" })}\n\n`);
+
+  return new ReadableStream<Uint8Array>({
+    start(c) {
+      for (const f of frames) c.enqueue(enc.encode(f));
+      c.close();
+    },
+  });
+}
+
+function mockStreamFetch(chunks: string[]): typeof fetch {
+  const responder = async () => new Response(sseStreamFromAnthropicChunks(chunks), {
+    status: 200,
+    headers: { "content-type": "text/event-stream" },
+  });
+  return responder as unknown as typeof fetch;
+}
+
+test("R8 stream: deltas accumulate + final tree validates + persists", async () => {
+  const d = deps();
+  const svc = new GenerationService(d);
+  // Slice the valid tree into 4 chunks to simulate streaming.
+  const c1 = VALID_TREE.slice(0, 20);
+  const c2 = VALID_TREE.slice(20, 60);
+  const c3 = VALID_TREE.slice(60, 110);
+  const c4 = VALID_TREE.slice(110);
+  const seenDeltas: string[] = [];
+  const out = await svc.generateStream({
+    prompt: "stream a hero",
+    fetchImpl: mockStreamFetch([c1, c2, c3, c4]),
+    onDelta: (chunk) => seenDeltas.push(chunk),
+  });
+  assert.equal(seenDeltas.length, 4, "received 4 delta callbacks");
+  assert.equal(seenDeltas.join(""), VALID_TREE, "deltas concatenate to full text");
+  assert.equal(out.status, "completed", `unexpected status ${out.status}: ${out.validationError ?? ""}`);
+  assert.ok(Array.isArray(out.blockTree));
+  assert.equal(out.blockTree![0]!.type, "section");
+  const persisted = await svc.get(out.id);
+  assert.ok(persisted, "stream record persisted");
+});
+
+test("R8 stream handler: SSE response emits delta + complete + DONE frames", async () => {
+  // Hit the HTTP handler directly with a mocked Anthropic upstream.
+  const { generateStreamHandler } = await import("../api/handlers");
+  const installConfig = {
+    anthropicApiKey: "sk-fake",
+    defaultModel: "claude-haiku-4-5-20251001",
+    fallbackModel: "claude-sonnet-4-6",
+    cacheSystemPrompt: true,
+    maxTokens: 1024,
+  };
+  const storage = memStorage();
+  const ctx = {
+    agencyId: "ag_smoke",
+    actor: "u_smoke",
+    install: { config: installConfig },
+    storage,
+    services: {} as Record<string, unknown>,
+  } as unknown as Parameters<typeof generateStreamHandler>[1];
+
+  // Patch global fetch for the duration of this test.
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = mockStreamFetch([VALID_TREE.slice(0, 50), VALID_TREE.slice(50)]);
+  try {
+    const req = new Request("http://x/generate/stream", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ prompt: "stream me" }),
+    });
+    const res = await generateStreamHandler(req, ctx);
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.get("content-type"), "text/event-stream");
+    const text = await res.text();
+    assert.ok(text.includes(`"type":"delta"`), "emitted at least one delta frame");
+    assert.ok(text.includes(`"type":"complete"`), "emitted complete frame");
+    assert.ok(text.includes("[DONE]"), "ended with [DONE] sentinel");
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
 test("metrics: cache-hit counter increments on cacheReadInputTokens > 0", async () => {
   const d = deps();
   const svc = new GenerationService(d);

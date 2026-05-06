@@ -9,6 +9,21 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T3 R8 — AI streaming + LivePreview iframe** — DONE.
+      Goal A SSE streaming on Generate: `streamMessage()` on the
+      Anthropic client + `GenerationService.generateStream()` +
+      `POST /generate/stream` SSE handler emitting
+      `data:{delta|complete|error}` frames + `[DONE]`; GenerateModal
+      rewritten as SSE consumer with `tryParsePartial` partial-tree
+      parser, Cancel→AbortController, cyan→emerald done state.
+      Goal B LivePreview.tsx side-by-side iframe (sandbox
+      `allow-same-origin allow-scripts`, postMessage select/highlight
+      channel) mounted as fixed-position right-rail in Block + Code
+      modes via footer toggle; reuses storefront URL `?preview=1`
+      (Q-ASSUMED dedicated `/preview/[pageId]` route deferred to T1
+      R9 — single-line swap). Goal C smoke 5/5 ai-builder
+      (+2 R8 cases) + 92/92 website-editor unchanged. tsc clean both.
+      Chapter `04-plugin-website-editor-round8.md` + MASTER row #54.
 - [x] **T3 R7 — AI page builder** — DONE. `@aqua/plugin-ai-builder`
       shipped at `04-the-final-portal/plugins/ai-builder/` (3 navItems,
       4 admin pages, 6 API routes, 0 storefront blocks; Generation

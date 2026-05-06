@@ -31,6 +31,7 @@ import {
 } from "../lib/blockSchema";
 import {
   createMessage,
+  streamMessage,
   AnthropicCallError,
   type AnthropicSystemBlock,
 } from "./anthropicClient";
@@ -48,6 +49,15 @@ export interface GenerateInput {
   fakeUsage?: CacheUsage;
   // Smoke / SSR fetch override.
   fetchImpl?: typeof fetch;
+}
+
+export interface GenerateStreamInput {
+  prompt: string;
+  contextHints?: string;
+  modelOverride?: ModelId;
+  fetchImpl?: typeof fetch;
+  signal?: AbortSignal;
+  onDelta?: (chunk: string) => void;
 }
 
 export interface GenerationServiceDeps {
@@ -105,6 +115,88 @@ export class GenerationService {
       };
     }
 
+    await this.persist(record);
+    return record;
+  }
+
+  // ─── Streaming (R8) ────────────────────────────────────────────────────
+  // generateStream — same pipeline as generate(), but emits incremental
+  // text deltas via onDelta as they arrive from Anthropic. The final
+  // record is persisted + returned the same way. No fallback-model retry
+  // on the streaming path: streaming is for the live editor preview;
+  // operators can hit Generate again or fall through to the non-stream
+  // endpoint for the retry path. Smoke injects fetchImpl so we never hit
+  // the network.
+  async generateStream(
+    input: GenerateStreamInput,
+  ): Promise<Generation> {
+    const startedAt = Date.now();
+    const id = makeId("gen");
+    const config = { ...DEFAULT_CONFIG, ...this.deps.config };
+    const model = input.modelOverride ?? config.defaultModel ?? DEFAULT_CONFIG.defaultModel!;
+
+    let record: Generation = {
+      id,
+      agencyId: this.deps.agencyId,
+      ...(this.deps.clientId ? { clientId: this.deps.clientId } : {}),
+      prompt: input.prompt,
+      ...(input.contextHints ? { contextHints: input.contextHints } : {}),
+      blockTree: null,
+      modelId: model,
+      costCents: 0,
+      status: "queued",
+      createdBy: this.deps.actor,
+      createdAt: startedAt,
+      retryCount: 0,
+    };
+
+    const schemas = listBlockSchemas();
+    const system = buildSystemPrompt(schemas, config.cacheSystemPrompt !== false);
+    const userMessage = buildUserMessage(input.prompt, input.contextHints, undefined);
+
+    let raw = "";
+    let usage: CacheUsage = { inputTokens: 0, outputTokens: 0 };
+    try {
+      const apiKey = config.anthropicApiKey ?? "";
+      const result = await streamMessage({
+        model,
+        apiKey,
+        system,
+        messages: [{ role: "user", content: userMessage }],
+        maxTokens: config.maxTokens ?? DEFAULT_CONFIG.maxTokens!,
+        ...(input.fetchImpl ? { fetchImpl: input.fetchImpl } : {}),
+        ...(input.signal ? { signal: input.signal } : {}),
+        ...(input.onDelta ? { onDelta: input.onDelta } : {}),
+      });
+      raw = result.text;
+      usage = result.usage;
+    } catch (e) {
+      if (e instanceof AnthropicCallError) {
+        record = { ...record, status: "failed", validationError: e.message, completedAt: Date.now() };
+      } else {
+        record = { ...record, status: "failed", validationError: e instanceof Error ? e.message : String(e), completedAt: Date.now() };
+      }
+      await this.persist(record);
+      return record;
+    }
+
+    if ((usage.cacheReadInputTokens ?? 0) > 0) await this.bumpMetric("cache-hits", 1);
+    const cost = computeCostCents(model, usage);
+    await this.bumpMetric("cost-cents", cost);
+
+    const parsed = parseBlockTreeFromText(raw);
+    if (!parsed.ok) {
+      record = { ...record, rawResponse: raw, status: "rejected", validationError: parsed.error, usage, costCents: cost, completedAt: Date.now() };
+      await this.persist(record);
+      return record;
+    }
+    const validation = validateBlockTree(parsed.tree);
+    if (!validation.ok) {
+      record = { ...record, rawResponse: raw, status: "rejected", validationError: summariseErrors(validation.errors), usage, costCents: cost, completedAt: Date.now() };
+      await this.persist(record);
+      return record;
+    }
+    record = { ...record, blockTree: parsed.tree, rawResponse: raw, status: "completed", usage, costCents: cost, completedAt: Date.now() };
     await this.persist(record);
     return record;
   }

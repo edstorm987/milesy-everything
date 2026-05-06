@@ -1,13 +1,17 @@
 "use client";
 
-// GenerateModal — thin client over @aqua/plugin-ai-builder's
-// `/api/portal/ai-builder/generate`. Operator types a one-line
-// description; on success the returned BlockTree is handed back via
-// `onInsert` so the editor can append it to the active page.
+// GenerateModal — R8: SSE-streaming variant. POSTs to
+// `/api/portal/ai-builder/generate/stream` and decodes Anthropic-shaped
+// SSE frames as they arrive. Renders a live partial-tree preview while
+// generation is in flight; Cancel button aborts the in-flight request.
 //
-// Round-7 Goal C. Lives in website-editor (not ai-builder) because
-// only the editor knows the active page's block array. The endpoint
-// itself + prompt-building + Anthropic call live in ai-builder.
+// Soft-fail render: a half-built JSON array is parsed best-effort by
+// closing the brackets and discarding any trailing incomplete object.
+// When parse fails we fall back to a streaming-text view so operators
+// see *something* happening.
+//
+// Lives in website-editor (not ai-builder) because only the editor
+// knows the active page's block array.
 
 import { useEffect, useRef, useState } from "react";
 
@@ -18,18 +22,19 @@ interface BlockNode {
   children?: BlockNode[];
 }
 
-interface GenerateResponse {
-  ok: boolean;
-  generation?: {
-    id: string;
-    status: string;
-    blockTree?: BlockNode[] | null;
-    validationError?: string;
-    modelId?: string;
-    costCents?: number;
-  };
-  error?: string;
+interface GenerationRecord {
+  id: string;
+  status: string;
+  blockTree?: BlockNode[] | null;
+  validationError?: string;
+  modelId?: string;
+  costCents?: number;
 }
+
+type StreamEvent =
+  | { type: "delta"; text: string }
+  | { type: "complete"; generation: GenerationRecord }
+  | { type: "error"; error: string };
 
 export function GenerateModal({
   open, onClose, onInsert,
@@ -39,55 +44,110 @@ export function GenerateModal({
   onInsert: (tree: BlockNode[]) => Promise<void> | void;
 }) {
   const [prompt, setPrompt] = useState("");
-  const [phase, setPhase] = useState<"idle" | "running" | "done" | "error">("idle");
+  const [phase, setPhase] = useState<"idle" | "running" | "done" | "error" | "cancelled">("idle");
   const [error, setError] = useState<string | null>(null);
-  const [preview, setPreview] = useState<BlockNode[] | null>(null);
+  const [accumulatedText, setAccumulatedText] = useState("");
+  const [partialTree, setPartialTree] = useState<BlockNode[] | null>(null);
+  const [finalTree, setFinalTree] = useState<BlockNode[] | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (open) {
-      setPrompt(""); setPhase("idle"); setError(null); setPreview(null);
+      setPrompt(""); setPhase("idle"); setError(null);
+      setAccumulatedText(""); setPartialTree(null); setFinalTree(null);
       const t = setTimeout(() => inputRef.current?.focus(), 30);
       return () => clearTimeout(t);
     }
     return undefined;
   }, [open]);
 
+  // Abort any in-flight request when the modal unmounts.
+  useEffect(() => () => abortRef.current?.abort(), []);
+
   if (!open) return null;
 
   async function generate() {
     if (!prompt.trim()) return;
-    setPhase("running"); setError(null); setPreview(null);
+    setPhase("running"); setError(null);
+    setAccumulatedText(""); setPartialTree(null); setFinalTree(null);
+    const controller = new AbortController();
+    abortRef.current = controller;
+    let acc = "";
     try {
-      const res = await fetch("/api/portal/ai-builder/generate", {
+      const res = await fetch("/api/portal/ai-builder/generate/stream", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json", "accept": "text/event-stream" },
         credentials: "include",
         body: JSON.stringify({ prompt: prompt.trim() }),
+        signal: controller.signal,
       });
-      const data = await res.json() as GenerateResponse;
-      if (!res.ok || !data.ok || !data.generation) {
-        setError(data.error ?? `Generation failed (${res.status}).`);
-        setPhase("error"); return;
+      if (!res.ok || !res.body) {
+        setError(`Stream failed (${res.status}).`); setPhase("error"); return;
       }
-      const gen = data.generation;
-      if (gen.status !== "completed" || !gen.blockTree) {
-        setError(gen.validationError ?? `Generation status: ${gen.status}.`);
-        setPhase("error"); return;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buf.indexOf("\n\n")) !== -1) {
+          const frame = buf.slice(0, idx);
+          buf = buf.slice(idx + 2);
+          const dataLine = frame.split("\n").find(l => l.startsWith("data:"));
+          if (!dataLine) continue;
+          const payload = dataLine.slice(5).trim();
+          if (!payload || payload === "[DONE]") continue;
+          let evt: StreamEvent;
+          try { evt = JSON.parse(payload) as StreamEvent; }
+          catch { continue; }
+          if (evt.type === "delta") {
+            acc += evt.text;
+            setAccumulatedText(acc);
+            const partial = tryParsePartial(acc);
+            if (partial) setPartialTree(partial);
+          } else if (evt.type === "complete") {
+            const gen = evt.generation;
+            if (gen.status === "completed" && gen.blockTree) {
+              setFinalTree(gen.blockTree);
+              setPhase("done");
+            } else {
+              setError(gen.validationError ?? `Generation status: ${gen.status}.`);
+              setPhase("error");
+            }
+          } else if (evt.type === "error") {
+            setError(evt.error); setPhase("error");
+          }
+        }
       }
-      setPreview(gen.blockTree);
-      setPhase("done");
+      // If we reached end-of-stream without a "complete" frame, surface
+      // an error so the operator isn't left in a stuck "running" state.
+      setPhase(p => (p === "running" ? "error" : p));
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-      setPhase("error");
+      if ((e as Error)?.name === "AbortError") {
+        setPhase("cancelled");
+      } else {
+        setError(e instanceof Error ? e.message : String(e));
+        setPhase("error");
+      }
+    } finally {
+      abortRef.current = null;
     }
   }
 
+  function cancel() {
+    abortRef.current?.abort();
+  }
+
   async function insert() {
-    if (!preview) return;
-    await onInsert(preview);
+    if (!finalTree) return;
+    await onInsert(finalTree);
     onClose();
   }
+
+  const previewTree = finalTree ?? partialTree;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
@@ -103,7 +163,7 @@ export function GenerateModal({
         </div>
 
         <p className="text-sm text-brand-cream/55 mb-3">
-          Describe what you want — Claude turns it into blocks from your library.
+          Describe what you want — Claude streams the blocks live as they land.
         </p>
 
         <textarea
@@ -117,33 +177,56 @@ export function GenerateModal({
         />
 
         {error && (
-          <div className="mt-3 text-xs text-red-300 border border-red-400/30 rounded-md p-2 bg-red-500/5">{error}</div>
+          <div className="mt-3 text-xs text-red-300 border border-red-400/30 rounded-md p-2 bg-red-500/5" role="alert">
+            {error}
+          </div>
         )}
 
-        {preview && phase === "done" && (
-          <div className="mt-3 rounded-lg border border-emerald-400/20 bg-emerald-500/5 p-3">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-emerald-300 mb-2">Preview</p>
-            <ul className="text-xs text-brand-cream/75 space-y-0.5 max-h-40 overflow-auto font-mono">
-              {flatten(preview).map((line, i) => (
-                <li key={i}>{line}</li>
-              ))}
-            </ul>
+        {phase === "cancelled" && (
+          <div className="mt-3 text-xs text-amber-300 border border-amber-400/30 rounded-md p-2 bg-amber-500/5">
+            Generation cancelled.
+          </div>
+        )}
+
+        {(previewTree || phase === "running") && (
+          <div className={`mt-3 rounded-lg border p-3 ${finalTree ? "border-emerald-400/20 bg-emerald-500/5" : "border-cyan-400/20 bg-cyan-500/5"}`}>
+            <p className={`text-[11px] uppercase tracking-[0.18em] mb-2 ${finalTree ? "text-emerald-300" : "text-cyan-300"}`}>
+              {finalTree ? "Preview" : phase === "running" ? "Streaming…" : "Partial preview"}
+            </p>
+            {previewTree && previewTree.length > 0 ? (
+              <ul className="text-xs text-brand-cream/75 space-y-0.5 max-h-40 overflow-auto font-mono">
+                {flatten(previewTree).map((line, i) => <li key={i}>{line}</li>)}
+              </ul>
+            ) : (
+              <pre className="text-[10px] text-brand-cream/55 max-h-40 overflow-auto whitespace-pre-wrap font-mono">
+                {accumulatedText || "Waiting for first chunk…"}
+              </pre>
+            )}
           </div>
         )}
 
         <div className="mt-5 flex items-center gap-2 justify-end">
-          <button
-            onClick={onClose}
-            className="px-3 py-1.5 rounded-md text-[12px] text-brand-cream/65 hover:text-brand-cream"
-          >
-            Cancel
-          </button>
-          {phase === "done" && preview ? (
+          {phase === "running" ? (
+            <button
+              onClick={cancel}
+              className="px-3 py-1.5 rounded-md text-[12px] text-amber-200 border border-amber-400/30 hover:bg-amber-500/10"
+            >
+              Cancel
+            </button>
+          ) : (
+            <button
+              onClick={onClose}
+              className="px-3 py-1.5 rounded-md text-[12px] text-brand-cream/65 hover:text-brand-cream"
+            >
+              Close
+            </button>
+          )}
+          {phase === "done" && finalTree ? (
             <button
               onClick={insert}
               className="px-4 py-1.5 rounded-md text-[12px] font-medium bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30"
             >
-              Insert {preview.length} block{preview.length === 1 ? "" : "s"}
+              Insert {finalTree.length} block{finalTree.length === 1 ? "" : "s"}
             </button>
           ) : (
             <button
@@ -167,4 +250,43 @@ function flatten(nodes: BlockNode[], depth = 0): string[] {
     if (n.children?.length) out.push(...flatten(n.children, depth + 1));
   }
   return out;
+}
+
+// Best-effort JSON-array parser for partial streaming text. Strips any
+// leading code fence + prose, then trims to the last complete top-level
+// object before closing the array. Returns null if no parseable object
+// has been emitted yet.
+function tryParsePartial(raw: string): BlockNode[] | null {
+  let s = raw.trim().replace(/^```(?:json)?\s*/, "");
+  const arrStart = s.indexOf("[");
+  if (arrStart < 0) return null;
+  s = s.slice(arrStart + 1);
+  // Walk forward, tracking brace depth + string state, recording the
+  // index after each complete top-level object closure.
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let lastClose = -1;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i]!;
+    if (escape) { escape = false; continue; }
+    if (inString) {
+      if (ch === "\\") escape = true;
+      else if (ch === "\"") inString = false;
+      continue;
+    }
+    if (ch === "\"") { inString = true; continue; }
+    if (ch === "{") depth++;
+    else if (ch === "}") {
+      depth--;
+      if (depth === 0) lastClose = i;
+    }
+  }
+  if (lastClose < 0) return null;
+  const candidate = `[${s.slice(0, lastClose + 1)}]`;
+  try {
+    const parsed = JSON.parse(candidate);
+    if (Array.isArray(parsed)) return parsed as BlockNode[];
+  } catch { /* not yet parseable */ }
+  return null;
 }

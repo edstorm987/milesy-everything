@@ -25,6 +25,7 @@ import EditorOutliner, { type EditorTarget } from "../components/editor/EditorOu
 import EditorFunnelStage from "../components/editor/EditorFunnelStage";
 import EditorBlockStage from "../components/editor/EditorBlockStage";
 import { GenerateModal } from "../components/editor/GenerateModal";
+import { LivePreview } from "../components/editor/LivePreview";
 import {
   loadDeviceState, saveDeviceState, getDevicePreset, effectiveViewport,
   type DeviceState,
@@ -87,6 +88,7 @@ function VisualEditorPageInner() {
   const [publishOpen, setPublishOpen] = useState(false);
   const [generateOpen, setGenerateOpen] = useState(false);
   const [aiAvailable, setAiAvailable] = useState(false);
+  const [livePreviewOpen, setLivePreviewOpen] = useState(false);
   const [newPageOpen, setNewPageOpen] = useState(false);
   const [newFunnelOpen, setNewFunnelOpen] = useState(false);
   const [pageSettingsId, setPageSettingsId] = useState<string | null>(null);
@@ -496,8 +498,31 @@ function VisualEditorPageInner() {
           <span>Raw JSON view of the page's block tree. Edit carefully — invalid JSON won't save.</span>
         )}
         <div className="flex-1" />
+        {target.kind === "page" && currentPage && mode !== "live" && (
+          <button
+            onClick={() => setLivePreviewOpen(o => !o)}
+            aria-pressed={livePreviewOpen}
+            className="text-[10px] uppercase tracking-[0.18em] text-brand-cream/55 hover:text-brand-cream border border-white/10 rounded px-2 py-0.5"
+          >
+            {livePreviewOpen ? "Hide preview" : "Live preview"}
+          </button>
+        )}
         <span>{target.kind === "page" ? currentPage?.slug : currentFunnel?.steps.length + " steps"}</span>
       </footer>
+
+      {livePreviewOpen && currentPage && mode !== "live" && (
+        <div className="fixed top-[60px] bottom-[40px] right-0 z-40 shadow-2xl">
+          <LivePreview
+            pageSlug={currentPage.slug}
+            reloadKey={reloadKey}
+            onSelectBlock={blockId => {
+              setSelected({ key: blockId, type: "text", value: "" });
+            }}
+            onClose={() => setLivePreviewOpen(false)}
+            selectedBlockId={selected?.key ?? null}
+          />
+        </div>
+      )}
 
       <GenerateModal
         open={generateOpen}

@@ -44,6 +44,52 @@ export async function generateHandler(req: Request, ctx: PluginCtx): Promise<Res
   return json({ ok: true, generation: result });
 }
 
+// POST /generate/stream — SSE variant. Forwards each text delta as
+// `data: {"type":"delta","text":"…"}` frames; ends with one
+// `data: {"type":"complete","generation":<full record>}` frame and
+// the standard `data: [DONE]` marker so EventSource-style clients
+// terminate cleanly. Uses ReadableStream + TextEncoder.
+export async function generateStreamHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const body = await safeJson<{ prompt: string; contextHints?: string; modelOverride?: string }>(req);
+  if (!body?.prompt) return json({ ok: false, error: "prompt required" }, 400);
+
+  const c = buildContainer(ctx);
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const send = (obj: unknown) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
+      try {
+        const generation = await c.generations.generateStream({
+          prompt: body.prompt,
+          ...(body.contextHints ? { contextHints: body.contextHints } : {}),
+          ...(body.modelOverride ? { modelOverride: body.modelOverride } : {}),
+          signal: req.signal,
+          onDelta: (chunk) => send({ type: "delta", text: chunk }),
+        });
+        send({ type: "complete", generation });
+      } catch (e) {
+        send({ type: "error", error: e instanceof Error ? e.message : String(e) });
+      } finally {
+        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      "content-type": "text/event-stream",
+      "cache-control": "no-cache, no-transform",
+      "connection": "keep-alive",
+      "x-accel-buffering": "no",
+    },
+  });
+}
+
 // GET /generations — list recent generations.
 export async function listGenerationsHandler(req: Request, ctx: PluginCtx): Promise<Response> {
   if (req.method !== "GET") return json({ ok: false, error: "method_not_allowed" }, 405);

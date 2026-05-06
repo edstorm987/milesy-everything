@@ -138,3 +138,109 @@ export class AnthropicCallError extends Error {
     super(message);
   }
 }
+
+// ─── Streaming ──────────────────────────────────────────────────────────────
+// R8 — SSE streaming variant. Anthropic's SSE protocol emits frames like:
+//   event: message_start
+//   data: {"type":"message_start", ...}
+//   event: content_block_delta
+//   data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"…"}}
+//   event: message_delta
+//   data: {"type":"message_delta","usage":{"output_tokens":…}}
+//   event: message_stop
+//   data: {"type":"message_stop"}
+// We forward each text delta via callback + return a final result with the
+// accumulated text + usage. The smoke test injects fetchImpl returning a
+// hand-built ReadableStream so we never hit the network.
+
+export interface StreamMessageInput extends Omit<CreateMessageInput, "stream"> {
+  signal?: AbortSignal;
+  onDelta?: (delta: string) => void;
+}
+
+export async function streamMessage(input: StreamMessageInput): Promise<CreateMessageResult> {
+  if (!input.apiKey) throw new Error("Anthropic API key not configured. Set install.config.anthropicApiKey.");
+  const fetchFn = input.fetchImpl ?? fetch;
+  const url = `${input.baseUrl ?? "https://api.anthropic.com"}/v1/messages`;
+  const body = {
+    model: input.model,
+    max_tokens: input.maxTokens,
+    temperature: input.temperature ?? 0.6,
+    system: input.system,
+    messages: input.messages,
+    stream: true,
+  };
+  const res = await fetchFn(url, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": input.apiKey,
+      "anthropic-version": "2023-06-01",
+      "accept": "text/event-stream",
+    },
+    body: JSON.stringify(body),
+    ...(input.signal ? { signal: input.signal } : {}),
+  });
+  if (!res.ok || !res.body) {
+    let message = `status ${res.status}`;
+    try {
+      const err = await res.json() as AnthropicErrorEnvelope;
+      if (err.error?.message) message = err.error.message;
+    } catch { /* fall through */ }
+    throw new AnthropicCallError(message, res.status);
+  }
+
+  let id = "";
+  let modelId: ModelId = input.model;
+  let stopReason = "end_turn";
+  const usage: CacheUsage = { inputTokens: 0, outputTokens: 0 };
+  let text = "";
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    // SSE frames are separated by blank lines. Process any complete ones.
+    let idx: number;
+    while ((idx = buf.indexOf("\n\n")) !== -1) {
+      const frame = buf.slice(0, idx);
+      buf = buf.slice(idx + 2);
+      const dataLine = frame.split("\n").find(l => l.startsWith("data:"));
+      if (!dataLine) continue;
+      const payload = dataLine.slice(5).trim();
+      if (!payload) continue;
+      try {
+        const event = JSON.parse(payload) as {
+          type: string;
+          message?: { id?: string; model?: string; usage?: { input_tokens?: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number } };
+          delta?: { type?: string; text?: string; stop_reason?: string };
+          usage?: { output_tokens?: number };
+        };
+        if (event.type === "message_start" && event.message) {
+          if (event.message.id) id = event.message.id;
+          if (event.message.model) modelId = event.message.model as ModelId;
+          if (event.message.usage) {
+            usage.inputTokens = event.message.usage.input_tokens ?? 0;
+            if (event.message.usage.cache_creation_input_tokens !== undefined) {
+              usage.cacheCreationInputTokens = event.message.usage.cache_creation_input_tokens;
+            }
+            if (event.message.usage.cache_read_input_tokens !== undefined) {
+              usage.cacheReadInputTokens = event.message.usage.cache_read_input_tokens;
+            }
+          }
+        } else if (event.type === "content_block_delta" && event.delta?.type === "text_delta" && event.delta.text) {
+          text += event.delta.text;
+          input.onDelta?.(event.delta.text);
+        } else if (event.type === "message_delta") {
+          if (event.delta?.stop_reason) stopReason = event.delta.stop_reason;
+          if (event.usage?.output_tokens !== undefined) usage.outputTokens = event.usage.output_tokens;
+        }
+      } catch { /* ignore malformed frame */ }
+    }
+  }
+
+  return { id, modelId, text, stopReason, usage };
+}
