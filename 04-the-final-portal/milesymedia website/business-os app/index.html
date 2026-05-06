@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Milesy Media — Business OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="index.html" class="brand">
+        <span class="mark">M</span>
+        <span class="brand-name">Milesy<span class="a">Media</span> · <span class="muted">Business&nbsp;OS</span></span>
+      </a>
+      <div class="nav-cta">
+        <a href="https://milesymedia.co" class="btn btn-ghost">milesymedia.co ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-shell">
+    <div class="auth-card bos-auth-card">
+      <span class="eyebrow">Free · Lifetime access</span>
+      <h1>Welcome to your <span class="accent">Business OS</span>.</h1>
+      <p class="sub">A complete operating system for growing your business — assessments, guides, templates and a free assistant — all in one portal. Start by creating your account.</p>
+
+      <form id="bos-auth-form" autocomplete="off">
+        <div class="bos-tabs">
+          <button type="button" class="bos-tab is-on" data-bos-tab="signup">Create account</button>
+          <button type="button" class="bos-tab" data-bos-tab="signin">I already have one</button>
+        </div>
+
+        <div class="field" data-bos-field="name">
+          <label>Your name</label>
+          <input type="text" name="name" placeholder="Jordan Lee" />
+        </div>
+        <div class="field" data-bos-field="business">
+          <label>Business name</label>
+          <input type="text" name="business" placeholder="Northbeam Apparel" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@yourbusiness.co.uk" required />
+        </div>
+        <div class="field" data-bos-field="password">
+          <label>Pick a password</label>
+          <input type="password" name="password" placeholder="At least 8 characters" />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Create my Business OS →</button>
+
+        <div class="divider">Or</div>
+
+        <a href="../lead magnet app/index.html" class="admin-link">Take the free Health Check first ↗</a>
+
+        <p class="muted bos-fineprint">
+          By creating an account you'll get the precustomer portal. As soon as you upgrade, your full Aqua agency portal layers on top — same login, more sidebar.
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container foot-row">
+      <span>© 2026 Milesy Media · Business OS <span style="opacity:0.4">· Standalone preview · localhost:3034</span></span>
+      <span>
+        <a href="https://milesymedia.co">milesymedia.co</a> ·
+        <a href="mailto:hello@milesymedia.co">hello@milesymedia.co</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    // Tab toggle (signup vs signin)
+    document.querySelectorAll('[data-bos-tab]').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('[data-bos-tab]').forEach(function (x) { x.classList.remove('is-on'); });
+        t.classList.add('is-on');
+        var mode = t.getAttribute('data-bos-tab');
+        document.querySelectorAll('[data-bos-field]').forEach(function (f) {
+          f.style.display = (mode === 'signup' ? '' : (f.getAttribute('data-bos-field') === 'password' ? '' : 'none'));
+        });
+        document.querySelector('button[type="submit"]').textContent =
+          mode === 'signup' ? 'Create my Business OS →' : 'Sign in →';
+      });
+    });
+
+    // Demo submit — store email in localStorage and jump into the app.
+    document.getElementById('bos-auth-form').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var fd = new FormData(ev.target);
+      try {
+        localStorage.setItem('bos.user', JSON.stringify({
+          name: fd.get('name') || 'Friend',
+          business: fd.get('business') || 'Your Business',
+          email: fd.get('email') || ''
+        }));
+      } catch (e) {}
+      window.location.href = 'app.html';
+    });
+  </script>
+
+</body>
+</html>

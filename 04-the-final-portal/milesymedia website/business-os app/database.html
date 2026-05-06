@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+
+  <div class="bos-shell">
+
+    <!-- Same sidebar as app.html -->
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand">
+        <span class="mark">M</span>
+        <span class="brand-name">Milesy<span class="a">OS</span></span>
+      </a>
+      <nav class="bos-side-nav">
+        <div class="bos-side-section">
+          <div class="bos-side-label">Workspace</div>
+          <a href="app.html"><span class="ico">◆</span> Dashboard</a>
+          <a href="database.html" class="active"><span class="ico">◇</span> Modules</a>
+          <a href="../lead magnet app/index.html"><span class="ico">⌕</span> Assessments</a>
+          <a href="module.html"><span class="ico">📖</span> Guides</a>
+          <a href="#" data-bos-soon><span class="ico">⚙</span> Templates</a>
+        </div>
+        <div class="bos-side-section">
+          <div class="bos-side-label">Get help</div>
+          <a href="mailto:hello@milesymedia.co"><span class="ico">✉</span> Message us</a>
+          <a href="tel:+441234567890"><span class="ico">📞</span> Book a free call</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="bos-main">
+
+      <header class="bos-topbar">
+        <div>
+          <div class="muted" style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase">Library</div>
+          <h1>BusinessOS modules</h1>
+        </div>
+        <div class="bos-topbar-actions">
+          <input type="search" class="bos-search" placeholder="Search modules…" data-bos-search />
+        </div>
+      </header>
+
+      <!-- Filter chips (placeholder Notion-style) -->
+      <div class="bos-filter-row">
+        <button class="hc-chip is-on" data-bos-filter="all">All</button>
+        <button class="hc-chip" data-bos-filter="visibility">Visibility</button>
+        <button class="hc-chip" data-bos-filter="conversion">Conversion</button>
+        <button class="hc-chip" data-bos-filter="retention">Retention</button>
+        <button class="hc-chip" data-bos-filter="scaling">Scaling</button>
+        <button class="hc-chip" data-bos-filter="ops">Operations</button>
+      </div>
+
+      <!-- Database table view (Notion-style) -->
+      <div class="bos-table-wrap">
+        <table class="bos-table" data-bos-table>
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Length</th>
+              <th>Owner</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-cat="visibility">
+              <td><a href="module.html"><strong>Get found on Google in 30 days</strong></a></td>
+              <td><span class="badge badge-good">Visibility</span></td>
+              <td><span class="bos-pip bos-pip-todo"></span> Not started</td>
+              <td>5 lessons · ~45 min</td>
+              <td>Milesy team</td>
+              <td><a href="module.html" class="bos-row-cta">Open →</a></td>
+            </tr>
+            <tr data-cat="conversion">
+              <td><a href="module.html"><strong>The 5-second homepage rebuild</strong></a></td>
+              <td><span class="badge badge-warn">Conversion</span></td>
+              <td><span class="bos-pip bos-pip-doing"></span> In progress</td>
+              <td>4 lessons · ~30 min</td>
+              <td>Milesy team</td>
+              <td><a href="module.html" class="bos-row-cta">Open →</a></td>
+            </tr>
+            <tr data-cat="retention">
+              <td><a href="module.html"><strong>Build a 3-step post-purchase flow</strong></a></td>
+              <td><span class="badge badge-good">Retention</span></td>
+              <td><span class="bos-pip bos-pip-todo"></span> Not started</td>
+              <td>3 lessons · ~25 min</td>
+              <td>Milesy team</td>
+              <td><a href="module.html" class="bos-row-cta">Open →</a></td>
+            </tr>
+            <tr data-cat="visibility">
+              <td><a href="module.html"><strong>Local SEO foundations</strong></a></td>
+              <td><span class="badge badge-good">Visibility</span></td>
+              <td><span class="bos-pip bos-pip-todo"></span> Not started</td>
+              <td>6 lessons · ~60 min</td>
+              <td>Milesy team</td>
+              <td><a href="module.html" class="bos-row-cta">Open →</a></td>
+            </tr>
+            <tr data-cat="ops">
+              <td><a href="module.html"><strong>The 1-page operating manual</strong></a></td>
+              <td><span class="badge badge-warn">Operations</span></td>
+              <td><span class="bos-pip bos-pip-done"></span> Done</td>
+              <td>1 template · ~10 min</td>
+              <td>Milesy team</td>
+              <td><a href="module.html" class="bos-row-cta">Open →</a></td>
+            </tr>
+            <tr data-cat="scaling">
+              <td><a href="module.html"><strong>Hiring your first marketer</strong></a></td>
+              <td><span class="badge badge-bad">Scaling</span></td>
+              <td>🔒 Locked</td>
+              <td>7 lessons · ~90 min</td>
+              <td>Milesy team</td>
+              <td><a href="module.html" class="bos-row-cta">Preview →</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bos-notion-slot">
+        <div class="bos-notion-slot-icon">📂</div>
+        <div>
+          <h3>This is where your Notion library lives.</h3>
+          <p class="muted">Once your <code>notion-export/</code> folder is in place, the rows above are replaced by your actual modules + their categories. Same table layout, same filters.</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    document.querySelectorAll('[data-bos-filter]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-bos-filter]').forEach(function (x) { x.classList.remove('is-on'); });
+        b.classList.add('is-on');
+        var c = b.getAttribute('data-bos-filter');
+        document.querySelectorAll('[data-bos-table] tbody tr').forEach(function (tr) {
+          tr.style.display = (c === 'all' || tr.getAttribute('data-cat') === c) ? '' : 'none';
+        });
+      });
+    });
+
+    var search = document.querySelector('[data-bos-search]');
+    if (search) search.addEventListener('input', function () {
+      var q = search.value.toLowerCase();
+      document.querySelectorAll('[data-bos-table] tbody tr').forEach(function (tr) {
+        tr.style.display = tr.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+    });
+
+    document.querySelectorAll('[data-bos-soon]').forEach(function (a) {
+      a.addEventListener('click', function (ev) { ev.preventDefault(); });
+    });
+  </script>
+
+</body>
+</html>

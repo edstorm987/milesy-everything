@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+
+  <div class="bos-shell">
+
+    <!-- ─── Sidebar ───────────────────────────── -->
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand">
+        <span class="mark">M</span>
+        <span class="brand-name">Milesy<span class="a">OS</span></span>
+      </a>
+
+      <nav class="bos-side-nav">
+        <div class="bos-side-section">
+          <div class="bos-side-label">Workspace</div>
+          <a href="app.html" class="active"><span class="ico">◆</span> Dashboard</a>
+          <a href="database.html"><span class="ico">◇</span> Modules</a>
+          <a href="../lead magnet app/index.html"><span class="ico">⌕</span> Assessments</a>
+          <a href="module.html"><span class="ico">📖</span> Guides</a>
+          <a href="#" data-bos-soon><span class="ico">⚙</span> Templates</a>
+        </div>
+
+        <div class="bos-side-section">
+          <div class="bos-side-label">Get help</div>
+          <a href="mailto:hello@milesymedia.co"><span class="ico">✉</span> Message us</a>
+          <a href="tel:+441234567890"><span class="ico">📞</span> Book a free call</a>
+          <a href="#" data-bos-soon><span class="ico">🤖</span> Free assistant</a>
+        </div>
+
+        <div class="bos-side-section bos-aqua-section">
+          <div class="bos-side-label">Agency portal</div>
+          <a href="#" data-bos-soon class="bos-locked">
+            <span class="ico">🔒</span> Aqua portal
+            <span class="bos-locked-tag">Upgrade</span>
+          </a>
+          <p class="bos-side-foot">Once you upgrade, the full agency portal layers in here.</p>
+        </div>
+      </nav>
+
+      <div class="bos-side-user">
+        <div class="av" data-bos-initial>JL</div>
+        <div>
+          <div class="bos-side-user-name" data-bos-name>Jordan Lee</div>
+          <div class="bos-side-user-biz muted" data-bos-business>Northbeam Apparel</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ─── Workspace ─────────────────────────── -->
+    <main class="bos-main">
+
+      <header class="bos-topbar">
+        <div>
+          <div class="muted" style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase">Welcome back</div>
+          <h1 data-bos-greet>Welcome back, Jordan.</h1>
+        </div>
+        <div class="bos-topbar-actions">
+          <a href="tel:+441234567890" class="btn btn-secondary">📞 Book a call</a>
+          <a href="../lead magnet app/index.html" class="btn btn-primary">Run a new assessment →</a>
+        </div>
+      </header>
+
+      <!-- Onboarding strip -->
+      <section class="bos-onboard">
+        <div class="bos-onboard-head">
+          <div>
+            <span class="eyebrow">Your next 4 moves</span>
+            <h2>Get your operating system running in 20 minutes.</h2>
+          </div>
+          <div class="bos-onboard-progress">
+            <span data-bos-progress-pct>25%</span>
+            <div class="hc-progress-bar"><span data-bos-progress-fill style="width:25%"></span></div>
+          </div>
+        </div>
+        <div class="bos-onboard-grid">
+          <button class="bos-onboard-card is-done">
+            <div class="bos-onboard-icon">✓</div>
+            <div class="bos-onboard-title">Account created</div>
+            <div class="muted bos-onboard-sub">Welcome aboard.</div>
+          </button>
+          <a href="../lead magnet app/index.html" class="bos-onboard-card">
+            <div class="bos-onboard-icon">⌕</div>
+            <div class="bos-onboard-title">Run the Health Check</div>
+            <div class="muted bos-onboard-sub">~12 min · gives us your starting baseline.</div>
+          </a>
+          <a href="database.html" class="bos-onboard-card">
+            <div class="bos-onboard-icon">◇</div>
+            <div class="bos-onboard-title">Pick your first module</div>
+            <div class="muted bos-onboard-sub">From the BusinessOS library.</div>
+          </a>
+          <a href="tel:+441234567890" class="bos-onboard-card">
+            <div class="bos-onboard-icon">📞</div>
+            <div class="bos-onboard-title">Book your free call</div>
+            <div class="muted bos-onboard-sub">30 mins. No catch.</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- KPI / status -->
+      <section class="bos-section">
+        <div class="bos-section-head">
+          <h2>Your business at a glance</h2>
+          <a href="#" class="bos-section-link" data-bos-soon>Settings →</a>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi"><div class="lbl">Assessments completed</div><div class="num">0</div><div class="muted">Take one to populate this card.</div></div>
+          <div class="kpi"><div class="lbl">Modules in progress</div><div class="num">0</div><div class="muted">Pick one from Modules.</div></div>
+          <div class="kpi"><div class="lbl">Guides read</div><div class="num">0</div><div class="muted">Open one from Guides.</div></div>
+          <div class="kpi"><div class="lbl">Calls booked</div><div class="num">0</div><div class="muted">First one's free.</div></div>
+        </div>
+      </section>
+
+      <!-- Featured modules — placeholder grid -->
+      <section class="bos-section">
+        <div class="bos-section-head">
+          <h2>Featured modules</h2>
+          <a href="database.html" class="bos-section-link">See all →</a>
+        </div>
+        <div class="bos-mod-grid">
+          <a href="module.html" class="bos-mod-card">
+            <div class="bos-mod-cat">Visibility</div>
+            <h3>Get found on Google in 30 days</h3>
+            <p class="muted">Claim, optimise and post to your Google Business Profile so the local pack actually shows you.</p>
+            <div class="bos-mod-meta"><span>📖 5 lessons</span><span>~45 min</span></div>
+          </a>
+          <a href="module.html" class="bos-mod-card">
+            <div class="bos-mod-cat">Conversion</div>
+            <h3>The 5-second homepage rebuild</h3>
+            <p class="muted">Rewrite your hero so a stranger gets it in 5 seconds. Templates, examples, a teardown of your own page.</p>
+            <div class="bos-mod-meta"><span>📖 4 lessons</span><span>~30 min</span></div>
+          </a>
+          <a href="module.html" class="bos-mod-card">
+            <div class="bos-mod-cat">Retention</div>
+            <h3>Build a 3-step post-purchase flow</h3>
+            <p class="muted">Welcome → check-in → ask. The cheapest revenue you'll ever earn from people who already trust you.</p>
+            <div class="bos-mod-meta"><span>📖 3 lessons</span><span>~25 min</span></div>
+          </a>
+          <a href="module.html" class="bos-mod-card bos-mod-card-locked">
+            <div class="bos-mod-cat">Scaling</div>
+            <h3>Hire your first marketing person</h3>
+            <p class="muted">When, who, what to pay them, how to brief them — built for £100k–£1M businesses making the leap.</p>
+            <div class="bos-mod-meta"><span>🔒 Members only</span></div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Notion content slot -->
+      <section class="bos-section">
+        <div class="bos-section-head">
+          <h2>Your Business OS library</h2>
+          <a href="database.html" class="bos-section-link">Open library →</a>
+        </div>
+        <div class="bos-notion-slot">
+          <div class="bos-notion-slot-icon">📂</div>
+          <div>
+            <h3>Notion content slot</h3>
+            <p class="muted">Drop your Notion export here (path: <code>business-os app/notion-export/</code>). The library page reads from that folder. Empty for now — placeholder structure shown above.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    try {
+      var u = JSON.parse(localStorage.getItem('bos.user') || 'null');
+      if (u) {
+        var first = (u.name || 'Friend').split(' ')[0];
+        var initials = (u.name || 'F L').split(/\s+/).slice(0, 2).map(function (x) { return x[0]; }).join('').toUpperCase();
+        var greet = document.querySelector('[data-bos-greet]'); if (greet) greet.textContent = 'Welcome back, ' + first + '.';
+        var n = document.querySelector('[data-bos-name]'); if (n) n.textContent = u.name || 'Friend';
+        var b = document.querySelector('[data-bos-business]'); if (b) b.textContent = u.business || '';
+        var av = document.querySelector('[data-bos-initial]'); if (av) av.textContent = initials || 'YOU';
+      }
+    } catch (e) {}
+
+    document.querySelectorAll('[data-bos-soon]').forEach(function (a) {
+      a.addEventListener('click', function (ev) { ev.preventDefault(); a.setAttribute('title', 'Coming soon'); });
+    });
+  </script>
+
+</body>
+</html>
