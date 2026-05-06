@@ -4,7 +4,7 @@
 
 You are Terminal 1, Round 2. Your Round-1 foundation shipped (`16bc524`).
 T2's fulfillment plugin shipped (`2dfc7e6`) and is sitting in
-`04 the final portal/plugins/fulfillment/` waiting to be mounted into your
+`04-the-final-portal/plugins/fulfillment/` waiting to be mounted into your
 shell. T3 is still finishing the website-editor plugin port.
 
 Round 2 goal: take T2's plugin from "exists in a folder" to "runnable
@@ -31,22 +31,22 @@ demo data."
 3. `01 development/context/prior research/04-architecture.md`
 4. **Your own chapter**: `01 development/context/prior research/04-foundation.md` — re-read your Round-1 deviations + the contracts you locked.
 5. **T2's chapter**: `01 development/context/prior research/04-plugin-fulfillment.md` — manifest contract, port shapes T2 needs you to provide (`PluginRuntimePort`, `PluginRegistryPort`, `PortalVariantPort`), 14 API routes, 6 pages.
-6. T2's package: `04 the final portal/plugins/fulfillment/index.ts` (manifest), `src/server/ports.ts` (port interfaces), `src/server/index.ts` (container builder).
+6. T2's package: `04-the-final-portal/plugins/fulfillment/index.ts` (manifest), `src/server/ports.ts` (port interfaces), `src/server/index.ts` (container builder).
 7. `01 development/eds requirments.md`.
 
 ## Scope — what to build
 
 ### 1. Add `@aqua/plugin-fulfillment` as a workspace dep of the portal app
 
-T2's plugin is at `04 the final portal/plugins/fulfillment/`. Wire it as a
-local workspace package consumable from `04 the final portal/portal/`:
+T2's plugin is at `04-the-final-portal/plugins/fulfillment/`. Wire it as a
+local workspace package consumable from `04-the-final-portal/portal/`:
 
 - Update `portal/package.json`: add `"@aqua/plugin-fulfillment": "file:../plugins/fulfillment"` to dependencies.
 - `npm install` inside `portal/`. Verify `tsc --noEmit` still clean.
 
 ### 2. Implement the foundation-side ports T2 needs
 
-Create `04 the final portal/portal/src/plugins/foundation-adapters/` with:
+Create `04-the-final-portal/portal/src/plugins/foundation-adapters/` with:
 
 - `pluginRuntimeAdapter.ts` — implements T2's `PluginRuntimePort` (`installPlugin`, `setEnabled`, `uninstall`) by calling your `src/server/pluginInstalls.ts` and `_runtime.ts`.
 - `pluginRegistryAdapter.ts` — implements T2's `PluginRegistryPort` (`list()`, `get(id)`, `search(query, filters)`) by reading your `_registry.ts`.
@@ -54,7 +54,7 @@ Create `04 the final portal/portal/src/plugins/foundation-adapters/` with:
 
 ### 3. Register fulfillment in the runtime
 
-- Add fulfillment manifest to `04 the final portal/portal/src/plugins/_registry.ts`. Import from `@aqua/plugin-fulfillment`.
+- Add fulfillment manifest to `04-the-final-portal/portal/src/plugins/_registry.ts`. Import from `@aqua/plugin-fulfillment`.
 - Add fulfillment to `_presets.ts` for the `agency` preset (it's `core: true` so it auto-installs anyway, but be explicit).
 - On agency creation: ensure `core: true` plugins install automatically. Test with the dev `/api/tenants/seed` route.
 

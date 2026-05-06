@@ -64,7 +64,7 @@ flow T3's website-editor already uses.
   writes to either the shared app's storage OR (for Live clients) the
   per-client repo folder. The plugin model and block library are
   identical at every level — it's the storage target that changes.
-- **Vercel monorepo stitching.** Vercel treats `04 the final portal/`
+- **Vercel monorepo stitching.** Vercel treats `04-the-final-portal/`
   as one project; rewrites stitch milesymedia (root) +
   Aqua portal (`/portal/*`) + each client portal
   (`<client-domain>` or `clients/<slug>/embed`) at the edge.
@@ -76,7 +76,7 @@ flow T3's website-editor already uses.
 ## Folder layout (revised)
 
 ```
-04 the final portal/
+04-the-final-portal/
 ├── milesymedia website/        ← STATIC marketing site, the front door
 │   ├── index.html
 │   ├── login.html

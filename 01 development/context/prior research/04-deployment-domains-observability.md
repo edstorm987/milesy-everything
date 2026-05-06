@@ -17,7 +17,7 @@ portal under `/portal/*`, login + demo + iframe-login + APIs on the
 same domain. Cookies are scoped to that origin so the same session
 works across every surface.
 
-Per-Live-client portals (`04 the final portal/clients/<slug>/`) ship
+Per-Live-client portals (`04-the-final-portal/clients/<slug>/`) ship
 as their own Next.js apps with their own custom domains. Each is its
 own Vercel project. A Live client's site (e.g. `luvandker.com`)
 iframe-embeds parts of their per-client portal for performance, and
@@ -53,8 +53,8 @@ We considered two strategies:
 | Risk | Single blast radius if one breaks | Edge-rewrite latency, cross-project drift |
 
 We picked **single project + bundled static**. The build script
-(`scripts/build-portal.mjs`) copies `04 the final portal/milesymedia
-website/*` into `04 the final portal/portal/public/_milesy/` before
+(`scripts/build-portal.mjs`) copies `04-the-final-portal/milesymedia
+website/*` into `04-the-final-portal/portal/public/_milesy/` before
 running `next build`. Repo-root `vercel.json` adds `rewrites` mapping
 `/`, `/index.html`, `/login.html`, `/admin.html`, `/styles.css` →
 `/_milesy/<file>`. T1 R8's planned `next.config.ts` rewrites mirror
@@ -153,7 +153,7 @@ bearing:
 ### Per-client portal env (per Vercel project)
 
 A Live client's portal ships with its own minimal env at
-`04 the final portal/clients/<slug>/.env.example`. Template lives at
+`04-the-final-portal/clients/<slug>/.env.example`. Template lives at
 `scripts/templates/client.env.example`. It carries:
 
 - `NEXT_PUBLIC_AGENCY_ID` / `_CLIENT_ID` / `_PORTAL_SLUG` — tenancy
@@ -171,7 +171,7 @@ A Live client's portal ships with its own minimal env at
 ## 4. `@aqua/plugin-domains` — Phase C
 
 Lifted from `02 felicias aqua portal work/src/lib/vercel/server.ts`.
-Self-contained plugin at `04 the final portal/plugins/domains/`.
+Self-contained plugin at `04-the-final-portal/plugins/domains/`.
 
 | Field | Value |
 |-------|-------|
@@ -244,14 +244,14 @@ applies. Verify + remove follow the same shape.
 Mirrors the wire-up of every other T2 plugin:
 
 1. Add `"@aqua/plugin-domains": "file:../plugins/domains"` to
-   `04 the final portal/portal/package.json`.
+   `04-the-final-portal/portal/package.json`.
 2. Append `"@aqua/plugin-domains"` to `transpilePackages` in
    `next.config.ts`.
-3. Create `04 the final portal/portal/src/plugins/foundation-adapters/domainsFoundation.ts`
+3. Create `04-the-final-portal/portal/src/plugins/foundation-adapters/domainsFoundation.ts`
    side-effect-import calling `registerDomainsFoundation({...})` with
    foundation port adapters (TenantPort, ActivityLogPort, EventBusPort,
    PluginInstallStorePort).
-4. Append the manifest to `04 the final portal/portal/src/plugins/_registry.ts`.
+4. Append the manifest to `04-the-final-portal/portal/src/plugins/_registry.ts`.
 5. Extend `ActivityCategory` with `"domains"` so log entries from this
    plugin pass `_validate.ts`.
 
@@ -307,7 +307,7 @@ set + a verify re-checks.
 ## 6. Observability wiring — Phase D
 
 Server-side wrapper at
-`04 the final portal/portal/src/lib/server/observability.ts`.
+`04-the-final-portal/portal/src/lib/server/observability.ts`.
 Captures uncaught errors to Sentry; records duration + status on
 every API route via the wrapper; tags every event with per-tenant
 breadcrumbs.
@@ -338,7 +338,7 @@ fires so dev + Vercel function logs show traces.
 
 To activate Sentry in production:
 
-1. `cd '04 the final portal/portal' && npm install @sentry/nextjs`
+1. `cd '04-the-final-portal/portal' && npm install @sentry/nextjs`
 2. Set `SENTRY_DSN` + `SENTRY_ENVIRONMENT` + `SENTRY_TRACES_SAMPLE_RATE`
    in Vercel project env.
 3. Optionally set `NEXT_PUBLIC_SENTRY_DSN` for browser capture.
@@ -370,7 +370,7 @@ can:
   Web `Request`/`Response`).
 - Wait for the orchestrator to lift the helper into a canonical
   workspace package — likely `@aqua/observability` at
-  `04 the final portal/observability/` — once the plugin contract
+  `04-the-final-portal/observability/` — once the plugin contract
   unification round lands.
 
 ## 7. Smoke + handoff
@@ -381,7 +381,7 @@ can:
 verification path:
 
 ```
-cd '04 the final portal/portal'
+cd '04-the-final-portal/portal'
 npm install
 npm run dev          # T1 R8 wire next.config.ts rewrites for stitch
 node ../../scripts/build-portal.mjs    # production-shape build

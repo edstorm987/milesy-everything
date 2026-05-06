@@ -1,4 +1,4 @@
-# Concepts to port forward to `04 the final portal/`
+# Concepts to port forward to `04-the-final-portal/`
 
 Synthesis of what's worth taking from `02` and `03`, ranked by leverage.
 
@@ -46,7 +46,7 @@ plugins in `04`. Don't port code — port concepts.
 | 11 | **DynamicRenderer pattern** (config → mounted components by string name) | `Bridge/concepts/DynamicRenderer/`, `extras/vite-prototype/src/components/DynamicViewRenderer.tsx` | True plugin architecture; avoids module circular deps | LOW |
 | 12 | **PageBuilder / RoleBuilder / AgencyConfigurator** (Vite-prototype patterns) | `Bridge/concepts/PageBuilder/`, `RoleBuilder/`, `AgencyConfigurator/` | Custom dashboard builder, role CRUD UI, real-time agency branding editor | MEDIUM-HIGH |
 
-## Synthesis: what `04 the final portal/` needs
+## Synthesis: what `04-the-final-portal/` needs
 
 Architecture target: **Aqua's plugin model + old portal's tenancy model**.
 

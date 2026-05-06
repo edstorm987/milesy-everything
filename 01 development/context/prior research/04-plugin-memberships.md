@@ -13,7 +13,7 @@ ecommerce install in the same scope, since the manifest declares
 ## 1. Package shape
 
 ```
-04 the final portal/plugins/memberships/
+04-the-final-portal/plugins/memberships/
 ├── index.ts                          default-exports the AquaPlugin manifest
 ├── package.json                      @aqua/plugin-memberships@0.1.0
 ├── tsconfig.json
@@ -306,7 +306,7 @@ so the test can replay it as a webhook payload.
 ℹ tests 9   ℹ pass 9   ℹ fail 0
 ```
 
-`npm run smoke` from `04 the final portal/plugins/memberships/`.
+`npm run smoke` from `04-the-final-portal/plugins/memberships/`.
 
 ## 10. Foundation pending (orchestrator brokerage in T1's next round)
 
@@ -355,7 +355,7 @@ so the test can replay it as a webhook payload.
 ## 13. Verification commands
 
 ```bash
-cd "04 the final portal/plugins/memberships"
+cd "04-the-final-portal/plugins/memberships"
 
 # tsc clean (no output = no errors)
 npx tsc --noEmit

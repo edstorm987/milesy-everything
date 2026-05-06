@@ -1,7 +1,7 @@
 # Old portal — roles + multi-tenancy
 
 The role hierarchy and tenant model from `03 old portal/`. This is the part
-of the old portal **most directly applicable to `04 the final portal/`** —
+of the old portal **most directly applicable to `04-the-final-portal/`** —
 it solves the team-vs-client-vs-freelancer access problem cleanly.
 
 > Source: agents 5 + 6.

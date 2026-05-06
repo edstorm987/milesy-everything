@@ -34,7 +34,7 @@ signs up shows up automatically here).
 
 ## Scope
 
-`04 the final portal/plugins/client-crm/` — `@aqua/plugin-client-crm`,
+`04-the-final-portal/plugins/client-crm/` — `@aqua/plugin-client-crm`,
 self-contained package, mirror your fulfillment + ecommerce + agency-HR
 + memberships + affiliates + agency-finance + agency-marketing shape
 (vendored AquaPlugin types, ports, container builder, foundation
@@ -162,7 +162,7 @@ this lands; T3 R3 prompt already has a renderer-registration hook).
 ## Foundation integration
 
 Same pattern as memberships + affiliates + agency-finance + agency-marketing:
-- `tsc --noEmit` clean inside `04 the final portal/plugins/client-crm/`.
+- `tsc --noEmit` clean inside `04-the-final-portal/plugins/client-crm/`.
 - Ports declared in `src/server/ports.ts`.
 - Export `buildClientCrmContainer(deps)`.
 - Export `registerClientCrmFoundation(deps) + containerFor(storage)` for side-effect-import.
@@ -197,7 +197,7 @@ to end.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/client-crm/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/client-crm/`.
 2. Smoke (`src/__smoke__/crm.test.ts`) — node:test cases:
    - `seedDefaultSegments` idempotent.
    - Contact CRUD + email uniqueness scoped to `(agencyId, clientId)`.

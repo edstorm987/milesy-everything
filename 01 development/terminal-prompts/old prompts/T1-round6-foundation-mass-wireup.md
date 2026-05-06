@@ -43,7 +43,7 @@ is ahead of the plugin catalogue again.
 
 ### Goal A: Workspace deps + Turbopack transpile for 5 (or 6) new plugins
 
-In `04 the final portal/portal/package.json`:
+In `04-the-final-portal/portal/package.json`:
 - Add `@aqua/plugin-agency-hr`, `@aqua/plugin-memberships`, `@aqua/plugin-affiliates`, `@aqua/plugin-agency-finance`, `@aqua/plugin-agency-marketing` (and `@aqua/plugin-client-crm` if T2 R8 has shipped) as `file:..` workspace deps.
 - `npm install` with `install-links=true` already in `.npmrc`.
 - `next.config.ts` `transpilePackages` array gets the same set appended.
@@ -51,8 +51,8 @@ In `04 the final portal/portal/package.json`:
 ### Goal B: `_registry.ts` append + side-effect-import files
 
 For each plugin that exposes a `registerXxxFoundation` adapter, add:
-1. A side-effect-import file under `04 the final portal/portal/src/plugins/foundation-adapters/` named like `<plugin>Foundation.ts` that imports the adapter and calls it at boot, passing the foundation's port shapes (mirror the `ecommerceFoundation.ts` you wrote in R3).
-2. The plugin's manifest registration appended to `04 the final portal/portal/src/plugins/_registry.ts`.
+1. A side-effect-import file under `04-the-final-portal/portal/src/plugins/foundation-adapters/` named like `<plugin>Foundation.ts` that imports the adapter and calls it at boot, passing the foundation's port shapes (mirror the `ecommerceFoundation.ts` you wrote in R3).
+2. The plugin's manifest registration appended to `04-the-final-portal/portal/src/plugins/_registry.ts`.
 
 The plugins are: agency-hr, memberships, affiliates, agency-finance,
 agency-marketing (+ client-crm if available). Use the existing
@@ -60,7 +60,7 @@ foundation-adapters pattern from R2/R3.
 
 ### Goal C: ActivityCategory union extension
 
-In `04 the final portal/portal/src/server/types.ts`, the
+In `04-the-final-portal/portal/src/server/types.ts`, the
 `ActivityCategory` union currently includes `"auth"`, `"ecommerce"`,
 plus a few others. Each new plugin chapter §"Foundation pending"
 specifies which category to add: `"hr"`, `"memberships"`, `"affiliates"`,
@@ -80,7 +80,7 @@ T2's plugins emit events that other plugins want to subscribe to:
 Today the plugins each have an `EventBusPort` but there's no concrete
 fan-out routing — emits go nowhere. R6 adds the router:
 
-1. In `04 the final portal/portal/src/server/eventBus.ts`, extend the
+1. In `04-the-final-portal/portal/src/server/eventBus.ts`, extend the
    bus to support per-plugin subscribers. New API:
    `subscribeForPlugin(pluginId, eventName, handler)`.
 2. Each foundation-adapter file (Goal B) registers its plugin's
@@ -95,7 +95,7 @@ fan-out routing — emits go nowhere. R6 adds the router:
 
 ### Goal E: Demo seed extension — install all client-scoped plugins for Felicia
 
-In `04 the final portal/portal/src/lib/server/demoSeed.ts`, the demo
+In `04-the-final-portal/portal/src/lib/server/demoSeed.ts`, the demo
 agency currently installs `fulfillment`, `website-editor`, `ecommerce`,
 + in R5 the customer-flow seed. Extend so the Felicia mirror also gets
 `memberships`, `affiliates`, and `client-crm` installed (all client-scoped).

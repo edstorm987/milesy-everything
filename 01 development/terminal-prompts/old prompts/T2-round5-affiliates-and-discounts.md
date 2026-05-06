@@ -190,7 +190,7 @@ T3 will register renderers in their R3 (already prompted).
 ## Foundation integration
 
 Same pattern as memberships + agency-HR + ecommerce:
-- `tsc --noEmit` clean inside `04 the final portal/plugins/affiliates/`.
+- `tsc --noEmit` clean inside `04-the-final-portal/plugins/affiliates/`.
 - Ports declared in `src/server/ports.ts`.
 - Export `buildAffiliatesContainer(deps)`.
 - Export `registerAffiliatesFoundation(deps) + containerFor(storage)` for side-effect-import.
@@ -227,7 +227,7 @@ Goal A:
 5. Smoke extended to include the new path.
 
 Goal B:
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/affiliates/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/affiliates/`.
 2. Smoke (`src/__smoke__/affiliates.test.ts`) — node:test cases:
    - `enroll` happy path + double-enrol rejection.
    - `findByCode` returns active code, archived returns null.

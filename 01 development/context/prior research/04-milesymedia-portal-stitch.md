@@ -15,7 +15,7 @@ origin, one cookie, one set of links.
 Files stay separate in the repo (Ed's "puzzle piece" requirement):
 
 ```
-04 the final portal/
+04-the-final-portal/
 ├── milesymedia website/        ← static front-door files
 │   ├── index.html              edited as static HTML
 │   ├── login.html
@@ -49,8 +49,8 @@ The end-user sees one site. URL surface (architecture §11):
 
 Two pieces:
 
-1. **`portal/scripts/prepare-milesy.mjs`** — copies `04 the final portal/
-   milesymedia website/*` → `04 the final portal/portal/public/_milesy/*`.
+1. **`portal/scripts/prepare-milesy.mjs`** — copies `04-the-final-portal/
+   milesymedia website/*` → `04-the-final-portal/portal/public/_milesy/*`.
    Idempotent (delete + re-copy). Wired as `predev` so every
    `npm run dev` runs it first; cheap enough not to slow the loop.
 2. **`portal/next.config.ts.rewrites().beforeFiles`** — the same path
@@ -88,7 +88,7 @@ config drift.
 T6 R1 Phase A (commit `359b476`) shipped the production wiring:
 
 - `framework: "nextjs"`, `buildCommand: "node scripts/build-portal.mjs"`,
-  `outputDirectory: "04 the final portal/portal/.next"`.
+  `outputDirectory: "04-the-final-portal/portal/.next"`.
 - `scripts/build-portal.mjs` runs the same `prepare-milesy` copy step
   (inline), then `npm install` + `next build` inside the portal
   folder.
@@ -161,8 +161,8 @@ Same rewrite logic in all three pages (`index.html` / `login.html` /
 
 Per Ed's directive: nothing about R8 changes the editing model.
 
-- Static-site copy edits live in `04 the final portal/milesymedia website/*`.
-- Portal code edits live in `04 the final portal/portal/src/*`.
+- Static-site copy edits live in `04-the-final-portal/milesymedia website/*`.
+- Portal code edits live in `04-the-final-portal/portal/src/*`.
 - The `portal/public/_milesy/` directory is **a build artefact** —
   treat it like `.next/` or `node_modules/`. Do NOT edit in place; the
   next `npm run dev` will overwrite. (Add a `.gitignore` entry for

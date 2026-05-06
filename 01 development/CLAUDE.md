@@ -93,7 +93,7 @@ Never stash project memory anywhere else. The context tree is the single source 
 
 ## Scope
 
-The active build target is `04 the final portal/`. Everything in
+The active build target is `04-the-final-portal/`. Everything in
 `02 felicias aqua portal work/` and `03 old portal/` is **reference only** —
 do not edit those folders unless Ed explicitly asks.
 

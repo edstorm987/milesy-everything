@@ -2,16 +2,16 @@
 // Vercel build entrypoint for the unified milesymedia + portal deploy.
 //
 // Sequence:
-//   1. Copy `04 the final portal/milesymedia website/*` →
-//      `04 the final portal/portal/public/_milesy/`
+//   1. Copy `04-the-final-portal/milesymedia website/*` →
+//      `04-the-final-portal/portal/public/_milesy/`
 //      so the static front-door files ship inside the Next.js bundle.
-//   2. cd into `04 the final portal/portal/` and run `npm install`
+//   2. cd into `04-the-final-portal/portal/` and run `npm install`
 //      (must happen here, NOT at repo root, so the file:.. workspace
 //      plugin deps resolve against the right package-lock).
 //   3. Run `npm run build` (next build) in the portal folder.
 //
 // The repo-root vercel.json wires `outputDirectory` to
-// `04 the final portal/portal/.next` so Vercel picks up the build
+// `04-the-final-portal/portal/.next` so Vercel picks up the build
 // artefact from the subfolder.
 //
 // Same-origin stitching: the placed `_milesy/*` files are paired with
@@ -27,8 +27,8 @@ import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(HERE, "..");
-const PORTAL_DIR = resolve(REPO_ROOT, "04 the final portal", "portal");
-const MILESY_DIR = resolve(REPO_ROOT, "04 the final portal", "milesymedia website");
+const PORTAL_DIR = resolve(REPO_ROOT, "04-the-final-portal", "portal");
+const MILESY_DIR = resolve(REPO_ROOT, "04-the-final-portal", "milesymedia website");
 const PUBLIC_MILESY = resolve(PORTAL_DIR, "public", "_milesy");
 
 function step(label, fn) {
@@ -67,4 +67,4 @@ step("next build in portal/", () => {
   run("npm", ["run", "build"], PORTAL_DIR);
 });
 
-console.log("\n✓ portal build complete — Vercel will serve from 04 the final portal/portal/.next");
+console.log("\n✓ portal build complete — Vercel will serve from 04-the-final-portal/portal/.next");

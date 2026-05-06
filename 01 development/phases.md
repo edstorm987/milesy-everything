@@ -6,15 +6,15 @@ Output: 18 chapters in `01 development/context/prior research/` indexed in
 `MASTER.md`. The next session can load both codebases off-by-heart from the
 chapters alone.
 
-## Phase 1 — Architecture for `04 the final portal/` (in progress)
+## Phase 1 — Architecture for `04-the-final-portal/` (in progress)
 Lock in the architecture: audience tiers, URL surface, role hierarchy,
 folder layout. Decide what gets ported from `02` (directly), what's
 recreated from `03` (as plugins), and what's net-new.
 
 **Locked decisions** (from Ed's directive 2026-05-04):
-- Build `04 the final portal/portal/` as the new app — Next.js + plugin model from `02`.
+- Build `04-the-final-portal/portal/` as the new app — Next.js + plugin model from `02`.
 - **Pre-vetted plugins to drop in from `02`**: website editor + ecommerce.
-- Build by plugins (so future features = new plugin folders in `04 the final portal/plugins/`).
+- Build by plugins (so future features = new plugin folders in `04-the-final-portal/plugins/`).
 - Three audiences: agency staff (Ed's team), clients (Felicia-style), end customers (per-client storefronts + iframe-embedded login).
 - Total customisation per client: brand kit, plugin set, portal variants — all per-client.
 - Recursive: each client's portal can itself host customer-facing portals (iframe-embedded, branded). Same machinery at every level.

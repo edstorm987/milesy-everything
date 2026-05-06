@@ -8,7 +8,7 @@ You are Terminal 2, Round 2. Your Round-1 fulfillment plugin shipped
 
 Round 2 goal: port the ecommerce subsystem from
 `02 felicias aqua portal work/` into a self-contained
-`04 the final portal/plugins/ecommerce/` package, mirroring the shape +
+`04-the-final-portal/plugins/ecommerce/` package, mirroring the shape +
 discipline of your fulfillment plugin and T3's website-editor port.
 
 ## Working environment
@@ -35,11 +35,11 @@ discipline of your fulfillment plugin and T3's website-editor port.
 7. `01 development/context/prior research/aqua-storefront.md` — `CartContext`, `ProductDetail`, `CartDrawer` patterns.
 8. `01 development/context/prior research/aqua-api-routes.md` — `/api/portal/products`, `/api/portal/orders`, `/api/stripe/*`.
 9. `01 development/context/prior research/04-foundation.md` — T1's contracts you'll consume.
-10. T1's `04 the final portal/portal/src/plugins/_types.ts` (canonical now — your fulfillment vendor can move to import this in a follow-up; in your ecommerce package you can either import T1's types directly OR vendor again — your call).
+10. T1's `04-the-final-portal/portal/src/plugins/_types.ts` (canonical now — your fulfillment vendor can move to import this in a follow-up; in your ecommerce package you can either import T1's types directly OR vendor again — your call).
 
 ## Scope — files to lift
 
-From `02 felicias aqua portal work/` into `04 the final portal/plugins/ecommerce/`:
+From `02 felicias aqua portal work/` into `04-the-final-portal/plugins/ecommerce/`:
 
 ### Admin routes
 - `src/app/admin/products/*` (list + new + [slug] + variants)
@@ -76,7 +76,7 @@ From `02 felicias aqua portal work/` into `04 the final portal/plugins/ecommerce
 ## Required output structure
 
 ```
-04 the final portal/plugins/ecommerce/
+04-the-final-portal/plugins/ecommerce/
 ├── package.json              name: "@aqua/plugin-ecommerce"
 ├── README.md
 ├── index.ts                  default-exported AquaPlugin manifest
@@ -146,7 +146,7 @@ Same as Round 1. Pass `<<autonomous-loop-dynamic>>` to `ScheduleWakeup`.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/ecommerce/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/ecommerce/`.
 2. Manifest exports correctly.
 3. Add `01 development/context/prior research/04-plugin-ecommerce.md` chapter:
    - Manifest contract

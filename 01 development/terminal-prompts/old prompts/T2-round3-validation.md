@@ -53,7 +53,7 @@ that exercises the full lifecycle:
 8. At each phase: hit the relevant client portal route and verify the
    active portal variant matches the phase.
 
-Output: `04 the final portal/plugins/fulfillment/src/__smoke__/lifecycle.test.ts`
+Output: `04-the-final-portal/plugins/fulfillment/src/__smoke__/lifecycle.test.ts`
 + a chapter `04-phase-lifecycle-smoke.md` documenting the walkthrough,
 expected vs observed results, and any bugs surfaced. If you find bugs,
 patch them in your plugin (or surface a `WARN` to T1's inbox if
@@ -62,7 +62,7 @@ foundation-side).
 ### Goal B: Agency HR plugin (new — `@aqua/plugin-agency-hr`)
 
 Mirror your fulfillment-plugin pattern. Build
-`04 the final portal/plugins/agency-hr/` as a self-contained package.
+`04-the-final-portal/plugins/agency-hr/` as a self-contained package.
 
 Domain model — staff directory + departments + leave management
 (simple v1):

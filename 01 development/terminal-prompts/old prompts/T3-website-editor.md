@@ -3,10 +3,10 @@
 # T3 — Plugin port: Website editor
 
 You are Terminal 3 of three parallel Claude Opus 4.7 sessions building
-`04 the final portal/`. T1 scaffolds the foundation. T2 builds the
+`04-the-final-portal/`. T1 scaffolds the foundation. T2 builds the
 fulfillment plugin. Your role: port the website editor + 58 blocks +
 portal variants from `02 felicias aqua portal work/` into a self-contained
-plugin package at `04 the final portal/plugins/website-editor/`.
+plugin package at `04-the-final-portal/plugins/website-editor/`.
 
 ## Working environment
 
@@ -14,7 +14,7 @@ plugin package at `04 the final portal/plugins/website-editor/`.
 - **Local working directory**: `~/Desktop/ker-v3/`
 - **Branch**: commit directly to `main`. After each commit: `git pull --rebase && git push`.
 - **If you don't have a clone yet**: `git clone https://github.com/edsworld27/ker-v3.git ~/Desktop/ker-v3 && cd ~/Desktop/ker-v3`
-- **Note**: source paths contain spaces (`02 felicias aqua portal work/`, `04 the final portal/`). Quote paths in shell commands. Use TypeScript path aliases internally to your plugin so imports don't traverse through the spaces.
+- **Note**: source paths contain spaces (`02 felicias aqua portal work/`, `04-the-final-portal/`). Quote paths in shell commands. Use TypeScript path aliases internally to your plugin so imports don't traverse through the spaces.
 
 ## Autonomous mesh — messaging protocol
 
@@ -44,7 +44,7 @@ You're on Claude auto-mode — keep working without asking Ed unless truly block
 ## Your goal
 
 Faithfully extract the website editor + block library + portal-variants
-admin from `02` into `04 the final portal/plugins/website-editor/` as a
+admin from `02` into `04-the-final-portal/plugins/website-editor/` as a
 self-contained plugin. Default-export an `AquaPlugin` manifest. T1's
 foundation mounts the plugin once installed; T2's fulfillment plugin
 applies starter variants from this plugin during phase transitions.
@@ -109,7 +109,7 @@ applies starter variants from this plugin during phase transitions.
 ## Folder layout
 
 ```
-04 the final portal/plugins/website-editor/
+04-the-final-portal/plugins/website-editor/
 ├── package.json              name: "@aqua/plugin-website-editor"
 ├── README.md                 manifest summary + contract
 ├── index.ts                  default-exported AquaPlugin manifest
@@ -222,7 +222,7 @@ Pass `<<autonomous-loop-dynamic>>` as the prompt to `ScheduleWakeup`.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/website-editor/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/website-editor/`.
 2. Manifest exports correctly.
 3. Verify the 58 blocks all import + render in isolation (write a quick smoke test).
 4. Add `01 development/context/prior research/04-plugin-website-editor.md` documenting:

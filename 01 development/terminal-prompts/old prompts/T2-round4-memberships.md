@@ -35,7 +35,7 @@ ships, and is the canonical "client-scoped third-tier-aware" plugin.
 
 ## Scope — what to build
 
-`04 the final portal/plugins/memberships/` — `@aqua/plugin-memberships`,
+`04-the-final-portal/plugins/memberships/` — `@aqua/plugin-memberships`,
 self-contained package, mirror your fulfillment + ecommerce + agency-HR
 shape (vendored AquaPlugin types, ports, container builder, foundation
 adapter, tsc-clean standalone).
@@ -174,7 +174,7 @@ to T3. Three blocks:
 ## Foundation integration
 
 Same pattern as agency-HR + ecommerce:
-- `tsc --noEmit` clean inside `04 the final portal/plugins/memberships/`.
+- `tsc --noEmit` clean inside `04-the-final-portal/plugins/memberships/`.
 - Define ports.
 - Export `buildMembershipsContainer(deps)`.
 - Export `registerMembershipsFoundation(deps) + containerFor(storage)` for
@@ -209,7 +209,7 @@ to end.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/memberships/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/memberships/`.
 2. Smoke test (`src/__smoke__/memberships.test.ts`) — node:test cases:
    - `seedDefaultPlans` idempotent (×2 calls = same state).
    - `subscribe` happy path, signed webhook updates subscription status.

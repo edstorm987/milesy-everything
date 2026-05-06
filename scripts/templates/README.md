@@ -4,10 +4,10 @@ One-off file templates the deploy + plugin tooling pulls from.
 
 ## `client-vercel.json`
 
-Drop into `04 the final portal/clients/<slug>/vercel.json` when T2 R11's
+Drop into `04-the-final-portal/clients/<slug>/vercel.json` when T2 R11's
 "Export to repo" generator materializes a new per-Live-client portal.
 Each per-client portal is a SEPARATE Vercel project — its rootDirectory
-should be set to `04 the final portal/clients/<slug>/` in the Vercel
+should be set to `04-the-final-portal/clients/<slug>/` in the Vercel
 dashboard (one-time setup per client).
 
 The template assumes:
@@ -23,5 +23,5 @@ The template assumes:
   runbook"), against the per-client Vercel project.
 
 Env vars required at the per-client project — see
-`04 the final portal/clients/_TEMPLATE.env.example` (also produced by
+`04-the-final-portal/clients/_TEMPLATE.env.example` (also produced by
 T2 R11).

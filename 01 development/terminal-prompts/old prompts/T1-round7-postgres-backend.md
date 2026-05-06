@@ -29,7 +29,7 @@ this is the single biggest readiness gap left.
 3. `01 development/context/prior research/04-foundation.md` — your R1 storage abstraction
 4. `01 development/context/prior research/04-foundation-round6.md` (or wherever R6 chapter lands) — current state
 5. `01 development/context/prior research/aqua-server-modules.md` — §"Storage abstraction" reference for `02`'s file/postgres/kv pattern
-6. `04 the final portal/portal/src/server/storage.ts` — current implementation
+6. `04-the-final-portal/portal/src/server/storage.ts` — current implementation
 7. Any plugin's `*Foundation.ts` adapter — these are the storage consumers
 
 ## Scope — five goals

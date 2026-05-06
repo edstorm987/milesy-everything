@@ -4,7 +4,7 @@
 
 Per the architecture extension chapter `04-architecture-extension-per-client-portals.md`,
 **each Live client gets a custom portal materialized as
-`04 the final portal/clients/<slug>/`** — its own Next.js app,
+`04-the-final-portal/clients/<slug>/`** — its own Next.js app,
 generated from the client's brand + installed plugins + content.
 Round 11 builds the **generator** (the "Export to repo" button) plus
 a **preset portal library** (Ed's preset starter templates).
@@ -41,15 +41,15 @@ After R11, an agency operator can:
 3. `01 development/context/prior research/04-architecture-extension-per-client-portals.md` — **the canonical doc for this round** (read carefully)
 4. `01 development/context/prior research/04-plugin-fulfillment.md` — your R1 (phase preset shape)
 5. `01 development/context/prior research/04-plugin-website-editor.md` — manifest + 6 starter trees (preset portals lift this pattern)
-6. `04 the final portal/clients/felicias perfect portal/` — the reference prototype; lift its shape as the canonical template
-7. `04 the final portal/portal/src/server/tenants.ts` — Client + EndCustomer + brand kit shape
+6. `04-the-final-portal/clients/felicias perfect portal/` — the reference prototype; lift its shape as the canonical template
+7. `04-the-final-portal/portal/src/server/tenants.ts` — Client + EndCustomer + brand kit shape
 
 ## Scope — four goals
 
 ### Goal A: `@aqua/plugin-portal-export`
 
 A new plugin (Aqua-manifest-shaped, like all your others) at
-`04 the final portal/plugins/portal-export/`. Self-contained,
+`04-the-final-portal/plugins/portal-export/`. Self-contained,
 tsc-clean, mirror your most recent plugin shape (email-sender).
 
 Manifest:
@@ -72,7 +72,7 @@ The generator. Given `(clientId, presetId?, options?)`:
    content from website-editor's `lib/customPages`, theme tokens.
 2. **Resolve preset**: if `presetId` is set, merge the preset's
    defaults under the client's overrides (brand always wins).
-3. **Materialize** to `04 the final portal/clients/<slug>/`:
+3. **Materialize** to `04-the-final-portal/clients/<slug>/`:
    - `package.json` mirroring the shared portal's deps + plugin
      workspace deps (only the plugins this client has installed).
    - `next.config.ts` with the right `transpilePackages` list.
@@ -91,7 +91,7 @@ The generator. Given `(clientId, presetId?, options?)`:
 
 ### Goal C: Preset portal library
 
-`04 the final portal/plugins/portal-export/src/presets/` — JSON
+`04-the-final-portal/plugins/portal-export/src/presets/` — JSON
 manifests for the starter portals:
 
 ```ts
@@ -178,7 +178,7 @@ to end. Goals B + C are the bulk; A + D lighter.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/portal-export/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/portal-export/`.
 2. Smoke (`src/__smoke__/export.test.ts`) — node:test cases:
    - Materialize a small fixture client with `skincare-brand` preset →
      written `clients/<slug>/` matches expected structure.

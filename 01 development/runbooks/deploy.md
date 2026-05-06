@@ -1,6 +1,6 @@
 # Deploy runbook — Aqua portal + per-client portals
 
-> Operator-facing runbook for shipping `04 the final portal/` to Vercel.
+> Operator-facing runbook for shipping `04-the-final-portal/` to Vercel.
 > Authored by T6 in R2 on top of T6 R1's monorepo wiring (commits
 > `359b476` / `ef2e82f` / `6045568`) and T1 R8's stitch
 > (`04-milesymedia-portal-stitch.md`).
@@ -13,8 +13,8 @@ reality, reality wins; patch this.
 
 | What | Where | Vercel project |
 |------|-------|----------------|
-| Shared Aqua portal + milesymedia front door | `04 the final portal/portal/` (build copies milesymedia static into `public/_milesy/`) | one project — `aqua-portal` (placeholder name) |
-| Per-Live-client portal | `04 the final portal/clients/<slug>/` | one project per Live client — e.g. `client-luv-and-ker` |
+| Shared Aqua portal + milesymedia front door | `04-the-final-portal/portal/` (build copies milesymedia static into `public/_milesy/`) | one project — `aqua-portal` (placeholder name) |
+| Per-Live-client portal | `04-the-final-portal/clients/<slug>/` | one project per Live client — e.g. `client-luv-and-ker` |
 
 Two things that are NOT deployed here:
 
@@ -45,7 +45,7 @@ git status                         # clean tree
 ```
 
 ```bash
-cd '04 the final portal/portal'
+cd '04-the-final-portal/portal'
 npx tsc --noEmit                   # must be clean
 npm run smoke                      # must pass — exit 0
 ```
@@ -53,7 +53,7 @@ npm run smoke                      # must pass — exit 0
 For each plugin you've changed:
 
 ```bash
-cd '04 the final portal/plugins/<plugin-id>'
+cd '04-the-final-portal/plugins/<plugin-id>'
 npx tsc --noEmit
 npm run smoke
 ```
@@ -61,7 +61,7 @@ npm run smoke
 For the per-client portal you're shipping:
 
 ```bash
-cd '04 the final portal/clients/<slug>'
+cd '04-the-final-portal/clients/<slug>'
 npx tsc --noEmit
 npm run dev                        # smoke a few routes locally
 ```
@@ -77,7 +77,7 @@ Two layers — keep them straight.
 Set via Vercel dashboard (Project → Settings → Environment Variables)
 **or** `vercel env add` from the CLI. Never commit values to the repo.
 
-The full list lives in `04 the final portal/portal/.env.example`.
+The full list lives in `04-the-final-portal/portal/.env.example`.
 The required ones for a production deploy of the **shared portal**:
 
 | Var | Required? | Notes |
@@ -125,7 +125,7 @@ API calls to the shared portal, which reads each tenant's
 For local dev, copy `.env.example` → `.env.local` and fill in:
 
 ```bash
-cd '04 the final portal/portal'
+cd '04-the-final-portal/portal'
 cp .env.example .env.local
 $EDITOR .env.local
 ```
@@ -160,8 +160,8 @@ node scripts/deploy-vercel.mjs --target=portal --prod
 
 That's it. Vercel runs:
 
-1. `node scripts/build-portal.mjs` — copies `04 the final portal/milesymedia website/*` into `04 the final portal/portal/public/_milesy/`, then `npm install` + `next build` inside the portal folder.
-2. Outputs at `04 the final portal/portal/.next` (per root `vercel.json`).
+1. `node scripts/build-portal.mjs` — copies `04-the-final-portal/milesymedia website/*` into `04-the-final-portal/portal/public/_milesy/`, then `npm install` + `next build` inside the portal folder.
+2. Outputs at `04-the-final-portal/portal/.next` (per root `vercel.json`).
 3. Edge rewrites map `/`, `/index.html`, `/login.html`, `/admin.html`, `/styles.css` → `/_milesy/<file>` so the milesymedia front door wins at root paths.
 4. Every Aqua portal handler keeps its native route (`/login`, `/embed/login`, `/demo`, `/portal/*`, `/api/*`).
 
@@ -315,7 +315,7 @@ hostname locally and shows the operator which Vercel project the
 domain is meant for. Manual steps:
 
 ```bash
-cd '04 the final portal/clients/<slug>'
+cd '04-the-final-portal/clients/<slug>'
 vercel domains add <hostname>             # interactive — auth needed
 # Vercel prints DNS records — copy to registrar
 vercel domains verify <hostname>          # once DNS propagates
@@ -399,17 +399,17 @@ OR a service token. Out of scope for R2 — wire when Ed is ready.
 
 Cause: workspace plugin folder isn't being copied into the build
 context. Check:
-- `.vercelignore` doesn't exclude `04 the final portal/plugins/`.
+- `.vercelignore` doesn't exclude `04-the-final-portal/plugins/`.
 - The plugin's `package.json` exists.
 - The plugin folder isn't in a `.gitignore`.
 
 ### Build fails with "Module not found: pg"
 
 Cause: `DATABASE_URL` is set but `pg` isn't installed in
-`04 the final portal/portal/`. Fix:
+`04-the-final-portal/portal/`. Fix:
 
 ```bash
-cd '04 the final portal/portal'
+cd '04-the-final-portal/portal'
 npm install pg @types/pg
 git add package.json package-lock.json
 git commit -m "deps: pg for Postgres backend"
@@ -437,8 +437,8 @@ correct (and reachable from the per-client project's region).
 
 | Term | Meaning |
 |------|---------|
-| Shared portal | The Aqua portal Next.js app at `04 the final portal/portal/`. One per Vercel team. Hosts agency + pre-Live clients + Live-client editor. |
-| Per-client portal | Each Live client's branded portal at `04 the final portal/clients/<slug>/`. One Vercel project per client. |
-| Milesymedia front door | Static marketing pages at `04 the final portal/milesymedia website/`. Bundled into the shared portal's public/ at build time. |
+| Shared portal | The Aqua portal Next.js app at `04-the-final-portal/portal/`. One per Vercel team. Hosts agency + pre-Live clients + Live-client editor. |
+| Per-client portal | Each Live client's branded portal at `04-the-final-portal/clients/<slug>/`. One Vercel project per client. |
+| Milesymedia front door | Static marketing pages at `04-the-final-portal/milesymedia website/`. Bundled into the shared portal's public/ at build time. |
 | Foundation pending | Plumbing the foundation needs to add to wire a plugin: workspace dep + transpilePackages + side-effect-import + `_registry.ts` append + `ActivityCategory` extension. |
 | Pool model | Architecture §1 — every row carries `agencyId` (+ `clientId` for client rows). One Postgres serves every tenant. |

@@ -36,7 +36,7 @@ cross-plugin block ids you already registered.
 
 ### Goal A: `@aqua/plugin-ai-builder` plugin
 
-Standalone plugin at `04 the final portal/plugins/ai-builder/`.
+Standalone plugin at `04-the-final-portal/plugins/ai-builder/`.
 `scopePolicy: "either"` (used by both shared editor + per-client
 portals), `requires: ["website-editor"]`. Mirror your most recent
 plugin shape.

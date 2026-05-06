@@ -3,7 +3,7 @@
 `@aqua/plugin-website-editor` — port of the visual editor + 58-block
 library + portal-variants admin from `02 felicias aqua portal work/`
 into a self-contained, tsc-clean plugin package at
-`04 the final portal/plugins/website-editor/`.
+`04-the-final-portal/plugins/website-editor/`.
 
 This chapter documents what shipped in Round 1, what was deferred to
 Round 2, and the public contract T2's fulfillment plugin and T1's
@@ -186,7 +186,7 @@ variantId: "<id>" })` to apply.
 Standalone build (no T1):
 
 ```bash
-cd "04 the final portal/plugins/website-editor"
+cd "04-the-final-portal/plugins/website-editor"
 npm install
 npm run typecheck                  # tsc --noEmit clean
 npm test                           # 31/31 smoke assertions pass

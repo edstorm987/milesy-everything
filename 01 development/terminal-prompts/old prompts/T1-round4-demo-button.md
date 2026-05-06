@@ -4,7 +4,7 @@
 
 Your Round 3 wired all three plugins into the foundation (`29bd49a`). The
 agency portal works end-to-end. The Milesy Media public marketing site at
-`04 the final portal/milesymedia website/` is a static HTML site with a
+`04-the-final-portal/milesymedia website/` is a static HTML site with a
 `Sign in` button and a `Demo` flow that don't actually go anywhere yet.
 Round 4: connect the public site to the live portal so visitors can either
 sign in (real flow) or demo (sandboxed flow with POV toggle).
@@ -28,7 +28,7 @@ sign in (real flow) or demo (sandboxed flow with POV toggle).
 2. `01 development/context/prior research/04-architecture.md` — §8 (demo button) + §11 (URL surface)
 3. `01 development/context/prior research/04-foundation.md`, `04-foundation-round2.md`, `04-foundation-round3.md` — your prior chapters
 4. `01 development/eds requirments.md`
-5. The static site: `04 the final portal/milesymedia website/{index,login,admin}.html` + `styles.css`
+5. The static site: `04-the-final-portal/milesymedia website/{index,login,admin}.html` + `styles.css`
 6. Vercel config: root `vercel.json` (deploys the static site only)
 
 ## Scope
@@ -41,7 +41,7 @@ at the live portal's `/login` route on the same deployed origin.
 
 Decisions to make:
 - The static site at `milesymedia website/` deploys to root via Vercel.
-- The portal at `04 the final portal/portal/` is currently NOT deployed
+- The portal at `04-the-final-portal/portal/` is currently NOT deployed
   (Vercel pinned to milesymedia only).
 - For Round 4, the simplest move is: keep portal as a local dev target,
   but make the static site's `Sign in` button hit the portal's `/login`

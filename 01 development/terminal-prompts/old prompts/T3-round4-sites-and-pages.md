@@ -38,7 +38,7 @@ is parity-with-`02`.
 ### Goal A: Lift `SitesPage` (3264 lines)
 
 The biggest single admin page in the editor. From `02/src/app/admin/sites/page.tsx`,
-faithfully port into `04 the final portal/plugins/website-editor/src/pages/SitesPage.tsx`.
+faithfully port into `04-the-final-portal/plugins/website-editor/src/pages/SitesPage.tsx`.
 
 What it covers (per `aqua-visual-editor.md` chapter):
 - Site list with create/edit/delete/duplicate
@@ -73,7 +73,7 @@ variants; customPages is a simpler "ad-hoc page" system used for
 miscellaneous content pages. Both exist in `02`.
 
 Port `02/src/lib/admin/customPages.ts` to your plugin as
-`04 the final portal/plugins/website-editor/src/lib/customPages.ts`.
+`04-the-final-portal/plugins/website-editor/src/lib/customPages.ts`.
 Keep the localStorage backing for now (matches R3 Goal A's customise
 storage decision). Foundation server-side wiring is a future round —
 log a Round-5 TODO in your chapter.

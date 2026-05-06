@@ -50,7 +50,7 @@ referenced unregistered plugins. You trimmed them to `website-editor` +
 the catalogue has grown. The presets should now reflect the actual
 plugin life-cycle a real client goes through.
 
-In `04 the final portal/plugins/fulfillment/src/server/presets.ts`
+In `04-the-final-portal/plugins/fulfillment/src/server/presets.ts`
 (or wherever your `DEFAULT_PHASE_PRESETS` lives), update the six
 seeded phase definitions:
 
@@ -215,7 +215,7 @@ Goal A:
 4. `tsc --noEmit` clean.
 
 Goal B:
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/agency-marketing/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/agency-marketing/`.
 2. Smoke (`src/__smoke__/marketing.test.ts`) — node:test cases:
    - `seedDefaultTemplates` idempotent.
    - Campaign CRUD + status transitions.

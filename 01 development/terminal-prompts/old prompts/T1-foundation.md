@@ -3,7 +3,7 @@
 # T1 — Foundation
 
 You are Terminal 1 of three parallel Claude Opus 4.7 sessions building
-`04 the final portal/`. Your role: foundation. T2 builds the fulfillment
+`04-the-final-portal/`. Your role: foundation. T2 builds the fulfillment
 plugin, T3 ports the website-editor plugin. Both depend on the chrome /
 plugin-runtime contract you produce.
 
@@ -13,7 +13,7 @@ plugin-runtime contract you produce.
 - **Local working directory**: `~/Desktop/ker-v3/`
 - **Branch**: commit directly to `main`. After each commit: `git pull --rebase && git push`.
 - **If you don't have a clone yet**: `git clone https://github.com/edsworld27/ker-v3.git ~/Desktop/ker-v3 && cd ~/Desktop/ker-v3`
-- **Note**: top-level folder names contain spaces (`01 development`, `02 felicias aqua portal work`, `04 the final portal`). Quote paths in the shell. In TypeScript imports use `@/` aliases — never relative paths through the spaces.
+- **Note**: top-level folder names contain spaces (`01 development`, `02 felicias aqua portal work`, `04-the-final-portal`). Quote paths in the shell. In TypeScript imports use `@/` aliases — never relative paths through the spaces.
 
 ## Autonomous mesh — messaging protocol
 
@@ -42,7 +42,7 @@ In order, read these chapters end-to-end. Don't skip:
 
 ## Your goal
 
-Stand up `04 the final portal/portal/` as a fresh Next.js 16 + React 19 app
+Stand up `04-the-final-portal/portal/` as a fresh Next.js 16 + React 19 app
 with:
 - Plugin runtime lifted from `02 felicias aqua portal work/src/plugins/`
   (`_types.ts`, `_registry.ts`, `_runtime.ts`, `_presets.ts`, `_pathMapping.ts`, `_validate.ts`)
@@ -67,7 +67,7 @@ with:
 Match the layout in `04-architecture.md` §9 exactly. The shape:
 
 ```
-04 the final portal/portal/
+04-the-final-portal/portal/
 ├── package.json                 next, react, react-dom — minimal deps
 ├── next.config.ts               CSP + HSTS from 02
 ├── tsconfig.json                strict, NO ignoreBuildErrors
@@ -190,7 +190,7 @@ Pass the literal sentinel `<<autonomous-loop-dynamic>>` as the prompt to
 ## When done
 
 1. Verify:
-   - `cd "04 the final portal/portal" && npm install && npm run dev`
+   - `cd "04-the-final-portal/portal" && npm install && npm run dev`
    - HTTP 200 on `/`, `/login`, `/embed/login`, `/portal/agency` (with stub session)
    - `npx tsc --noEmit` clean (no `ignoreBuildErrors`)
 2. Add `01 development/context/prior research/04-foundation.md` documenting:

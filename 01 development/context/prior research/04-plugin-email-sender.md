@@ -14,7 +14,7 @@ EmailService.
 ## 1. Package shape
 
 ```
-04 the final portal/plugins/email-sender/
+04-the-final-portal/plugins/email-sender/
 ├── index.ts                          default-exports the AquaPlugin manifest
 ├── package.json                      @aqua/plugin-email-sender@0.1.0
 ├── tsconfig.json
@@ -267,7 +267,7 @@ recording fetch impl wired into PostmarkDriver, walks:
 ```
 
 `npx tsx --test src/__smoke__/email-sender.test.ts` from
-`04 the final portal/plugins/email-sender/`.
+`04-the-final-portal/plugins/email-sender/`.
 
 ## 10. Foundation pending (orchestrator brokerage)
 
@@ -312,7 +312,7 @@ recording fetch impl wired into PostmarkDriver, walks:
 ## 13. Verification commands
 
 ```bash
-cd "04 the final portal/plugins/email-sender"
+cd "04-the-final-portal/plugins/email-sender"
 
 # tsc clean
 npx tsc --noEmit

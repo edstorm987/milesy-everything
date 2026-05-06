@@ -12,7 +12,7 @@ fulfillment in one POST.
 
 ## 1. Workspace dep wiring
 
-### `04 the final portal/portal/package.json`
+### `04-the-final-portal/portal/package.json`
 
 ```jsonc
 "dependencies": {
@@ -21,7 +21,7 @@ fulfillment in one POST.
 }
 ```
 
-### `04 the final portal/portal/.npmrc`
+### `04-the-final-portal/portal/.npmrc`
 
 ```
 install-links=true

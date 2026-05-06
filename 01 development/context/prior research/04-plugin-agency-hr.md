@@ -13,7 +13,7 @@ foundation side-effect-imports at boot.
 ## 1. Package shape
 
 ```
-04 the final portal/plugins/agency-hr/
+04-the-final-portal/plugins/agency-hr/
 ├── index.ts                         default-exports the AquaPlugin manifest
 ├── package.json                     @aqua/plugin-agency-hr@0.1.0
 ├── tsconfig.json
@@ -187,7 +187,7 @@ so adding HR events doesn't require an upstream union extension.
 ### `ActivityCategory` extension
 
 The plugin writes activity entries with `category: "hr"`. Foundation's
-canonical enum at `04 the final portal/portal/src/server/types.ts`
+canonical enum at `04-the-final-portal/portal/src/server/types.ts`
 currently lists eight categories (auth | tenant | plugin | phase |
 fulfillment | ecommerce | settings | system). The vendored
 `tenancy.ts` here adds `"hr"` for tsc-cleanness; T1's foundation needs
@@ -293,7 +293,7 @@ PluginStorage), constructs the container, walks:
 ℹ tests 6   ℹ pass 6   ℹ fail 0
 ```
 
-Run with `npm run smoke` from `04 the final portal/plugins/agency-hr/`.
+Run with `npm run smoke` from `04-the-final-portal/plugins/agency-hr/`.
 
 ## 8. Cross-team integration TODOs
 
@@ -335,7 +335,7 @@ paint per-tenant).
 
 ```bash
 # tsc clean
-cd "04 the final portal/plugins/agency-hr"
+cd "04-the-final-portal/plugins/agency-hr"
 npx tsc --noEmit
 
 # 6/6 smoke pass

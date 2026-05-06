@@ -99,7 +99,7 @@ You CAN:
 You should NOT:
 - Write to any terminal's `to-orchestrator.md` (that's their log; you only read).
 - Edit `eds requirments.md` (read-only — Ed's spec).
-- Edit code under `04 the final portal/portal/` or `04 the final portal/plugins/*` (terminals own their code).
+- Edit code under `04-the-final-portal/portal/` or `04-the-final-portal/plugins/*` (terminals own their code).
 - Edit code under `02 felicias aqua portal work/` or `03 old portal/` (reference archives, frozen).
 - Run destructive git commands (`reset --hard`, `force push`, `clean -fd`).
 

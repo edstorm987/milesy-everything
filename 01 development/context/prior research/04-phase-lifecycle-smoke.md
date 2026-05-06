@@ -13,8 +13,8 @@ design.
 
 | Smoke | File | Runs against | Run with |
 |-------|------|--------------|----------|
-| In-process (`node:test`) | `04 the final portal/plugins/fulfillment/src/__smoke__/lifecycle.test.ts` | The plugin's services + in-memory port mocks. No DB, no HTTP. | `npm run smoke` (= `tsx --test`) inside `plugins/fulfillment/` |
-| HTTP | `04 the final portal/plugins/fulfillment/src/__smoke__/lifecycle.http.mjs` | A live `npm run dev` of `portal/`. Hits every dispatcher + handler. | `node src/__smoke__/lifecycle.http.mjs` after `cd portal && AQUA_DATA_DIR=/tmp/aqua-smoke-data NEXT_PUBLIC_DEV_BYPASS=1 npm run dev` |
+| In-process (`node:test`) | `04-the-final-portal/plugins/fulfillment/src/__smoke__/lifecycle.test.ts` | The plugin's services + in-memory port mocks. No DB, no HTTP. | `npm run smoke` (= `tsx --test`) inside `plugins/fulfillment/` |
+| HTTP | `04-the-final-portal/plugins/fulfillment/src/__smoke__/lifecycle.http.mjs` | A live `npm run dev` of `portal/`. Hits every dispatcher + handler. | `node src/__smoke__/lifecycle.http.mjs` after `cd portal && AQUA_DATA_DIR=/tmp/aqua-smoke-data NEXT_PUBLIC_DEV_BYPASS=1 npm run dev` |
 
 Both smokes encode the same lifecycle contract. The in-process one is
 fast and asserts the plugin contract independently of T1+T3's wiring;
@@ -165,7 +165,7 @@ chapter rather than pre-baked into the seed.
 
 **Migration note for already-seeded agencies.** Phase definitions are
 stored as data, so existing rows still carry the old presets. To pick
-up the new defaults: delete `04 the final portal/portal/.data/portal-state.json`
+up the new defaults: delete `04-the-final-portal/portal/.data/portal-state.json`
 (dev) and re-bootstrap, OR have the agency owner edit phases via the
 phase settings UI. The orchestrator may want to script a one-shot
 migration that overwrites preset arrays for the demo agency.
@@ -237,15 +237,15 @@ the env var. Documented in the smoke script's preamble.
 
 ```bash
 # In-process (fast, no DB, no HTTP). 9 tests, < 200 ms.
-cd "04 the final portal/plugins/fulfillment"
+cd "04-the-final-portal/plugins/fulfillment"
 npm run smoke
 
 # HTTP (slow, real foundation). ~50 assertions, ~5 s including server cold-start.
-cd "04 the final portal/portal"
+cd "04-the-final-portal/portal"
 rm -rf .next .data                                                  # clean slate (optional)
 AQUA_DATA_DIR=/tmp/aqua-smoke-data NEXT_PUBLIC_DEV_BYPASS=1 npm run dev   # in one terminal
 # in a second terminal:
-cd "04 the final portal/plugins/fulfillment"
+cd "04-the-final-portal/plugins/fulfillment"
 node src/__smoke__/lifecycle.http.mjs
 ```
 

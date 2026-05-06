@@ -13,7 +13,7 @@ zero source coupling between plugins.
 ## 1. Package shape
 
 ```
-04 the final portal/plugins/forms/
+04-the-final-portal/plugins/forms/
 ├── index.ts                          default-exports the AquaPlugin manifest
 ├── package.json                      @aqua/plugin-forms@0.1.0
 ├── tsconfig.json
@@ -283,7 +283,7 @@ an in-memory foundation with optional EmailQueuePort mocked, walks:
 ℹ tests 8   ℹ pass 8   ℹ fail 0
 ```
 
-`npm run smoke` from `04 the final portal/plugins/forms/`.
+`npm run smoke` from `04-the-final-portal/plugins/forms/`.
 
 ## 9. Foundation pending (orchestrator brokerage)
 
@@ -325,7 +325,7 @@ an in-memory foundation with optional EmailQueuePort mocked, walks:
 ## 12. Verification commands
 
 ```bash
-cd "04 the final portal/plugins/forms"
+cd "04-the-final-portal/plugins/forms"
 
 # tsc clean
 npx tsc --noEmit

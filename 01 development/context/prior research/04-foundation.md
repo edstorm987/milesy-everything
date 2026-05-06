@@ -1,4 +1,4 @@
-# `04 the final portal/portal/` — Foundation (T1)
+# `04-the-final-portal/portal/` — Foundation (T1)
 
 The Round-1 foundation that T2 (fulfillment) and T3 (website-editor) ship
 their plugin manifests against. Locks the chrome / plugin-runtime / auth
@@ -12,7 +12,7 @@ contracts so plugins land without any further negotiation.
 ## 1. File tree (as built)
 
 ```
-04 the final portal/portal/
+04-the-final-portal/portal/
 ├── package.json                 next 16.2.4 + react 19.2.4 + tailwind 4 (no other deps)
 ├── next.config.ts               security headers, turbopack.root pinned, no ignoreBuildErrors
 ├── tsconfig.json                strict, NO ignoreBuildErrors, paths {"@/*": "./src/*"}
@@ -89,7 +89,7 @@ session), `/portal/clients`, and 307 → `/login` on `/portal/*` without one.
 ## 2. Plugin contract surface (T2 + T3 must conform)
 
 Every plugin is an `AquaPlugin` exported from
-`04 the final portal/plugins/<id>/index.ts` and imported into
+`04-the-final-portal/plugins/<id>/index.ts` and imported into
 `portal/src/plugins/_registry.ts`'s `PLUGINS` array. Validator runs at
 module load; malformed manifests are filtered out with a `console.error`.
 
@@ -167,9 +167,9 @@ wipes the slice cleanly.
 
 ### Adding a manifest
 
-1. `mkdir 04 the final portal/plugins/<id>` and write `index.ts` exporting
+1. `mkdir 04-the-final-portal/plugins/<id>` and write `index.ts` exporting
    `default: AquaPlugin`.
-2. In `04 the final portal/portal/src/plugins/_registry.ts`, import the
+2. In `04-the-final-portal/portal/src/plugins/_registry.ts`, import the
    manifest and append to `PLUGINS`.
 3. The validator runs at module load; check the dev console for warnings.
 4. Sidebar nav appears automatically once the plugin is installed for a
@@ -368,7 +368,7 @@ flag in commander.md before working around it.
 ## 8. Smoke-test commands
 
 ```bash
-cd "04 the final portal/portal"
+cd "04-the-final-portal/portal"
 npm install                                        # one-time
 PORTAL_SESSION_SECRET=dev-secret-32-chars-long-enough npm run dev
 

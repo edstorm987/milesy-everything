@@ -11,7 +11,7 @@ install (`scopePolicy: "agency"`, `core: false`, opt-in).
 ## 1. Package shape
 
 ```
-04 the final portal/plugins/agency-marketing/
+04-the-final-portal/plugins/agency-marketing/
 ├── index.ts                          default-exports the AquaPlugin manifest
 ├── package.json                      @aqua/plugin-agency-marketing@0.1.0
 ├── tsconfig.json
@@ -256,7 +256,7 @@ walks:
 ℹ tests 8   ℹ pass 8   ℹ fail 0
 ```
 
-`npm run smoke` from `04 the final portal/plugins/agency-marketing/`.
+`npm run smoke` from `04-the-final-portal/plugins/agency-marketing/`.
 
 ## 9. Foundation pending (orchestrator brokerage)
 
@@ -294,7 +294,7 @@ walks:
 ## 12. Verification commands
 
 ```bash
-cd "04 the final portal/plugins/agency-marketing"
+cd "04-the-final-portal/plugins/agency-marketing"
 
 # tsc clean
 npx tsc --noEmit

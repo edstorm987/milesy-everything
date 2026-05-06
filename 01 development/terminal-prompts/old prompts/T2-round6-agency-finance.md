@@ -156,7 +156,7 @@ Agency-finance is internal. Don't contribute storefront block ids.
 ## Foundation integration
 
 Same pattern as agency-HR + memberships + affiliates:
-- `tsc --noEmit` clean inside `04 the final portal/plugins/agency-finance/`.
+- `tsc --noEmit` clean inside `04-the-final-portal/plugins/agency-finance/`.
 - Ports declared in `src/server/ports.ts`.
 - Export `buildAgencyFinanceContainer(deps)`.
 - Export `registerAgencyFinanceFoundation(deps) + containerFor(storage)` for side-effect-import.
@@ -188,7 +188,7 @@ Goal A:
 2. Smoke verifies the cross-plugin event flow.
 
 Goal B:
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/agency-finance/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/agency-finance/`.
 2. Smoke (`src/__smoke__/finance.test.ts`) — node:test cases:
    - `seedDefaults` idempotent.
    - Invoice CRUD + status transitions.

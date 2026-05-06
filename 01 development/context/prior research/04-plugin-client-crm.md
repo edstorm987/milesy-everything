@@ -15,7 +15,7 @@ R5 ecommerce↔memberships).
 ## 1. Package shape
 
 ```
-04 the final portal/plugins/client-crm/
+04-the-final-portal/plugins/client-crm/
 ├── index.ts                          default-exports the AquaPlugin manifest
 ├── package.json                      @aqua/plugin-client-crm@0.1.0
 ├── tsconfig.json
@@ -244,7 +244,7 @@ mocked, walks:
 ℹ tests 10   ℹ pass 10   ℹ fail 0
 ```
 
-`npm run smoke` from `04 the final portal/plugins/client-crm/`.
+`npm run smoke` from `04-the-final-portal/plugins/client-crm/`.
 
 ## 10. Foundation pending (orchestrator brokerage)
 
@@ -291,7 +291,7 @@ mocked, walks:
 ## 13. Verification commands
 
 ```bash
-cd "04 the final portal/plugins/client-crm"
+cd "04-the-final-portal/plugins/client-crm"
 
 # tsc clean
 npx tsc --noEmit

@@ -43,7 +43,7 @@ a step-by-step **operator runbook** Ed follows to ship:
 ### Goal B: Real Vercel domain-attach against test creds
 
 Lift `02`'s domain-attach code per architecture §13. Produce:
-- `04 the final portal/portal/src/lib/server/vercelDomain.ts` —
+- `04-the-final-portal/portal/src/lib/server/vercelDomain.ts` —
   Vercel API client (attach + verify + remove).
 - `scripts/attach-domain.mjs` — CLI helper invoked manually with
   `VERCEL_TOKEN` env.
@@ -53,7 +53,7 @@ Lift `02`'s domain-attach code per architecture §13. Produce:
 
 ### Goal C: Domain-attach UI plugin (`@aqua/plugin-domains`)
 
-Lightweight plugin at `04 the final portal/plugins/domains/`.
+Lightweight plugin at `04-the-final-portal/plugins/domains/`.
 `scopePolicy: "either"`. Contains:
 - `DomainsListPage` (per-client domain config UI)
 - API routes wrapping Goal B's vercelDomain client

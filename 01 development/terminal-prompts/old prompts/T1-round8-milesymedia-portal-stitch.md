@@ -40,8 +40,8 @@ not a different building.
 3. `01 development/context/prior research/04-architecture-extension-per-client-portals.md` — the new extension (read this carefully — it sets the long-term direction)
 4. `01 development/context/prior research/04-milesymedia-demo.md` — your R4 chapter (data-portal-base meta + Sign-in/Demo wiring)
 5. `01 development/context/prior research/04-end-customer-flow.md` — your R5 chapter
-6. `04 the final portal/milesymedia website/index.html`, `login.html`, `admin.html`, `styles.css`, `README.md`
-7. `04 the final portal/portal/next.config.ts` — current rewrites + transpilePackages
+6. `04-the-final-portal/milesymedia website/index.html`, `login.html`, `admin.html`, `styles.css`, `README.md`
+7. `04-the-final-portal/portal/next.config.ts` — current rewrites + transpilePackages
 8. Repo root `vercel.json` — currently pinned to deploy ONLY the static site
 
 ## Scope — three goals
@@ -50,7 +50,7 @@ not a different building.
 
 Two-server local-dev pattern:
 1. Run the milesymedia static site on a side port (e.g. `:3001`) via
-   `npx serve -p 3001 "04 the final portal/milesymedia website"`.
+   `npx serve -p 3001 "04-the-final-portal/milesymedia website"`.
 2. Configure portal's `next.config.ts` `rewrites()` so any path NOT
    handled by Next.js falls through to the static server.
 3. Add an npm script `dev:all` that boots both side-by-side
@@ -67,9 +67,9 @@ Q-ASSUMED whichever path you pick.
 ### Goal B: Production — single Vercel deployment, two folders
 
 Update root `vercel.json` (currently deploys only milesymedia) to:
-- Build the portal (`04 the final portal/portal/`) as the primary
+- Build the portal (`04-the-final-portal/portal/`) as the primary
   Next.js project.
-- Add `rewrites` so static milesymedia files at `04 the final portal/milesymedia website/<file>`
+- Add `rewrites` so static milesymedia files at `04-the-final-portal/milesymedia website/<file>`
   serve at root paths (`/`, `/admin.html`, `/login.html`, `/styles.css`, ...).
 - Vercel automatic asset-prefixing keeps the static site's relative
   paths working.

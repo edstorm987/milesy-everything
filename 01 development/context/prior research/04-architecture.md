@@ -1,6 +1,6 @@
-# `04 the final portal/` — Architecture (LOCKED)
+# `04-the-final-portal/` — Architecture (LOCKED)
 
-This chapter is the source of truth for `04 the final portal/`. Every
+This chapter is the source of truth for `04-the-final-portal/`. Every
 terminal reads this before writing a line of code. If you're about to
 deviate from it, **stop and ask Ed first** — don't quietly redesign.
 
@@ -39,7 +39,7 @@ well-understood operationally.
 
 ## 2. Plugin system — Aqua-manifest model (lifted from `02`)
 
-Build-time: every plugin is a folder under `04 the final portal/plugins/<id>/`
+Build-time: every plugin is a folder under `04-the-final-portal/plugins/<id>/`
 exporting a default `AquaPlugin` object. The manifest declares:
 - `id`, `name`, `version`, `category`, `tagline`, `description`
 - `requires` / `conflicts` (other plugin ids)
@@ -195,7 +195,7 @@ Reset cadence: nightly. The demo agency is its own row; not connected to real Mi
 ## 9. Folder layout
 
 ```
-04 the final portal/
+04-the-final-portal/
 ├── milesymedia website/         (already exists — public marketing site)
 ├── portal/                      THE Next.js app — agency + client + end-customer
 │   ├── src/
@@ -301,9 +301,9 @@ feature) + the website-editor port (the heavyweight visual surface).
 
 | Terminal | Goal |
 |----------|------|
-| **T1** | Scaffold `04 the final portal/portal/`. Lift plugin runtime from `02`. Implement auth + middleware + multi-tenant scoping + role hierarchy. Build the chrome (sidebar that mounts plugin nav items, topbar, brand-kit injector). Ship `npm run dev` working with stub login. |
-| **T2** | Build the **fulfillment plugin** at `04 the final portal/plugins/fulfillment/`. Phase engine (data model + transitions), collaborative checklist (internal + client tasks), client CRUD, plugin marketplace UI (team-side install). Phases seeded with 6 defaults but stored as data. |
-| **T3** | Port the **website-editor plugin** from `02` → `04 the final portal/plugins/website-editor/`. Editor + 58 blocks + portal variants + admin pages. Standalone manifest. |
+| **T1** | Scaffold `04-the-final-portal/portal/`. Lift plugin runtime from `02`. Implement auth + middleware + multi-tenant scoping + role hierarchy. Build the chrome (sidebar that mounts plugin nav items, topbar, brand-kit injector). Ship `npm run dev` working with stub login. |
+| **T2** | Build the **fulfillment plugin** at `04-the-final-portal/plugins/fulfillment/`. Phase engine (data model + transitions), collaborative checklist (internal + client tasks), client CRUD, plugin marketplace UI (team-side install). Phases seeded with 6 defaults but stored as data. |
+| **T3** | Port the **website-editor plugin** from `02` → `04-the-final-portal/plugins/website-editor/`. Editor + 58 blocks + portal variants + admin pages. Standalone manifest. |
 
 Round 2 (after Round 1 lands): port ecommerce plugin · wire all three into shell · build first phase preset end-to-end · demo button on milesymedia.com.
 

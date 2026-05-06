@@ -1,6 +1,6 @@
 # Chapter 40 — UX + accessibility audit (T4 R1 Phase A)
 
-> Inspection of the entire `04 the final portal/` surface as it stands at
+> Inspection of the entire `04-the-final-portal/` surface as it stands at
 > the end of T1 R6 / T2 R9 / T3 R5 (commit `9837e27`). Scope: the
 > foundation chrome (`portal/src/components/chrome/*`), foundation pages
 > (`portal/src/app/portal/**`), 9 plugin admin surfaces (~70 pages, ~70
@@ -136,7 +136,7 @@ Pattern:
 
 ## Shared primitives — what Phase B-D will ship
 
-Under `04 the final portal/portal/src/components/ui/`:
+Under `04-the-final-portal/portal/src/components/ui/`:
 
 - `LoadingSkeleton.tsx` — line / box / card variants, light + dark surfaces.
 - `EmptyState.tsx` — heading, body, optional icon, optional CTA.
@@ -145,7 +145,7 @@ Under `04 the final portal/portal/src/components/ui/`:
 - `Toast.tsx` + `ToastOutlet.tsx` — live-region announcement system.
 - `SkipToContent.tsx` — first-tab keyboard shortcut.
 
-Under `04 the final portal/portal/src/lib/a11y/`:
+Under `04-the-final-portal/portal/src/lib/a11y/`:
 
 - `useFocusTrap.ts` — modal focus management hook.
 - `useArrowNav.ts` — list/grid arrow-key navigation.
@@ -153,7 +153,7 @@ Under `04 the final portal/portal/src/lib/a11y/`:
 - `useToast.ts` + `ToastProvider.tsx` — live-region context.
 - `contrastValidator.ts` — pure WCAG AA contrast check.
 
-Under `04 the final portal/portal/src/components/chrome/`:
+Under `04-the-final-portal/portal/src/components/chrome/`:
 
 - `MobileNav.tsx` (new) — hamburger toggle + slide-over for mobile sidebar.
 - `Sidebar.tsx`, `Topbar.tsx` — adorned with focus rings + responsive classes (logic untouched).

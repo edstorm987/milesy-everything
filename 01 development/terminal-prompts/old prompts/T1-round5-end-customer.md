@@ -37,10 +37,10 @@ that `04-architecture.md` §1 describes. Same engine, third tier.
 6. `01 development/context/prior research/aqua-portal-variants.md` — `PortalRole = "login"|"affiliates"|"orders"|"account"` and `isActivePortal` semantics
 7. `01 development/eds requirments.md` — §"three audiences" + §"three-level recursion"
 8. Current end-customer surface (all stubbed/partial):
-   - `04 the final portal/portal/src/app/portal/customer/{layout,page}.tsx`
-   - `04 the final portal/portal/src/app/embed/login/page.tsx`
-   - `04 the final portal/portal/src/app/api/auth/login/route.ts`
-9. `04 the final portal/portal/src/server/{tenants,users,types}.ts` — `EndCustomer` shape, `Role` enum incl. `"end-customer"`
+   - `04-the-final-portal/portal/src/app/portal/customer/{layout,page}.tsx`
+   - `04-the-final-portal/portal/src/app/embed/login/page.tsx`
+   - `04-the-final-portal/portal/src/app/api/auth/login/route.ts`
+9. `04-the-final-portal/portal/src/server/{tenants,users,types}.ts` — `EndCustomer` shape, `Role` enum incl. `"end-customer"`
 
 ## Scope
 
@@ -82,7 +82,7 @@ activated for their `account` `PortalRole` (or `login` if no `account`
 variant exists yet). T3's `applyStarterVariant` machinery is already
 foundation-wired (R3 `portalVariantAdapter`).
 
-1. Replace `04 the final portal/portal/src/app/portal/customer/page.tsx`
+1. Replace `04-the-final-portal/portal/src/app/portal/customer/page.tsx`
    with a server component that:
    - Calls `requireRole("end-customer")`.
    - Resolves the active `account` portal variant for `(agencyId, clientId)`
@@ -158,7 +158,7 @@ to end.
 
 ## When done
 
-1. `npm run build` + `npx tsc --noEmit` clean inside `04 the final portal/portal/`.
+1. `npm run build` + `npx tsc --noEmit` clean inside `04-the-final-portal/portal/`.
 2. Smoke flow:
    - Visit `/embed/login?client=<felicia-id>` → branded form → "Create
      one" → submit → `/portal/customer` 200 with brand-kit applied.

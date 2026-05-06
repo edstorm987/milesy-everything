@@ -10,7 +10,7 @@ from cycle 17.
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
 - [x] **T3 R7 — AI page builder** — DONE. `@aqua/plugin-ai-builder`
-      shipped at `04 the final portal/plugins/ai-builder/` (3 navItems,
+      shipped at `04-the-final-portal/plugins/ai-builder/` (3 navItems,
       4 admin pages, 6 API routes, 0 storefront blocks; Generation
       domain + read-only block-schema projection of BLOCK_REGISTRY +
       18 cross-plugin ids; anthropicClient with prompt caching on the
@@ -42,9 +42,29 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       all 4 commits. R3 deferred: real Lighthouse w/ Puppeteer,
       `<BrandImage>` next/image wrapper, bundle analyzer, lazy-load
       editor admin gate, ConfirmDialog adoption (carried over from R1).
-- [ ] **T5 R2 — Second per-client portal** — coaching/membership
-      industry, slim plugin set (no ecommerce/affiliates). Validates
-      multi-client variation for T2 R11's generator.
+- [x] **T5 R2 — Second per-client portal** — DONE. Compass Coaching
+      portal at `04-the-final-portal/clients/compass-coaching/` —
+      coaching/membership business shape (slim 4-plugin set: website-
+      editor + memberships + client-crm + forms; no ecommerce/
+      affiliates). Brand kit diverges deliberately from Luv & Ker:
+      `#3B6EAE` steel-blue + `#1B3D6F` navy accent + DM Serif Display
+      heading + `0.25rem` radius. Pages: `/` Hero + PricingTiers +
+      Newsletter, `/login` + `/embed/login` branded, `/account` with
+      memberships + contact cards, NEW `/members` gated library, NEW
+      `/contact` forms+CRM. portalVariants keyspace `{login, account,
+      members}` (no orders/affiliates). Dev port 4041. `npm install
+      --legacy-peer-deps` clean (52 packages); `npx tsc --noEmit`
+      clean; smoke green across all 6 routes + API proxy 502 with
+      structured payload + iframe-friendly CSP + zero ecommerce/
+      affiliates leak in homepage HTML + no contrast warnings.
+      Chapter `04-client-portal-second.md` + MASTER row #53. Gives
+      T2 R11's generator a second concrete target shape — the
+      `installedPlugins`-driven contract (deps + transpilePackages +
+      manifestImports + pages + variant keyspace + account-page
+      branches all derived from one list) is now validated against
+      6→4 plugin variation, ecommerce-led vs memberships-led
+      homepage, font-pair variation. Open Q logged: keep presets as
+      install-time scaffolding hints only.
 - [x] **T6 R2 — Real deploy + custom domains** — DONE. Phase A
       operator runbook (`2f93a18`) + Phase B foundation Vercel
       client + CLI helper + 11/11 mock smoke (`b61f587`) + Phase C
@@ -116,7 +136,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       `ActivityCategory` += "domains".
 
 ## Done — Round 1
-- [x] **T1 — Foundation** — shipped. `04 the final portal/portal/` scaffolded
+- [x] **T1 — Foundation** — shipped. `04-the-final-portal/portal/` scaffolded
       on Next 16 + React 19 + Tailwind 4. Plugin runtime, three-level
       tenancy (Agency/Client/EndCustomer), HMAC cookie auth with role +
       tenant-scope gating, server-rendered chrome with brand-kit injector,
@@ -126,7 +146,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       `context/prior research/04-foundation.md`.
 - [x] **T2 — Fulfillment plugin** — shipped. See `context/prior research/04-plugin-fulfillment.md`. tsc-clean standalone. Pending: foundation wires `PluginRuntimePort` + `PluginRegistryPort` (T1) and brokers `applyStarterVariant` adapter (T3 stubbed body, signature locked).
 - [x] **T3 — Website-editor port** — shipped. `@aqua/plugin-website-editor`
-      at `04 the final portal/plugins/website-editor/`. Manifest (8 navItems /
+      at `04-the-final-portal/plugins/website-editor/`. Manifest (8 navItems /
       11 pages / 41 api / 58 storefront.blocks / 8 features), full server
       runtime (pages.ts variant helpers + themes/content/sites/embeds/
       preview/discovery), `applyStarterVariant({agencyId, clientId, role:
@@ -155,7 +175,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       checklist. Smoke pass end-to-end. See
       `context/prior research/04-foundation-round2.md`.
 - [x] **T2 R2 — ecommerce plugin** — shipped.
-      `@aqua/plugin-ecommerce` at `04 the final portal/plugins/ecommerce/`.
+      `@aqua/plugin-ecommerce` at `04-the-final-portal/plugins/ecommerce/`.
       `scopePolicy: "client"`, `requires: ["website-editor"]`. Server
       domain (orders, products, gift cards, referrals, discounts, billing
       vestigial) backed by per-install storage. 23 API routes including
@@ -198,7 +218,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       MASTER row #34. R4 deferred: PageDetailPage / SitesPage (3264
       LOC) / customise server-side persistence.
 - [x] **T2 R3a — phase-lifecycle smoke (Goal A)** — shipped. Two smoke
-      harnesses under `04 the final portal/plugins/fulfillment/src/__smoke__/`:
+      harnesses under `04-the-final-portal/plugins/fulfillment/src/__smoke__/`:
       in-process `lifecycle.test.ts` (9 `node:test` tests, mocks all 8
       foundation ports, walks `seedPhases → createWithPhase → tick → advance ×4`)
       and HTTP `lifecycle.http.mjs` (~50 assertions against a live
@@ -211,7 +231,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Both smokes 0 failures. `npm run smoke` script added. See
       `context/prior research/04-phase-lifecycle-smoke.md`.
 - [x] **T2 R3b — agency-HR plugin (Goal B)** — shipped.
-      `@aqua/plugin-agency-hr` at `04 the final portal/plugins/agency-hr/`.
+      `@aqua/plugin-agency-hr` at `04-the-final-portal/plugins/agency-hr/`.
       `scopePolicy: "agency"`, `core: false` (opt-in). Staff +
       departments + leave-request domain (Staff with status/role/manager
       graph + locationType/hourlyRate; Department tree with cycle-safe
@@ -244,7 +264,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 ## Done — Round 11
 - [x] **T2 R11 — Portal-export plugin** — shipped.
       `@aqua/plugin-portal-export` at
-      `04 the final portal/plugins/portal-export/`. `scopePolicy: "either"`,
+      `04-the-final-portal/plugins/portal-export/`. `scopePolicy: "either"`,
       `core: false`, no hard deps (soft-reads website-editor via
       optional `WebsiteEditorReaderPort`). Generator that materializes
       a Live client's content into `clients/<slug>/` as a self-contained
@@ -281,7 +301,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       pending: workspace dep + transpilePackages + side-effect-import +
       `_registry.ts` append + `ActivityCategory` += "export" +
       FilesystemPort wiring (real `fs/promises`, root at
-      `04 the final portal/clients/`) + WebsiteEditorReaderPort
+      `04-the-final-portal/clients/`) + WebsiteEditorReaderPort
       projection from website-editor + GitHub PR-open integration
       (replaces `pr/open` stub; out of scope for v1).
       T2 plugin catalogue now: 11 shipped (fulfillment / ecommerce /
@@ -293,7 +313,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 ## Done — Round 10
 - [x] **T2 R10 — Email-sender plugin** — shipped.
       `@aqua/plugin-email-sender` at
-      `04 the final portal/plugins/email-sender/`. `scopePolicy: "agency"`,
+      `04-the-final-portal/plugins/email-sender/`. `scopePolicy: "agency"`,
       `core: false`, no hard deps. Single point of egress for every
       transactional / notification email across the agency portal.
       Domain EmailMessage (state machine queued→sending→sent/failed/bounced,
@@ -345,7 +365,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 
 ## Done — Round 9
 - [x] **T2 R9 — Forms plugin** — shipped.
-      `@aqua/plugin-forms` at `04 the final portal/plugins/forms/`.
+      `@aqua/plugin-forms` at `04-the-final-portal/plugins/forms/`.
       `scopePolicy: "either"`, `core: false`, no hard deps.
       Soft-integrates with client-CRM/affiliates/memberships via
       cross-plugin event payloads + admin-configurable webhook URLs
@@ -409,7 +429,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       See `context/prior research/04-milesymedia-portal-stitch.md`.
 - [x] **T2 R8 — Client-CRM plugin** — shipped.
       `@aqua/plugin-client-crm` at
-      `04 the final portal/plugins/client-crm/`. `scopePolicy: "client"`,
+      `04-the-final-portal/plugins/client-crm/`. `scopePolicy: "client"`,
       `core: false`, no hard deps (soft-integrates with memberships +
       ecommerce via OPTIONAL injected ports). Pairs with T1 R5:
       end-customer signups auto-appear as Contacts via `mergeFromUser`.
@@ -485,7 +505,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       hop skips memberships, live hop skips memberships+affiliates).
       11/11 smoke (9 original + 2 R7).
       Goal B: `@aqua/plugin-agency-marketing` at
-      `04 the final portal/plugins/agency-marketing/`.
+      `04-the-final-portal/plugins/agency-marketing/`.
       `scopePolicy: "agency"`, `core: false`. Domain Campaign (state
       machine draft→scheduled→running→paused/completed→archived,
       budget+goal+result rollup), Lead (funnel new→contacted→qualified
@@ -572,7 +592,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Stripe webhook retries. New ecommerce smoke at
       `src/__smoke__/order-created-event.test.ts`, 5/5 pass.
       Goal B: `@aqua/plugin-agency-finance` at
-      `04 the final portal/plugins/agency-finance/`.
+      `04-the-final-portal/plugins/agency-finance/`.
       `scopePolicy: "agency"`, `core: false`. Domain Invoice (per-year
       sequence INV-YYYY-NNNN, state machine draft→sent→paid/overdue/
       void/refunded with markPaid as the sole path into paid),
@@ -655,7 +675,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Backward-compat: port absent → null. New ecommerce smoke at
       `src/__smoke__/discount-membership.test.ts`, 7/7 pass.
       Goal B: `@aqua/plugin-affiliates` at
-      `04 the final portal/plugins/affiliates/`. `scopePolicy: "client"`,
+      `04-the-final-portal/plugins/affiliates/`. `scopePolicy: "client"`,
       `requires: ["ecommerce"]`, `core: false`. Domain
       Affiliate/ReferralCode/Attribution/Payout. Four services.
       Six ports including new `EcommerceOrdersPort` (cross-plugin
@@ -689,7 +709,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       sitesAdmin/customPages/customise/loginCustomisation; Vercel
       domain proxy; portal-settings persistence; real RichEditor host.
 - [x] **T2 R4 — Memberships plugin** — shipped.
-      `@aqua/plugin-memberships` at `04 the final portal/plugins/memberships/`.
+      `@aqua/plugin-memberships` at `04-the-final-portal/plugins/memberships/`.
       `scopePolicy: "client"`, `requires: ["ecommerce"]`, `core: false`.
       Domain: Plan + Benefit + Subscription. Four services
       (PlanService / BenefitService / SubscriptionService / WebhookService).
@@ -755,6 +775,6 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       chrome, single-cookie auth, phase lifecycle, brand kit per client.
       14 decisions logged.
 - [x] Round 1 terminal prompts drafted (T1 / T2 / T3).
-- [x] Vercel pinned to deploy only `04 the final portal/milesymedia website/`.
+- [x] Vercel pinned to deploy only `04-the-final-portal/milesymedia website/`.
 - [x] `eds requirments.md` populated. Drafted by Claude from conversation;
       Ed amends as needed.

@@ -33,7 +33,7 @@ been using.
 
 ## Scope
 
-`04 the final portal/plugins/forms/` — `@aqua/plugin-forms`,
+`04-the-final-portal/plugins/forms/` — `@aqua/plugin-forms`,
 self-contained package, mirror your most recent plugin shape (client-crm).
 
 Manifest:
@@ -190,7 +190,7 @@ to end.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/forms/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/forms/`.
 2. Smoke (`src/__smoke__/forms.test.ts`) — node:test cases:
    - `seedDefaultTemplates` idempotent.
    - Form CRUD + status transitions.

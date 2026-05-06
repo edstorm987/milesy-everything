@@ -1,6 +1,6 @@
 # `04` Milesy Media demo flow (T1 — Round 4)
 
-The Milesy Media public marketing site (`04 the final portal/milesymedia website/`)
+The Milesy Media public marketing site (`04-the-final-portal/milesymedia website/`)
 now hands visitors off to the live Aqua portal in two flavours:
 
 1. **Sign in** → `${portalBase}/login` (the real auth surface — first-run

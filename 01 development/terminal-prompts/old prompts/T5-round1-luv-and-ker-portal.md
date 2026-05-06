@@ -39,7 +39,7 @@ production deliverable, not a prototype.
 7. `01 development/context/prior research/aqua-storefront.md` — Felicia's storefront patterns from `02`
 8. `01 development/context/prior research/aqua-portal-variants.md` — variant subsystem
 9. `01 development/context/prior research/04-plugin-website-editor*.md` — block library + variant flow + 6 starter trees
-10. **`04 the final portal/clients/felicias perfect portal/`** — the existing reference prototype Ed built; this IS the starting point. Read it carefully before scaffolding.
+10. **`04-the-final-portal/clients/felicias perfect portal/`** — the existing reference prototype Ed built; this IS the starting point. Read it carefully before scaffolding.
 11. The 9 plugin chapters (`04-plugin-fulfillment.md`, `04-plugin-ecommerce.md`, `04-plugin-memberships.md`, `04-plugin-affiliates.md`, `04-plugin-client-crm.md`, `04-plugin-website-editor.md`, etc.) — for the manifest contract that this portal consumes
 
 ## Brand context
@@ -49,7 +49,7 @@ production deliverable, not a prototype.
 - **Domain (planned)**: `luvandker.com`
 - **Brand kit**: orange + cream + Playfair Display heading font
   (matches the demo seed). Confirm exact tokens with
-  `04 the final portal/portal/src/lib/server/demoSeed.ts` →
+  `04-the-final-portal/portal/src/lib/server/demoSeed.ts` →
   Felicia mirror.
 - **End-customer surfaces**: shoppers (storefront), members (gated
   content), affiliates (referral dashboard).
@@ -58,7 +58,7 @@ production deliverable, not a prototype.
 
 ### Phase A: Scaffold `clients/luv-and-ker/`
 
-Create the Next.js project structure mirroring `04 the final portal/portal/`'s
+Create the Next.js project structure mirroring `04-the-final-portal/portal/`'s
 shape but slimmed for a single-client deployment:
 
 ```
@@ -191,7 +191,7 @@ brand + content shell only.
 ## Authority + scope discipline
 
 You CAN:
-- Create + edit anything under `04 the final portal/clients/luv-and-ker/`.
+- Create + edit anything under `04-the-final-portal/clients/luv-and-ker/`.
 - Read every plugin's chapter + the architecture chapter.
 - Append to your own outbox.
 
@@ -200,7 +200,7 @@ You must NOT:
 - Edit other plugins' source (`plugins/*`). If you find a plugin
   needs an exported helper your portal can't reach, log a `WARN` in
   the right plugin terminal's inbox.
-- Touch `04 the final portal/clients/felicias perfect portal/` — that
+- Touch `04-the-final-portal/clients/felicias perfect portal/` — that
   prototype stays as-is for now (T2 R11 may eventually migrate it
   into the new format).
 - Edit foundation files.

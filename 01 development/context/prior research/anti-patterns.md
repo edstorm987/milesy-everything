@@ -1,4 +1,4 @@
-# Anti-patterns to avoid in `04 the final portal/`
+# Anti-patterns to avoid in `04-the-final-portal/`
 
 Specific things from `03 old portal/` (and pitfalls in `02`) we should NOT
 replicate.

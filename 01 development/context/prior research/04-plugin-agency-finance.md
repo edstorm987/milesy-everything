@@ -12,7 +12,7 @@ Per-agency install (`scopePolicy: "agency"`, `core: false`, opt-in).
 ## 1. Package shape
 
 ```
-04 the final portal/plugins/agency-finance/
+04-the-final-portal/plugins/agency-finance/
 ├── index.ts                          default-exports the AquaPlugin manifest
 ├── package.json                      @aqua/plugin-agency-finance@0.1.0
 ├── tsconfig.json
@@ -237,7 +237,7 @@ walks:
 ℹ tests 9   ℹ pass 9   ℹ fail 0
 ```
 
-`npm run smoke` from `04 the final portal/plugins/agency-finance/`.
+`npm run smoke` from `04-the-final-portal/plugins/agency-finance/`.
 
 ## 8. Foundation pending (orchestrator brokerage)
 
@@ -273,7 +273,7 @@ walks:
 ## 11. Verification commands
 
 ```bash
-cd "04 the final portal/plugins/agency-finance"
+cd "04-the-final-portal/plugins/agency-finance"
 
 # tsc clean
 npx tsc --noEmit

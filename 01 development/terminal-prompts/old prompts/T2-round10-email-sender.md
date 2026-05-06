@@ -32,7 +32,7 @@ affiliates' payout-confirmed notes, end-customer signup confirmations.
 
 ## Scope
 
-`04 the final portal/plugins/email-sender/` — `@aqua/plugin-email-sender`,
+`04-the-final-portal/plugins/email-sender/` — `@aqua/plugin-email-sender`,
 self-contained package, mirror your most recent plugin shape (forms).
 
 Manifest:
@@ -160,7 +160,7 @@ performs the actual fan-out.
 ## Foundation integration
 
 Same pattern as forms + agency-marketing:
-- `tsc --noEmit` clean inside `04 the final portal/plugins/email-sender/`.
+- `tsc --noEmit` clean inside `04-the-final-portal/plugins/email-sender/`.
 - Ports declared.
 - Container builder.
 - Foundation adapter (`registerEmailSenderFoundation` + `containerFor`).
@@ -188,7 +188,7 @@ to end.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/email-sender/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/email-sender/`.
 2. Smoke (`src/__smoke__/email-sender.test.ts`) — node:test cases:
    - `enqueue` happy path with template substitution.
    - Idempotent on `(triggeredByPlugin, externalRef)`.

@@ -75,7 +75,7 @@ Lightweight smoke that hits each of ~8 representative pages at 3 viewports (375 
 4. `aria-label="Primary"` or `"Primary navigation"` present.
 5. No app-error markers (`Application error`, `next-error`, etc.).
 
-Run via `npm run smoke:ux` from `04 the final portal/portal/` (requires `npm run dev` running on port 3050, or `AQUA_BASE=…` for a live deploy).
+Run via `npm run smoke:ux` from `04-the-final-portal/portal/` (requires `npm run dev` running on port 3050, or `AQUA_BASE=…` for a live deploy).
 
 ## Cross-team WARNs surfaced (logged but not fixed — out of scope)
 

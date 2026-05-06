@@ -51,7 +51,7 @@ When you start, your first move is to verify state — don't assume Round 2 is o
 If everything from Round 1 + Round 2 has shipped, the next work is:
 
 1. **Wire ecommerce + website-editor into the shell** — same pattern T1 used for fulfillment in Round 2 (port adapters, catch-all routes, register in `_registry.ts`).
-2. **Demo button on milesymedia.com** — the agency-marketing site at `04 the final portal/milesymedia website/` needs the Demo button to actually work. POST `/api/dev/seed-demo` if not seeded → redirect to a sandboxed demo agency session → header toggle between agency POV and client POV (per architecture §8).
+2. **Demo button on milesymedia.com** — the agency-marketing site at `04-the-final-portal/milesymedia website/` needs the Demo button to actually work. POST `/api/dev/seed-demo` if not seeded → redirect to a sandboxed demo agency session → header toggle between agency POV and client POV (per architecture §8).
 3. **Flesh out the editor blocks** — T3 shipped 58 block stubs. Round 3 should port the real implementations from `02 felicias aqua portal work/src/components/editor/blocks/`. Likely big — break into chunks (10 blocks per commit).
 4. **Build agency-internal plugins** — `agency-hr`, `agency-finance`, `agency-marketing`. New plugin packages mirroring the fulfillment shape. Phases drive these per `04-architecture.md`.
 5. **End-customer iframe flow** — when Felicia's site embeds the login iframe, the customer should see Felicia's brand and end up logged into THIS app. Architecture §11 has the URL surface.

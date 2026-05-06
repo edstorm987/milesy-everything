@@ -1,7 +1,7 @@
 # `04` Client portal — Luv & Ker (Felicia)
 
 > Authored 2026-05-05 by T5 R1. The first real per-client portal under
-> `04 the final portal/clients/<slug>/`. This chapter is the canonical
+> `04-the-final-portal/clients/<slug>/`. This chapter is the canonical
 > shape T2 R11's "Export to repo" generator must reverse-engineer.
 > Extends `04-architecture.md` (locked v1) and
 > `04-architecture-extension-per-client-portals.md` (chapter 19b).
@@ -19,7 +19,7 @@ the generator exists.
 ## Folder layout (canonical for the generator)
 
 ```
-04 the final portal/clients/luv-and-ker/
+04-the-final-portal/clients/luv-and-ker/
 ├── package.json                          ← Next 16 + React 19 + TW 4 +
 │                                          6 plugin workspace deps
 ├── next.config.ts                        ← transpilePackages limited to
@@ -141,7 +141,7 @@ from the editor at "Export to repo" time:
    `getActivePortalVariant({ clientId, role })` for each `PortalRole`.
 5. **`content`** — published key/value content overrides from the
    website-editor's content store (the same `useContent("…")` keys the
-   prototype reads in `04 the final portal/clients/felicias perfect portal/portal.config.ts`).
+   prototype reads in `04-the-final-portal/clients/felicias perfect portal/portal.config.ts`).
 
 ## API-proxy pattern
 
@@ -302,7 +302,7 @@ pure rendering change, not a content migration.
 ## What this folder is NOT
 
 - Not a place for new business logic. If you need a new feature, ship
-  a plugin (or extend an existing one) at `04 the final portal/plugins/`.
+  a plugin (or extend an existing one) at `04-the-final-portal/plugins/`.
 - Not a place to fork the editor. Edits land in the shared portal's
   editor and flow back to this folder via T3 R6's promote mechanism.
 - Not a place for shared utilities. Code that more than one client's

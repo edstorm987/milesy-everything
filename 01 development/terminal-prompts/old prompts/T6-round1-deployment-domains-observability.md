@@ -39,11 +39,11 @@ config + tooling — no product code.
 ### Phase A: Vercel monorepo project config
 
 Per chapter 19b, **a single Vercel project** deploys:
-- `04 the final portal/milesymedia website/` at root paths (`/`,
+- `04-the-final-portal/milesymedia website/` at root paths (`/`,
   `/login.html`, `/admin.html`, `/styles.css`, ...).
-- `04 the final portal/portal/` (Aqua portal Next.js app) at
+- `04-the-final-portal/portal/` (Aqua portal Next.js app) at
   `/portal/*` + `/api/*` + `/login` + `/demo` + `/embed/*`.
-- `04 the final portal/clients/<slug>/` — each Live client's portal
+- `04-the-final-portal/clients/<slug>/` — each Live client's portal
   on its own custom domain (with edge stitching).
 
 T1 R8 (queued — `T1-round8-milesymedia-portal-stitch.md`) will write
@@ -52,7 +52,7 @@ production** equivalent + the per-client deployments.
 
 1. Update root `vercel.json` (currently pinned to milesymedia static
    only) to:
-   - Build `04 the final portal/portal/` as the primary Next.js
+   - Build `04-the-final-portal/portal/` as the primary Next.js
      project (set `rootDirectory` correctly).
    - Add a `rewrites` rule that, when no Next.js route matches,
      falls through to a sibling static deployment of milesymedia OR
@@ -80,7 +80,7 @@ Each deployment target needs:
   go in env per architecture decision.
 - `NEXT_PUBLIC_PORTAL_BASE` (public-facing portal origin)
 
-Write `04 the final portal/portal/.env.example` (extending what's
+Write `04-the-final-portal/portal/.env.example` (extending what's
 there) + `clients/<slug>/.env.example` template.
 
 Document in chapter: **what's per-deployment env vs per-install
@@ -113,7 +113,7 @@ Pick one (decide based on Vercel friction):
 - **OpenTelemetry traces** — heavier; defer to R2 unless trivial.
 
 Write a small observability layer at
-`04 the final portal/portal/src/lib/server/observability.ts` that:
+`04-the-final-portal/portal/src/lib/server/observability.ts` that:
 - Captures uncaught errors → Sentry.
 - Records request-level metrics (duration, status code) on every API
   route via a wrapper.
@@ -154,8 +154,8 @@ You CAN edit:
 - `vercel.json` (root) + per-deployment `vercel.json` files
 - `.env.example` files anywhere
 - `scripts/*` (new tooling)
-- `04 the final portal/portal/src/lib/server/observability.ts` (new)
-- `04 the final portal/plugins/domains/` if you decide to ship the
+- `04-the-final-portal/portal/src/lib/server/observability.ts` (new)
+- `04-the-final-portal/plugins/domains/` if you decide to ship the
   domain plugin (your call — log Q-ASSUMED on the structure)
 - Chapter docs
 

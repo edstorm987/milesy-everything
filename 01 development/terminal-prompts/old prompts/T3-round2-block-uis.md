@@ -40,7 +40,7 @@ shells; the admin pages are placeholders. Lift them faithfully from `02`.
 ### Phase A: Lift the 58 block components
 
 Replace your Round-1 stub components in
-`04 the final portal/plugins/website-editor/src/components/blocks/*.tsx`
+`04-the-final-portal/plugins/website-editor/src/components/blocks/*.tsx`
 with the real implementations from
 `02 felicias aqua portal work/src/components/editor/blocks/*.tsx`.
 
@@ -119,7 +119,7 @@ ScheduleWakeup to end.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/website-editor/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/website-editor/`.
 2. Smoke: load `/portal/clients/<id>/editor`, see real editor UI; load `/portal/clients/<id>/portals`, see real variant UI; create + activate a variant; see it on the customer-facing route via the foundation.
 3. Update chapter `04-plugin-website-editor.md` with Round-2 status (or write `04-plugin-website-editor-round2.md`).
 4. Update MASTER.md row.

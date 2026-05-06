@@ -1,7 +1,7 @@
 # `04` plugin — Fulfillment
 
 The agency-side workspace that drives every client's lifecycle. Lives at
-`04 the final portal/plugins/fulfillment/`. Default-exports an
+`04-the-final-portal/plugins/fulfillment/`. Default-exports an
 `AquaPlugin` manifest. Auto-installed for every agency (`core: true`).
 
 > Owner: T2. Round 1. Built standalone (tsc-clean inside the plugin
@@ -243,7 +243,7 @@ the deps.
 ## Verifying
 
 ```sh
-cd "04 the final portal/plugins/fulfillment"
+cd "04-the-final-portal/plugins/fulfillment"
 npm install
 npm run typecheck      # tsc --noEmit — currently clean (verified 2026-05-04)
 ```

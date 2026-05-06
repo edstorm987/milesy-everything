@@ -61,7 +61,7 @@ Anything contradicted by reality wins → patch the runbook.
 
 ### 3a. The split: `vercelDomain.ts` + `vercelDomain.impl.ts`
 
-`04 the final portal/portal/src/lib/server/vercelDomain.ts`
+`04-the-final-portal/portal/src/lib/server/vercelDomain.ts`
 is the public, server-only-guarded re-export:
 
 ```ts
@@ -127,7 +127,7 @@ JSON output on stdout. Exit 0 on ok, 1 on configuration / network
 
 ### 3e. Mock smoke — 11/11 pass
 
-`04 the final portal/portal/scripts/smoke-vercel-domain.test.ts`
+`04-the-final-portal/portal/scripts/smoke-vercel-domain.test.ts`
 runs via `npm run smoke:vercel-domain` (tsx + node:test). Mocks
 `globalThis.fetch` with a captured-call recorder + a stub-response
 shape. Verifies:
@@ -181,7 +181,7 @@ Run-once smoke; result captured in deploy.md once verified.
 
 ## 4. Phase C — DNS-verify polling badge
 
-`04 the final portal/plugins/domains/src/components/DomainStatusBadge.tsx`
+`04-the-final-portal/plugins/domains/src/components/DomainStatusBadge.tsx`
 ("use client") replaces R1's static `StatusBadge` in the plugin's
 admin page.
 
@@ -249,7 +249,7 @@ R2 work.
 ### T2 R11 — export-to-repo
 
 T2 R11 generates per-Live-client portals at
-`04 the final portal/clients/<slug>/`. The generator should
+`04-the-final-portal/clients/<slug>/`. The generator should
 optionally trigger a domain attach when the client's
 `portal-config.json` declares `customDomain`. Two paths:
 

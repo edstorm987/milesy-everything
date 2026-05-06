@@ -32,7 +32,7 @@ brand — feel free to pick something better; log Q-ASSUMED).
 
 1. Your R1 chapter `04-client-portal-luv-and-ker.md`
 2. `04-architecture-extension-per-client-portals.md` (chapter 19b)
-3. The Felicia portal at `04 the final portal/clients/luv-and-ker/` — your reference
+3. The Felicia portal at `04-the-final-portal/clients/luv-and-ker/` — your reference
 4. T2 R11's `04-plugin-portal-export.md` (when it lands) — the
    generator's expected shape
 

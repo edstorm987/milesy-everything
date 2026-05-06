@@ -52,14 +52,14 @@ clients/<slug>/.
 
 function resolveTargetDir(target) {
   if (target === "portal") {
-    return resolve(REPO_ROOT, "04 the final portal", "portal");
+    return resolve(REPO_ROOT, "04-the-final-portal", "portal");
   }
   if (target.startsWith("clients/")) {
     const slug = target.slice("clients/".length);
     if (!slug || slug.includes("..") || slug.includes("/")) {
       throw new Error(`invalid client slug: ${slug}`);
     }
-    return resolve(REPO_ROOT, "04 the final portal", "clients", slug);
+    return resolve(REPO_ROOT, "04-the-final-portal", "clients", slug);
   }
   throw new Error(`unknown --target=${target}. Use 'portal' or 'clients/<slug>'.`);
 }

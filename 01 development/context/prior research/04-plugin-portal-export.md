@@ -15,7 +15,7 @@ Mirrors T5's `clients/luv-and-ker/` shape exactly.
 ## 1. Package shape
 
 ```
-04 the final portal/plugins/portal-export/
+04-the-final-portal/plugins/portal-export/
 ├── index.ts                          default-exports the AquaPlugin manifest
 ├── package.json                      @aqua/plugin-portal-export@0.1.0
 ├── tsconfig.json
@@ -156,7 +156,7 @@ Per-install — one storage slice per `(agency, client?)` install.
 ## 5. Materialized output (mirrors T5's luv-and-ker/)
 
 ```
-04 the final portal/clients/<slug>/
+04-the-final-portal/clients/<slug>/
 ├── package.json                file:../../plugins/<id> deps for installed + preset plugins (sorted)
 ├── next.config.ts              security headers + CSP, turbopack root
 ├── tsconfig.json               Next bundler resolution + paths
@@ -251,7 +251,7 @@ custom-content keys, walks:
 ```
 
 `npx tsx --test src/__smoke__/export.test.ts` from
-`04 the final portal/plugins/portal-export/`.
+`04-the-final-portal/plugins/portal-export/`.
 
 ## 10. Foundation pending (orchestrator brokerage)
 
@@ -261,7 +261,7 @@ custom-content keys, walks:
 | 2 | Side-effect-import file at `portal/src/plugins/foundation-adapters/portalExportFoundation.ts` calling `registerPortalExportFoundation({ tenant, activity, events, pluginInstalls, filesystem, websiteEditor? })` | new file |
 | 3 | `_registry.ts` append (`portalExportManifest as unknown as AquaPlugin`) | `portal/src/plugins/_registry.ts` |
 | 4 | `ActivityCategory` union += `"export"` | `portal/src/server/types.ts` |
-| 5 | **FilesystemPort wiring** — foundation supplies a real `fs/promises` impl with `resolveRoot` rooted at `04 the final portal/clients/`. Single concern: server-only, never expose to client bundles. | foundation port adapter |
+| 5 | **FilesystemPort wiring** — foundation supplies a real `fs/promises` impl with `resolveRoot` rooted at `04-the-final-portal/clients/`. Single concern: server-only, never expose to client bundles. | foundation port adapter |
 | 6 | **WebsiteEditorReaderPort projection** — when website-editor is installed for the same agency/client, project its `getActivePortalVariant` + `lib/customPages` reader + theme-tokens reader into a WebsiteEditorReaderPort. Without this port, the materializer falls back to preset defaults only — exports still work but produce empty home-page block trees. | new adapter file |
 | 7 | **GitHub PR-open integration** — replace `pr/open` stub with a real branch-create + PR-open flow. Out of scope for v1. | future round |
 
@@ -303,7 +303,7 @@ custom-content keys, walks:
 ## 13. Verification commands
 
 ```bash
-cd "04 the final portal/plugins/portal-export"
+cd "04-the-final-portal/plugins/portal-export"
 
 # tsc clean
 npx tsc --noEmit

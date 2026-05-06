@@ -61,7 +61,7 @@ For every admin list page and every storefront block:
   render errors and shows a friendly fallback with a "Retry" button.
 
 Build these as shared components in
-`04 the final portal/portal/src/components/ui/{LoadingSkeleton,EmptyState,ErrorBoundary}.tsx`
+`04-the-final-portal/portal/src/components/ui/{LoadingSkeleton,EmptyState,ErrorBoundary}.tsx`
 and adopt across plugin pages. Each plugin should import from there
 (via path mapping or workspace dep — log `Q-ASSUMED` on the import
 shape).
@@ -119,10 +119,10 @@ components.
 ## Authority + scope discipline
 
 You CAN edit:
-- `04 the final portal/portal/src/components/ui/*` (new shared UI primitives)
-- `04 the final portal/portal/src/lib/a11y/*` (new accessibility hooks)
-- `04 the final portal/portal/src/app/**/*` (admin pages, layouts) — but ONLY for state/error/focus/aria adornments; NO logic changes
-- `04 the final portal/plugins/*/src/components/*` and `pages/*` for the same kind of polish
+- `04-the-final-portal/portal/src/components/ui/*` (new shared UI primitives)
+- `04-the-final-portal/portal/src/lib/a11y/*` (new accessibility hooks)
+- `04-the-final-portal/portal/src/app/**/*` (admin pages, layouts) — but ONLY for state/error/focus/aria adornments; NO logic changes
+- `04-the-final-portal/plugins/*/src/components/*` and `pages/*` for the same kind of polish
 - `globals.css` / Tailwind theme tweaks for focus rings + skeleton utility classes
 
 You must NOT:

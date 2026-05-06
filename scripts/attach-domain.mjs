@@ -3,8 +3,8 @@
 //
 // Pure JS — does NOT import the portal's TS modules so it runs without
 // a build step. Same Vercel REST surface as
-// `04 the final portal/portal/src/lib/server/vercelDomain.ts` and
-// `04 the final portal/plugins/domains/src/server/vercelClient.ts`.
+// `04-the-final-portal/portal/src/lib/server/vercelDomain.ts` and
+// `04-the-final-portal/plugins/domains/src/server/vercelClient.ts`.
 //
 // Usage:
 //

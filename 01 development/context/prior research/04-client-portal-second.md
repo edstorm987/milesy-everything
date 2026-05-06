@@ -1,7 +1,7 @@
 # `04` Client portal — Compass Coaching (second target shape)
 
 > Authored 2026-05-06 by T5 R2. Second per-client portal under
-> `04 the final portal/clients/compass-coaching/`. Built to **validate
+> `04-the-final-portal/clients/compass-coaching/`. Built to **validate
 > the multi-client materialization pattern** by deliberately diverging
 > from Luv & Ker (chapter 43) along three axes: industry, brand kit,
 > and plugin set. Gives T2 R11's "Export to repo" generator a second

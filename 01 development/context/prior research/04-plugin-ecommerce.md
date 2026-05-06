@@ -1,7 +1,7 @@
 # `04` plugin — Ecommerce
 
 The per-client ecommerce subsystem. Lives at
-`04 the final portal/plugins/ecommerce/`. Default-exports an `AquaPlugin`
+`04-the-final-portal/plugins/ecommerce/`. Default-exports an `AquaPlugin`
 manifest with `scopePolicy: "client"` and `requires: ["website-editor"]`.
 Built on T1's foundation (commit 16bc524) following the same vendoring
 + ports + container-builder discipline as T2's fulfillment plugin and
@@ -345,7 +345,7 @@ Files **renamed / refactored** during the port:
 ## Verifying
 
 ```sh
-cd "04 the final portal/plugins/ecommerce"
+cd "04-the-final-portal/plugins/ecommerce"
 npm install
 npm run typecheck      # tsc --noEmit — clean (verified 2026-05-04)
 ```

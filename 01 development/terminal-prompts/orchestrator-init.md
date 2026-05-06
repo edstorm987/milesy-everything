@@ -59,7 +59,7 @@ You CAN edit:
 You must NOT:
 - Write to any terminal's `to-orchestrator.md` (read-only for you)
 - Edit `eds requirments.md`
-- Edit code in `04 the final portal/` (workers own that)
+- Edit code in `04-the-final-portal/` (workers own that)
 - Edit `02 felicias aqua portal work/` or `03 old portal/` (frozen archives)
 
 ## Stay terse with Ed

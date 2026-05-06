@@ -11,7 +11,7 @@ topbar integration.
 
 ### Goal A — `@aqua/plugin-ai-builder` plugin
 
-`04 the final portal/plugins/ai-builder/`. `scopePolicy: "either"`,
+`04-the-final-portal/plugins/ai-builder/`. `scopePolicy: "either"`,
 `requires: ["website-editor"]`, `core: false`. Mirrors the shape of
 T2's most recent plugins (portal-export / agency-marketing).
 
@@ -59,7 +59,7 @@ T2's most recent plugins (portal-export / agency-marketing).
 
 ### Goal C — GenerateModal + EditorPage integration
 
-In `04 the final portal/plugins/website-editor/`:
+In `04-the-final-portal/plugins/website-editor/`:
 - **`components/editor/GenerateModal.tsx`** (NEW) — thin client
   over `/api/portal/ai-builder/generate`. Operator types a prompt;
   modal POSTs, surfaces loading + error states, and on success calls
@@ -124,8 +124,8 @@ v1 cut. Modal disables the Generate button while in flight.
   + `onInsert` (reads existing blocks via `getEditorPage`, appends,
   saves via `updateEditorPage({ blocks: [...existing, ...generated] })`,
   bumps `reloadKey`).
-- **tsc clean** in both `04 the final portal/plugins/ai-builder/` and
-  `04 the final portal/plugins/website-editor/`.
+- **tsc clean** in both `04-the-final-portal/plugins/ai-builder/` and
+  `04-the-final-portal/plugins/website-editor/`.
 
 ## Deferred to R8+
 

@@ -3,7 +3,7 @@
 # T2 — Fulfillment plugin
 
 You are Terminal 2 of three parallel Claude Opus 4.7 sessions building
-`04 the final portal/`. T1 is scaffolding the portal foundation. T3 is
+`04-the-final-portal/`. T1 is scaffolding the portal foundation. T3 is
 porting the website-editor plugin. Your role: build the **fulfillment plugin**
 — the killer first feature.
 
@@ -13,7 +13,7 @@ porting the website-editor plugin. Your role: build the **fulfillment plugin**
 - **Local working directory**: `~/Desktop/ker-v3/`
 - **Branch**: commit directly to `main`. After each commit: `git pull --rebase && git push`.
 - **If you don't have a clone yet**: `git clone https://github.com/edsworld27/ker-v3.git ~/Desktop/ker-v3 && cd ~/Desktop/ker-v3`
-- **Note**: top-level folder names contain spaces (`01 development`, `04 the final portal`). Quote paths in the shell.
+- **Note**: top-level folder names contain spaces (`01 development`, `04-the-final-portal`). Quote paths in the shell.
 
 ## Autonomous mesh — messaging protocol
 
@@ -48,14 +48,14 @@ The fulfillment plugin is the agency-side workspace where the team:
 
 ## Your goal
 
-Build `04 the final portal/plugins/fulfillment/` as a self-contained plugin
+Build `04-the-final-portal/plugins/fulfillment/` as a self-contained plugin
 package. Default-export an `AquaPlugin` manifest. T1's foundation will mount
 this plugin once installed for an agency.
 
 ## Folder layout
 
 ```
-04 the final portal/plugins/fulfillment/
+04-the-final-portal/plugins/fulfillment/
 ├── package.json              name: "@aqua/plugin-fulfillment"
 ├── README.md                 manifest summary + contract
 ├── index.ts                  default-exported AquaPlugin manifest
@@ -215,7 +215,7 @@ Pass `<<autonomous-loop-dynamic>>` as the prompt to `ScheduleWakeup`.
 
 ## When done
 
-1. `tsc --noEmit` clean inside `04 the final portal/plugins/fulfillment/`.
+1. `tsc --noEmit` clean inside `04-the-final-portal/plugins/fulfillment/`.
 2. Manifest exports correctly (default export of `AquaPlugin`).
 3. Add `01 development/context/prior research/04-plugin-fulfillment.md` documenting:
    - The manifest contract (id, navItems, pages, api, settings, features)

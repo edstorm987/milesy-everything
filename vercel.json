@@ -3,7 +3,7 @@
   "framework": "nextjs",
   "buildCommand": "node scripts/build-portal.mjs",
   "installCommand": "echo 'install handled inside build-portal.mjs so workspace plugin file:.. deps resolve correctly'",
-  "outputDirectory": "04 the final portal/portal/.next",
+  "outputDirectory": "04-the-final-portal/portal/.next",
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
