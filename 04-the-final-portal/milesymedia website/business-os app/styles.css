@@ -971,6 +971,12 @@ footer {
 .bos-table a { color: var(--text); }
 .bos-table a:hover { color: var(--accent); }
 .bos-row-cta { font-size: 12px; color: var(--accent); font-weight: 700; }
+.bos-row-sub { font-size: 12px; color: var(--text-mute); margin-top: 4px; line-height: 1.5; }
+.bos-track-head {
+  font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--accent-2); margin: 30px 0 12px;
+}
+.bos-track-head:first-of-type { margin-top: 18px; }
 
 .bos-pip {
   display: inline-block; width: 8px; height: 8px; border-radius: 50%;
