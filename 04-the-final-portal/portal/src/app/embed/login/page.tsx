@@ -8,6 +8,7 @@
 
 import { Suspense } from "react";
 import { LoginForm } from "@/app/login/LoginForm";
+import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
 import { ThemeInjector } from "@/components/chrome/ThemeInjector";
 import { getAgency, getClient } from "@/server/tenants";
 import { ensureHydrated } from "@/server/storage";
@@ -91,6 +92,8 @@ export default async function EmbedLoginPage({
             embedded
             clientId={resolvedClientId}
             allowSignup={allowSignup}
+            googleEnabled={isGoogleOAuthConfigured()}
+            magicLinkEnabled={allowSignup}
           />
         </Suspense>
       </div>

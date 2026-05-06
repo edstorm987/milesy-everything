@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { LoginForm } from "./LoginForm";
+import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
 
 export const metadata = {
   title: "Sign in · Aqua portal",
@@ -22,7 +23,7 @@ export default function LoginPage() {
           </p>
         </div>
         <Suspense fallback={<div className="h-40" aria-hidden />}>
-          <LoginForm />
+          <LoginForm googleEnabled={isGoogleOAuthConfigured()} />
         </Suspense>
       </div>
     </main>

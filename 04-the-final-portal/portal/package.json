@@ -16,6 +16,8 @@
     "smoke:ux": "node scripts/smoke-ux.mjs",
     "smoke:perf": "node scripts/smoke-perf.mjs",
     "smoke:vercel-domain": "tsx --test scripts/smoke-vercel-domain.test.ts",
+    "smoke:auth-oauth": "tsx --test scripts/smoke-auth-oauth.test.ts",
+    "smoke:auth-magic": "tsx --test scripts/smoke-auth-magic.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

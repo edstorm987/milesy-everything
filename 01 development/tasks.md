@@ -9,6 +9,30 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 R9 — OAuth providers (Google + magic-link)** — DONE.
+      Goal A Google OAuth at `/api/auth/oauth/google/{start,callback}`,
+      env-gated (`GOOGLE_OAUTH_CLIENT_ID`/`_SECRET` both unset →
+      button hidden + routes 404), HMAC state token (cookie-less,
+      serverless-safe), tokeninfo verification (Q-ASSUMED v1; JWKS
+      deferred R10), first-run bootstrap mirrors password form. Goal
+      B magic-link at `/api/auth/magic/{request,verify}` + `/login/magic`
+      consume page: HMAC-signed 15-min single-use tokens via
+      `lib/server/magicLink.ts`, in-memory nonce replay guard (v1
+      limit: process-local; shared store flagged R10), pluggable
+      `registerMagicLinkDelivery` hook (T2 R10 wires email-sender at
+      boot; dev fallback logs URL), per-client `signupsEnabled` gate,
+      auto-creates end-customer on first verify (token = email-
+      ownership proof). Goal C LoginForm + EmbedLogin: new props
+      `googleEnabled`/`magicLinkEnabled`, new `"magic"` mode,
+      Continue-with-Google button + "Email me a magic link" toggle.
+      Smoke 18/18 pass via `tsx --test`
+      (`scripts/smoke-auth-{oauth,magic}.test.ts`); npm aliases
+      `smoke:auth-oauth` + `smoke:auth-magic`. tsc clean. Chapter 55
+      `04-foundation-round9-oauth-magic.md` + MASTER row 55.
+      Deviations: smoke `.test.ts` not `.mjs` (matches T6 R2
+      precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
+      Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
+      T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
 - [x] **T3 R8 — AI streaming + LivePreview iframe** — DONE.
       Goal A SSE streaming on Generate: `streamMessage()` on the
       Anthropic client + `GenerationService.generateStream()` +

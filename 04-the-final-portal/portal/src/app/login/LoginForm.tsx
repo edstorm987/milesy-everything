@@ -13,11 +13,21 @@ interface Props {
   // and lets visitors POST /api/auth/end-customer/signup. Set by the
   // embed page after reading `client.endCustomers.signupsEnabled`.
   allowSignup?: boolean;
+  // R9: when true the page renders the "Continue with Google" button.
+  // The login page server-fetches `isGoogleOAuthConfigured()` and
+  // passes it down — env unset → button hidden.
+  googleEnabled?: boolean;
+  // R9: surfaces the magic-link button. Only meaningful when clientId
+  // is set (magic-link is end-customer-scoped).
+  magicLinkEnabled?: boolean;
 }
 
-type Mode = "signin" | "signup";
+type Mode = "signin" | "signup" | "magic";
 
-export function LoginForm({ embedded = false, clientId, allowSignup = false }: Props) {
+export function LoginForm({
+  embedded = false, clientId, allowSignup = false,
+  googleEnabled = false, magicLinkEnabled = false,
+}: Props) {
   const router = useRouter();
   const params = useSearchParams();
   // Default success destination. Embed surfaces respect `?return=<url>`
@@ -34,6 +44,7 @@ export function LoginForm({ embedded = false, clientId, allowSignup = false }: P
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [magicSent, setMagicSent] = useState<{ devUrl?: string } | null>(null);
 
   function navigate(url: string) {
     if (embedded && typeof window !== "undefined" && window.parent !== window) {
@@ -52,7 +63,25 @@ export function LoginForm({ embedded = false, clientId, allowSignup = false }: P
     e.preventDefault();
     setBusy(true);
     setError(null);
+    setMagicSent(null);
     try {
+      if (mode === "magic") {
+        if (!clientId) throw new Error("Magic-link requires a client context.");
+        const res = await fetch("/api/auth/magic/request", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email, clientId, returnUrl: success.startsWith("/") ? success : "/portal/customer" }),
+        });
+        const data = (await res.json()) as { ok: boolean; error?: string; sent?: boolean; devMagicUrl?: string };
+        if (!res.ok || !data.ok) {
+          setError(data.error ?? "Couldn't send magic link.");
+          setBusy(false);
+          return;
+        }
+        setMagicSent({ devUrl: data.devMagicUrl });
+        setBusy(false);
+        return;
+      }
       let res: Response;
       if (mode === "signup") {
         if (!clientId) throw new Error("Sign-up requires an embedding client.");
@@ -88,8 +117,26 @@ export function LoginForm({ embedded = false, clientId, allowSignup = false }: P
     ? (mode === "signup" ? "Creating account…" : "Signing in…")
     : (mode === "signup" ? "Create account" : "Sign in");
 
+  const isMagic = mode === "magic";
+
   return (
     <form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col gap-3">
+      {googleEnabled && (
+        <a
+          href={`/api/auth/oauth/google/start?return=${encodeURIComponent(success)}`}
+          className="flex items-center justify-center gap-2 rounded-md border border-black/15 bg-white px-4 py-2 text-sm font-medium text-black/80 hover:bg-black/[0.03]"
+        >
+          <span aria-hidden="true">🔐</span>
+          Continue with Google
+        </a>
+      )}
+      {googleEnabled && (
+        <div className="my-1 flex items-center gap-2 text-[11px] uppercase tracking-wider text-black/35">
+          <span className="h-px flex-1 bg-black/10" />
+          <span>or</span>
+          <span className="h-px flex-1 bg-black/10" />
+        </div>
+      )}
       {mode === "signup" && (
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-black/70">Name <span className="text-black/40">(optional)</span></span>
@@ -113,26 +160,45 @@ export function LoginForm({ embedded = false, clientId, allowSignup = false }: P
           className="rounded-md border border-black/15 bg-white px-3 py-2 outline-none focus:border-[var(--brand-primary)]"
         />
       </label>
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="text-black/70">Password</span>
-        <input
-          type="password"
-          autoComplete={mode === "signup" ? "new-password" : "current-password"}
-          required
-          minLength={mode === "signup" ? 8 : undefined}
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          className="rounded-md border border-black/15 bg-white px-3 py-2 outline-none focus:border-[var(--brand-primary)]"
-        />
-      </label>
+      {!isMagic && (
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-black/70">Password</span>
+          <input
+            type="password"
+            autoComplete={mode === "signup" ? "new-password" : "current-password"}
+            required
+            minLength={mode === "signup" ? 8 : undefined}
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="rounded-md border border-black/15 bg-white px-3 py-2 outline-none focus:border-[var(--brand-primary)]"
+          />
+        </label>
+      )}
       {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
+      {magicSent && (
+        <p role="status" className="rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+          Check your inbox — a magic sign-in link is on its way.
+          {magicSent.devUrl && (
+            <> <a className="underline" href={magicSent.devUrl}>Open it now</a> (dev only).</>
+          )}
+        </p>
+      )}
       <button
         type="submit"
         disabled={busy}
         className="mt-2 rounded-md bg-[var(--brand-primary)] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {submitLabel}
+        {isMagic ? (busy ? "Sending…" : "Email me a magic link") : submitLabel}
       </button>
+      {magicLinkEnabled && clientId && (
+        <button
+          type="button"
+          onClick={() => { setMode(isMagic ? "signin" : "magic"); setError(null); setMagicSent(null); }}
+          className="text-center text-xs text-black/55 underline underline-offset-2 hover:text-black/80"
+        >
+          {isMagic ? "Use a password instead" : "Email me a magic link instead"}
+        </button>
+      )}
       {clientId && allowSignup && (
         <p className="mt-2 text-center text-xs text-black/60">
           {mode === "signin" ? (
