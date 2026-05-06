@@ -9,9 +9,21 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
-- [ ] **T3 R7 — AI page builder** — `@aqua/plugin-ai-builder`. Claude
-      Haiku 4.5 default + Sonnet 4.6 fallback. Editor topbar gets
-      ✨ Generate button + streaming preview modal. Per-install API key.
+- [x] **T3 R7 — AI page builder** — DONE. `@aqua/plugin-ai-builder`
+      shipped at `04 the final portal/plugins/ai-builder/` (3 navItems,
+      4 admin pages, 6 API routes, 0 storefront blocks; Generation
+      domain + read-only block-schema projection of BLOCK_REGISTRY +
+      18 cross-plugin ids; anthropicClient with prompt caching on the
+      static block-library system prompt; generationService with
+      Haiku 4.5 default + Sonnet 4.6 fallback on schema-validation
+      failure + cache-hit metrics; per-install `anthropicApiKey` on
+      `install.config`). Editor integration: `GenerateModal.tsx` NEW
+      + `EditorTopBar.tsx` ✨ Generate button + `EditorPage.tsx` owns
+      modal lifecycle + onInsert appends tree to active page. Smoke
+      3/3 pass via `tsx --test`; website-editor 92/92 unchanged.
+      tsc clean both plugins. Streaming SSE preview deferred to R8
+      (POST + spinner is v1). Chapter `04-plugin-ai-builder.md` +
+      MASTER row #52.
 - [x] **T4 R2 — Storefront + per-client portal polish + perf pass** —
       DONE. Phase A storefront block UX (`27c78ed`) — 60-occurrence
       brand-orange→accent sweep across 31 blocks + loading/error/empty/

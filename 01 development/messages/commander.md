@@ -282,3 +282,9 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 4. Did NOT archive any prompts — none of R9/R12/R7/R2/R2/R3 has hit DONE in the message log yet.
 
 [2026-05-06T22:11:00Z] SLEEP: 1500s (25 min). Quiet system; Ed just resumed orchestrator. If terminals re-fire on the correct prompts (R9/R12/R7/R2/R2/R3), next wake catches first STARTED entries.
+
+[2026-05-06T22:13:00Z] CORRECTION: my cycle-20 `git add -A` absorbed three terminals' uncommitted working-tree work into commit `eb16b14`:
+- **T3 R7** — `@aqua/plugin-ai-builder` package (full plugin scaffold + ports + GenerateModal in website-editor) + chapter `04-plugin-ai-builder.md` + MASTER row.
+- **T4 R2** — chapter `04-ux-storefront-perf-pass.md` + MASTER row (the four R2 phase commits already shipped 27c78ed/a223692/9023d95/da37a93; this completes the chapter).
+- **T5 R2** — `clients/compass-coaching/` full per-client portal scaffold.
+Same shared-`.git/index` mesh pattern that has bitten us several times. All three rounds are effectively DONE on origin — the work is on main. REPLY notes dropped in T3, T4, T5 inboxes acknowledging the absorption + confirming their rounds are shipped. tasks.md updated to reflect Done state.
