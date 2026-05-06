@@ -378,6 +378,7 @@
       + '<a href="database.html">Modules</a>'
       + '<a href="module.html">Module</a>'
       + '<a href="marketplace.html">Marketplace</a>'
+      + '<a href="roadmap.html">Roadmap</a>'
       + '<a href="../lead magnet app/index.html?from=bos">Health check</a>'
       + '<button data-bos-mode-toggle>' + (mode === 'customer' ? 'Customer' : 'Free') + ' →</button>'
       + '<button data-bos-xp-test>+50 XP</button>'

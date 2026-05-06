@@ -794,3 +794,38 @@ footer {
   margin-top: 10px; letter-spacing: normal;
 }
 
+/* End-of-flow gift card */
+.hc-gift-card {
+  position: relative; overflow: hidden; margin: 40px 0 30px;
+  background: linear-gradient(135deg, rgba(255,184,0,0.12), rgba(255,107,53,0.10));
+  border: 1px solid rgba(255,184,0,0.35);
+  border-radius: 22px;
+}
+.hc-gift-ribbon {
+  display: inline-block; margin: 18px 0 0 18px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #1a0e00; padding: 8px 16px; border-radius: 999px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.12em;
+  box-shadow: 0 8px 20px rgba(255,107,53,0.4);
+}
+.hc-gift-body { padding: 18px 32px 32px; max-width: 720px; }
+.hc-gift-card h2 {
+  font-size: clamp(28px, 4vw, 40px); font-weight: 800;
+  letter-spacing: -0.025em; margin: 16px 0 14px;
+}
+.hc-gift-card > .hc-gift-body > p {
+  color: var(--text-dim); font-size: 16px; line-height: 1.6; margin-bottom: 22px;
+}
+.hc-gift-bullets {
+  list-style: none; padding: 0; margin: 0 0 24px;
+  display: grid; gap: 10px;
+}
+.hc-gift-bullets li { font-size: 14px; color: var(--text-dim); }
+.hc-gift-fineprint { font-size: 12px; margin-top: 14px; }
+.hc-gift-card::before, .hc-gift-card::after {
+  content: ""; position: absolute; pointer-events: none; border-radius: 50%; filter: blur(60px);
+}
+.hc-gift-card::before { inset: -20% 60% 60% -10%; background: var(--accent);   opacity: 0.18; }
+.hc-gift-card::after  { inset: 50% -10% -20% 50%; background: var(--accent-3); opacity: 0.18; }
+.hc-gift-card > * { position: relative; }
+

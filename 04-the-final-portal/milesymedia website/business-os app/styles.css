@@ -1541,3 +1541,155 @@ footer {
 .bos-ai-panel { bottom: 130px; }
 .bos-toast-host { bottom: 130px; }
 
+/* ─── Customer mode: hide Pro tag on roadmap link ─── */
+body[data-bos-mode="customer"] .bos-roadmap-tag { display: none; }
+
+/* ─── Source banner on signup ────────────────── */
+.bos-source-banner {
+  display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start;
+  background: linear-gradient(135deg, rgba(255,184,0,0.14), rgba(255,107,53,0.10));
+  border: 1px solid rgba(255,184,0,0.35);
+  border-radius: 12px; padding: 14px; margin-bottom: 22px;
+}
+.bos-source-icon { font-size: 22px; }
+.bos-source-banner strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.bos-source-banner p { font-size: 12px; line-height: 1.5; }
+
+/* ─── Roadmap page ───────────────────────────── */
+.bos-roadmap-locked-card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, rgba(124,92,255,0.14), rgba(255,107,53,0.10));
+  border: 1px solid rgba(124,92,255,0.32);
+  border-radius: 22px; padding: 36px;
+  text-align: left; margin-bottom: 40px;
+}
+.bos-roadmap-locked-card::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(500px circle at 100% 0%, rgba(255,107,53,0.12), transparent 60%);
+}
+.bos-roadmap-locked-card > * { position: relative; }
+.bos-roadmap-icon {
+  width: 64px; height: 64px; border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent-3), var(--accent));
+  display: grid; place-items: center; font-size: 32px; margin-bottom: 14px;
+  box-shadow: 0 12px 30px rgba(124,92,255,0.4);
+}
+.bos-roadmap-locked-card h2 {
+  font-size: clamp(28px, 4vw, 40px); font-weight: 800;
+  letter-spacing: -0.025em; margin: 8px 0 14px;
+}
+.bos-roadmap-locked-card > p {
+  color: var(--text-dim); font-size: 16px; line-height: 1.6; max-width: 640px;
+  margin-bottom: 24px;
+}
+.bos-roadmap-bullets { display: grid; gap: 12px; max-width: 640px; }
+.bos-roadmap-bullets > div {
+  display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: start;
+  font-size: 14px; line-height: 1.6;
+}
+.bos-roadmap-bullets > div > span:first-child { font-size: 18px; }
+.bos-roadmap-bullets strong { color: var(--text); display: block; margin-bottom: 2px; }
+.bos-roadmap-bullets > div > div { color: var(--text-dim); }
+
+/* Sneak-peek timeline (blurred) */
+.bos-roadmap-peek { position: relative; }
+.bos-roadmap-peek h3 {
+  font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.bos-roadmap-timeline {
+  list-style: none; display: grid; gap: 14px; margin: 0;
+}
+.bos-roadmap-timeline li {
+  display: grid; grid-template-columns: 56px 1fr; gap: 18px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px;
+}
+.bos-roadmap-timeline strong {
+  display: block; font-size: 15px; margin-bottom: 6px; font-weight: 800; letter-spacing: -0.01em;
+}
+.bos-roadmap-timeline p, .bos-roadmap-timeline li { color: var(--text-dim); font-size: 13px; }
+.bos-roadmap-timeline ul {
+  list-style: none; padding: 0; margin: 8px 0 0;
+}
+.bos-roadmap-timeline ul li {
+  display: list-item; background: none; border: 0; padding: 4px 0; font-size: 13px;
+  color: var(--text-dim);
+}
+.rm-num {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px; font-weight: 800; line-height: 1;
+  background: linear-gradient(120deg, var(--accent-3), var(--accent));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.is-blurred {
+  filter: blur(3px); opacity: 0.55; pointer-events: none; user-select: none;
+  position: relative;
+}
+.is-blurred::after {
+  content: "🔒 Unlock to reveal"; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
+  color: var(--text); background: rgba(10,10,15,0.85);
+  padding: 12px 22px; border-radius: 999px;
+  border: 1px solid var(--accent-3); filter: blur(0);
+}
+
+/* Active roadmap (customer) */
+.bos-roadmap-card {
+  background: linear-gradient(135deg, rgba(52,211,153,0.10), rgba(255,184,0,0.06));
+  border: 1px solid rgba(52,211,153,0.30);
+  border-radius: 18px; padding: 28px; margin-bottom: 22px;
+}
+.bos-roadmap-card-head {
+  display: flex; justify-content: space-between; align-items: start; gap: 18px; flex-wrap: wrap;
+}
+.bos-roadmap-card h2 {
+  font-size: clamp(24px, 3vw, 32px); font-weight: 800;
+  letter-spacing: -0.02em; margin: 6px 0 8px;
+}
+.bos-roadmap-status-num {
+  font-size: 38px; font-weight: 800; letter-spacing: -0.02em; color: var(--good); line-height: 1;
+}
+.bos-roadmap-status-num span { font-size: 16px; opacity: 0.6; margin-left: 2px; }
+
+/* ─── Health-check end gift card ─────────────── */
+.hc-gift-card {
+  position: relative; overflow: hidden;
+  margin: 40px 0 30px;
+  background: linear-gradient(135deg, rgba(255,184,0,0.12), rgba(255,107,53,0.10));
+  border: 1px solid rgba(255,184,0,0.35);
+  border-radius: 22px;
+}
+.hc-gift-ribbon {
+  display: inline-block; margin: 18px 0 0 18px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #1a0e00; padding: 8px 16px; border-radius: 999px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.12em;
+  box-shadow: 0 8px 20px rgba(255,107,53,0.4);
+}
+.hc-gift-body { padding: 18px 32px 32px; max-width: 720px; }
+.hc-gift-card h2 {
+  font-size: clamp(28px, 4vw, 40px); font-weight: 800;
+  letter-spacing: -0.025em; margin: 16px 0 14px;
+}
+.hc-gift-card > .hc-gift-body > p {
+  color: var(--text-dim); font-size: 16px; line-height: 1.6; margin-bottom: 22px;
+}
+.hc-gift-bullets {
+  list-style: none; padding: 0; margin: 0 0 24px;
+  display: grid; gap: 10px;
+}
+.hc-gift-bullets li {
+  font-size: 14px; color: var(--text-dim);
+}
+.hc-gift-fineprint { font-size: 12px; margin-top: 14px; }
+
+/* Subtle confetti/glow flourish on the gift card corners */
+.hc-gift-card::before, .hc-gift-card::after {
+  content: ""; position: absolute; pointer-events: none; border-radius: 50%; filter: blur(60px);
+}
+.hc-gift-card::before { inset: -20% 60% 60% -10%; background: var(--accent);   opacity: 0.18; }
+.hc-gift-card::after  { inset: 50% -10% -20% 50%; background: var(--accent-3); opacity: 0.18; }
+.hc-gift-card > * { position: relative; }
+

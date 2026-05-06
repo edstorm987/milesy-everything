@@ -185,6 +185,32 @@
           <div class="hc-section-nav" data-hc-section-nav></div>
         </div>
 
+        <!-- ── Free gift: claim your Business OS ── -->
+        <div class="hc-gift-card" data-hc-gift>
+          <div class="hc-gift-ribbon">🎁 Free gift</div>
+          <div class="hc-gift-body">
+            <span class="eyebrow">Your reward for finishing</span>
+            <h2 data-hc-gift-headline>Claim your free Business OS — on us.</h2>
+            <p>
+              A complete operating system for growing your business. Manage everything
+              in one place, unlock guides as you go, install only the add-ons you need,
+              and watch your "money leak" shrink each week. Free for life. No card needed.
+            </p>
+            <ul class="hc-gift-bullets">
+              <li>📊 Your Health Check results, plugged in and tracked</li>
+              <li>🎯 A built-for-you OS — pick your niche on signup</li>
+              <li>📚 Quick-win modules &amp; templates</li>
+              <li>🤖 Aqua AI — context-aware, with free messages</li>
+              <li>📞 Free strategy call any time you're stuck</li>
+            </ul>
+            <div class="hc-actions hc-cta-actions" data-hc-gift-actions>
+              <a href="../business-os app/index.html?source=healthcheck" class="btn btn-primary btn-lg" data-hc-claim-bos>Claim my free Business OS →</a>
+              <a href="#" class="btn btn-secondary btn-lg" data-hc-bos-existing hidden>← Back to my Business OS</a>
+            </div>
+            <p class="muted hc-gift-fineprint">Already have one? We'll spot it and just send you back in.</p>
+          </div>
+        </div>
+
         <!-- Assistant tease -->
         <div class="hc-assistant-card">
           <div class="hc-assistant-icon">🤖</div>
@@ -1053,6 +1079,41 @@
     var btn = document.querySelector('[data-hc-bos-return]');
     if (btn) btn.removeAttribute('hidden');
   }
+
+  // Cross-port helper: in dev (lead magnet on :3033, BOS on :3034) the
+  // relative `../business-os app/...` path 404s because each app is
+  // served from its own folder. Rewrite to localhost:3034 for dev. In
+  // production (Vercel single origin) the relative path works.
+  function bosUrl(path) {
+    if (location.hostname === 'localhost' && location.port === '3033') {
+      return 'http://localhost:3034/' + path.replace(/^.*business-os app\//, '');
+    }
+    return path;
+  }
+  document.querySelectorAll('[data-hc-claim-bos]').forEach(function (a) {
+    a.setAttribute('href', bosUrl(a.getAttribute('href')));
+  });
+  document.querySelectorAll('[data-hc-bos-return]').forEach(function (a) {
+    a.setAttribute('href', bosUrl(a.getAttribute('href')));
+  });
+
+  // If a BOS user already exists on this origin, swap the gift CTA for
+  // a "Back to my OS" button. Cross-origin in dev means we can't always
+  // detect — that's fine; the gift card still works for new arrivals.
+  try {
+    var existingBos = JSON.parse(localStorage.getItem('bos.user') || 'null');
+    if (existingBos) {
+      var claim = document.querySelector('[data-hc-claim-bos]');
+      var back  = document.querySelector('[data-hc-bos-existing]');
+      var head  = document.querySelector('[data-hc-gift-headline]');
+      if (claim) claim.setAttribute('hidden', '');
+      if (back)  {
+        back.removeAttribute('hidden');
+        back.setAttribute('href', bosUrl('../business-os app/app.html'));
+      }
+      if (head) head.textContent = 'Welcome back — your Business OS is waiting.';
+    }
+  } catch (e) {}
 
   document.addEventListener('click', function (ev) {
     var pickType = ev.target.closest('[data-hc-pick-type]');

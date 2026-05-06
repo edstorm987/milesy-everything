@@ -25,6 +25,14 @@
 
   <main class="auth-shell">
     <div class="auth-card bos-auth-card">
+      <div class="bos-source-banner" data-bos-source-banner hidden>
+        <span class="bos-source-icon">🎁</span>
+        <div>
+          <strong>Your free Business OS, ready to go.</strong>
+          <p class="muted">We've already saved your Health Check results — they'll appear on your dashboard the moment you sign in.</p>
+        </div>
+      </div>
+
       <span class="eyebrow">Free · Lifetime access</span>
       <h1>Welcome to your <span class="accent">Business OS</span>.</h1>
       <p class="sub">A complete operating system for growing your business — assessments, guides, templates and a free assistant — all in one portal. Start by creating your account.</p>
@@ -111,6 +119,21 @@
       { slug: 'agency',     label: 'Agency',     icon: '💼' },
       { slug: 'generic',    label: 'Other',      icon: '◆'  }
     ];
+    // Pre-fill from URL params (e.g. arriving from health check)
+    (function () {
+      var qs = new URLSearchParams(location.search);
+      ['name', 'business', 'email'].forEach(function (k) {
+        var v = qs.get(k);
+        if (!v) return;
+        var input = document.querySelector('input[name="' + k + '"]');
+        if (input) input.value = v;
+      });
+      if (qs.get('source') === 'healthcheck') {
+        var b = document.querySelector('[data-bos-source-banner]');
+        if (b) b.removeAttribute('hidden');
+      }
+    })();
+
     var picker = document.querySelector('[data-bos-niche-picker]');
     var input = document.querySelector('[data-bos-niche-input]');
     picker.innerHTML = NICHES.map(function (n, i) {
