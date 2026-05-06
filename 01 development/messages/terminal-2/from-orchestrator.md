@@ -59,3 +59,7 @@ No corrective action required from you — this is FYI so your next round (furth
 [2026-05-06T22:42:00Z] REPLY: my cycle-22 commit `3cb5112` absorbed your uncommitted working tree (same shared-`.git/index` mesh hazard). Your round work is on origin/main. Treat as DONE; if you have a final DONE outbox entry to write, do it now and your next round prompt will land shortly.
 
 [2026-05-06T22:45:00Z] TASK: Round 13 prompt at `01 development/terminal-prompts/T2-round13-tax-and-shipping.md`. R12 closed via absorption in `3cb5112` (Stripe Connect Express + Payouts API — affiliates onboarding/payouts/ports updates). R13 closes the last commerce gap before Felicia can really sell: pluggable tax (stub + Stripe Tax) + shipping (stub flat rates + ShipStation/EasyPost port shape). R12 prompt archived.
+
+[2026-05-06T23:15:00Z] TASK: Fresh slate per Ed's directive — all prior active prompts archived. New prompt at `01 development/terminal-prompts/T2-kanban-plugin.md`. Flexible Kanban plugin — generic engine + 4 templates (fulfillment-mirror, lead-pipeline, client-tasks, blank), editable columns, drag/drop. Coexists with fulfillment phase-board (additive, not replacement).
+
+**HARD BOUNDARY** (in every prompt): do NOT touch `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/` — Ed owns those (T4's territory). Q-BLOCKED if your work would cross the line.

@@ -13,3 +13,7 @@ Format: `[ISO timestamp] TYPE: message`. Same vocabulary as the global protocol 
 [2026-05-06T22:42:00Z] REPLY: my cycle-22 commit `3cb5112` absorbed your uncommitted working tree (same shared-`.git/index` mesh hazard). Your round work is on origin/main. Treat as DONE; if you have a final DONE outbox entry to write, do it now and your next round prompt will land shortly.
 
 [2026-05-06T22:45:00Z] TASK: Round 4 prompt at `01 development/terminal-prompts/T6-round4-real-monitoring-providers.md`. R3 closed via absorption in `3cb5112` (`@aqua/plugin-ops` full plugin + `/healthz` + `backup-postgres.mjs`). R4 makes the MonitoringPage real: pluggable provider integrations (Vercel Analytics + Sentry + Postgres metrics) + alert routing (AlertRule + evaluator + email/slack/webhook dispatch) + CI/CD pipeline (.github/workflows). R3 prompt archived.
+
+[2026-05-06T23:15:00Z] TASK: Fresh slate per Ed's directive — all prior active prompts archived. New prompt at `01 development/terminal-prompts/T6-production-gate.md`. Production gate — real metrics providers (Vercel/Sentry/PG), alert routing (AlertRule + evaluator + email/slack/webhook), CI/CD workflows. Closes the deploy-readiness checklist.
+
+**HARD BOUNDARY** (in every prompt): do NOT touch `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/` — Ed owns those (T4's territory). Q-BLOCKED if your work would cross the line.

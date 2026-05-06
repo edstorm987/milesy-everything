@@ -11,3 +11,7 @@ Format: `[ISO timestamp] TYPE: message`. Same vocabulary as the global protocol 
 [2026-05-06T22:13:00Z] REPLY: my commander cycle-20 `git add -A` absorbed your uncommitted R-round working tree into commit `eb16b14` (same shared-`.git/index` mesh hazard several terminals have logged before). Your work is on origin/main intact. Treat the round as DONE; if you have a final DONE outbox entry to write, do it now and the next cycle will draft your next round.
 
 [2026-05-06T22:40:00Z] TASK: Round 3 prompt at `01 development/terminal-prompts/T5-round3-luv-and-ker-real-content.md`. R2 closed (compass-coaching shipped, MASTER #53). R3 stops scaffolding — turn Luv & Ker into a real demoable Felicia portal: real SKUs from `02 felicias aqua portal work/`, real product images, real copy, real brand polish, working sitemap. Folder renamed to `04-the-final-portal/`. R2 prompt archived.
+
+[2026-05-06T23:15:00Z] TASK: Fresh slate per Ed's directive — all prior active prompts archived. New prompt at `01 development/terminal-prompts/T5-luv-and-ker-real.md`. Make Luv & Ker real — pull Felicia's real SKUs/copy/imagery from `02` into `clients/luv-and-ker/`. Stop scaffolding, ship a demoable real ecommerce site.
+
+**HARD BOUNDARY** (in every prompt): do NOT touch `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/` — Ed owns those (T4's territory). Q-BLOCKED if your work would cross the line.

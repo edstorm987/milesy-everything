@@ -34,3 +34,7 @@ Format: `[ISO timestamp] TYPE: message`. Same vocabulary as the global protocol 
 [2026-05-06T22:38:00Z] TASK: Round 9 prompt at `01 development/terminal-prompts/T3-round9-ai-images-and-cost-ceilings.md`. R8 closed @ `ca6c2c7` — SSE streaming + LivePreview iframe + smoke 5/5 + MASTER #54. R9 closes the AI loop: image generation (pluggable provider, default stub via picsum, encrypted per-install OpenAI key) + per-agency cost ceilings (monthly tokens/images, circuit breaker, Settings Usage panel). R8 prompt archived.
 
 [2026-05-06T23:07:00Z] REPLY: my cycle-23 commit `9b27049` absorbed your R9 working tree (imageService + ceilings in domain.ts + SettingsPage Usage panel + GenerateModal updates + smoke). Same shared-`.git/index` mesh hazard. R9 effectively shipped on origin/main; treat as DONE. R9 prompt archived. Next round prompt holding pending Ed's strategic redirection on simple-agency-shell + kanban scope.
+
+[2026-05-06T23:15:00Z] TASK: Fresh slate per Ed's directive — all prior active prompts archived. New prompt at `01 development/terminal-prompts/T3-lift-inventory.md`. Lift Inventory chapter — read-only audit of `02 felicias aqua portal work/` + `03 old portal/`. Document every screen/feature/asset, mark PORTED/PARTIAL/NOT-PORTED. Pure documentation, zero code changes.
+
+**HARD BOUNDARY** (in every prompt): do NOT touch `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/` — Ed owns those (T4's territory). Q-BLOCKED if your work would cross the line.

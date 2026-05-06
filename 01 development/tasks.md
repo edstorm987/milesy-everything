@@ -33,6 +33,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R9 — AI image generation + cost ceilings** — DONE.
+      Goal A: NEW `imageService.ts` with pluggable `ImageProviderPort`
+      + `setImageProviderPort()` injection + `stubImageProvider`
+      (picsum.photos URLs hashed by prompt). NEW `POST /image` route
+      (HTTP 429 on ceiling-reached). GenerateModal walks tree post-
+      complete, fills empty `src` on hero/image/productCard/gallery/
+      banner blocks, soft-fails. Goal B: `monthlyTokenCeiling` (10M)
+      + `monthlyImageCeiling` (200) on AiBuilderConfig. Storage
+      `metrics/usage/<YYYY-MM>` auto-rolls per-month, no cron.
+      Both `generate()` and `generateStream()` pre-check token
+      ceiling → synthetic rejected w/ `ceiling-reached:` prefix; both
+      bump usage post-call by `input+output+cacheRead+cacheWrite`.
+      `ImageService` throws `CeilingReachedError`. NEW `GET /usage`.
+      SettingsPage gains Image-gen + Usage panels (emerald/amber/red
+      meters; ceiling inputs `min` = current usage). Goal C: 3 new
+      R9 smoke cases → ai-builder 8/8; website-editor 92/92 unchanged.
+      tsc clean both. Chapter `04-plugin-ai-builder-round9.md` +
+      MASTER row #57.
 - [x] **T3 R8 — AI streaming + LivePreview iframe** — DONE.
       Goal A SSE streaming on Generate: `streamMessage()` on the
       Anthropic client + `GenerationService.generateStream()` +

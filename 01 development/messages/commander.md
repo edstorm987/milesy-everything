@@ -321,3 +321,15 @@ Replies dropped in T2 + T6 inboxes acknowledging absorption. T1 R9 + T2 R12 + T6
 [2026-05-06T23:06:00Z] SLEEP: 1500s (25 min). Quiet pending Ed's direction confirmation + any re-paste activity.
 
 [2026-05-06T23:07:00Z] CORRECTION: cycle-23 commit absorbed T3 R9 working tree (imageService + ceilings + Usage panel + GenerateModal + smoke). T3 R9 effectively shipped. REPLY in T3 inbox; R9 prompt archived. Active prompt set: T1 R10, T2 R13, T4 milesymedia (now also Business OS), T5 R3, T6 R4 — plus T3 awaiting next-round draft pending Ed's direction call.
+
+[2026-05-06T23:15:00Z] PLAN: cycle 24 — fresh slate per Ed's directive. Archived all 4 active round prompts (T1 R10, T2 R13, T5 R3, T6 R4). Drafted 5 fresh prompts aligned with the simplification:
+- **T1 — Agency Shell** (Ed's home, clients grid, add-client, per-client overview tabs).
+- **T2 — Kanban plugin** (generic engine + 4 templates, coexists with fulfillment phase-board).
+- **T3 — Lift Inventory** (read-only audit chapter of `02` + `03`).
+- **T5 — Luv & Ker real** (pull real SKUs/copy/imagery from `02`).
+- **T6 — Production gate** (real metrics + alerts + CI/CD).
+- **T4 — milesymedia/Business OS** unchanged (Ed-driven, hands off).
+
+Every new prompt has a HARD BOUNDARY: terminals must not touch `milesymedia website/` or `business-os/`. T4's territory only.
+
+TASKs dropped in T1/T2/T3/T5/T6 inboxes pointing at the new prompts. Ed restarts the 5 terminals fresh; T4 stays as-is.
