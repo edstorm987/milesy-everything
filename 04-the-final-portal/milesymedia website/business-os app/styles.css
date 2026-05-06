@@ -1050,3 +1050,43 @@ footer {
 .bos-mod-cta p  { margin-bottom: 16px; }
 .bos-mod-cta .hc-actions { justify-content: center; }
 
+/* ─── Dev bypass + dev bar ───────────────────── */
+.bos-dev-bypass {
+  display: block; width: 100%; margin-top: 16px;
+  padding: 11px 14px; border-radius: 10px;
+  border: 1px dashed rgba(124,92,255,0.45);
+  background: rgba(124,92,255,0.08);
+  color: var(--accent-3); font-size: 13px; font-weight: 600;
+  transition: background .15s, border-color .15s;
+}
+.bos-dev-bypass:hover { background: rgba(124,92,255,0.16); border-color: var(--accent-3); }
+
+.bos-dev-bar {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 8px; border-radius: 999px;
+  background: rgba(10,10,15,0.92);
+  border: 1px solid rgba(124,92,255,0.35);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  font-size: 12px;
+  flex-wrap: wrap; max-width: calc(100vw - 24px);
+}
+.bos-dev-tag {
+  background: var(--accent-3); color: #fff; padding: 3px 8px; border-radius: 999px;
+  font-weight: 800; letter-spacing: 0.18em; font-size: 10px; margin-right: 4px;
+}
+.bos-dev-bar a, .bos-dev-bar button {
+  padding: 6px 12px; border-radius: 999px; color: var(--text-dim);
+  font-size: 12px; font-weight: 600; transition: color .15s, background .15s;
+  border: 0; background: transparent; cursor: pointer;
+}
+.bos-dev-bar a:hover, .bos-dev-bar button:hover {
+  color: var(--text); background: rgba(255,255,255,0.06);
+}
+.bos-dev-bar button {
+  color: var(--accent); border: 1px solid rgba(255,107,53,0.35); margin-left: 4px;
+}
+.bos-dev-bar button:hover { background: rgba(255,107,53,0.12); }
+

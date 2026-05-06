@@ -58,6 +58,10 @@
 
         <a href="../lead magnet app/index.html" class="admin-link">Take the free Health Check first ↗</a>
 
+        <button type="button" class="bos-dev-bypass" data-bos-bypass>
+          ⚡ Dev bypass — skip login &amp; jump straight in
+        </button>
+
         <p class="muted bos-fineprint">
           By creating an account you'll get the precustomer portal. As soon as you upgrade, your full Aqua agency portal layers on top — same login, more sidebar.
         </p>
@@ -99,6 +103,18 @@
           name: fd.get('name') || 'Friend',
           business: fd.get('business') || 'Your Business',
           email: fd.get('email') || ''
+        }));
+      } catch (e) {}
+      window.location.href = 'app.html';
+    });
+
+    // Dev bypass — seeds a demo user and jumps to the app. Visible
+    // intentionally during build; we'll hide behind a query flag once
+    // we ship for real.
+    document.querySelector('[data-bos-bypass]').addEventListener('click', function () {
+      try {
+        localStorage.setItem('bos.user', JSON.stringify({
+          name: 'Jordan Lee', business: 'Northbeam Apparel', email: 'demo@milesymedia.co', dev: true
         }));
       } catch (e) {}
       window.location.href = 'app.html';
