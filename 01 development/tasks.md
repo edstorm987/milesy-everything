@@ -9,6 +9,32 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 Agency Shell — Ed's home** — DONE.
+      Goal A: `/portal/agency` rewritten as a hero — Welcome banner +
+      single primary "New client" CTA + clients grid (brand mark, name,
+      phase chip, plugin count, last-activity timestamp, hover/focus
+      footer with Open / Edit website / View portal). Empty state
+      replaces grid entirely. Goal B: NEW `_NewClientButton.tsx` inline
+      modal (name / slug auto / email / brand colour / logo URL / phase
+      preset). Phase presets fetched from `GET /api/portal/fulfillment/
+      presets` with static fallback. Live preset shows "skips presets —
+      land in custom-portal builder". Submit POSTs `/api/portal/
+      fulfillment/clients`, redirects to new client. Goal C: per-client
+      `[clientId]/page.tsx` rewritten as tabbed screen via `?tab=`
+      (Overview / Website / Portal / Kanban / Finance / Assets / Tools).
+      `_OverviewTabs.tsx` thin client component for active state; tab
+      content all server-rendered. Goal C2: `_ToolsPicker.tsx` "+ Add
+      capability" picker — install / enable / disable / uninstall via
+      fulfillment marketplace endpoints; `from preset` chip when plugin
+      id is in current phase preset. Goal D: extended `Sidebar.tsx` with
+      `extra?: ReactNode` slot; agency layout passes
+      `<AgencyToolsBallpark />` — collapsible Tools group with HR,
+      Finance, Marketing, Forms, Email, Ops, Domains, Affiliates. Goal
+      E: smoke extended with §Agency shell (home 200 + welcome/CTA
+      strings + every tab 200 + add-client happy path 200/201). HARD
+      BOUNDARY honoured: zero touches to `milesymedia website/` or
+      `business-os/`. tsc clean. Chapter `04-agency-shell.md`, MASTER
+      row #59.
 - [x] **T1 R9 — OAuth providers (Google + magic-link)** — DONE.
       Goal A Google OAuth at `/api/auth/oauth/google/{start,callback}`,
       env-gated (`GOOGLE_OAUTH_CLIENT_ID`/`_SECRET` both unset →
@@ -379,6 +405,29 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       extended with `"ecommerce"`. Demo seed installs both client-scoped
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
+
+## Done — Kanban (T2)
+- [x] **T2 — `@aqua/plugin-kanban`** — DONE.
+      Generic kanban engine + 4 install-time templates
+      (fulfillment-mirror / lead-pipeline / client-tasks / blank).
+      `scopePolicy: "either"` — installs at agency or per-client; scope
+      contract enforced (mismatched scope on creation rejected;
+      cross-scope `get()` returns null). Domain: Board / Column
+      (embedded) / Card with renormalized integer order. BoardService
+      (CRUD + addColumn + renameColumn + recolorColumn + moveColumn +
+      removeColumn — refuses if cards present or last column).
+      CardService (CRUD + moveCard renormalizing both src+dst columns
+      + archive closes gap + restore appends back). 16 API routes at
+      `/api/portal/kanban/`. 3 admin pages (BoardListPage with template
+      picker, BoardDetailPage server-rendered with HTML5 drag/drop +
+      keyboard hooks, ArchivedCardsPage cross-board listing). Coexists
+      with fulfillment phase-board (additive, not replacement). Vendored
+      types — tsc-clean standalone, zero runtime deps. Smoke 12/12 pass.
+      Chapter `04-plugin-kanban.md` + MASTER #60. Foundation pending:
+      standard 5-step wire-up; `ActivityCategory` += `"kanban"`. R2
+      follow-up: swap placeholder columns for chapter #59 Aqua-HQ-aware
+      sets. HARD BOUNDARY honoured: zero touches to `milesymedia
+      website/` or `business-os/`.
 
 ## Done — Round 12
 - [x] **T2 R12 — Stripe Connect payouts for affiliates** — DONE.
