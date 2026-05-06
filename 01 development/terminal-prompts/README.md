@@ -47,12 +47,12 @@ When done:
 
 | Terminal | Prompt | Goal |
 |----------|--------|------|
-| **T1 → R8** | [T1-round8-milesymedia-portal-stitch.md](T1-round8-milesymedia-portal-stitch.md) | Stitch milesymedia + Aqua portal as ONE surface (localhost + Vercel). milesymedia.com is the front door, portal lives at `/portal/*` same origin. Files separate in repo, stitched at edge. Coordinate with T6's Vercel monorepo work. |
-| **T2 → R11** | [T2-round11-export-to-repo-and-presets.md](T2-round11-export-to-repo-and-presets.md) | Ship `@aqua/plugin-portal-export` — generator that materializes a Live client's content into `clients/<slug>/` as a self-contained Next.js app. 4 starter presets (skincare-brand / service-portal / membership-only / affiliate-only). T5's Luv & Ker portal is the canonical reference target. |
+| **T1 → R9** | [T1-round9-oauth-providers.md](T1-round9-oauth-providers.md) | Google OAuth (agency + client roles) + magic-link sign-in (end-customers via T2 R10 email-sender). Provider env unset → button hidden. Updates LoginForm + EmbedLogin. |
+| **T2 → R12** | [T2-round12-stripe-connect-payouts.md](T2-round12-stripe-connect-payouts.md) | Stripe Connect Express onboarding for affiliates + Payouts API replacing manual `markPaid`. Uses per-install Stripe pattern. Mock-Stripe smoke covers onboard → status → schedule → process → transfer.paid. |
 | **T3 → R7** | [T3-round7-ai-page-builder.md](T3-round7-ai-page-builder.md) | Ship `@aqua/plugin-ai-builder` — eds requirements' "describe a page → block tree" feature. Claude Haiku 4.5 default + Sonnet 4.6 fallback. Per-install API key. Prompt caching on the static system prompt. Editor topbar gets ✨ Generate button + streaming preview modal. |
 | **T4 → R2** | [T4-round2-storefront-polish-and-perf.md](T4-round2-storefront-polish-and-perf.md) | Storefront + end-customer + per-client portal polish (apply R1's primitives + a11y patterns) + performance pass (bundle analysis, lazy-load, image opt, server caching, Lighthouse-style smoke). |
 | **T5 → R2** | [T5-round2-second-client-portal.md](T5-round2-second-client-portal.md) | Build a SECOND per-client portal in a different industry (coaching/membership). Slim plugin set (website-editor + memberships + client-crm + forms — no ecommerce/affiliates). Validates multi-client variation. |
-| **T6 → R2** | [T6-round2-real-deploy-and-domains.md](T6-round2-real-deploy-and-domains.md) | Make R1's deploy actually work. Operator runbook + working Vercel domain-attach client (lift from `02`) + `@aqua/plugin-domains` admin UI + end-to-end deploy/domain smoke. |
+| **T6 → R3** | [T6-round3-cicd-and-monitoring.md](T6-round3-cicd-and-monitoring.md) | GitHub Actions CI (tsc + smoke + smoke:ux + smoke:perf matrix per package + Vercel preview deploys on PR) + MonitoringPage (uptime + error-rate + slow-routes + cost) + nightly Postgres backup script. |
 
 ### Orchestrator
 

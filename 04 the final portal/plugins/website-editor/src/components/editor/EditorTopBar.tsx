@@ -40,6 +40,9 @@ interface Props {
   canRedo?: boolean;
   onSave?: () => void;
   onPublish?: () => void;
+  // Round-7: opens the AI page-builder modal. When undefined the
+  // ✨ Generate button is hidden (ai-builder plugin not installed).
+  onGenerate?: () => void;
   // What the operator is currently editing. Page-targets get the full
   // page picker / mode switcher / preview controls; funnels just show
   // the site picker + a context badge so the chrome stays calm.
@@ -67,7 +70,7 @@ export default function EditorTopBar({
   edit, onEditChange,
   onReload, iframeReady, unsaved,
   onUndo, onRedo, canUndo = false, canRedo = false,
-  onSave, onPublish,
+  onSave, onPublish, onGenerate,
   targetKind = "page", funnelLabel,
   complexity = "full", onComplexityChange,
   onOpenPageSettings, portalRoleLabel,
@@ -208,6 +211,20 @@ export default function EditorTopBar({
           the Outliner in Full mode; promoted to a topbar gear in Pro. */}
       {isPro && onOpenPageSettings && (
         <IconBtn onClick={onOpenPageSettings} title="Page settings — head/foot, theme, layout overrides" aria-label="Page settings">⚙</IconBtn>
+      )}
+
+      {/* Round-7: AI page-builder. Hidden when ai-builder plugin is
+          not installed (onGenerate undefined). Sits left of Save so
+          generated content can flow straight into a save. */}
+      {onGenerate && (
+        <button
+          onClick={onGenerate}
+          className="px-3 py-1.5 rounded-md text-[11px] font-medium bg-fuchsia-500/15 hover:bg-fuchsia-500/25 text-fuchsia-200 border border-fuchsia-400/20"
+          title="Generate a page section with AI"
+          aria-label="Generate with AI"
+        >
+          ✨ Generate
+        </button>
       )}
 
       {/* Save */}

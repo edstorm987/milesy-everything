@@ -140,7 +140,7 @@ function InlineInsert({ onPick }: { onPick: (type: BlockType) => void }) {
           width: 28,
           height: 28,
           borderRadius: "50%",
-          background: "var(--brand-orange, #ff6b35)",
+          background: "var(--brand-accent, #ff6b35)",
           color: "#fff",
           border: "2px solid #0a0a0a",
           fontSize: 16,
@@ -385,13 +385,13 @@ function BlockWrapper({
 
       {/* Visible drop indicator — coloured line where the block will land */}
       {dropPos === "before" && (
-        <div style={{ position: "absolute", top: -1, left: 0, right: 0, height: 3, background: "var(--brand-orange, #ff6b35)", zIndex: 15, boxShadow: "0 0 0 2px rgba(255,107,53,0.25)" }} />
+        <div style={{ position: "absolute", top: -1, left: 0, right: 0, height: 3, background: "var(--brand-accent, #ff6b35)", zIndex: 15, boxShadow: "0 0 0 2px rgba(255,107,53,0.25)" }} />
       )}
       {dropPos === "after" && (
-        <div style={{ position: "absolute", bottom: -1, left: 0, right: 0, height: 3, background: "var(--brand-orange, #ff6b35)", zIndex: 15, boxShadow: "0 0 0 2px rgba(255,107,53,0.25)" }} />
+        <div style={{ position: "absolute", bottom: -1, left: 0, right: 0, height: 3, background: "var(--brand-accent, #ff6b35)", zIndex: 15, boxShadow: "0 0 0 2px rgba(255,107,53,0.25)" }} />
       )}
       {dropPos === "inside" && (
-        <div style={{ position: "absolute", inset: 4, border: "2px dashed var(--brand-orange, #ff6b35)", borderRadius: 6, zIndex: 1, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 4, border: "2px dashed var(--brand-accent, #ff6b35)", borderRadius: 6, zIndex: 1, pointerEvents: "none" }} />
       )}
 
       {/* Floating block toolbar — appears on hover/select */}
@@ -409,7 +409,7 @@ function BlockWrapper({
 
       {/* Selection chip — kept for label visibility under the toolbar */}
       {selected && !hovered && (
-        <span style={{ position: "absolute", top: -22, left: 0, fontSize: 10, padding: "2px 6px", borderRadius: 4, background: "var(--brand-orange, #ff6b35)", color: "#fff", zIndex: 10 }}>
+        <span style={{ position: "absolute", top: -22, left: 0, fontSize: 10, padding: "2px 6px", borderRadius: 4, background: "var(--brand-accent, #ff6b35)", color: "#fff", zIndex: 10 }}>
           {def?.label ?? block.type}
         </span>
       )}

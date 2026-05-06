@@ -257,7 +257,7 @@ export default function ProductVariantPicker({
                       style={{
                         padding: "6px 12px",
                         borderRadius: 8,
-                        border: isActive ? "1px solid var(--brand-orange, #ff6b35)" : "1px solid rgba(255,255,255,0.12)",
+                        border: isActive ? "1px solid var(--brand-accent, #ff6b35)" : "1px solid rgba(255,255,255,0.12)",
                         background: isActive ? "rgba(255,107,53,0.15)" : "rgba(255,255,255,0.04)",
                         color: "inherit",
                         fontSize: 13,
@@ -284,7 +284,7 @@ export default function ProductVariantPicker({
               style={{
                 padding: "8px 14px",
                 borderRadius: 8,
-                border: v.id === selectedId ? "1px solid var(--brand-orange, #ff6b35)" : "1px solid rgba(255,255,255,0.12)",
+                border: v.id === selectedId ? "1px solid var(--brand-accent, #ff6b35)" : "1px solid rgba(255,255,255,0.12)",
                 background: v.id === selectedId ? "rgba(255,107,53,0.15)" : "rgba(255,255,255,0.04)",
                 color: "inherit",
                 fontSize: 13,

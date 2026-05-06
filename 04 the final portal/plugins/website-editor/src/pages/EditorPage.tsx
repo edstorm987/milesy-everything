@@ -24,6 +24,7 @@ import EditorPropertiesSidebar, { type SelectedElement } from "../components/edi
 import EditorOutliner, { type EditorTarget } from "../components/editor/EditorOutliner";
 import EditorFunnelStage from "../components/editor/EditorFunnelStage";
 import EditorBlockStage from "../components/editor/EditorBlockStage";
+import { GenerateModal } from "../components/editor/GenerateModal";
 import {
   loadDeviceState, saveDeviceState, getDevicePreset, effectiveViewport,
   type DeviceState,
@@ -84,6 +85,8 @@ function VisualEditorPageInner() {
   const [reloadKey, setReloadKey] = useState(0);
   const [selected, setSelected] = useState<SelectedElement | null>(null);
   const [publishOpen, setPublishOpen] = useState(false);
+  const [generateOpen, setGenerateOpen] = useState(false);
+  const [aiAvailable, setAiAvailable] = useState(false);
   const [newPageOpen, setNewPageOpen] = useState(false);
   const [newFunnelOpen, setNewFunnelOpen] = useState(false);
   const [pageSettingsId, setPageSettingsId] = useState<string | null>(null);
@@ -102,6 +105,18 @@ function VisualEditorPageInner() {
     // the operator switches to Simple while sitting on Block / Code.
     if (c === "simple" && mode !== "live") setMode("live");
   }
+  // Probe whether the @aqua/plugin-ai-builder API is mounted. Used to
+  // toggle the ✨ Generate button — invisible when the plugin isn't
+  // installed or the operator's role can't reach it.
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/portal/ai-builder/status", { cache: "no-store", credentials: "include" })
+      .then(r => (r.ok ? r.json() as Promise<{ ok?: boolean; ready?: boolean }> : Promise.resolve({ ok: false } as { ok?: boolean; ready?: boolean })))
+      .then(d => { if (!cancelled) setAiAvailable(Boolean(d.ok && d.ready)); })
+      .catch(() => { if (!cancelled) setAiAvailable(false); });
+    return () => { cancelled = true; };
+  }, []);
+
   // History controls registered by EditorBlockStage so the topbar's
   // ↶/↷ buttons can drive its internal undo/redo stacks.
   const historyApiRef = useRef<{
@@ -314,6 +329,11 @@ function VisualEditorPageInner() {
         iframeReady={iframeReady}
         unsaved={unsaved}
         onPublish={() => setPublishOpen(true)}
+        onGenerate={
+          aiAvailable && isPageTarget && currentPage && currentPage.source === "editor"
+            ? () => setGenerateOpen(true)
+            : undefined
+        }
         targetKind={target.kind}
         funnelLabel={currentFunnel?.name}
         onUndo={mode === "block" ? () => historyApiRef.current?.undo() : undefined}
@@ -478,6 +498,18 @@ function VisualEditorPageInner() {
         <div className="flex-1" />
         <span>{target.kind === "page" ? currentPage?.slug : currentFunnel?.steps.length + " steps"}</span>
       </footer>
+
+      <GenerateModal
+        open={generateOpen}
+        onClose={() => setGenerateOpen(false)}
+        onInsert={async tree => {
+          if (!site || !currentPage || currentPage.source !== "editor") return;
+          const existing = await getEditorPage(site.id, currentPage.id);
+          const nextBlocks = [...(existing?.blocks ?? []), ...(tree as EditorPage["blocks"])];
+          await updateEditorPage(site.id, currentPage.id, { blocks: nextBlocks });
+          setReloadKey(k => k + 1);
+        }}
+      />
 
       {publishOpen && site && (
         <PublishModal

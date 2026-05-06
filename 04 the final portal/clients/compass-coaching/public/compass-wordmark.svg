@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" role="img" aria-label="Compass Coaching">
+  <style>
+    .wm { font-family: 'DM Serif Display', ui-serif, Georgia, serif; font-weight: 700; }
+    .a { fill: #3B6EAE; }
+    .b { fill: #1B3D6F; }
+    .sub { font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-weight: 500; letter-spacing: 0.18em; }
+  </style>
+  <g transform="translate(0, 8)">
+    <circle cx="20" cy="20" r="16" fill="none" stroke="#1B3D6F" stroke-width="2"/>
+    <path d="M20 6 L24 22 L20 34 L16 22 Z" fill="#3B6EAE"/>
+    <circle cx="20" cy="20" r="2.5" fill="#1B3D6F"/>
+  </g>
+  <text x="48" y="32" class="wm a" font-size="28">Compass</text>
+  <text x="48" y="52" class="sub b" font-size="10">COACHING</text>
+</svg>

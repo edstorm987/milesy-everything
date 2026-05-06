@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: var(--brand-font-heading);
+  --font-body: var(--brand-font-body);
+}
+
+:root {
+  --brand-primary: #3B6EAE;
+  --brand-secondary: #F4F7FB;
+  --brand-accent: #1B3D6F;
+  --brand-font-heading: "DM Serif Display", ui-serif, Georgia, serif;
+  --brand-font-body: Inter, system-ui, sans-serif;
+  --brand-radius: 0.25rem;
+  --brand-ink: #0F1B2A;
+  --brand-ink-soft: #485468;
+}
+
+html, body {
+  background: var(--brand-secondary);
+  color: var(--brand-ink);
+  font-family: var(--brand-font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--brand-font-heading);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--brand-primary);
+  color: #fff;
+  border-radius: var(--brand-radius);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: filter 0.15s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(0.92);
+}
+
+.btn-ghost {
+  border: 1px solid var(--brand-ink);
+  color: var(--brand-ink);
+  border-radius: var(--brand-radius);
+  padding: 0.65rem 1.4rem;
+  font-weight: 500;
+  background: transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background: var(--brand-ink);
+  color: var(--brand-secondary);
+}
+
+/* ─────────── Accessibility · global focus ring ─────────────────────────
+   Mirror of the foundation portal's globals.css polish layer (chapter
+   46). Per-client portals are independent Next.js apps so each one
+   carries its own copy. T2 R11's generator should drop these blocks
+   into every client. */
+:where(a, button, input, select, textarea, [tabindex]:not([tabindex='-1'])):focus-visible {
+  outline: 2px solid var(--brand-accent, var(--brand-primary, currentColor));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Hide visually but keep accessible to screen readers. */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.focus-visible\:not-sr-only:focus-visible {
+  position: static !important;
+  width: auto; height: auto;
+  padding: revert; margin: revert;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+@keyframes aqua-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse, [style*="aqua-pulse"] {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Tap targets for mobile / touch devices. */
+@media (pointer: coarse) {
+  .btn-primary, .btn-ghost, button, a[role="button"] {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

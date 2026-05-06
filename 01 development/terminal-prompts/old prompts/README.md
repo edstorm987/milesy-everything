@@ -35,7 +35,10 @@ edit history through the rename.
 | `T3-round6-editor-per-client-save-mode.md` | T3 | R6 | `2db45c0` |
 | `T4-round1-ux-accessibility-polish.md` | T4 | R1 | `15acfbe` + `24f2cd0` (DONE in outbox) |
 | `T5-round1-luv-and-ker-portal.md` | T5 | R1 | `8f0bb01` + `2fc3ae1` + `a83cb66` |
+| `T1-round8-milesymedia-portal-stitch.md` | T1 | R8 | `7074f49` |
+| `T2-round11-export-to-repo-and-presets.md` | T2 | R11 | `7a7b63a` (absorbed) + `5153bd2` (final WARN) |
 | `T6-round1-deployment-domains-observability.md` | T6 | R1 | `05dea79` + `359b476` + `ef2e82f` + `6045568` + `b3d7944` |
+| `T6-round2-real-deploy-and-domains.md` | T6 | R2 | `2f93a18` + `b61f587` + `14c5b2a` + `17505cd` |
 
 T1 R3 (`29bd49a` "T1 R3: three plugins live") shipped without a
 dedicated round prompt — TASK was inlined into the orchestrator's

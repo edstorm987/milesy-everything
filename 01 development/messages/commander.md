@@ -247,3 +247,38 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 5. Active set now: T1 R8, T2 R11, T3 R7, T4 R2, T5 R2, T6 R2.
 [2026-05-05T15:13:00Z] NOTE: tasks.md linter just confirmed T2 R11 also DONE (Done — Round 11 section). T2 will need R12 next cycle. Commander cycle 19 will draft.
 [2026-05-05T15:13:00Z] SLEEP: 1500s (25 min). Six terminals firing. T2 R12 + T1 R9 (after R8) on the queue for next cycle.
+
+[2026-05-05T15:50:00Z] WAKEUP: cycle 19 — autonomous. State since cycle 18 (8 commits since 15:13):
+- **T1 R8 DONE** @ `7074f49` — milesymedia ↔ portal stitch shipped.
+- **T2 R11 DONE** @ `7a7b63a` (absorbed) + final WARN `5153bd2`.
+- **T6 R2 DONE** @ `17505cd` — Phase D + chapter shipped (real deploy runbook + Vercel domain-attach + `@aqua/plugin-domains`).
+- **T4 R2 firing** — Phase A storefront block UX polish (`27c78ed`) + Phase B end-customer + embed-login (`a223692`) + Phase C Luv & Ker (`9023d95`). Phase D perf ahead.
+- **T3 R7 + T5 R2** — silent. Loops likely ended. Re-paste needed.
+- No Q-BLOCKED.
+
+[2026-05-05T15:50:00Z] PLAN: cycle 19 actions:
+1. **Drafted 3 next-round prompts** for the 3 just-DONE terminals:
+   - T1 R9 — Google OAuth + magic-link (T2 R10 email-sender powers magic-link delivery)
+   - T2 R12 — Stripe Connect Express + real Payouts API (closes affiliates' real money flow)
+   - T6 R3 — CI/CD pipeline (GitHub Actions matrix per package) + MonitoringPage + backup script
+2. Dropped TASKs in T1/T2/T6 inboxes.
+3. Archived 3 shipped prompts (T1 R8, T2 R11, T6 R2).
+4. T3 R7 + T5 R2 silence persists — Ed re-paste pending; their prompts are queued at root.
+5. Active set: T1 R9, T2 R12, T3 R7, T4 R2 (in flight), T5 R2, T6 R3.
+[2026-05-05T15:51:00Z] SLEEP: 1500s (25 min). Active progress on T4 R2 + 3 fresh TASKs queued.
+
+[2026-05-06T22:10:00Z] WAKEUP: cycle 20 — Ed re-engaged after ~21h quiet. State since cycle 19:
+- 21-hour gap (last activity 2026-05-05 02:15Z; today's burst at 22:05Z). My /loop died.
+- 3 commits today — all stand-downs: T1 fired stale R8 prompt (`8356797`), T2 fired stale R9 prompt (`9e5c8eb`), T6 fired stale R2 prompt (`1f3f226`). All correctly identified the work as already shipped and ended their loops.
+- The current active prompts (T1-round9, T2-round12, T3-round7, T4-round2, T5-round2, T6-round3) are all still correct; they sit in inboxes from cycle 19 (15:50Z 05-05). What's missing is /loop firing on the RIGHT prompts.
+- T4 R2 likely shipped end-to-end yesterday (4 commits 27c78ed/a223692/9023d95/da37a93 covering Phase A→D); T4 outbox last entry is the R1 DONE so no formal R2 DONE log, but the perf-smoke harness Phase D landed.
+- T5 created `clients/compass-coaching/` (R2 work) — directory present alongside luv-and-ker. No formal DONE log either.
+- No Q-BLOCKED outstanding.
+
+[2026-05-06T22:10:00Z] PLAN: cycle 20 actions:
+1. No new prompts to draft yet — T4 R2 + T5 R2 visible-shipped need formal DONE confirmation before next-round drafts. Letting them surface naturally if Ed re-pastes; otherwise next wake decides.
+2. No re-PING dropped — terminal inboxes already point at the right prompts; the issue is which prompt Ed pastes when restarting a /loop. Communicating this directly to Ed instead.
+3. tasks.md unchanged — the in-progress set is accurate.
+4. Did NOT archive any prompts — none of R9/R12/R7/R2/R2/R3 has hit DONE in the message log yet.
+
+[2026-05-06T22:11:00Z] SLEEP: 1500s (25 min). Quiet system; Ed just resumed orchestrator. If terminals re-fire on the correct prompts (R9/R12/R7/R2/R2/R3), next wake catches first STARTED entries.

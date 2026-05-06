@@ -1,0 +1,65 @@
+{
+  "$schema": "https://aqua.milesymedia.com/schemas/portal-config.v1.json",
+  "client": {
+    "id": "compass-coaching",
+    "slug": "compass-coaching",
+    "name": "Compass Coaching",
+    "tagline": "Find your true direction",
+    "agencyId": "milesy",
+    "websiteUrl": "https://compasscoaching.com"
+  },
+  "brand": {
+    "logoUrl": "/compass-wordmark.svg",
+    "primaryColor": "#3B6EAE",
+    "secondaryColor": "#F4F7FB",
+    "accentColor": "#1B3D6F",
+    "fontHeading": "DM Serif Display, ui-serif, Georgia, serif",
+    "fontBody": "Inter, system-ui, sans-serif",
+    "borderRadius": "0.25rem",
+    "customCSS": ""
+  },
+  "auth": {
+    "origin": "https://milesymedia.com",
+    "embedLoginPath": "/embed/login",
+    "loginPath": "/login",
+    "cookieName": "lk_session_v1"
+  },
+  "installedPlugins": [
+    { "id": "website-editor", "version": "0.1.0" },
+    { "id": "memberships", "version": "0.1.0" },
+    { "id": "client-crm", "version": "0.1.0" },
+    { "id": "forms", "version": "0.1.0" }
+  ],
+  "portalVariants": {
+    "login": "compass-login-v1",
+    "account": "compass-account-v1",
+    "members": "compass-members-v1"
+  },
+  "content": {
+    "site.name": "Compass Coaching",
+    "site.tagline": "Find your true direction",
+    "site.description": "1:1 coaching, group programs, and a members library to help you ship the work that matters. Placeholder copy for the Aqua portal generator's second target shape.",
+    "navbar.wordmark1": "COMPASS",
+    "navbar.wordmark2": "COACHING",
+    "navbar.subtitle": "Practical clarity for ambitious operators",
+    "footer.tagline": "Practical clarity for ambitious operators",
+    "footer.description": "Compass Coaching is a placeholder client used to validate the Aqua portal's per-client materialization pipeline. The brand kit, plugin set, and variant assignments differ deliberately from Luv & Ker so the export-to-repo generator must handle real shape variation.",
+    "hero.eyebrow": "Coaching that ships",
+    "hero.headline1": "Map the work.",
+    "hero.headline2": "Move the needle.",
+    "hero.body": "1:1 sessions, structured programs, and a members library — built for operators who need clarity faster than a usual coaching arc delivers.",
+    "hero.ctaPrimary": "View pricing",
+    "hero.ctaSecondary": "Members library",
+    "pricing.eyebrow": "Membership",
+    "pricing.headline": "Pick your altitude.",
+    "pricing.tagline": "Three tiers. Cancel anytime. The library opens with every paid tier.",
+    "pricing.tiers": [
+      { "id": "scout", "name": "Scout", "price": "Free", "summary": "The library starter — 5 essays, 1 office-hour drop a month.", "cta": "Start free" },
+      { "id": "navigator", "name": "Navigator", "price": "£29 / month", "summary": "Full library access + monthly group office hours + Slack circle.", "cta": "Become a member", "featured": true },
+      { "id": "captain", "name": "Captain", "price": "£99 / month", "summary": "Everything in Navigator + 1 hour 1:1 with the founder per month + WIP review.", "cta": "Apply" }
+    ],
+    "members.eyebrow": "Members",
+    "members.headline": "The library.",
+    "members.body": "Essays, audio briefings, and templates. Sign in to read everything; the previews open to anyone."
+  }
+}

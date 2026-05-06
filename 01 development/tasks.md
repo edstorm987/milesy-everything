@@ -12,9 +12,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 - [ ] **T3 R7 — AI page builder** — `@aqua/plugin-ai-builder`. Claude
       Haiku 4.5 default + Sonnet 4.6 fallback. Editor topbar gets
       ✨ Generate button + streaming preview modal. Per-install API key.
-- [ ] **T4 R2 — Storefront + per-client portal polish + perf pass** —
-      apply R1's primitives + a11y patterns to storefront / end-customer /
-      per-client portal surfaces; add Lighthouse-style smoke.
+- [x] **T4 R2 — Storefront + per-client portal polish + perf pass** —
+      DONE. Phase A storefront block UX (`27c78ed`) — 60-occurrence
+      brand-orange→accent sweep across 31 blocks + loading/error/empty/
+      aria/touch on 6 highest-impact cross-plugin renderers (Affiliate
+      Leaderboard / PayoutMeter / Signup, Membership Signup, FormRender,
+      CrmContactForm + ProductGrid). Phase B end-customer + embed-login
+      (`a223692`) — `useIsEmbedded()` hook, Suspense skeleton, logo
+      height-reserved, `MobileNav` absolute-when-embedded. Phase C
+      per-client portal (`9023d95`) — Luv & Ker adopts foundation
+      primitive set in-tree (SkipToContent / ErrorBoundary / EmptyState /
+      contrastValidator + globals.css polish layer + `id="main-content"`
+      on every `<main>`). Phase D perf smoke (`da37a93`) —
+      `scripts/smoke-perf.mjs` + `npm run smoke:perf` asserts response
+      time ≤2.5s + HTML payload ≤ per-page KB budget. Chapter
+      `04-ux-storefront-perf-pass.md` + MASTER row #51. tsc clean across
+      all 4 commits. R3 deferred: real Lighthouse w/ Puppeteer,
+      `<BrandImage>` next/image wrapper, bundle analyzer, lazy-load
+      editor admin gate, ConfirmDialog adoption (carried over from R1).
 - [ ] **T5 R2 — Second per-client portal** — coaching/membership
       industry, slim plugin set (no ecommerce/affiliates). Validates
       multi-client variation for T2 R11's generator.
