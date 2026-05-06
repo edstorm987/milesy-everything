@@ -5,6 +5,8 @@ export { ReferralCodeService } from "./codes";
 export { AttributionService } from "./attributions";
 export type { RecordOrderArgs } from "./attributions";
 export { PayoutService } from "./payouts";
+export { OnboardingService, snapshotToStatus } from "./onboarding";
+export type { StartStripeOnboardingArgs, StartStripeOnboardingResult } from "./onboarding";
 
 export type {
   ActivityLogPort,
@@ -16,6 +18,9 @@ export type {
   LogActivityInput,
   PluginInstallStorePort,
   StoragePort,
+  StripeConnectAccountSnapshot,
+  StripeConnectPort,
+  StripeOnboardingStatusValue,
   TenantPort,
   UserPort,
 } from "./ports";
@@ -39,6 +44,7 @@ import type {
   EventBusPort,
   PluginInstallStorePort,
   StoragePort,
+  StripeConnectPort,
   TenantPort,
   UserPort,
 } from "./ports";
@@ -46,6 +52,7 @@ import { AffiliateService } from "./affiliates";
 import { ReferralCodeService } from "./codes";
 import { AttributionService } from "./attributions";
 import { PayoutService } from "./payouts";
+import { OnboardingService } from "./onboarding";
 
 // ─── Container ────────────────────────────────────────────────────────────
 
@@ -59,6 +66,11 @@ export interface AffiliatesDeps {
   user: UserPort;
   pluginInstalls: PluginInstallStorePort;
   ecommerceOrders: EcommerceOrdersPort;
+  // R12 — optional Stripe Connect driver. Foundation supplies it when
+  // the per-client ecommerce install has Stripe configured (the same
+  // platform key powers Connect Express). Without it the legacy manual
+  // markPaid path stays available; processPayout throws cleanly.
+  stripeConnect?: StripeConnectPort;
 }
 
 export interface AffiliatesContainer {
@@ -66,6 +78,7 @@ export interface AffiliatesContainer {
   codes: ReferralCodeService;
   attributions: AttributionService;
   payouts: PayoutService;
+  onboarding: OnboardingService | null;
 }
 
 export function buildAffiliatesContainer(deps: AffiliatesDeps): AffiliatesContainer {
@@ -82,7 +95,12 @@ export function buildAffiliatesContainer(deps: AffiliatesDeps): AffiliatesContai
   );
   const payouts = new PayoutService(
     deps.agencyId, deps.clientId, storage, deps.activity, deps.events,
-    affiliates, attributions,
+    affiliates, attributions, deps.stripeConnect,
   );
-  return { affiliates, codes, attributions, payouts };
+  const onboarding = deps.stripeConnect
+    ? new OnboardingService(
+        deps.agencyId, deps.clientId, deps.activity, deps.events, affiliates, deps.stripeConnect,
+      )
+    : null;
+  return { affiliates, codes, attributions, payouts, onboarding };
 }

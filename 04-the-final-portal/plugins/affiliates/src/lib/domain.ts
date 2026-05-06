@@ -21,14 +21,24 @@ export interface Affiliate {
   // Override the agency-default commission rate. 10 = 10%. Fallback to
   // the install's `defaultCommissionPercent` setting when undefined.
   defaultCommissionPercent?: number;
-  payoutEmail: string;                // PayPal-style; Stripe Connect later
+  payoutEmail: string;                // PayPal-style fallback; Stripe Connect when onboarded
   totalReferred: number;              // running counter — incremented on Attribution.recordOrder
   lifetimeEarnings: number;           // cents — sum of paid-out attributions
+  // Stripe Connect Express (R12). Absent until the affiliate clicks
+  // "Set up payouts via Stripe" and completes the hosted flow.
+  stripeAccountId?: string;
+  // Mirrors Stripe's `details_submitted` + `charges_enabled` + `payouts_enabled`
+  // collapsed into a single value. `pending` until the affiliate finishes the
+  // hosted flow; `complete` once `charges_enabled && payouts_enabled`; `restricted`
+  // when Stripe needs more info (KYC / identity verification etc).
+  stripeOnboardingStatus?: StripeOnboardingStatus;
   joinedAt: number;
   lastActiveAt?: number;
   createdAt: number;
   updatedAt: number;
 }
+
+export type StripeOnboardingStatus = "pending" | "complete" | "restricted";
 
 export interface CreateAffiliateInput {
   endCustomerUserId: UserId;
@@ -42,6 +52,8 @@ export interface UpdateAffiliatePatch {
   payoutEmail?: string;
   status?: AffiliateStatus;
   defaultCommissionPercent?: number;
+  stripeAccountId?: string;
+  stripeOnboardingStatus?: StripeOnboardingStatus;
 }
 
 // ─── ReferralCode ────────────────────────────────────────────────────────

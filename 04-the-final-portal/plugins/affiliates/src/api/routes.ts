@@ -15,8 +15,12 @@ import {
   meCreateCodeHandler,
   meEnrollHandler,
   meHandler,
+  meStripeOnboardHandler,
+  meStripeRefreshHandler,
+  processPayoutHandler,
   recordOrderHandler,
   schedulePayoutHandler,
+  stripeWebhookHandler,
   updateAffiliateHandler,
   updateCodeHandler,
 } from "./handlers";
@@ -52,9 +56,18 @@ export const ROUTES: PluginApiRoute[] = [
   { path: "payouts", methods: ["GET"], handler: listPayoutsHandler, visibleToRoles: [...ADMIN_VIEWERS] },
   { path: "payouts", methods: ["POST"], handler: schedulePayoutHandler, visibleToRoles: [...ADMIN_ROLES] },
   { path: "payouts/mark-paid", methods: ["POST"], handler: markPayoutPaidHandler, visibleToRoles: [...ADMIN_ROLES] },
+  // R12 — Stripe Connect: admin "Process via Stripe" button.
+  { path: "payouts/process", methods: ["POST"], handler: processPayoutHandler, visibleToRoles: [...ADMIN_ROLES] },
+
+  // R12 — Stripe Connect webhook (account.updated + transfer.paid).
+  // Public endpoint — verifies Stripe-Signature header internally.
+  { path: "webhooks/stripe", methods: ["POST"], handler: stripeWebhookHandler, public: true },
 
   // Customer-facing
   { path: "me", methods: ["GET"], handler: meHandler, visibleToRoles: [...END_CUSTOMER] },
   { path: "me/enroll", methods: ["POST"], handler: meEnrollHandler, visibleToRoles: [...END_CUSTOMER] },
   { path: "me/codes", methods: ["POST"], handler: meCreateCodeHandler, visibleToRoles: [...END_CUSTOMER] },
+  // R12 — customer Stripe Connect onboarding.
+  { path: "me/stripe/onboard", methods: ["POST"], handler: meStripeOnboardHandler, visibleToRoles: [...END_CUSTOMER] },
+  { path: "me/stripe/refresh", methods: ["POST"], handler: meStripeRefreshHandler, visibleToRoles: [...END_CUSTOMER] },
 ];

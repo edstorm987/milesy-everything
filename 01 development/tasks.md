@@ -300,6 +300,55 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
 
+## Done — Round 12
+- [x] **T2 R12 — Stripe Connect payouts for affiliates** — DONE.
+      Affiliate.stripeAccountId + stripeOnboardingStatus
+      ("pending"|"complete"|"restricted") added to domain. New
+      StripeConnectPort (createAccount / createOnboardingLink /
+      retrieveAccount / createTransfer with idempotencyKey /
+      verifyWebhookSignature) declared locally — no `stripe` or
+      `@aqua/plugin-ecommerce` import; foundation projects from
+      ecommerce's per-install Stripe key (mirrors R4 memberships
+      StripePort precedent). NEW `OnboardingService` (`server/onboarding.ts`)
+      with idempotent `start()` (reuses existing Connect account on
+      retry), `applySnapshotForAccount()` for webhook entry, and
+      `snapshotToStatus()` collapsing `chargesEnabled / payoutsEnabled
+      / detailsSubmitted / disabledReason` into the 3-state status.
+      `PayoutService.processPayout(id)` validates complete onboarding
+      + creates Stripe Transfer with idempotencyKey `payout:<id>` +
+      records externalRef + flips scheduled→in_progress; throws
+      cleanly when stripeConnect absent. `confirmTransferPaid(transferId)`
+      is the `transfer.paid` webhook entry — flips in_progress→completed,
+      attributions paid, lifetime earnings advance; idempotent on
+      redelivery. 4 routes added: POST /payouts/process (admin),
+      POST /me/stripe/onboard + /me/stripe/refresh (customer),
+      POST /webhooks/stripe (PUBLIC, verifies signature internally;
+      handles account.updated + transfer.paid). PayoutsList admin
+      gains "Process via Stripe" button (disabled with reason caption
+      when affiliate's onboarding incomplete; in_progress payouts show
+      "Stripe transfer pending" caption). MyAffiliatePanel customer
+      gains "Payouts setup" section with 4 shapes (undefined → Set up
+      payouts via Stripe; pending → Resume + I'm done refresh;
+      restricted → Reopen + needs-info copy; complete → green check).
+      Container builder gains `onboarding: OnboardingService | null`;
+      foundation adapter + containerWithDeps propagate optional
+      stripeConnect. Smoke `src/__smoke__/affiliates.test.ts` grew
+      9→14 cases (added steps 9-13: onboard start + idempotent reuse,
+      account.updated snapshot flips status, processPayout requires
+      complete + idempotency-key shape `payout:<id>` + retry short-
+      circuit, transfer.paid completes + lifetime earnings + redeliver
+      idempotent, processPayout refuses without Stripe). `npx tsc
+      --noEmit` clean; 14/14 smoke pass. Catalogue 99/99 across 11
+      plugins. Chapter `04-plugin-affiliates-round12-stripe-connect.md`
+      + MASTER row #55. Foundation pending: T1 lift Stripe Connect
+      driver into `@aqua/foundation/stripeConnect.ts` (share with
+      memberships' StripePort eventually), per-install
+      `stripeWebhookSecret` encrypted at rest, subscriber forwarding
+      `affiliate.stripe_onboarding_status_changed` →
+      email-sender for welcome/restricted notifications. NOT in scope
+      (R13+): 1099-K, auto-cadence, transfer.reversed,
+      multi-currency UX.
+
 ## Done — Round 11
 - [x] **T2 R11 — Portal-export plugin** — shipped.
       `@aqua/plugin-portal-export` at

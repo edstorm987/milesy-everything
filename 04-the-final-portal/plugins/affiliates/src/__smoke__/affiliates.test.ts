@@ -31,6 +31,8 @@ import type {
   EcommerceOrdersPort,
   EventBusPort,
   PluginInstallStorePort,
+  StripeConnectAccountSnapshot,
+  StripeConnectPort,
   TenantPort,
   UserPort,
 } from "../server/ports";
@@ -98,9 +100,62 @@ function buildWorld() {
   const ecommerceOrders: EcommerceOrdersPort = {
     async getOrder(args) { return orders.get(args.orderId) ?? null; },
   };
+
+  // R12 — mock Stripe Connect driver. Records every call so the smoke
+  // can assert idempotency-key shape + transfer destination.
+  const stripeCalls: { kind: string; payload: unknown }[] = [];
+  const stripeAccounts = new Map<string, StripeConnectAccountSnapshot>();
+  let stripeAccountSeq = 1;
+  let stripeTransferSeq = 1;
+  const stripeConnect: StripeConnectPort = {
+    async createAccount(args) {
+      const accountId = `acct_smoke_${String(stripeAccountSeq++).padStart(3, "0")}`;
+      stripeAccounts.set(accountId, {
+        accountId,
+        onboardingStatus: "pending",
+        chargesEnabled: false,
+        payoutsEnabled: false,
+        detailsSubmitted: false,
+      });
+      stripeCalls.push({ kind: "createAccount", payload: { ...args, accountId } });
+      return { accountId };
+    },
+    async createOnboardingLink(args) {
+      stripeCalls.push({ kind: "createOnboardingLink", payload: args });
+      return {
+        url: `https://connect.stripe.test/setup/${args.accountId}`,
+        expiresAt: Date.now() + 5 * 60 * 1000,
+      };
+    },
+    async retrieveAccount(accountId) {
+      stripeCalls.push({ kind: "retrieveAccount", payload: { accountId } });
+      return stripeAccounts.get(accountId) ?? {
+        accountId,
+        onboardingStatus: "pending",
+        chargesEnabled: false,
+        payoutsEnabled: false,
+        detailsSubmitted: false,
+      };
+    },
+    async createTransfer(args) {
+      stripeCalls.push({ kind: "createTransfer", payload: args });
+      return { transferId: `tr_smoke_${String(stripeTransferSeq++).padStart(3, "0")}`, created: Date.now() };
+    },
+    verifyWebhookSignature({ signature }) {
+      stripeCalls.push({ kind: "verifyWebhookSignature", payload: { hasSig: !!signature } });
+      return signature === "sig_smoke_ok";
+    },
+  };
+
+  function setStripeAccountState(accountId: string, patch: Partial<StripeConnectAccountSnapshot>) {
+    const cur = stripeAccounts.get(accountId);
+    if (!cur) return;
+    stripeAccounts.set(accountId, { ...cur, ...patch });
+  }
+
   return {
-    storage, tenant, user, activity, events: eventBus, pluginInstalls, ecommerceOrders,
-    inspect: { activityLog, events, orders },
+    storage, tenant, user, activity, events: eventBus, pluginInstalls, ecommerceOrders, stripeConnect,
+    inspect: { activityLog, events, orders, stripeCalls, stripeAccounts, setStripeAccountState },
   };
 }
 
@@ -121,6 +176,7 @@ describe("affiliates smoke", () => {
       activity: world.activity, events: world.events,
       pluginInstalls: world.pluginInstalls,
       ecommerceOrders: world.ecommerceOrders,
+      stripeConnect: world.stripeConnect,
     });
   });
 
@@ -319,5 +375,196 @@ describe("affiliates smoke", () => {
 
     const codes = await services.codes.list({ affiliateId: aliceAffiliateId });
     assert.equal(codes.length, 2, "active + archived both list");
+  });
+
+  // ─── R12 — Stripe Connect onboarding + payout ────────────────────────────
+
+  test("step 9: Stripe onboarding — start creates Connect account + AccountLink, status pending", async () => {
+    assert.ok(services.onboarding, "OnboardingService present when stripeConnect provided");
+
+    const out = await services.onboarding!.start({
+      affiliateId: aliceAffiliateId,
+      returnUrl: "https://luvandker.com/portal/customer/affiliates",
+      refreshUrl: "https://luvandker.com/portal/customer/affiliates",
+    }, ACTOR);
+
+    assert.match(out.onboardingUrl, /^https:\/\/connect\.stripe\.test\/setup\/acct_smoke_/);
+    assert.equal(out.affiliate.stripeOnboardingStatus, "pending");
+    assert.match(out.affiliate.stripeAccountId ?? "", /^acct_smoke_/);
+
+    // Idempotent — calling start again on the same affiliate reuses the
+    // existing Connect account (does not call createAccount twice).
+    const accountCallsBefore = world.inspect.stripeCalls.filter(c => c.kind === "createAccount").length;
+    const second = await services.onboarding!.start({
+      affiliateId: aliceAffiliateId,
+      returnUrl: "https://luvandker.com/portal/customer/affiliates",
+      refreshUrl: "https://luvandker.com/portal/customer/affiliates",
+    }, ACTOR);
+    const accountCallsAfter = world.inspect.stripeCalls.filter(c => c.kind === "createAccount").length;
+    assert.equal(accountCallsAfter, accountCallsBefore, "createAccount NOT called on resume");
+    assert.equal(second.affiliate.stripeAccountId, out.affiliate.stripeAccountId);
+  });
+
+  test("step 10: Stripe onboarding — webhook account.updated flips pending → complete", async () => {
+    const aff = await services.affiliates.get(aliceAffiliateId);
+    assert.ok(aff?.stripeAccountId);
+
+    // Simulate Stripe finishing the hosted flow.
+    world.inspect.setStripeAccountState(aff!.stripeAccountId!, {
+      chargesEnabled: true,
+      payoutsEnabled: true,
+      detailsSubmitted: true,
+    });
+
+    // Webhook handler reads the snapshot we project from `account.updated`.
+    const out = await services.onboarding!.applySnapshotForAccount(aff!.stripeAccountId!, {
+      accountId: aff!.stripeAccountId!,
+      onboardingStatus: "pending",
+      chargesEnabled: true,
+      payoutsEnabled: true,
+      detailsSubmitted: true,
+    });
+    assert.equal(out?.stripeOnboardingStatus, "complete");
+
+    // Restricted state — needs additional info.
+    const restricted = await services.onboarding!.applySnapshotForAccount(aff!.stripeAccountId!, {
+      accountId: aff!.stripeAccountId!,
+      onboardingStatus: "pending",
+      chargesEnabled: false,
+      payoutsEnabled: false,
+      detailsSubmitted: true,
+      disabledReason: "requirements.past_due",
+    });
+    assert.equal(restricted?.stripeOnboardingStatus, "restricted");
+
+    // Flip back to complete for the rest of the test.
+    await services.onboarding!.applySnapshotForAccount(aff!.stripeAccountId!, {
+      accountId: aff!.stripeAccountId!,
+      onboardingStatus: "pending",
+      chargesEnabled: true,
+      payoutsEnabled: true,
+      detailsSubmitted: true,
+    });
+  });
+
+  test("step 11: processPayout requires Stripe complete + creates real Transfer", async () => {
+    // Create a third order so we have an approved attribution waiting.
+    world.inspect.orders.set("ord_003", {
+      id: "ord_003", agencyId: AGENCY_ID, clientId: CLIENT_ID,
+      endCustomerUserId: BOB_BUYER,
+      amountTotal: 8000, currency: "usd", subtotal: 8000,
+      referralCodeId: codeId,
+      createdAt: Date.now(),
+    });
+    const attr = await services.attributions.recordOrder({
+      orderId: "ord_003",
+      defaultCommissionPercent: 10,
+    });
+    await services.attributions.approve(attr!.id, ACTOR);
+
+    const payout = await services.payouts.schedule(
+      { affiliateId: aliceAffiliateId },
+      ACTOR,
+      "stripe-connect",
+    );
+    assert.ok(payout);
+    assert.equal(payout?.status, "scheduled");
+    assert.equal(payout?.amountCents, 800);
+
+    const processed = await services.payouts.processPayout(payout!.id, ACTOR);
+    assert.equal(processed?.status, "in_progress", "scheduled → in_progress on processPayout");
+    assert.equal(processed?.method, "stripe-connect");
+    assert.match(processed?.externalRef ?? "", /^tr_smoke_/);
+
+    // Idempotent — second call short-circuits, no second Stripe call.
+    const transferCallsBefore = world.inspect.stripeCalls.filter(c => c.kind === "createTransfer").length;
+    const second = await services.payouts.processPayout(payout!.id, ACTOR);
+    const transferCallsAfter = world.inspect.stripeCalls.filter(c => c.kind === "createTransfer").length;
+    assert.equal(transferCallsAfter, transferCallsBefore, "no extra Stripe call on retry");
+    assert.equal(second?.externalRef, processed?.externalRef);
+
+    // Idempotency-key shape — `payout:<id>`.
+    const lastTransfer = world.inspect.stripeCalls
+      .filter(c => c.kind === "createTransfer").map(c => c.payload as { idempotencyKey: string }).at(-1);
+    assert.equal(lastTransfer?.idempotencyKey, `payout:${payout!.id}`);
+  });
+
+  test("step 12: transfer.paid webhook flips in_progress → completed + bumps lifetime earnings", async () => {
+    const inProgress = (await services.payouts.list({ status: "in_progress" }))[0];
+    assert.ok(inProgress);
+    const transferId = inProgress.externalRef!;
+    assert.match(transferId, /^tr_smoke_/);
+
+    const lifetimeBefore = (await services.affiliates.get(aliceAffiliateId))?.lifetimeEarnings ?? 0;
+
+    const completed = await services.payouts.confirmTransferPaid(transferId, ACTOR);
+    assert.equal(completed?.status, "completed");
+    assert.equal(completed?.method, "stripe-connect");
+    assert.ok(completed?.completedAt);
+
+    // Idempotent — webhook redelivery is fine.
+    const second = await services.payouts.confirmTransferPaid(transferId, ACTOR);
+    assert.equal(second?.status, "completed");
+
+    // Attributions in this payout flipped to paid.
+    for (const aid of inProgress.attributionIds) {
+      const attr = await services.attributions.get(aid);
+      assert.equal(attr?.status, "paid");
+    }
+
+    // Lifetime earnings advanced by the payout amount.
+    const aff = await services.affiliates.get(aliceAffiliateId);
+    assert.equal((aff?.lifetimeEarnings ?? 0), lifetimeBefore + inProgress.amountCents);
+  });
+
+  test("step 13: processPayout refuses when Stripe onboarding incomplete", async () => {
+    // Add a second affiliate without Stripe.
+    const charlieUserId = "user_charlie";
+    // Profile patch — register Charlie in the world.
+    const profile = { id: charlieUserId, email: "charlie@smoke.test", name: "Charlie", agencyId: AGENCY_ID, clientId: CLIENT_ID };
+    (world.user as { getUser: (id: string) => unknown }).getUser =
+      (id: string) => (id === ALICE
+        ? { id: ALICE, email: "alice@smoke-aff.test", name: "Alice", agencyId: AGENCY_ID, clientId: CLIENT_ID }
+        : id === charlieUserId ? profile : null);
+
+    const charlie = await services.affiliates.enroll({
+      endCustomerUserId: charlieUserId,
+      displayName: "Charlie",
+      payoutEmail: "charlie-payouts@smoke.test",
+    }, ACTOR);
+    await services.affiliates.update(charlie.id, { status: "active" }, ACTOR);
+
+    // Approved attribution for Charlie.
+    world.inspect.orders.set("ord_charlie_1", {
+      id: "ord_charlie_1", agencyId: AGENCY_ID, clientId: CLIENT_ID,
+      amountTotal: 1000, currency: "usd", subtotal: 1000,
+      referralCodeId: codeId,    // doesn't matter for this test — point is we have an approved attr
+      endCustomerUserId: BOB_BUYER,
+      createdAt: Date.now(),
+    });
+    // Manually create an approved attribution by force — simplest path.
+    const charlieCode = await services.codes.create({ affiliateId: charlie.id, code: "CHARLIE10" }, ACTOR);
+    world.inspect.orders.set("ord_charlie_2", {
+      id: "ord_charlie_2", agencyId: AGENCY_ID, clientId: CLIENT_ID,
+      amountTotal: 1000, currency: "usd", subtotal: 1000,
+      referralCodeId: charlieCode.id,
+      endCustomerUserId: BOB_BUYER,
+      createdAt: Date.now(),
+    });
+    const cAttr = await services.attributions.recordOrder({
+      orderId: "ord_charlie_2", defaultCommissionPercent: 10,
+    });
+    await services.attributions.approve(cAttr!.id, ACTOR);
+
+    const payout = await services.payouts.schedule(
+      { affiliateId: charlie.id }, ACTOR, "stripe-connect",
+    );
+    assert.ok(payout);
+
+    await assert.rejects(
+      services.payouts.processPayout(payout!.id, ACTOR),
+      /no Stripe Connect account|onboarding|complete/i,
+      "processPayout rejected when onboardingStatus absent",
+    );
   });
 });

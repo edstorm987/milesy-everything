@@ -138,3 +138,68 @@ export interface EcommerceOrdersPort {
     orderId: string;
   }): Promise<EcommerceOrderProjection | null>;
 }
+
+// ─── Stripe Connect (R12) ────────────────────────────────────────────────
+//
+// Narrow Connect surface so the plugin doesn't import `stripe`.
+// Foundation projects this from ecommerce's per-install Stripe key
+// (same precedent as memberships's StripePort in R4 / R5). Tests
+// inject a mock; runtime callers don't have to.
+//
+// Why a separate port (and not `requireFoundation()` reading
+// ecommerce's containerFor): keeps tsc isolation clean — nothing
+// in `@aqua/plugin-affiliates` imports `@aqua/plugin-ecommerce`,
+// nor `stripe`. The foundation layer wires whichever Stripe driver
+// is current at boot.
+
+export type StripeOnboardingStatusValue = "pending" | "complete" | "restricted";
+
+export interface StripeConnectAccountSnapshot {
+  accountId: string;
+  onboardingStatus: StripeOnboardingStatusValue;
+  chargesEnabled: boolean;
+  payoutsEnabled: boolean;
+  detailsSubmitted: boolean;
+  // Optional disabled-reason mirror of Stripe's `requirements.disabled_reason`.
+  disabledReason?: string;
+}
+
+export interface StripeConnectPort {
+  // Step 1 of onboarding — provisions an Express connected account.
+  // Idempotent at the foundation layer (caller passes `affiliateId` so
+  // foundation can short-circuit on retry).
+  createAccount(args: {
+    email: string;
+    affiliateId: string;
+    agencyId: AgencyId;
+    clientId: ClientId;
+  }): Promise<{ accountId: string }>;
+
+  // Step 2 — generates a single-use AccountLink the affiliate visits to
+  // complete KYC / payout-method capture.
+  createOnboardingLink(args: {
+    accountId: string;
+    returnUrl: string;
+    refreshUrl: string;
+  }): Promise<{ url: string; expiresAt: number }>;
+
+  // Status read — collapses Stripe's account-state fields into a single
+  // onboarding status the plugin persists.
+  retrieveAccount(accountId: string): Promise<StripeConnectAccountSnapshot>;
+
+  // Transfer for a payout — destinationAccountId is the connected
+  // affiliate. `idempotencyKey` MUST be derived from the payout id so
+  // retries don't double-pay (`payout:<payoutId>` by convention).
+  createTransfer(args: {
+    destinationAccountId: string;
+    amountCents: number;
+    currency: string;
+    idempotencyKey: string;
+    description?: string;
+    transferGroup?: string;
+  }): Promise<{ transferId: string; created: number }>;
+
+  // Webhook signature verification. Returns false on mismatch / missing
+  // signing secret. The handler treats false as 400.
+  verifyWebhookSignature(args: { rawBody: string; signature: string | null }): boolean;
+}

@@ -194,6 +194,89 @@ export async function markPayoutPaidHandler(req: Request, ctx: PluginCtx): Promi
   }
 }
 
+// R12 — admin "Process via Stripe" button. Calls processPayout which
+// validates Connect status + creates a real Stripe Transfer with
+// idempotencyKey `payout:<id>`. Webhook `transfer.paid` flips final
+// status to completed; this handler only reaches in_progress.
+export async function processPayoutHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const body = await safeJson<{ id: string; currency?: string; description?: string }>(req);
+  if (!body?.id) return badRequest("id required.");
+  try {
+    const out = await buildContainer(ctx).payouts.processPayout(body.id, ctx.actor, {
+      currency: body.currency,
+      description: body.description,
+    });
+    return out ? json({ ok: true, payout: out }) : notFound("payout not found");
+  } catch (err) {
+    return unprocessable(err instanceof Error ? err.message : String(err));
+  }
+}
+
+// R12 — Stripe Connect Express webhook receiver.
+// Mounted as `public: true` so the catch-all dispatcher skips role
+// auth. The handler verifies the signature against the install's
+// configured webhook secret before applying any state change.
+//
+// Two events handled in v1:
+//   account.updated  → translate snapshot → flip onboardingStatus
+//   transfer.paid    → confirm payout → flip in_progress → completed
+//
+// Other events return 200 with `{ok: true, ignored: true}` so Stripe
+// stops retrying without us treating them as errors.
+export async function stripeWebhookHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const f = (await import("../server/foundationAdapter")).requireFoundation();
+  if (!f.stripeConnect) return unprocessable("Stripe Connect not configured for this install.");
+
+  const rawBody = await req.text();
+  const signature = req.headers.get("stripe-signature");
+  if (!f.stripeConnect.verifyWebhookSignature({ rawBody, signature })) {
+    return json({ ok: false, error: "invalid_signature" }, 400);
+  }
+  let event: { type?: string; data?: { object?: Record<string, unknown> } };
+  try {
+    event = JSON.parse(rawBody);
+  } catch {
+    return badRequest("invalid_json");
+  }
+  if (!ctx.clientId) return badRequest("clientId scope missing");
+  const c = buildContainer(ctx);
+
+  if (event.type === "account.updated") {
+    const obj = (event.data?.object ?? {}) as {
+      id?: string;
+      charges_enabled?: boolean;
+      payouts_enabled?: boolean;
+      details_submitted?: boolean;
+      requirements?: { disabled_reason?: string | null };
+    };
+    if (!obj.id) return badRequest("missing account id");
+    const snapshot = {
+      accountId: obj.id,
+      onboardingStatus: "pending" as const,    // recomputed by snapshotToStatus inside the service
+      chargesEnabled: !!obj.charges_enabled,
+      payoutsEnabled: !!obj.payouts_enabled,
+      detailsSubmitted: !!obj.details_submitted,
+      disabledReason: obj.requirements?.disabled_reason ?? undefined,
+    };
+    if (!c.onboarding) return unprocessable("onboarding service not available");
+    const out = await c.onboarding.applySnapshotForAccount(obj.id, snapshot);
+    return json({ ok: true, affiliateId: out?.id ?? null });
+  }
+
+  if (event.type === "transfer.paid") {
+    const obj = (event.data?.object ?? {}) as { id?: string };
+    if (!obj.id) return badRequest("missing transfer id");
+    const out = await c.payouts.confirmTransferPaid(obj.id);
+    return json({ ok: true, payoutId: out?.id ?? null });
+  }
+
+  return json({ ok: true, ignored: true, type: event.type ?? null });
+}
+
 // ─── Customer-facing ─────────────────────────────────────────────────────
 
 export async function meEnrollHandler(req: Request, ctx: PluginCtx): Promise<Response> {
@@ -225,6 +308,50 @@ export async function meHandler(req: Request, ctx: PluginCtx): Promise<Response>
     c.payouts.listForAffiliate(affiliate.id),
   ]);
   return json({ ok: true, affiliate, codes, attributions, payouts });
+}
+
+// R12 — customer surface: "Set up payouts via Stripe" button posts
+// here. Returns the Stripe-hosted onboarding URL. Idempotent — calling
+// twice returns a fresh AccountLink against the same connected
+// account.
+export async function meStripeOnboardHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const body = await safeJson<{ returnUrl: string; refreshUrl?: string }>(req);
+  if (!body?.returnUrl) return badRequest("returnUrl required.");
+  const c = buildContainer(ctx);
+  if (!c.onboarding) return unprocessable("Stripe Connect not configured for this install.");
+  const aff = await c.affiliates.getByUser(ctx.actor);
+  if (!aff) return notFound("not enrolled as an affiliate");
+  if (aff.status !== "active") return unprocessable(`affiliate status is ${aff.status}; activate before onboarding.`);
+  try {
+    const out = await c.onboarding.start(
+      { affiliateId: aff.id, returnUrl: body.returnUrl, refreshUrl: body.refreshUrl ?? body.returnUrl },
+      ctx.actor,
+    );
+    return json({
+      ok: true,
+      affiliate: out.affiliate,
+      onboardingUrl: out.onboardingUrl,
+      expiresAt: out.expiresAt,
+    });
+  } catch (err) {
+    return unprocessable(err instanceof Error ? err.message : String(err));
+  }
+}
+
+// R12 — "I'm done — refresh my status" button. Re-reads Stripe and
+// persists. Useful when the affiliate completes the hosted flow but
+// the webhook hasn't arrived yet.
+export async function meStripeRefreshHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const c = buildContainer(ctx);
+  if (!c.onboarding) return unprocessable("Stripe Connect not configured for this install.");
+  const aff = await c.affiliates.getByUser(ctx.actor);
+  if (!aff) return notFound("not enrolled as an affiliate");
+  const out = await c.onboarding.refreshStatus(aff.id, ctx.actor);
+  return json({ ok: true, affiliate: out });
 }
 
 export async function meCreateCodeHandler(req: Request, ctx: PluginCtx): Promise<Response> {

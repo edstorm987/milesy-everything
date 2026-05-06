@@ -1,0 +1,191 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  typecheck-portal:
+    name: Typecheck — portal
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 04-the-final-portal/portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: 04-the-final-portal/portal/node_modules
+          key: portal-modules-${{ runner.os }}-${{ hashFiles('04-the-final-portal/portal/package-lock.json') }}
+      - name: Install (legacy peer deps — file: workspace plugins)
+        run: npm install --legacy-peer-deps --no-audit --no-fund
+      - run: npm run typecheck
+
+  typecheck-plugins:
+    name: Typecheck — ${{ matrix.plugin }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        plugin:
+          - affiliates
+          - agency-finance
+          - agency-hr
+          - agency-marketing
+          - ai-builder
+          - client-crm
+          - domains
+          - ecommerce
+          - email-sender
+          - forms
+          - fulfillment
+          - memberships
+          - ops
+          - portal-export
+          - website-editor
+    defaults:
+      run:
+        working-directory: 04-the-final-portal/plugins/${{ matrix.plugin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: 04-the-final-portal/plugins/${{ matrix.plugin }}/node_modules
+          key: plugin-${{ matrix.plugin }}-modules-${{ runner.os }}-${{ hashFiles(format('04-the-final-portal/plugins/{0}/package-lock.json', matrix.plugin)) }}
+      - run: npm install --legacy-peer-deps --no-audit --no-fund
+      - run: npm run typecheck
+
+  smoke-plugins:
+    name: Smoke — ${{ matrix.plugin }}
+    runs-on: ubuntu-latest
+    needs: typecheck-plugins
+    strategy:
+      fail-fast: false
+      matrix:
+        # website-editor has no smoke script — exclude
+        plugin:
+          - affiliates
+          - agency-finance
+          - agency-hr
+          - agency-marketing
+          - ai-builder
+          - client-crm
+          - domains
+          - ecommerce
+          - email-sender
+          - forms
+          - fulfillment
+          - memberships
+          - ops
+          - portal-export
+    defaults:
+      run:
+        working-directory: 04-the-final-portal/plugins/${{ matrix.plugin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: 04-the-final-portal/plugins/${{ matrix.plugin }}/node_modules
+          key: plugin-${{ matrix.plugin }}-modules-${{ runner.os }}-${{ hashFiles(format('04-the-final-portal/plugins/{0}/package-lock.json', matrix.plugin)) }}
+      - run: npm install --legacy-peer-deps --no-audit --no-fund
+      - run: npm run smoke
+
+  smoke-portal:
+    name: Smoke — portal (smoke + smoke:vercel-domain)
+    runs-on: ubuntu-latest
+    needs: typecheck-portal
+    defaults:
+      run:
+        working-directory: 04-the-final-portal/portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: 04-the-final-portal/portal/node_modules
+          key: portal-modules-${{ runner.os }}-${{ hashFiles('04-the-final-portal/portal/package-lock.json') }}
+      - run: npm install --legacy-peer-deps --no-audit --no-fund
+      - run: npm run smoke
+      - run: npm run smoke:vercel-domain
+
+  smoke-ux:
+    name: Smoke — UX (T4 R1 harness)
+    runs-on: ubuntu-latest
+    needs: typecheck-portal
+    defaults:
+      run:
+        working-directory: 04-the-final-portal/portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: 04-the-final-portal/portal/node_modules
+          key: portal-modules-${{ runner.os }}-${{ hashFiles('04-the-final-portal/portal/package-lock.json') }}
+      - run: npm install --legacy-peer-deps --no-audit --no-fund
+      - name: Start portal in background
+        run: |
+          npm run build
+          (npm run start &) && for i in $(seq 1 30); do curl -sf http://localhost:3030/ >/dev/null && break || sleep 2; done
+      - run: npm run smoke:ux
+        env:
+          AQUA_BASE: http://localhost:3030
+
+  smoke-perf:
+    name: Smoke — perf (T4 R2 harness)
+    runs-on: ubuntu-latest
+    needs: typecheck-portal
+    defaults:
+      run:
+        working-directory: 04-the-final-portal/portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: 04-the-final-portal/portal/node_modules
+          key: portal-modules-${{ runner.os }}-${{ hashFiles('04-the-final-portal/portal/package-lock.json') }}
+      - run: npm install --legacy-peer-deps --no-audit --no-fund
+      - name: Start portal in background
+        run: |
+          npm run build
+          (npm run start &) && for i in $(seq 1 30); do curl -sf http://localhost:3030/ >/dev/null && break || sleep 2; done
+      - run: npm run smoke:perf
+        env:
+          AQUA_BASE: http://localhost:3030
+
+  ci-status:
+    name: CI status
+    runs-on: ubuntu-latest
+    needs:
+      - typecheck-portal
+      - typecheck-plugins
+      - smoke-plugins
+      - smoke-portal
+      - smoke-ux
+      - smoke-perf
+    steps:
+      - run: echo "All required checks passed."

@@ -19,6 +19,7 @@ import type {
   EcommerceOrdersPort,
   EventBusPort,
   PluginInstallStorePort,
+  StripeConnectPort,
   TenantPort,
   UserPort,
 } from "./ports";
@@ -32,6 +33,10 @@ export interface AffiliatesFoundation {
   events: EventBusPort;
   pluginInstalls: PluginInstallStorePort;
   ecommerceOrders: EcommerceOrdersPort;
+  // R12 — optional. Foundation registers undefined when ecommerce/Stripe
+  // isn't configured for the client; the legacy `markPaid` path keeps
+  // working and `processPayout` returns a clean error.
+  stripeConnect?: StripeConnectPort;
 }
 
 let registered: AffiliatesFoundation | null = null;
@@ -76,6 +81,7 @@ export function containerFor(args: ContainerForArgs): AffiliatesContainer {
     user: f.user,
     pluginInstalls: f.pluginInstalls,
     ecommerceOrders: f.ecommerceOrders,
+    stripeConnect: f.stripeConnect,
   });
 }
 
@@ -91,6 +97,7 @@ export function containerWithDeps(args: {
   events: EventBusPort;
   pluginInstalls: PluginInstallStorePort;
   ecommerceOrders: EcommerceOrdersPort;
+  stripeConnect?: StripeConnectPort;
 }): AffiliatesContainer {
   return buildAffiliatesContainer({
     agencyId: args.agencyId,
@@ -102,6 +109,7 @@ export function containerWithDeps(args: {
     user: args.user,
     pluginInstalls: args.pluginInstalls,
     ecommerceOrders: args.ecommerceOrders,
+    stripeConnect: args.stripeConnect,
   });
 }
 
@@ -123,5 +131,6 @@ export function _containerFromCtx(args: {
     user: registered.user,
     pluginInstalls: registered.pluginInstalls,
     ecommerceOrders: registered.ecommerceOrders,
+    stripeConnect: registered.stripeConnect,
   });
 }

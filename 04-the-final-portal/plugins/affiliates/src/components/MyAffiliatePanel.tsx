@@ -54,6 +54,10 @@ export function MyAffiliatePanel({ affiliate, codes, attributions, payouts, apiB
       </ul>
       {affiliate.status === "active" && <NewCodeForm apiBase={apiBase} />}
 
+      <h2>Payouts setup</h2>
+      <StripeConnectPanel apiBase={apiBase} affiliate={affiliate} />
+
+
       <h2>Recent attributions</h2>
       <ul className="affiliates-attribution-grid">
         {attributions.slice(0, 10).map(a => (
@@ -125,6 +129,94 @@ function EnrollForm({ apiBase }: { apiBase: string }) {
         {error && <p className="affiliates-form-error">{error}</p>}
         <button type="submit" disabled={busy}>{busy ? "Enrolling…" : "Enrol"}</button>
       </form>
+    </section>
+  );
+}
+
+function StripeConnectPanel({ apiBase, affiliate }: { apiBase: string; affiliate: Affiliate }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const onboardingStatus = affiliate.stripeOnboardingStatus;
+
+  if (onboardingStatus === "complete") {
+    return (
+      <p className="affiliates-stripe-status">
+        ✓ Stripe payouts are set up. Earnings transfer automatically to your connected account.
+      </p>
+    );
+  }
+
+  async function startOnboarding() {
+    setBusy(true);
+    setError(null);
+    try {
+      const returnUrl = typeof window !== "undefined" ? window.location.href : "/portal/customer/affiliates";
+      const r = await fetch(`${apiBase}/me/stripe/onboard`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ returnUrl, refreshUrl: returnUrl }),
+      });
+      const data = await r.json();
+      if (!r.ok || !data.ok || !data.onboardingUrl) {
+        setError(data?.error ?? `Failed (${r.status})`);
+        return;
+      }
+      window.location.href = data.onboardingUrl;
+    } finally { setBusy(false); }
+  }
+
+  async function refreshStatus() {
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await fetch(`${apiBase}/me/stripe/refresh`, { method: "POST" });
+      const data = await r.json();
+      if (!r.ok || !data.ok) {
+        setError(data?.error ?? `Failed (${r.status})`);
+        return;
+      }
+      window.location.reload();
+    } finally { setBusy(false); }
+  }
+
+  if (onboardingStatus === "pending") {
+    return (
+      <section className="affiliates-stripe-pending">
+        <p>Onboarding in progress — finish the Stripe-hosted flow to unlock automated payouts.</p>
+        <button type="button" onClick={startOnboarding} disabled={busy}>
+          {busy ? "…" : "Resume Stripe onboarding"}
+        </button>{" "}
+        <button type="button" onClick={refreshStatus} disabled={busy}>
+          {busy ? "…" : "I'm done — refresh status"}
+        </button>
+        {error && <p className="affiliates-form-error">{error}</p>}
+      </section>
+    );
+  }
+
+  if (onboardingStatus === "restricted") {
+    return (
+      <section className="affiliates-stripe-restricted">
+        <p>
+          Stripe needs more information before you can receive payouts (identity verification or additional
+          business details). Reopen the hosted flow to add what's missing.
+        </p>
+        <button type="button" onClick={startOnboarding} disabled={busy}>
+          {busy ? "…" : "Reopen Stripe onboarding"}
+        </button>
+        {error && <p className="affiliates-form-error">{error}</p>}
+      </section>
+    );
+  }
+
+  // No accountId yet — first-time setup CTA.
+  return (
+    <section className="affiliates-stripe-setup">
+      <p>Set up Stripe to receive payouts directly to your bank account when each payout is processed.</p>
+      <button type="button" onClick={startOnboarding} disabled={busy}>
+        {busy ? "…" : "Set up payouts via Stripe"}
+      </button>
+      {error && <p className="affiliates-form-error">{error}</p>}
     </section>
   );
 }

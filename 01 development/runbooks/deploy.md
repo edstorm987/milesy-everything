@@ -373,25 +373,74 @@ CLI (`scripts/attach-domain.mjs --hostname=... --remove`). Vercel
 de-attaches the domain from the project; DNS at the registrar can
 stay (Vercel will reject traffic until re-attached).
 
-## 8. Cron — nightly demo reset (deferred)
+## 8. Cron — nightly demo reset + backups + healthcheck (R3)
 
-`/api/dev/seed-demo?reset=1` resets the sandbox demo agency. Per
-T1 R4 chapter `04-milesymedia-demo.md` §5, a Vercel cron entry
-hitting that endpoint nightly at 04:00 UTC is the intended setup.
-
-To wire it once ready:
+Three cron jobs, all wired through the root `vercel.json` `crons`
+block (Vercel runs each at the schedule under the project's
+production deployment). The endpoints exist; the cron block itself
+stays commented-out until Ed is ready to flip it on, since each
+firing counts toward Vercel cron quota.
 
 ```jsonc
-// add to root vercel.json
+// add to root vercel.json (uncomment to enable)
 {
   "crons": [
-    { "path": "/api/dev/seed-demo?reset=1", "schedule": "0 4 * * *" }
+    // Demo reset — daily 04:00 UTC. T1 R4 chapter §5.
+    { "path": "/api/dev/seed-demo?reset=1", "schedule": "0 4 * * *" },
+
+    // Healthcheck — hourly. Pings every deployment target's
+    // /healthz and appends a sample to the ops plugin's UptimeStore
+    // so the MonitoringPage uptime panel reflects real samples.
+    { "path": "/api/portal/ops/healthcheck", "schedule": "0 * * * *" },
+
+    // Postgres backup — daily 03:30 UTC. Calls the same flow as
+    // `scripts/backup-postgres.mjs` (R3, §8a below) via a thin
+    // server route so the cron doesn't need shell access.
+    { "path": "/api/portal/ops/backup", "schedule": "30 3 * * *" }
   ]
 }
 ```
 
-Auth: gate on `NEXT_PUBLIC_DEV_BYPASS=1` for the cron's environment
-OR a service token. Out of scope for R2 — wire when Ed is ready.
+Auth: each cron path gates on `NEXT_PUBLIC_DEV_BYPASS=1` for the
+cron's environment OR a service token. R3 ships the endpoints +
+script; quota wiring is Ed's call.
+
+### 8a. Postgres backup — `scripts/backup-postgres.mjs` (R3)
+
+Local-first, externally schedulable. Runs `pg_dump` against
+`DATABASE_URL`, gzips the dump, writes `backups/aqua-portal-<ts>.sql.gz`,
+and prunes any snapshot older than `BACKUP_RETENTION_DAYS` (default 30).
+
+```bash
+# run manually
+DATABASE_URL=postgres://... node scripts/backup-postgres.mjs
+
+# override paths / retention
+BACKUP_DIR=/var/backups/aqua \
+  BACKUP_RETENTION_DAYS=60 \
+  DATABASE_URL=... \
+  node scripts/backup-postgres.mjs
+```
+
+Exit codes: `0` ok / `1` no DATABASE_URL / `2` pg_dump failed.
+
+External destinations (`BACKUP_DEST=s3://bucket/path` or
+`BACKUP_DEST=vercel-blob`) are stubbed in v1 — script logs intent
+but the upload itself lands in R4 once each provider's creds are
+chosen. Local-disk snapshots work standalone today.
+
+Cron wiring options:
+- **Vercel cron + thin route** (preferred once `/api/portal/ops/backup`
+  lands): one source of truth in vercel.json. Route shells out to
+  `scripts/backup-postgres.mjs`. Quota: 1 firing/day.
+- **External scheduler** (Render cron, GitHub Actions on schedule,
+  or Ed's laptop launchd) running the script directly — useful
+  when DATABASE_URL points to a host the Vercel function can't
+  reach (e.g. private network).
+
+Restore: `gunzip -c backups/aqua-portal-<ts>.sql.gz | psql "$DATABASE_URL"`.
+Test the restore against a sandbox DB at least once per quarter so
+the snapshots aren't write-only — see runbook §11 (parked).
 
 ## 9. Troubleshooting
 

@@ -44,7 +44,13 @@ export function PayoutsList({ payouts, affiliates, apiBase, canMutate }: Payouts
                 <p className="affiliates-meta">{p.attributionIds.length} attributions</p>
                 {p.externalRef && <p className="affiliates-meta">Ref: {p.externalRef}</p>}
                 {canMutate && p.status === "scheduled" && (
-                  <MarkPaidButton apiBase={apiBase} payoutId={p.id} />
+                  <div className="affiliates-payout-actions">
+                    <ProcessViaStripeButton apiBase={apiBase} payoutId={p.id} affiliate={aff} />
+                    <MarkPaidButton apiBase={apiBase} payoutId={p.id} />
+                  </div>
+                )}
+                {p.status === "in_progress" && (
+                  <p className="affiliates-meta">Stripe transfer pending — webhook flips to completed.</p>
                 )}
               </article>
             </li>
@@ -52,6 +58,57 @@ export function PayoutsList({ payouts, affiliates, apiBase, canMutate }: Payouts
         })}
       </ul>
     </section>
+  );
+}
+
+function ProcessViaStripeButton({
+  apiBase,
+  payoutId,
+  affiliate,
+}: {
+  apiBase: string;
+  payoutId: string;
+  affiliate: Affiliate | undefined;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const ready = affiliate?.stripeOnboardingStatus === "complete";
+  const reason = !affiliate
+    ? "affiliate not found"
+    : !affiliate.stripeAccountId
+      ? "affiliate hasn't started Stripe Connect onboarding"
+      : affiliate.stripeOnboardingStatus !== "complete"
+        ? `Stripe onboarding is ${affiliate.stripeOnboardingStatus ?? "pending"}`
+        : null;
+  return (
+    <span className="affiliates-stripe-button">
+      <button
+        type="button"
+        disabled={busy || !ready}
+        title={reason ?? "Submit Stripe transfer"}
+        onClick={async () => {
+          setBusy(true);
+          setError(null);
+          try {
+            const r = await fetch(`${apiBase}/payouts/process`, {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ id: payoutId }),
+            });
+            const data = await r.json();
+            if (!r.ok || !data.ok) {
+              setError(data?.error ?? `Failed (${r.status})`);
+              return;
+            }
+            window.location.reload();
+          } finally { setBusy(false); }
+        }}
+      >
+        {busy ? "…" : "Process via Stripe"}
+      </button>
+      {!ready && <span className="affiliates-meta">{reason}</span>}
+      {error && <span className="affiliates-form-error">{error}</span>}
+    </span>
   );
 }
 

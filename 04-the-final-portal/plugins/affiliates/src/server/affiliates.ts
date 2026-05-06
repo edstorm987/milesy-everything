@@ -12,6 +12,7 @@ import type {
   Affiliate,
   AffiliateFilter,
   CreateAffiliateInput,
+  StripeOnboardingStatus,
   UpdateAffiliatePatch,
 } from "../lib/domain";
 import type { ActivityLogPort, EventBusPort, StoragePort, UserPort } from "./ports";
@@ -148,6 +149,38 @@ export class AffiliateService {
       metadata: { affiliateId: id },
     });
     return true;
+  }
+
+  // R12 — persists Stripe Connect identifiers onto the Affiliate. Used
+  // by OnboardingService.startOnboarding (sets accountId + initial
+  // status) and by webhook / refreshStripeStatus (overwrites status
+  // when Stripe's account.updated arrives). Doesn't log activity at
+  // the bare-set level — the OnboardingService writes one
+  // `affiliate.stripe_onboarding_started` / `*_status_changed` entry.
+  async _setStripe(
+    id: string,
+    patch: { stripeAccountId?: string; stripeOnboardingStatus?: StripeOnboardingStatus },
+  ): Promise<Affiliate | null> {
+    const existing = await this.get(id);
+    if (!existing) return null;
+    const next: Affiliate = {
+      ...existing,
+      stripeAccountId: patch.stripeAccountId ?? existing.stripeAccountId,
+      stripeOnboardingStatus: patch.stripeOnboardingStatus ?? existing.stripeOnboardingStatus,
+      updatedAt: now(),
+    };
+    await this.storage.set(affilKey(id), next);
+    return next;
+  }
+
+  // Lookup by Stripe Connect account id. Used by webhook handlers
+  // (account.updated, transfer.paid) to find the affiliate / payouts
+  // tied to a Stripe accountId. Linear scan is fine for v1; if the
+  // pool grows past low-thousands a `affiliates/by-stripe-account/<id>`
+  // reverse index is the obvious next step.
+  async getByStripeAccount(accountId: string): Promise<Affiliate | null> {
+    const all = await this.list();
+    return all.find(a => a.stripeAccountId === accountId) ?? null;
   }
 
   // Internal — bumps counters from AttributionService. Doesn't log
