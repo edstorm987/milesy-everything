@@ -306,3 +306,95 @@ Round-2 close.
 - **T2 (fulfillment)**: `PortalVariantPort.role` swap from `Role` →
   `PortalRole` per Round-1 commander REPLY (still pending T2 commit
   as of Round-2 close).
+
+---
+
+## Round 10 — deep-link contract + page picker (incremental)
+
+T1's agency shell ships an "Edit website" CTA on each per-client tile.
+This round (post-R9, post-Lift Inventory) wires the contract end-to-end
+so the editor opens at the right context — right client, right portal
+variant, right starting page — and adds a minimal page-picker toolbar
+so the editor feels like a website manager, not just a single-page
+editor.
+
+### Goal A — Deep-link contract
+
+URL surface (T1's CTA target):
+`/portal/clients/[clientId]/edit-website?page=<pageId>&variant=<variantKey>`
+
+- `clientId` required (path).
+- `page` optional → defaults to the home page (first `isHomepage:true`,
+  else `slug==="/"`, else first in pageOrder; create one if none exist
+  via "+ New page" toolbar action).
+- `variant` optional → defaults to `"default"`. Pages without a
+  `variantId` belong to the default variant.
+
+New pure helpers in `lib/editorDeepLink.ts` (Node-testable, no React):
+`parseEditorDeepLink` / `buildEditorDeepLink` / `pagesForVariant` /
+`availableVariants` / `shouldShowVariantSwitcher` / `resolveStartPage`
+/ `slugify` / `uniqueSlug`. EditorPage reads `useSearchParams()` on
+mount, hydrates page+variant state, and pushes `router.replace(...)`
+on every page/variant switch so the URL stays bookmarkable. The legacy
+`/portal/admin/editor` mount still works — `pushDeepLink` no-ops when
+the path doesn't match `/portal/clients/[clientId]/`.
+
+### Goal B — Page picker toolbar
+
+`components/editor/PagePickerToolbar.tsx` sits above the canvas. Custom
+dropdown of every page in the current variant (title + slug +
+relative-time updatedAt). Current selection highlighted. "+ New page"
+inline at the dropdown's bottom — prompts for a title via
+`window.prompt`, derives a unique slug via `slugify` + `uniqueSlug`
+(walks `-2`, `-3`, … on collision), creates the page via
+`createEditorPage`, switches + pushes deep link.
+
+Switching pages calls `guardUnsaved()` first — if `unsaved > 0`, opens
+the existing `confirm` dialog with "Discard & switch" before swapping.
+
+### Goal C — Variant switcher (compact)
+
+Right of the page picker. Renders only when `availableVariants(pages)`
+is `length > 1` (most clients only have `"default"`, so it stays
+hidden). Buttons for each variant; selecting one resets target to that
+variant's home page + pushes the URL. Same unsaved-changes guard.
+
+### Goal D — Smoke + this section
+
+New smoke `src/__smoke__/deep-link.test.ts` — **26 cases** (≥ 6
+required) across:
+- `parseEditorDeepLink` 4 (empty / explicit / partial / record-shape)
+- `buildEditorDeepLink` 5 (defaults / page-only / variant / drops
+  default variant / clientId throws)
+- `pagesForVariant` + `availableVariants` + `shouldShowVariantSwitcher`
+  5 (filtered counts / variant list / hide-when-1 / show-when-many)
+- `resolveStartPage` 5 (explicit hit / explicit miss / no-request /
+  no-homepage-flag / empty)
+- `slugify` + `uniqueSlug` 6 (lowercase / diacritics / empty fallback
+  / unique root / -2 / -3)
+- round-trip 1 (build → parse).
+
+`package.json` test chain extended; total smoke now **118/118 pass**
+(42 blocks + 25 cross-plugin + 25 save-target + 26 deep-link).
+
+### Cross-team handoffs
+
+- **T1**: deep-link target. The agency-shell "Edit website" CTA
+  should call `buildEditorDeepLink({ clientId, pageId, variant })` from
+  this plugin (re-exported via `@aqua/plugin-website-editor/server` if
+  needed). T1 should NOT hand-roll the URL.
+- **T1**: when foundation owns route mounts, ensure the
+  `/portal/clients/[clientId]/edit-website` route mounts EditorPage
+  (currently mounted at `/portal/admin/editor` via the plugin manifest;
+  R10 made the editor itself URL-aware so either mount works).
+
+### Deferred
+
+- Server-side `pageOrder` ordering (currently uses array order from
+  `listPages`).
+- Per-client homepage creation when none exists (toolbar handles
+  ad-hoc creation; auto-creating an empty `/` on first deep-link hit
+  is R11 territory, since it needs `createEditorPage` + the client's
+  brand-kit defaults).
+- Confirm-dialog visual polish — `confirm()` shim still ultimately
+  falls through to `window.confirm` until T1 ships the styled host.

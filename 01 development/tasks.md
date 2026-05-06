@@ -33,6 +33,23 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R10 — Editor deep-link + page picker** — DONE.
+      Goal A: deep-link contract `/portal/clients/[clientId]/edit-website?page=&variant=`
+      with pure helpers in `lib/editorDeepLink.ts` (parse/build/pagesForVariant/
+      availableVariants/resolveStartPage/slugify/uniqueSlug); EditorPage now
+      URL-aware via `useSearchParams` + `router.replace` so links are
+      bookmarkable. Goal B: NEW `components/editor/PagePickerToolbar.tsx`
+      above the canvas — page dropdown (title + slug + relative-time) + "+ New
+      page" inline (window.prompt → slugify+uniqueSlug → createEditorPage).
+      Goal C: variant switcher right of picker, hidden when `availableVariants`
+      length 1. Unsaved-changes guard via existing `confirm()` shim. Goal D:
+      NEW `__smoke__/deep-link.test.ts` 26 cases (≥6 required); chapter R2
+      appended with "Round 10 — deep-link + page picker"; MASTER row #29
+      pointer updated. Smoke total **118/118** (42 + 25 + 25 + 26). tsc clean.
+      Cross-team: T1 should call `buildEditorDeepLink({clientId,pageId,variant})`
+      from agency-shell "Edit website" CTA (re-export from server entry if
+      needed). Deferred: server-side pageOrder; auto-create blank `/` on first
+      deep-link when no pages exist; styled confirm host.
 - [x] **T3 Lift Inventory — `02` + `03` audit** — DONE.
       Pure documentation chapter `04-lift-inventory.md` + MASTER row
       #58. Goal A: 9 sections covering `02 felicias aqua portal work/`

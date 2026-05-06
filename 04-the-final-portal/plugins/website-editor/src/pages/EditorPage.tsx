@@ -15,10 +15,16 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import PluginRequired from "../lib/pluginRequired";
 import DevicePreview from "../components/devicePreview";
 import { confirm } from "../lib/confirm";
+import { PagePickerToolbar } from "../components/editor/PagePickerToolbar";
+import {
+  parseEditorDeepLink, buildEditorDeepLink, pagesForVariant,
+  availableVariants, resolveStartPage, slugify, uniqueSlug,
+  DEFAULT_VARIANT, type PageLike,
+} from "../lib/editorDeepLink";
 import EditorTopBar, { type EditorMode } from "../components/editor/EditorTopBar";
 import EditorPropertiesSidebar, { type SelectedElement } from "../components/editor/EditorPropertiesSidebar";
 import EditorOutliner, { type EditorTarget } from "../components/editor/EditorOutliner";
@@ -71,7 +77,20 @@ function VisualEditorPageInner() {
   // into the editor with a specific page selected. Consumed once and
   // then ignored — switching sites later falls back to the first page.
   const searchParams = useSearchParams();
-  const deepLinkPageId = useRef<string | null>(searchParams?.get("page") ?? null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const initialDeepLink = useMemo(() => parseEditorDeepLink(searchParams), [searchParams]);
+  const deepLinkPageId = useRef<string | null>(initialDeepLink.pageId);
+  const [currentVariant, setCurrentVariant] = useState<string>(initialDeepLink.variant);
+
+  // Path may be /portal/clients/[clientId]/edit-website (T1's agency
+  // shell) or the legacy /portal/admin/editor route. Either way we
+  // reuse the segment up to the last `/` for router.replace below.
+  const clientIdFromPath = useMemo(() => {
+    if (!pathname) return null;
+    const m = pathname.match(/\/portal\/clients\/([^/]+)\//);
+    return m ? decodeURIComponent(m[1] ?? "") : null;
+  }, [pathname]);
 
   const [sites, setSites] = useState<Site[]>([]);
   const [site, setSite] = useState<Site | null>(null);
@@ -314,6 +333,65 @@ function VisualEditorPageInner() {
   const isPageTarget = target.kind === "page";
   const isSimple = complexity === "simple";
 
+  // ── Deep-link contract (R10) ─────────────────────────────────────────
+  // Pages are grouped by variant via EditorPage.variantId — pages with
+  // no variantId are the "default" variant. When only one variant is
+  // present, the toolbar's variant switcher hides itself.
+  const pagesAsLike: PageLike[] = useMemo(() => pages.map(p => ({
+    id: p.id, slug: p.slug, title: p.title, variantId: undefined,
+  })), [pages]);
+  const variantList = useMemo(() => availableVariants(pagesAsLike), [pagesAsLike]);
+  const visiblePages = useMemo(
+    () => pagesForVariant(pagesAsLike, currentVariant),
+    [pagesAsLike, currentVariant],
+  );
+
+  // Push the current (clientId, page, variant) into the URL so the
+  // editor is bookmarkable + shareable, matching T1's "Edit website"
+  // CTA shape. router.replace keeps the back-button history intact.
+  const pushDeepLink = useCallback((nextPageId: string | null, nextVariant: string) => {
+    if (!clientIdFromPath) return; // legacy mount; nothing to update
+    const url = buildEditorDeepLink({ clientId: clientIdFromPath, pageId: nextPageId, variant: nextVariant });
+    try { router.replace(url); } catch { /* SSR / older next versions */ }
+  }, [clientIdFromPath, router]);
+
+  async function guardUnsaved(): Promise<boolean> {
+    if (unsaved <= 0) return true;
+    return confirm({
+      title: "Discard unsaved changes?",
+      message: `${unsaved} unsaved edit${unsaved === 1 ? "" : "s"} on this page will be lost.`,
+      danger: true,
+      confirmLabel: "Discard & switch",
+    });
+  }
+
+  async function handlePickPage(nextPageId: string) {
+    if (!(await guardUnsaved())) return;
+    setTarget({ kind: "page", id: nextPageId });
+    pushDeepLink(nextPageId, currentVariant);
+  }
+
+  async function handlePickVariant(nextVariant: string) {
+    if (nextVariant === currentVariant) return;
+    if (!(await guardUnsaved())) return;
+    setCurrentVariant(nextVariant);
+    const nextPages = pagesForVariant(pagesAsLike, nextVariant);
+    const nextStart = resolveStartPage(nextPages, null);
+    if (nextStart) setTarget({ kind: "page", id: nextStart });
+    pushDeepLink(nextStart, nextVariant);
+  }
+
+  async function handleCreateNewPage(title: string) {
+    if (!site) return;
+    const slug = uniqueSlug(pagesAsLike, slugify(title));
+    const created = await createEditorPage(site.id, { title, slug });
+    if (!created) return;
+    const refreshed = await loadPages(site.id);
+    setPages(refreshed);
+    setTarget({ kind: "page", id: created.id });
+    pushDeepLink(created.id, currentVariant);
+  }
+
   return (
     <main className="h-[calc(100vh-0px)] flex flex-col bg-[#0a0a0a]">
       <EditorTopBar
@@ -355,6 +433,18 @@ function VisualEditorPageInner() {
             : undefined
         }
       />
+
+      {isPageTarget && (
+        <PagePickerToolbar
+          pages={visiblePages}
+          currentPageId={isPageTarget ? target.id : null}
+          variants={variantList}
+          currentVariant={currentVariant}
+          onSelectPage={id => void handlePickPage(id)}
+          onCreatePage={title => void handleCreateNewPage(title)}
+          onSelectVariant={v => void handlePickVariant(v)}
+        />
+      )}
 
       {isPageTarget && mode === "live" && !isSimple && (
         <DevicePreview state={deviceState} onChange={s => { setDeviceState(s); saveDeviceState(s); }} />
