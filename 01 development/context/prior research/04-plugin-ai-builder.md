@@ -101,6 +101,32 @@ v1 cut. Modal disables the Generate button while in flight.
   install. Without it, `healthcheck` returns ok=false and the modal
   surfaces a "Plugin not configured" banner.
 
+## R7 close — what landed this commit
+
+- **Smoke**: `src/__smoke__/ai-builder.test.ts` — 3/3 pass. (1) mocked
+  raw response → completed + persisted + listed; (2) invalid block →
+  rejected → retried on `claude-sonnet-4-6` with `retryCount === 1`;
+  (3) `cacheReadInputTokens > 0` increments the cache-hits metric,
+  `cacheReadInputTokens` absent does not.
+- **`GET /api/portal/ai-builder/status`** added (route +
+  `statusHandler`) — returns `{ ok: true, ready: <hasApiKey> }`. The
+  editor probes this on mount to decide whether to render the
+  ✨ Generate button.
+- **EditorTopBar.tsx**: optional `onGenerate?: () => void` prop +
+  fuchsia ✨ Generate button left of Save. Hidden when undefined
+  (ai-builder plugin not installed) or when the editor target isn't a
+  source-editable page.
+- **GenerateModal.tsx** (new, in `website-editor/src/components/editor/`):
+  thin client over `POST /api/portal/ai-builder/generate`. Renders a
+  flat preview of types/ids on completion; Insert hands the tree back
+  via `onInsert` so EditorPage can append + reload the iframe.
+- **EditorPage.tsx**: `aiAvailable` state + status probe + modal mount
+  + `onInsert` (reads existing blocks via `getEditorPage`, appends,
+  saves via `updateEditorPage({ blocks: [...existing, ...generated] })`,
+  bumps `reloadKey`).
+- **tsc clean** in both `04 the final portal/plugins/ai-builder/` and
+  `04 the final portal/plugins/website-editor/`.
+
 ## Deferred to R8+
 
 - Streaming SSE preview (currently POST+spinner).
