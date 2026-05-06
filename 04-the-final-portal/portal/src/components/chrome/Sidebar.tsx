@@ -12,6 +12,7 @@
 // hamburger button in the Topbar.
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { NavPanel } from "@/lib/chrome/sidebarLayout";
 
 interface Props {
@@ -21,9 +22,12 @@ interface Props {
   // When true, render in mobile slide-over mode (no `hidden md:flex`,
   // no border-right). Default false → desktop sticky sidebar.
   mobile?: boolean;
+  // Extra content rendered at the bottom of the sidebar (e.g. agency
+  // shell's collapsible "Tools" ballpark capability list).
+  extra?: ReactNode;
 }
 
-export function Sidebar({ panels, tenantLabel, currentPath, mobile = false }: Props) {
+export function Sidebar({ panels, tenantLabel, currentPath, mobile = false, extra }: Props) {
   return (
     <aside
       aria-label="Primary navigation"
@@ -76,6 +80,7 @@ export function Sidebar({ panels, tenantLabel, currentPath, mobile = false }: Pr
           );
         })}
       </nav>
+      {extra && <div className="mt-6">{extra}</div>}
     </aside>
   );
 }

@@ -13,6 +13,7 @@ import { buildSidebar } from "@/lib/chrome/sidebarLayout";
 import { ThemeInjector } from "@/components/chrome/ThemeInjector";
 import { Sidebar } from "@/components/chrome/Sidebar";
 import { Topbar } from "@/components/chrome/Topbar";
+import { AgencyToolsBallpark } from "@/components/chrome/AgencyToolsBallpark";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 export default async function AgencyLayout({ children }: { children: ReactNode }) {
@@ -43,7 +44,12 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
     <>
       <ThemeInjector brand={agency.brand} scope="agency" />
       <div className="flex min-h-screen">
-        <Sidebar panels={panels} tenantLabel={agency.name} currentPath={currentPath} />
+        <Sidebar
+          panels={panels}
+          tenantLabel={agency.name}
+          currentPath={currentPath}
+          extra={<AgencyToolsBallpark />}
+        />
         <div className="flex flex-1 flex-col">
           <Topbar
             title={agency.name}

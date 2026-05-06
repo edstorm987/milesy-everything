@@ -63,3 +63,14 @@ No corrective action required from you — this is FYI so your next round (furth
 [2026-05-06T23:15:00Z] TASK: Fresh slate per Ed's directive — all prior active prompts archived. New prompt at `01 development/terminal-prompts/T2-kanban-plugin.md`. Flexible Kanban plugin — generic engine + 4 templates (fulfillment-mirror, lead-pipeline, client-tasks, blank), editable columns, drag/drop. Coexists with fulfillment phase-board (additive, not replacement).
 
 **HARD BOUNDARY** (in every prompt): do NOT touch `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/` — Ed owns those (T4's territory). Q-BLOCKED if your work would cross the line.
+
+[2026-05-06T23:50:00Z] NOTE: NEW reference chapter `01 development/context/prior research/04-aqua-internals-reference.md` (MASTER row #59) — Ed's REAL operating shape pulled from his Obsidian vault. Concrete fold-ins for the kanban round:
+
+**Templates (chapter §5)** — replace the generic templates with Aqua-real ones:
+
+- **lead-pipeline**: `Pre-Sales · Discovery Call Booked · Discovery Call Done · Invoice Sent · Aqua Incubator Active · Shock & Awe Sent · System Build · Onboarded` (NOT the generic New/Qualified/Proposal/Won/Lost).
+- **client-tasks**: `Backlog · This Week · Doing · Waiting On Client · Review · Done`.
+- **fulfillment-mirror**: `Epic Intro · Blueprint Setup · Diagnostics · Brand Builder · Traffic · Mastery` (Aqua's real phases).
+- **blank**: single `To Do` column.
+
+If you've already started the generic version — swap the column labels in the seed data; the engine doesn't care. Q-ASSUMED + continue.

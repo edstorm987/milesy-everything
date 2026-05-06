@@ -44,3 +44,15 @@ Format: `[ISO timestamp] TYPE: message`. Same vocabulary as the global protocol 
 [2026-05-06T23:15:00Z] TASK: Fresh slate per Ed's directive — all prior active prompts archived. New prompt at `01 development/terminal-prompts/T1-agency-shell.md`. Agency Shell — Ed's home (clients grid, add-client modal, per-client overview tabs, '+ Add capability' picker). Stop building new plugins — stitch the agency UX out of what's shipped.
 
 **HARD BOUNDARY** (in every prompt): do NOT touch `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/` — Ed owns those (T4's territory). Q-BLOCKED if your work would cross the line.
+
+[2026-05-06T23:50:00Z] NOTE: NEW reference chapter `01 development/context/prior research/04-aqua-internals-reference.md` (MASTER row #59). Read it before / mid-flight — it grounds T1's agency-shell work in Ed's REAL operating shape pulled from his Obsidian vault. Concrete fold-ins for you:
+
+1. **Sidebar "Tools" section** — mirror Aqua HQ's 6 sections (chapter §2): Leads & Clients · Client Billing & Finance · Tasks & To-Do's · SOPs Docs & Templates · Social Media Planner · Passwords & Access. The plugin-map table shows which existing plugin each one maps to.
+
+2. **Phase-preset picker** in "+ New client" modal — replace placeholder Discovery/Development/Onboarding/Live with Aqua's REAL phases (chapter §4): Epic Intro → Blueprint Setup → Diagnostics/Foundations → Brand Builder + Verification → Traffic → Mastery & Ascension. Plan tier (Foundational Flow / Expansion Plan / Mastery Plan) is a separate field.
+
+3. **Add-client modal fields** (chapter §7) — therapist name + practice name, plan tier, starting Aqua phase (default 1), contact email, WhatsApp group invite link, lock-in deposit boolean, Stripe/invoice link. Most lives in `metadata: {}` — no schema change.
+
+4. **Brand voice** — tagline "Where Healing Meets Revolution"; audience is therapists. Reflect in welcome copy on the home screen.
+
+If you've already started — fold these in mid-flight where natural; don't restart the round. Q-ASSUMED + continue if anything's unclear.

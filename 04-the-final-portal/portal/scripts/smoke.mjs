@@ -145,6 +145,41 @@ async function main() {
   r = await go("GET", "/portal/agency");
   record("agency surface 200", r.status === 200);
 
+  console.log("\n§ Agency shell");
+  // Home renders 200 in populated state.
+  r = await go("GET", "/portal/agency");
+  record("agency home 200 (populated)", r.status === 200);
+  const homeBody = await r.text();
+  record("home shows 'Welcome back'", homeBody.includes("Welcome back"));
+  record("home shows 'New client' CTA", homeBody.includes("New client"));
+
+  // Per-client overview tab routing.
+  const tabs = ["overview", "website", "portal", "kanban", "finance", "assets", "tools"];
+  for (const t of tabs) {
+    const path = t === "overview"
+      ? `/portal/clients/${clientId}`
+      : `/portal/clients/${clientId}?tab=${t}`;
+    const tr = await go("GET", path);
+    record(`overview tab=${t} 200`, tr.status === 200, `status=${tr.status}`);
+  }
+
+  // Add-client happy path via fulfillment marketplace API.
+  const created = await go("POST", "/api/portal/fulfillment/clients", {
+    body: JSON.stringify({
+      name: `Smoke Client ${Date.now()}`,
+      stage: "discovery",
+      brand: { primaryColor: "#8b5cf6" },
+    }),
+  });
+  record("add-client POST 200/201", created.status === 200 || created.status === 201, `status=${created.status}`);
+  const createdJson = created.status < 300 ? await created.json().catch(() => null) : null;
+  const newId = createdJson?.client?.id ?? createdJson?.clientId;
+  record("add-client returned id", typeof newId === "string" && newId.length > 0);
+  if (newId) {
+    const overview = await go("GET", `/portal/clients/${newId}`);
+    record("new client overview 200", overview.status === 200);
+  }
+
   console.log(`\n${failures.length === 0 ? "✓" : "✗"} ${total - failures.length}/${total} checks passed`);
   if (failures.length > 0) {
     console.log("Failures:");

@@ -346,3 +346,11 @@ TASKs dropped in T1/T2/T3/T5/T6 inboxes pointing at the new prompts. Ed restarts
 4. Active prompt set: T1 agency-shell, T2 kanban, T3 editor-deeplink (NEW), T4 milesymedia (Ed), T5 luv-and-ker-real, T6 production-gate.
 
 [2026-05-06T23:34:00Z] SLEEP: 1500s (25 min). T3 hot — likely picks up. Other terminals await Ed re-paste.
+
+[2026-05-06T23:50:00Z] PLAN: cycle 26 — Ed asked for an Aqua-internals reference scrape from his Obsidian vault. Done:
+- Read `~/Desktop/obsidian/Mission Ed/05 Business & Ventures/Aqua Bios - Internals/` extensively.
+- Wrote `04-aqua-internals-reference.md` (MASTER row #59) — brand voice, real Aqua HQ sidebar (6 sections + plugin map), three plan tiers, real phase progression (6 phases replacing generic Discovery/Development/Onboarding/Live), real kanban templates (lead-pipeline + client-tasks + fulfillment-mirror), Communication SOP, real add-client field set.
+- Per Ed's directive: T5 (Felicia / Luv & Ker) PAUSED — focus is agency OS for NEW clients. Prompt archived; PAUSE in T5 inbox.
+- NOTE dropped in T1 inbox: 4 concrete fold-ins (sidebar / phase picker / add-client fields / brand voice).
+- NOTE dropped in T2 inbox: kanban template column labels (Aqua-real, not generic).
+- Active prompt set after this cycle: T1 agency-shell, T2 kanban, T3 editor-deeplink, T4 milesymedia (Ed-driven), T6 production-gate. Down from 6 → 5; will be effectively 3-running per Ed's "3 terminals" call (T1 + T2 + T3, with T6 deferred until ready to deploy).

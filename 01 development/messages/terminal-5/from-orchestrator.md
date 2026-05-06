@@ -15,3 +15,5 @@ Format: `[ISO timestamp] TYPE: message`. Same vocabulary as the global protocol 
 [2026-05-06T23:15:00Z] TASK: Fresh slate per Ed's directive — all prior active prompts archived. New prompt at `01 development/terminal-prompts/T5-luv-and-ker-real.md`. Make Luv & Ker real — pull Felicia's real SKUs/copy/imagery from `02` into `clients/luv-and-ker/`. Stop scaffolding, ship a demoable real ecommerce site.
 
 **HARD BOUNDARY** (in every prompt): do NOT touch `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/` — Ed owns those (T4's territory). Q-BLOCKED if your work would cross the line.
+
+[2026-05-06T23:50:00Z] PAUSE: per Ed's 2026-05-07 directive — T5 paused. Felicia / Luv & Ker work parked while Ed gets the agency OS up and running for NEW clients. Existing client (Felicia) will be handled later. Prompt archived to `old prompts/`. If your /loop is firing on the stale prompt, end the loop after 3 empty wakes per discipline. Standing by — when Ed re-engages T5, a fresh prompt will land.
