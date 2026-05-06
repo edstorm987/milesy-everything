@@ -206,6 +206,7 @@
           <p>Book a free 30-minute strategy call. We'll walk through your live data, pressure-test the leaks above, and leave you with a costed quarterly plan — even if you don't hire us.</p>
           <div class="hc-actions hc-cta-actions">
             <a href="mailto:hello@milesymedia.co?subject=Strategy%20call" class="btn btn-primary btn-lg">Book a strategy call →</a>
+            <a href="../business-os app/app.html" class="btn btn-secondary btn-lg" data-hc-bos-return hidden>← Back to my Business OS</a>
             <button class="btn btn-secondary btn-lg" data-hc-action="restart">Start over</button>
           </div>
         </div>
@@ -923,6 +924,32 @@
   }
 
   /* ─── RESULTS ───────────────────────────────── */
+  function persistToBOS(pillars, moneyEstimate) {
+    try {
+      var iconByName = {
+        'Visibility & Search': '⌕', 'Your Website': '◎',
+        'Where Customers Come From': '↗', 'My Business': '✪', 'Keeping Them': '✉'
+      };
+      var summary = {
+        headline: "You're leaving an estimated £" + moneyEstimate.toLocaleString() + "/month on the table.",
+        leakEstimate: moneyEstimate,
+        topics: pillars.filter(function (p) { return p.score != null; }).map(function (p) {
+          return { name: p.area.name, icon: iconByName[p.area.name] || p.area.icon, score: p.score, status: p.status };
+        })
+      };
+      localStorage.setItem('bos.healthCheck', JSON.stringify(summary));
+      // XP grant + achievement on first completion
+      var prog = JSON.parse(localStorage.getItem('bos.progress') || '{"xp":0,"timeSavedHrs":0,"streak":0,"lastActive":null,"completed":{},"achievements":[]}');
+      if (!prog.completed.healthCheck) {
+        prog.xp += 250;
+        prog.timeSavedHrs += 8;
+        prog.completed.healthCheck = true;
+        if (prog.achievements.indexOf('self-aware') === -1) prog.achievements.push('self-aware');
+        localStorage.setItem('bos.progress', JSON.stringify(prog));
+      }
+    } catch (e) {}
+  }
+
   function buildResults() {
     var coveredCount = Object.keys(state.answers).length;
     var pillars = AREAS.map(function (a) {
@@ -937,6 +964,7 @@
       : 50;
 
     var moneyEstimate = Math.max(800, Math.round((100 - overall) * 95));
+    persistToBOS(pillars, moneyEstimate);
     var unanswered = AREAS.length - coveredCount;
     var unansweredHint = unanswered > 0
       ? ' <span class="hc-headline-hint">(based on ' + coveredCount + '/' + AREAS.length + ' topics — answer the rest to sharpen this)</span>'
@@ -1018,6 +1046,12 @@
         setTimeout(function () { buildResults(); show('results'); }, 1200);
       }
     }
+  }
+
+  // Show "back to BOS" button if user came from the OS
+  if (new URLSearchParams(location.search).get('from') === 'bos') {
+    var btn = document.querySelector('[data-hc-bos-return]');
+    if (btn) btn.removeAttribute('hidden');
   }
 
   document.addEventListener('click', function (ev) {

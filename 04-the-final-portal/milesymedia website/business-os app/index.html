@@ -52,6 +52,12 @@
           <input type="password" name="password" placeholder="At least 8 characters" />
         </div>
 
+        <div class="field" data-bos-field="niche">
+          <label>Pick your OS</label>
+          <div class="bos-niche-picker" data-bos-niche-picker></div>
+          <input type="hidden" name="niche" data-bos-niche-input value="generic" />
+        </div>
+
         <button type="submit" class="btn btn-primary btn-block btn-lg">Create my Business OS →</button>
 
         <div class="divider">Or</div>
@@ -94,16 +100,50 @@
       });
     });
 
-    // Demo submit — store email in localStorage and jump into the app.
+    // Niche picker — visual cards
+    var NICHES = [
+      { slug: 'therapist',  label: 'Therapist',  icon: '🌿' },
+      { slug: 'roofer',     label: 'Roofer',     icon: '🏠' },
+      { slug: 'salon',      label: 'Salon',      icon: '💇' },
+      { slug: 'coach',      label: 'Coach',      icon: '🎯' },
+      { slug: 'restaurant', label: 'Restaurant', icon: '🍽' },
+      { slug: 'retailer',   label: 'Retailer',   icon: '🛍' },
+      { slug: 'agency',     label: 'Agency',     icon: '💼' },
+      { slug: 'generic',    label: 'Other',      icon: '◆'  }
+    ];
+    var picker = document.querySelector('[data-bos-niche-picker]');
+    var input = document.querySelector('[data-bos-niche-input]');
+    picker.innerHTML = NICHES.map(function (n, i) {
+      return '<button type="button" class="bos-niche-tile' + (i === 0 ? ' is-on' : '') + '" data-bos-niche="' + n.slug + '">'
+        + '<span class="bos-niche-icon">' + n.icon + '</span>'
+        + '<span class="bos-niche-label">' + n.label + ' OS</span>'
+        + '</button>';
+    }).join('');
+    input.value = 'therapist';
+    picker.querySelectorAll('[data-bos-niche]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        picker.querySelectorAll('.bos-niche-tile').forEach(function (x) { x.classList.remove('is-on'); });
+        b.classList.add('is-on');
+        input.value = b.getAttribute('data-bos-niche');
+      });
+    });
+
+    // Demo submit — seed user + initial XP + achievement, then jump in
     document.getElementById('bos-auth-form').addEventListener('submit', function (ev) {
       ev.preventDefault();
       var fd = new FormData(ev.target);
+      var niche = fd.get('niche') || 'generic';
       try {
         localStorage.setItem('bos.user', JSON.stringify({
           name: fd.get('name') || 'Friend',
           business: fd.get('business') || 'Your Business',
-          email: fd.get('email') || ''
+          email: fd.get('email') || '',
+          niche: niche
         }));
+        // Seed progress with first-step XP + achievement
+        var p = { xp: 100, timeSavedHrs: 0, streak: 0, lastActive: null, completed: {}, achievements: ['first-step'] };
+        if (niche !== 'generic') p.achievements.push('niche-locked');
+        localStorage.setItem('bos.progress', JSON.stringify(p));
       } catch (e) {}
       window.location.href = 'app.html';
     });
@@ -114,7 +154,24 @@
     document.querySelector('[data-bos-bypass]').addEventListener('click', function () {
       try {
         localStorage.setItem('bos.user', JSON.stringify({
-          name: 'Jordan Lee', business: 'Northbeam Apparel', email: 'demo@milesymedia.co', dev: true
+          name: 'Jordan Lee', business: 'Northbeam Apparel',
+          email: 'demo@milesymedia.co', niche: 'therapist', dev: true
+        }));
+        localStorage.setItem('bos.progress', JSON.stringify({
+          xp: 350, timeSavedHrs: 12.5, streak: 2, lastActive: null,
+          completed: {}, achievements: ['first-step', 'niche-locked', 'self-aware']
+        }));
+        // Seed a fake health check so the dashboard isn't empty
+        localStorage.setItem('bos.healthCheck', JSON.stringify({
+          headline: "You're leaving an estimated £3,200/month on the table.",
+          leakEstimate: 3200,
+          topics: [
+            { name: 'Visibility', icon: '⌕', score: 38, status: 'bad' },
+            { name: 'Website',    icon: '◎', score: 62, status: 'warn' },
+            { name: 'Customer flow', icon: '↗', score: 71, status: 'warn' },
+            { name: 'My Business', icon: '✪', score: 84, status: 'good' },
+            { name: 'Retention',   icon: '✉', score: 45, status: 'bad' }
+          ]
         }));
       } catch (e) {}
       window.location.href = 'app.html';

@@ -16,9 +16,9 @@
   <div class="bos-shell">
 
     <aside class="bos-sidebar">
-      <a href="app.html" class="brand">
-        <span class="mark">M</span>
-        <span class="brand-name">Milesy<span class="a">OS</span></span>
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
       </a>
 
       <nav class="bos-side-nav">
@@ -63,14 +63,56 @@
 
       <header class="bos-topbar">
         <div>
-          <div class="muted bos-topbar-eyebrow">Welcome back</div>
+          <div class="muted bos-topbar-eyebrow" data-bos-niche-tagline>A solid generic operating system.</div>
           <h1 data-bos-greet>Welcome back, Jordan.</h1>
         </div>
         <div class="bos-topbar-actions">
           <a href="tel:+441234567890" class="btn btn-secondary">📞 Book a call</a>
-          <a href="../lead magnet app/index.html" class="btn btn-primary">Run a new assessment →</a>
+          <a href="../lead magnet app/index.html?from=bos" class="btn btn-primary">Run an assessment →</a>
         </div>
       </header>
+
+      <!-- Gamified progress bar -->
+      <section class="bos-game">
+        <div class="bos-game-level">
+          <div class="bos-game-ring">
+            <span data-bos-level-num>1</span>
+          </div>
+          <div class="bos-game-level-meta">
+            <div class="bos-game-level-name" data-bos-level-name>Apprentice</div>
+            <div class="muted bos-game-xp"><span data-bos-xp>0 XP</span> · <span data-bos-level-pct>250 XP to Owner</span></div>
+            <div class="bos-game-level-bar"><span data-bos-level-bar style="width:0%"></span></div>
+          </div>
+        </div>
+        <div class="bos-game-stats">
+          <div class="bos-game-stat">
+            <div class="bos-game-stat-icon">🔥</div>
+            <div>
+              <div class="bos-game-stat-num"><span data-bos-streak>0</span> day<span class="bos-game-stat-suffix">s</span></div>
+              <div class="muted">Streak</div>
+            </div>
+          </div>
+          <div class="bos-game-stat">
+            <div class="bos-game-stat-icon">⏱</div>
+            <div>
+              <div class="bos-game-stat-num" data-bos-time-saved>0h</div>
+              <div class="muted">Time saved</div>
+            </div>
+          </div>
+          <div class="bos-game-stat">
+            <div class="bos-game-stat-icon">🏆</div>
+            <div>
+              <div class="bos-game-stat-num"><a href="#achievements" style="color:inherit">View</a></div>
+              <div class="muted">Achievements</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Health-check summary slot -->
+      <section class="bos-section">
+        <div data-bos-healthcheck></div>
+      </section>
 
       <!-- Hero card -->
       <section class="bos-hero-card">
@@ -183,6 +225,12 @@
             <div class="bos-mod-meta"><span>🔒 Members only</span></div>
           </a>
         </div>
+      </section>
+
+      <!-- Achievements -->
+      <section class="bos-section" id="achievements">
+        <div class="bos-section-head"><h2>Achievements</h2></div>
+        <div class="bos-ach-grid" data-bos-achievements></div>
       </section>
 
       <!-- Notion content slot -->
