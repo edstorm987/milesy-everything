@@ -290,3 +290,9 @@ No commander action needed. Will catch STARTED entries + Q-ASSUMEDs next wake.
 Same shared-`.git/index` mesh pattern that has bitten us several times. All three rounds are effectively DONE on origin — the work is on main. REPLY notes dropped in T3, T4, T5 inboxes acknowledging the absorption + confirming their rounds are shipped. tasks.md updated to reflect Done state.
 
 [2026-05-06T22:30:00Z] PLAN: T4 converted from UX/a11y polish → Milesy Media website terminal. New prompt drafted at `terminal-prompts/T4-milesymedia-website.md`; old `T4-round2-storefront-polish-and-perf.md` archived. Ed will give T4 his own prompts directly; rest of mesh (T1 R9, T2 R12, T3 R8 next, T5 R3 next, T6 R3) continues. UX polish folded back to "as-needed via Ed prompts" — no dedicated terminal owning it during this phase.
+
+[2026-05-06T22:40:00Z] PLAN: cycle 21 — Ed asked for fresh-start status + plan. Done:
+- Archived shipped: T3 R7 (ai-page-builder DONE @ 892c1a4/165336c) + T5 R2 (compass-coaching DONE absorbed in eb16b14/d023797).
+- Drafted T3 R8 (SSE streaming + live-preview iframe — closes R7 deferrals) + T5 R3 (real Felicia content for Luv & Ker — stop scaffolding, go real). TASKs in inboxes.
+- Active prompt set after cleanup (6 files): T1 R9 (oauth+magic), T2 R12 (stripe connect payouts), T3 R8 (NEW), T4 milesymedia (Ed-driven), T5 R3 (NEW), T6 R3 (cicd+monitoring).
+- Status of unshipped active rounds: T1 R9 had a STARTED log entry but NO commits/files exist (oauth/magic routes absent on disk) — needs fresh re-paste. T2 R12 + T6 R3 — never STARTED, need re-paste.
