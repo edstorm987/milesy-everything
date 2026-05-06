@@ -1693,3 +1693,132 @@ body[data-bos-mode="customer"] .bos-roadmap-tag { display: none; }
 .hc-gift-card::after  { inset: 50% -10% -20% 50%; background: var(--accent-3); opacity: 0.18; }
 .hc-gift-card > * { position: relative; }
 
+/* ─── Mobile responsive pass — Business OS ───── */
+@media (max-width: 900px) {
+  /* Mobile nav top bar replaces sidebar */
+  .bos-shell { display: block; }
+  .bos-sidebar {
+    position: static; height: auto; padding: 16px;
+    flex-direction: row; align-items: center; gap: 14px;
+    overflow: visible; border-right: 0;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .bos-sidebar .brand { padding-bottom: 0; border-bottom: 0; flex: 1; min-width: 0; }
+  .bos-sidebar .brand .brand-name { font-size: 16px; }
+  .bos-side-nav { display: none; }
+  .bos-side-user { padding: 8px 10px; }
+  .bos-side-user-name { font-size: 12px; }
+  .bos-side-user-biz  { font-size: 10px; }
+
+  /* Mobile nav button */
+  .bos-mobile-nav-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 10px;
+    border: 1px solid var(--border-2); color: var(--text);
+    background: rgba(255,255,255,0.04); font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .bos-mobile-nav-btn:hover { border-color: var(--accent); }
+
+  /* Mobile drawer */
+  .bos-mobile-drawer {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(10,10,15,0.94); backdrop-filter: blur(8px);
+    padding: 80px 22px 22px; overflow-y: auto;
+  }
+  .bos-mobile-drawer.is-open { display: block; }
+  .bos-mobile-drawer .bos-side-nav { display: flex; }
+  .bos-mobile-drawer-close {
+    position: absolute; top: 18px; right: 18px;
+    width: 40px; height: 40px; border-radius: 12px;
+    background: rgba(255,255,255,0.06); color: var(--text);
+    font-size: 20px; cursor: pointer; border: 1px solid var(--border);
+  }
+  body.bos-drawer-open { overflow: hidden; }
+}
+
+@media (min-width: 901px) {
+  .bos-mobile-nav-btn { display: none; }
+  .bos-mobile-drawer { display: none !important; }
+}
+
+@media (max-width: 720px) {
+  .bos-main { padding: 22px 16px 80px; }
+  .bos-topbar { gap: 12px; padding-bottom: 14px; margin-bottom: 22px; }
+  .bos-topbar h1 { font-size: clamp(22px, 5.4vw, 28px); }
+  .bos-topbar-actions { width: 100%; }
+  .bos-topbar-actions .btn { flex: 1; justify-content: center; padding: 10px 14px; font-size: 13px; }
+
+  /* Hero card */
+  .bos-hero-card { padding: 22px; gap: 18px; }
+  .bos-hero-card-text h2 { font-size: clamp(24px, 6vw, 32px); }
+  .bos-hero-card-text p { font-size: 14px; }
+  .bos-hero-card .hc-actions { flex-direction: column; }
+  .bos-hero-card .hc-actions .btn { width: 100%; justify-content: center; }
+
+  /* Game block */
+  .bos-game { padding: 18px; gap: 14px; }
+  .bos-game-level { grid-template-columns: 64px 1fr; gap: 14px; }
+  .bos-game-ring { width: 64px; height: 64px; }
+  .bos-game-ring span { font-size: 22px; }
+  .bos-game-stats { grid-template-columns: 1fr; gap: 8px; }
+  .bos-game-stat { padding: 8px; background: rgba(255,255,255,0.03); border-radius: 10px; }
+
+  /* Onboarding */
+  .bos-onboard { padding: 20px; }
+  .bos-onboard-grid { grid-template-columns: 1fr; }
+
+  /* KPIs */
+  .kpi-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .kpi { padding: 14px 16px; }
+  .kpi .num { font-size: 22px; }
+
+  /* Marketplace + addons */
+  .bos-mp-banner { padding: 18px; gap: 14px; }
+  .bos-mp-banner h3 { font-size: 16px; }
+  .bos-search { width: 100%; min-width: 0; }
+
+  /* Achievements */
+  .bos-ach-grid { grid-template-columns: 1fr; }
+  .ach-card { padding: 12px; }
+
+  /* Health-check summary */
+  .hc-summary-card { padding: 20px; }
+  .hc-summary-card-head { gap: 12px; }
+  .hc-summary-money { font-size: 28px; }
+  .hc-summary-actions { flex-direction: column; }
+  .hc-summary-actions .btn { width: 100%; justify-content: center; }
+
+  /* Module page */
+  .bos-mod-head h1 { font-size: clamp(26px, 6.4vw, 34px); }
+  .bos-mod-meta-row { flex-wrap: wrap; }
+  .bos-mod-meta-row .btn { margin-left: 0 !important; width: 100%; justify-content: center; }
+  .bos-mod-cta { padding: 22px; }
+  .bos-mod-cta .hc-actions { flex-direction: column; }
+  .bos-mod-cta .hc-actions .btn { width: 100%; justify-content: center; }
+
+  /* Roadmap */
+  .bos-roadmap-locked-card { padding: 24px; }
+  .bos-roadmap-icon { width: 52px; height: 52px; font-size: 26px; border-radius: 13px; }
+  .bos-roadmap-locked-card h2 { font-size: clamp(24px, 6vw, 34px); }
+  .bos-roadmap-locked-card > p { font-size: 14px; }
+  .bos-roadmap-locked-card .hc-actions { flex-direction: column; }
+  .bos-roadmap-locked-card .hc-actions .btn { width: 100%; justify-content: center; }
+  .bos-roadmap-timeline li { grid-template-columns: 40px 1fr; gap: 12px; padding: 18px; }
+  .rm-num { font-size: 24px; }
+
+  /* Auth */
+  .bos-auth-card { padding: 28px 22px; }
+  .bos-niche-picker { grid-template-columns: repeat(2, 1fr); }
+
+  /* AI panel */
+  .bos-ai-panel { width: calc(100vw - 24px); right: 12px; height: 60vh; bottom: 100px; }
+  .bos-ai-launcher .bos-ai-launcher-label { display: none; }
+  .bos-ai-launcher { padding: 12px; }
+
+  /* Dev bar */
+  .bos-dev-bar { font-size: 11px; padding: 4px 6px; gap: 2px; }
+  .bos-dev-bar a, .bos-dev-bar button { padding: 5px 9px; font-size: 11px; }
+}
+

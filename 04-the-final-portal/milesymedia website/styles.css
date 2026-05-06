@@ -503,3 +503,144 @@ footer {
 .hc-cta p { color: var(--text-dim); margin: 12px auto 24px; max-width: 560px; }
 .hc-cta-actions { justify-content: center; }
 
+/* ─── Mobile responsive pass ─────────────────── */
+@media (max-width: 720px) {
+  .container { padding: 0 18px; }
+  section { padding: 56px 0; }
+  .hero { padding: 56px 0 40px; }
+  .hero h1 { font-size: clamp(32px, 8vw, 44px); margin-bottom: 18px; }
+  .hero p.lead { font-size: 16px; margin-bottom: 24px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { justify-content: center; }
+  .nav-row { height: 60px; }
+  .nav-cta { gap: 6px; }
+  .nav-cta .btn { padding: 8px 12px; font-size: 12px; }
+  .nav-cta .btn-ghost { display: none; }
+  .section-head { margin-bottom: 32px; }
+  .section-head h2 { font-size: clamp(24px, 6vw, 32px); }
+  .stats-grid { gap: 18px; }
+  .stat-num { font-size: 32px; }
+  .stat-lbl { font-size: 12px; }
+  .quote { padding: 22px; }
+  .quote p { font-size: 15px; }
+  .cta { padding: 56px 18px; }
+  .cta h2 { font-size: clamp(24px, 6vw, 30px); }
+  .foot-row { flex-direction: column; align-items: flex-start; gap: 10px; font-size: 12px; }
+  .auth-card { padding: 28px 22px; border-radius: 14px; }
+  .auth-card h1 { font-size: 22px; }
+
+  /* Process / VSL / services sections */
+  .mm-process-grid, .mm-services-grid { grid-template-columns: 1fr !important; }
+  .mm-vsl-card { grid-template-columns: 1fr !important; }
+  .mm-vsl-frame { aspect-ratio: 16/9; min-height: 0; }
+}
+
+/* ─── New milesy sections (process / VSL / services) ─── */
+.mm-section-head h2 { font-size: clamp(28px, 4vw, 44px); }
+
+/* Process strip (5 steps) */
+.mm-process { padding: 70px 0; }
+.mm-process-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
+}
+@media (max-width: 1000px) { .mm-process-grid { grid-template-columns: repeat(2, 1fr); } }
+.mm-process-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px;
+  transition: border-color .15s ease, transform .15s ease;
+  display: block; color: var(--text);
+}
+.mm-process-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.mm-process-num {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 12px;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.mm-process-card h3 { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 6px; }
+.mm-process-card p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+/* VSL slot */
+.mm-vsl { padding: 70px 0; }
+.mm-vsl-card {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center;
+  background: var(--bg-card); border: 1px solid var(--border-2);
+  border-radius: 22px; padding: 36px;
+}
+.mm-vsl-card h2 { font-size: clamp(28px, 4vw, 38px); font-weight: 800; letter-spacing: -0.02em; margin: 8px 0 14px; }
+.mm-vsl-card p { color: var(--text-dim); font-size: 15px; line-height: 1.6; margin-bottom: 22px; }
+.mm-vsl-frame {
+  position: relative; aspect-ratio: 16/9; border-radius: 16px;
+  background:
+    linear-gradient(135deg, #1a1a2e, #0f0f1a),
+    radial-gradient(circle at 30% 30%, rgba(255,107,53,0.3), transparent 60%);
+  border: 1px solid var(--border-2); overflow: hidden;
+  display: grid; place-items: center; cursor: pointer;
+  transition: border-color .15s ease;
+}
+.mm-vsl-frame:hover { border-color: var(--accent); }
+.mm-vsl-play {
+  width: 84px; height: 84px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: grid; place-items: center; color: #1a0e00; font-size: 30px;
+  box-shadow: 0 10px 30px rgba(255,107,53,0.5);
+  transition: transform .2s ease;
+}
+.mm-vsl-frame:hover .mm-vsl-play { transform: scale(1.08); }
+.mm-vsl-meta {
+  position: absolute; bottom: 14px; left: 14px;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+  padding: 6px 12px; border-radius: 999px;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Services grid */
+.mm-services { padding: 70px 0; }
+.mm-services-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+@media (max-width: 900px) { .mm-services-grid { grid-template-columns: 1fr; } }
+.mm-service {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  display: flex; flex-direction: column;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.mm-service:hover { border-color: var(--accent); transform: translateY(-3px); }
+.mm-service-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(124,92,255,0.12); color: var(--accent-3);
+  display: grid; place-items: center; font-size: 22px; margin-bottom: 14px;
+}
+.mm-service h3 { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 6px; }
+.mm-service > p { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 14px; flex: 1; }
+.mm-service-list {
+  list-style: none; margin: 0; padding: 14px 0 0;
+  border-top: 1px solid var(--border);
+}
+.mm-service-list li {
+  font-size: 12px; color: var(--text-dim); padding: 4px 0;
+  display: flex; gap: 8px; align-items: center;
+}
+.mm-service-list li::before {
+  content: "→"; color: var(--accent); font-weight: 700;
+}
+.mm-service-tier {
+  display: inline-block; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--accent-2); margin-bottom: 8px;
+}
+
+/* Trust strip */
+.mm-trust {
+  padding: 50px 0; background: var(--bg-soft);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.mm-trust-row {
+  display: flex; justify-content: space-around; align-items: center;
+  gap: 22px; flex-wrap: wrap; opacity: 0.8;
+  font-size: 13px; color: var(--text-mute);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.mm-trust-row strong { color: var(--text); font-weight: 700; }
+

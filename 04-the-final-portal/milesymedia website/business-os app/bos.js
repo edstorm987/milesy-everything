@@ -424,6 +424,31 @@
     return ({ comms: 'Communications', site: 'Website', sell: 'Sell', retain: 'Retain', grow: 'Grow', ops: 'Operations' })[c] || c;
   }
 
+  /* ─── Mobile drawer ──────────────────────── */
+  function mountMobileNav() {
+    var sidebar = document.querySelector('.bos-sidebar');
+    if (!sidebar || document.querySelector('.bos-mobile-nav-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'bos-mobile-nav-btn';
+    btn.innerHTML = '☰ Menu';
+    sidebar.appendChild(btn);
+
+    var drawer = document.createElement('div');
+    drawer.className = 'bos-mobile-drawer';
+    var nav = sidebar.querySelector('.bos-side-nav');
+    var navClone = nav ? nav.cloneNode(true) : null;
+    drawer.innerHTML = '<button class="bos-mobile-drawer-close" aria-label="Close">✕</button>';
+    if (navClone) drawer.appendChild(navClone);
+    document.body.appendChild(drawer);
+
+    function open()  { drawer.classList.add('is-open');  document.body.classList.add('bos-drawer-open'); }
+    function close() { drawer.classList.remove('is-open'); document.body.classList.remove('bos-drawer-open'); }
+    btn.addEventListener('click', open);
+    drawer.querySelector('.bos-mobile-drawer-close').addEventListener('click', close);
+    drawer.addEventListener('click', function (ev) { if (ev.target === drawer) close(); });
+    drawer.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', close); });
+  }
+
   /* ─── Boot ───────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
     hydrateUser();
@@ -431,6 +456,7 @@
     tickStreak();
     paintProgress();
     paintHealthCheck();
+    mountMobileNav();
     mountDevBar();
     mountAi();
   });
