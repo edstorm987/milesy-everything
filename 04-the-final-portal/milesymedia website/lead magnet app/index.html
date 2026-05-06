@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Milesy Media — Free Digital Health Check</title>
+  <meta name="description" content="A 2-minute audit of your digital marketing. Get a personalised dashboard with your biggest growth opportunities." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Slim nav -->
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="index.html" class="brand">
+        <span class="mark">M</span>
+        <span class="brand-name">Milesy<span class="a">Media</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#what">What you get</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="https://milesymedia.co" class="btn btn-ghost">milesymedia.co ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="hc-shell">
+    <div class="container">
+
+      <!-- ─── Step: Intro ─────────────────────────── -->
+      <section class="hc-step" data-step="intro">
+        <div class="hc-intro">
+          <span class="eyebrow">Free · 2 minutes · No signup</span>
+          <h1>Your free <span class="accent">Digital Health Check</span>.</h1>
+          <p class="lead">
+            Answer six quick questions and we'll generate a personalised dashboard
+            scoring six pillars of your digital marketing — plus the three
+            highest-leverage moves you could make this quarter.
+          </p>
+          <div class="hc-bullets" id="how">
+            <div><span class="dot"></span> Built from 500+ audits across DTC, SaaS &amp; B2B.</div>
+            <div><span class="dot"></span> Your answers stay on this device. Nothing sent until you book.</div>
+            <div><span class="dot"></span> Finishes with a real dashboard — not a 40-page PDF.</div>
+          </div>
+          <div class="hc-actions">
+            <button class="btn btn-primary btn-lg" data-hc-action="start">Start your health check →</button>
+            <a href="https://milesymedia.co" class="btn btn-ghost btn-lg">Maybe later</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Step: Questions ─────────────────────── -->
+      <section class="hc-step" data-step="questions" hidden>
+        <div class="hc-progress">
+          <div class="hc-progress-meta">
+            <span data-hc-step-label>Question 1 of 6</span>
+            <span data-hc-step-pct>17%</span>
+          </div>
+          <div class="hc-progress-bar"><span data-hc-progress-fill style="width:17%"></span></div>
+        </div>
+
+        <div class="hc-question-card" data-hc-question></div>
+
+        <div class="hc-actions hc-nav">
+          <button class="btn btn-secondary" data-hc-action="back">← Back</button>
+          <button class="btn btn-primary" data-hc-action="next" disabled>Next →</button>
+        </div>
+      </section>
+
+      <!-- ─── Step: Building results ──────────────── -->
+      <section class="hc-step" data-step="building" hidden>
+        <div class="hc-building">
+          <div class="hc-spinner" aria-hidden="true"></div>
+          <h2>Crunching your answers…</h2>
+          <p class="muted">Scoring six pillars · benchmarking against your sector · prioritising opportunities.</p>
+        </div>
+      </section>
+
+      <!-- ─── Step: Dashboard ─────────────────────── -->
+      <section class="hc-step" data-step="results" hidden id="what">
+        <div class="hc-results-head">
+          <span class="eyebrow">Your results</span>
+          <h1>Here's where you stand.</h1>
+          <p class="muted">Based on your answers, here's your Milesy Media digital health snapshot. Scores are out of 100 against benchmark performers in your space (placeholder data — your real audit replaces this on the strategy call).</p>
+        </div>
+
+        <!-- Overall score band -->
+        <div class="hc-score-band">
+          <div class="hc-score-ring">
+            <div class="ring-inner">
+              <div class="num" data-hc-overall>62</div>
+              <div class="lbl">Overall</div>
+            </div>
+          </div>
+          <div class="hc-score-summary">
+            <h3>Solid foundations, real upside.</h3>
+            <p class="muted">You're ahead of ~58% of brands we audit. Three of your six pillars are flagged for quick wins — these are typically 6–10 weeks of compounding gains.</p>
+            <div class="hc-score-tags">
+              <span class="badge badge-good">3 strengths</span>
+              <span class="badge badge-warn">2 quick wins</span>
+              <span class="badge badge-bad">1 critical</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Six pillars -->
+        <h2 class="hc-pillars-head">Your six pillars</h2>
+        <div class="hc-pillars" data-hc-pillars></div>
+
+        <!-- Top 3 recommendations -->
+        <div class="hc-recos">
+          <h2>Your top 3 moves this quarter</h2>
+          <ol class="hc-reco-list">
+            <li>
+              <div class="reco-rank">01</div>
+              <div>
+                <h4>Rebuild your paid acquisition funnel around first-purchase economics.</h4>
+                <p class="muted">Placeholder — driven by your answer on tracking maturity. Typical lift: 30–45% CAC reduction within 90 days.</p>
+              </div>
+            </li>
+            <li>
+              <div class="reco-rank">02</div>
+              <div>
+                <h4>Ship a lifecycle flow targeting the 60-day repeat-purchase window.</h4>
+                <p class="muted">Placeholder — driven by your answer on email/SMS coverage. Typical lift: 12–18% net revenue with no extra ad spend.</p>
+              </div>
+            </li>
+            <li>
+              <div class="reco-rank">03</div>
+              <div>
+                <h4>Replace the homepage hero with a benefit-led, value-prop-tested variant.</h4>
+                <p class="muted">Placeholder — driven by your answer on conversion testing cadence. Typical lift: 8–14% on add-to-cart rate.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <!-- CTA -->
+        <div class="hc-cta">
+          <span class="eyebrow">Next step</span>
+          <h2>Want the real version of this?</h2>
+          <p>Book a free 30-minute strategy call. We'll walk through your live numbers, pressure-test the recommendations above, and leave you with a costed quarterly roadmap — even if you don't hire us.</p>
+          <div class="hc-actions hc-cta-actions">
+            <a href="mailto:hello@milesymedia.co?subject=Strategy%20call%20after%20health%20check" class="btn btn-primary btn-lg">Book a strategy call →</a>
+            <button class="btn btn-secondary btn-lg" data-hc-action="restart">Retake the check</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container foot-row">
+      <span>© 2026 Milesy Media · Lead Magnet App <span style="opacity:0.4">· Standalone preview · localhost:3033</span></span>
+      <span>
+        <a href="https://milesymedia.co">milesymedia.co</a> ·
+        <a href="mailto:hello@milesymedia.co">hello@milesymedia.co</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    var QUESTIONS = [
+      { category: "Website & UX",
+        prompt: "How confident are you that your website converts the traffic it's already getting?",
+        options: [
+          { label: "Very confident — we test monthly.",                    score: 95 },
+          { label: "Reasonably — we look at it occasionally.",             score: 70 },
+          { label: "Not really — it hasn't been touched in a while.",      score: 45 },
+          { label: "Honestly, no idea.",                                   score: 20 } ] },
+      { category: "SEO & Discoverability",
+        prompt: "When someone searches for what you sell, where do you typically rank?",
+        options: [
+          { label: "Top 3 for our priority terms.",                        score: 92 },
+          { label: "First page, but not top.",                             score: 70 },
+          { label: "Page 2 or 3 — we know it's a problem.",                score: 40 },
+          { label: "We've never checked.",                                 score: 18 } ] },
+      { category: "Content & Brand",
+        prompt: "How would you describe your content output right now?",
+        options: [
+          { label: "On a calendar, shipped weekly, on-brand.",             score: 90 },
+          { label: "Somewhat regular — it slips when we're busy.",         score: 65 },
+          { label: "Sporadic — only when a campaign demands it.",          score: 38 },
+          { label: "Nothing meaningful is going out.",                     score: 15 } ] },
+      { category: "Paid Media",
+        prompt: "How healthy is your paid acquisition?",
+        options: [
+          { label: "ROAS is tracked, profitable, scaling.",                score: 88 },
+          { label: "Profitable but plateauing.",                           score: 68 },
+          { label: "We're spending but unsure of the return.",             score: 42 },
+          { label: "Not running paid right now.",                          score: 25 } ] },
+      { category: "Analytics & Tracking",
+        prompt: "How confident are you in the numbers you make decisions from?",
+        options: [
+          { label: "Server-side tracking, modelled attribution, weekly review.", score: 94 },
+          { label: "GA4 + platform reporting — mostly fine.",              score: 66 },
+          { label: "We patch things together each Monday.",                score: 38 },
+          { label: "We mostly go on gut feel.",                            score: 16 } ] },
+      { category: "Lifecycle & CRM",
+        prompt: "How mature is your lifecycle marketing (email / SMS / retention)?",
+        options: [
+          { label: "Segmented flows, regular campaigns, strong revenue share.", score: 90 },
+          { label: "A welcome flow and a newsletter — it works.",          score: 64 },
+          { label: "We collect emails but rarely send.",                   score: 36 },
+          { label: "No lifecycle programme.",                              score: 14 } ] }
+    ];
+
+    var state = { step: "intro", idx: 0, answers: new Array(QUESTIONS.length).fill(null) };
+    function $(s, r) { return (r || document).querySelector(s); }
+    function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+
+    function showStep(name) {
+      state.step = name;
+      $$(".hc-step").forEach(function (el) { el.hidden = el.getAttribute("data-step") !== name; });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderQuestion() {
+      var q = QUESTIONS[state.idx], card = $("[data-hc-question]"), selected = state.answers[state.idx];
+      var html = '<div class="hc-q-cat">' + q.category + '</div>'
+        + '<h2 class="hc-q-prompt">' + q.prompt + '</h2>'
+        + '<div class="hc-q-options" role="radiogroup" aria-label="' + q.prompt.replace(/"/g,'&quot;') + '">';
+      q.options.forEach(function (opt, i) {
+        var on = (selected != null && selected === i);
+        html += '<button class="hc-opt' + (on ? ' is-selected' : '') + '"'
+              + ' role="radio" aria-checked="' + (on ? 'true' : 'false') + '"'
+              + ' data-hc-opt="' + i + '">'
+              + '<span class="hc-opt-dot" aria-hidden="true"></span>'
+              + '<span class="hc-opt-label">' + opt.label + '</span>'
+              + '</button>';
+      });
+      html += '</div>';
+      card.innerHTML = html;
+      $$(".hc-opt", card).forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          state.answers[state.idx] = parseInt(btn.getAttribute("data-hc-opt"), 10);
+          renderQuestion();
+        });
+      });
+      var donePct = Math.round(((state.idx + (selected != null ? 1 : 0)) / QUESTIONS.length) * 100);
+      $("[data-hc-step-label]").textContent = "Question " + (state.idx + 1) + " of " + QUESTIONS.length;
+      $("[data-hc-step-pct]").textContent = donePct + "%";
+      $("[data-hc-progress-fill]").style.width = donePct + "%";
+      $("[data-hc-action='back']").disabled = state.idx === 0;
+      var nextBtn = $("[data-hc-action='next']");
+      nextBtn.disabled = selected == null;
+      nextBtn.textContent = state.idx === QUESTIONS.length - 1 ? "See my results →" : "Next →";
+    }
+
+    function buildResults() {
+      var pillars = QUESTIONS.map(function (q, i) {
+        var ans = state.answers[i], score = ans != null ? q.options[ans].score : 50;
+        return { category: q.category, score: score, status: score >= 80 ? "good" : score >= 55 ? "warn" : "bad" };
+      });
+      var overall = Math.round(pillars.reduce(function (s, p) { return s + p.score; }, 0) / pillars.length);
+      $("[data-hc-overall]").textContent = overall;
+      var STATUS_LABEL = { good: "Strength", warn: "Quick win", bad: "Critical" };
+      var ICONS = {
+        "Website & UX": "◎", "SEO & Discoverability": "⌕", "Content & Brand": "✦",
+        "Paid Media": "↗", "Analytics & Tracking": "≣", "Lifecycle & CRM": "✉"
+      };
+      $("[data-hc-pillars]").innerHTML = pillars.map(function (p) {
+        return '<article class="hc-pillar hc-pillar-' + p.status + '">'
+          + '<div class="hc-pillar-head">'
+          +   '<div class="hc-pillar-icon">' + (ICONS[p.category] || '◆') + '</div>'
+          +   '<div><div class="hc-pillar-cat">' + p.category + '</div>'
+          +   '<span class="badge badge-' + p.status + '">' + STATUS_LABEL[p.status] + '</span></div>'
+          +   '<div class="hc-pillar-score">' + p.score + '</div>'
+          + '</div>'
+          + '<div class="hc-pillar-bar"><span style="width:' + p.score + '%"></span></div>'
+          + '<p class="muted hc-pillar-note">Placeholder summary copy — describes what the score means and what we typically recommend at this band.</p>'
+          + '</article>';
+      }).join("");
+    }
+
+    document.addEventListener("click", function (ev) {
+      var t = ev.target.closest("[data-hc-action]");
+      if (!t) return;
+      var action = t.getAttribute("data-hc-action");
+      if (action === "start") { state.idx = 0; showStep("questions"); renderQuestion(); }
+      else if (action === "back") { if (state.idx > 0) { state.idx--; renderQuestion(); } }
+      else if (action === "next") {
+        if (state.answers[state.idx] == null) return;
+        if (state.idx < QUESTIONS.length - 1) { state.idx++; renderQuestion(); }
+        else { showStep("building"); setTimeout(function () { buildResults(); showStep("results"); }, 1100); }
+      } else if (action === "restart") {
+        state.idx = 0; state.answers = new Array(QUESTIONS.length).fill(null); showStep("intro");
+      }
+    });
+  </script>
+
+</body>
+</html>
