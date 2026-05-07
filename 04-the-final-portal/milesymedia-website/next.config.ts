@@ -59,6 +59,9 @@ const nextConfig: NextConfig = {
         // it stays a standalone app per Ed's call (separate
         // application; just gets a "Back to website" pill).
         { source: "/business-os",     destination: "/business-os/index.html" },
+        // T4 R005 — privacy + terms stubs (final-copy-pass).
+        { source: "/privacy",         destination: "/_marketing/privacy.html" },
+        { source: "/terms",           destination: "/_marketing/terms.html" },
       ],
       afterFiles: [],
       fallback: [],

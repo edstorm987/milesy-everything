@@ -89,6 +89,11 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       `lib/webhookBlock.ts` (collectWebhookTargets / findWebhookTarget /
       resolveFormSubmission + dispatchWebhook with HMAC-SHA256 signing
       Stripe-style `<timestamp>.<body>`) + 26/26 smoke + chapter #142.
+- [x] **R044 — Sitemap.xml + robots.txt host routes** — DONE 2026-05-07.
+      `api/handlers/sitemapHostRoutes.ts` wires R036 advanced generators
+      to /sitemap.xml + /sitemap-<locale>.xml + /robots.txt; routes.ts
+      mounts swapped from R014 narrow → R036 advanced; cache header
+      max-age=300/s-maxage=600. 18/18 smoke + chapter #145.
 
 ### T4 manual (Ed driving)
 
@@ -104,7 +109,11 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       (3 clients × brand kits + 15 contacts + 30 bookings + 9 leads + 4
       agency campaigns; Q-ASSUMED T1 wires the runner from
       `aquaOasisSeed.ts`). **DONE T4 R004 — chapter #143.**
-- [ ] Copy polish across marketing surfaces (Ed's flagged items).
+- [x] Copy polish across marketing surfaces (Ed's flagged items).
+      **DONE T4 R005 — chapter #145.** index Services H2 marketing-ese
+      fix; dev/pov persona `sees:` line; footer parity across all pages;
+      NEW /privacy + /terms stubs (next.config.ts rewrites); deploy
+      date refresh.
 
 ### Blocked
 
