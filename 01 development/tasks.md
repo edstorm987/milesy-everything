@@ -1004,6 +1004,37 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R030 — Block animations + scroll-triggered effects** — DONE.
+      BlockStyles.animate union already shipped (R002+).
+      NEW `lib/blockAnimations.ts` (pure SSR-safe):
+      `animationStyleProps()` returns `{ cssVars, dataAnimate? }`
+      (empty when animate is none/undefined; custom duration/
+      easing → CSS custom props; custom delay → transitionDelay
+      direct). `buildAnimationStylesheet()` emits base
+      `[data-animate]` opacity:0 + transitions + per-kind rules
+      for 7 visible kinds + `[data-animate-in="true"]` reveal +
+      `prefers-reduced-motion: reduce` media query
+      short-circuiting transitions. `buildAnimationRuntime()`
+      emits ~600-byte IIFE: SSR-safe window check, reduced-
+      motion gate that immediately reveals every block,
+      IntersectionObserver threshold 0.15 + unobserve,
+      MutationObserver rescans newly-mounted blocks.
+      `buildAnimationHeadFragment()` composes `<style>` +
+      `<script>` for foundation layout. NEW
+      `__smoke__/r030-animations.test.ts` 37/37 (ANIMATION_KINDS
+      + animationStyleProps + stylesheet + runtime + head
+      fragment). package.json test chain extended. tsc-clean.
+      Chapter `04-block-animations.md` + MASTER row #111.
+      Q-ASSUMED: schema already has the 8 values (no schema
+      change); renderer integration is host one-liner
+      (`blockStylesToCss` → `animationStyleProps`); 0.15
+      threshold (R+1 per-block); custom timing curves +
+      multi-step explicitly out of scope; runtime is inline
+      script (zero deps); reduced-motion reveals all blocks
+      immediately. Deferred: animateThreshold override, timing-
+      curve picker, multi-step keyframes, animation chip in
+      properties UI, stagger via `--aqua-anim-stagger`,
+      `parallax` kind via dedicated parallax-section block.
 - [x] **T3 R029 — Custom CSS / head injection per variant** — DONE.
       EditorPage already carries customCss/customHead. NEW
       `lib/customCode.ts` with `validateCustomCode(value, "css"
