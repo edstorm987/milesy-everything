@@ -45,6 +45,22 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
   const h = await headers();
   const currentPath = h.get("x-invoke-path") ?? h.get("x-pathname") ?? "/portal/agency";
 
+  // T1 R13 Goal D — iframe embed mode strips Sidebar + Topbar so the
+  // demo can render flush inside the marketing site's iframe. Cookie
+  // is set by /demo?embed=1.
+  const embed = h.get("cookie")?.includes("lk_demo_embed=1") ?? false;
+
+  if (embed) {
+    return (
+      <>
+        <ThemeInjector brand={agency.brand} scope="agency" />
+        <main id="main-content" data-testid="portal-embed" className="min-h-screen px-4 py-4">
+          <ErrorBoundary label="agency workspace (embed)">{children}</ErrorBoundary>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <ThemeInjector brand={agency.brand} scope="agency" />

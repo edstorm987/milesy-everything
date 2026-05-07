@@ -226,6 +226,23 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Demo mode");
+  // Demo agency must contain the original Felicia mirror + 2 extras.
+  const dHome = await go("GET", "/portal/agency");
+  const dHomeBody = dHome.status === 200 ? await dHome.text() : "";
+  record("demo home shows Brand Builder client", dHomeBody.includes("Brand Builder phase"));
+  record("demo home shows Mastery client", dHomeBody.includes("Mastery phase"));
+  // Banner Sign-up CTA visible.
+  record("demo banner shows Sign up CTA", dHomeBody.includes("Sign up →"));
+  // Embed mode strips chrome.
+  const dEmbed = await go("GET", "/demo?embed=1&source=stitch-smoke");
+  record("demo embed redirect 307", dEmbed.status === 307 || dEmbed.status === 302);
+  const embedHome = await go("GET", "/portal/agency");
+  const embedBody = embedHome.status === 200 ? await embedHome.text() : "";
+  record("embed mode renders portal-embed testid", embedBody.includes("portal-embed"));
+  // Reset embed cookie for downstream blocks.
+  await go("GET", "/demo?source=stitch-smoke");
+
   console.log("\n§ Phase transitions");
   // Founder-only button — smoke runs as agency-owner via /demo bootstrap.
   if (clientId) {

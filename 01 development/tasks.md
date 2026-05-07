@@ -9,6 +9,25 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 013 — Demo mode polish (POV toggle + 3 clients + embed)** — DONE.
+      Goal A: `seedDemoAgency()` extended with 2 extra clients
+      (demo-brand-builder on aqua-brand-builder + demo-mastery on
+      aqua-mastery) alongside existing Felicia mirror = 3 clients
+      across 3 lifecycle states. Goal B: agency↔client↔customer POV
+      toggle already shipped via DemoBanner + /demo/toggle. Goal C:
+      DemoBanner gains Sign up → emerald CTA (links /login?from=demo
+      until T6 ships real signup). Goal D: `/demo?embed=1` writes
+      `lk_demo_embed=1` cookie; portal root layout suppresses
+      DemoBanner; agency layout short-circuits to bare ThemeInjector
+      + `<main data-testid="portal-embed">` (no Sidebar/Topbar).
+      Per-client + customer layouts not yet embed-aware (R+1).
+      Q-ASSUMED: 2 extras not 3 (existing Felicia covers early slot);
+      Sign-up stub points /login pending T6; embed cookie scope is
+      whole-portal so iframe deep-links inherit suppression. Goal E:
+      smoke `§ Demo mode` (5 — Brand Builder client visible + Mastery
+      client visible + Sign up CTA + /demo?embed=1 redirect + portal-
+      embed testid). Chapter `04-demo-mode.md`; MASTER row #88; tsc
+      clean. HARD BOUNDARY honoured.
 - [x] **T1 012 — Phase transition mechanics (operator UI)** — DONE.
       Goal A: NEW `_PhaseTransitionButton.tsx` Founder-facing client
       component pinned in per-client header right of phase chip.

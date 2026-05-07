@@ -8,6 +8,7 @@
 // reachable.
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 import { ensureHydrated } from "@/server/storage";
 import { getSession } from "@/lib/server/auth";
@@ -35,9 +36,16 @@ export default async function PortalLayout({ children }: { children: ReactNode }
     session.role === "end-customer" ? "customer" :
     "agency";
 
+  // Iframe embed mode (T1 R13 Goal D): `/demo?embed=1` sets the
+  // `lk_demo_embed` cookie; while it's present we suppress the demo
+  // banner. Sidebar/Topbar suppression is read by the inner layouts —
+  // they consult the same cookie.
+  const cookieStore = await cookies();
+  const embed = cookieStore.get("lk_demo_embed")?.value === "1";
+
   return (
     <>
-      {demoSnapshot && (
+      {demoSnapshot && !embed && (
         <DemoBanner
           pov={pov}
           agencyName={demoSnapshot.agency.name}

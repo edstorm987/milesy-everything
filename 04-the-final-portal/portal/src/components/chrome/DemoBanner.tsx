@@ -67,6 +67,12 @@ export function DemoBanner({ pov, agencyName, clientName, customerEmail, source 
         >
           {POV_NEXT_LABEL[pov]}
         </Link>
+        <Link
+          href="/login?from=demo"
+          className="rounded-md bg-emerald-700 px-3 py-1 text-[11px] font-semibold text-emerald-50 hover:bg-emerald-800"
+        >
+          Sign up →
+        </Link>
         <form action="/api/auth/logout" method="post">
           <button
             type="submit"

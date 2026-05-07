@@ -60,6 +60,9 @@ export interface SeedDemoResult {
   installedClientPlugins: string[];
   installedAgencyPlugins: string[];
   seededChecklist: { phaseId: string; ticked: number; total: number } | null;
+  // T1 R13 — slugs of any extra demo clients seeded this call (empty
+  // on subsequent idempotent calls).
+  seededExtraClients: string[];
 }
 
 // ─── Seed ─────────────────────────────────────────────────────────────────
@@ -249,14 +252,66 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
     }
   }
 
+  // T1 R13 — extra demo clients across two more Aqua phases so the
+  // demo cycle showcases multiple lifecycle states. Idempotent: looks
+  // up by slug + skips when already present. Each carries practice +
+  // therapist metadata + plan tier so the per-client overview header
+  // populates the Aqua reskin chips without operator input.
+  const EXTRA_DEMO_CLIENTS: Array<{
+    slug: string;
+    name: string;
+    stage: import("@/server/types").ClientStage;
+    brand: { primaryColor: string; secondaryColor?: string; accentColor?: string };
+    metadata: Record<string, unknown>;
+  }> = [
+    {
+      slug: "demo-brand-builder",
+      name: "Demo · Brand Builder phase",
+      stage: "aqua-brand-builder",
+      brand: { primaryColor: "#0EA5E9", secondaryColor: "#F0F9FF", accentColor: "#7C3AED" },
+      metadata: {
+        therapistName: "Demo Therapist",
+        practiceName: "Aqua Brand Practice",
+        planTier: "expansion",
+        whatsappLink: "https://chat.whatsapp.com/demo-brand",
+        lockInPaid: true,
+      },
+    },
+    {
+      slug: "demo-mastery",
+      name: "Demo · Mastery phase",
+      stage: "aqua-mastery",
+      brand: { primaryColor: "#16A34A", secondaryColor: "#F0FDF4", accentColor: "#FACC15" },
+      metadata: {
+        therapistName: "Demo Mastery Therapist",
+        practiceName: "Aqua Mastery Practice",
+        planTier: "mastery",
+        whatsappLink: "https://chat.whatsapp.com/demo-mastery",
+        lockInPaid: true,
+      },
+    },
+  ];
+  const seededExtraClients: string[] = [];
+  for (const def of EXTRA_DEMO_CLIENTS) {
+    if (existingClients.some(c => c.slug === def.slug)) continue;
+    createClient(agency.id, {
+      name: def.name,
+      slug: def.slug,
+      stage: def.stage,
+      brand: { ...def.brand },
+      metadata: def.metadata,
+    });
+    seededExtraClients.push(def.slug);
+  }
+
   logActivity({
     agencyId: agency.id,
     clientId: client.id,
     actorUserId: actor,
     category: "system",
     action: "demo.seeded",
-    message: `Demo agency + Felicia mirror ready (${createdAgency ? "new" : "existing"} agency, ${createdClient ? "new" : "existing"} client).`,
-    metadata: { seededChecklist, idempotent: !createdAgency && !createdClient, installedClientPlugins },
+    message: `Demo agency + Felicia mirror ready (${createdAgency ? "new" : "existing"} agency, ${createdClient ? "new" : "existing"} client, +${seededExtraClients.length} extra demo clients).`,
+    metadata: { seededChecklist, idempotent: !createdAgency && !createdClient, installedClientPlugins, seededExtraClients },
   });
 
   return {
@@ -269,6 +324,7 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
     installedClientPlugins,
     installedAgencyPlugins,
     seededChecklist,
+    seededExtraClients,
   };
 }
 

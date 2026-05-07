@@ -44,10 +44,28 @@ export async function GET(req: NextRequest) {
     metadata: { source, pov: "agency", isDemo: true },
   });
 
+  const embed = req.nextUrl.searchParams.get("embed") === "1";
+
   const target = req.nextUrl.clone();
   target.pathname = "/portal/agency";
-  target.search = "";
+  target.search = embed ? "?embed=1" : "";
   const res = NextResponse.redirect(target);
   res.cookies.set(cookie.name, cookie.value, cookie.options);
+  if (embed) {
+    // Iframe-friendly cookie — portal layouts read this and skip
+    // sidebar + topbar + demo banner. 1-hour TTL keeps the embedding
+    // page in sync if the visitor follows internal links.
+    res.cookies.set("lk_demo_embed", "1", {
+      httpOnly: false,
+      sameSite: "none",
+      secure: true,
+      path: "/",
+      maxAge: 60 * 60,
+    });
+  } else {
+    // Clear any leftover embed cookie when the visitor lands via the
+    // standard /demo entry — prevents sticky chrome-suppression.
+    res.cookies.set("lk_demo_embed", "", { maxAge: 0, path: "/" });
+  }
   return res;
 }
