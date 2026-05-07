@@ -327,3 +327,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 [2026-05-07T23:50:00Z] WAKE-PENDING-ARCHIVE 030-incubator-video-placeholders.md (2). Sleeping again.
 
 [2026-05-08T00:14:00Z] WAKE-EMPTY (1). Queue empty after 030 archive — commander hasn't staged next batch. Sleeping.
+
+[2026-05-08T00:24:00Z] WAKE-EMPTY (2). Still no new queue entries.
