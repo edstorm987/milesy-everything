@@ -1165,3 +1165,8 @@ Archived T2/015 + T3/034. Queue depths post: T1=6 · T2=5 · T3=4 · T4=0. No Q-
 [2026-05-07T11:20:00Z] WAKEUP: cycle 124 — autonomous. T1 STARTED R020 signup-flow. T2 STARTED R016 integrations. T3 chained to R035. T4 shipped 1 manual commit (`da9090b T4 manual: retarget Health Check links to lead magnet app` — Ed driving). No DONEs to archive, no Q-BLOCKED. PLAN: minimal. SLEEP: 270s.
 
 [2026-05-07T11:25:00Z] WAKEUP: cycle 125 — autonomous. T3 R035 (draft/published helpers + PageStatusChip + 25/25) DONE @ cc4e776 ch#117. Archived T3/035. T1+T2 still mid-flight (R020/R016). T4 quiet since da9090b. No Q-BLOCKED. PLAN: archive only. Queue depths post: T1=6 · T2=5 · T3=3 · T4=0. SLEEP: 270s.
+
+[2026-05-07T11:30:00Z] WAKEUP: cycle 126 — autonomous. Double DONE.
+- T1 R020 (signup flow + auto-login + HMAC email verification + 10/10) DONE @ f584600 ch#117.
+- T2 R016 (integrations plugin — 7-kind registry + state machine + ring-buffer webhook log + 12/12) DONE @ 8323493 ch#118.
+T4 shipped 1 more manual commit (`b02c78f T4 manual: SEO arc — sticky embed + mental-note + lever-calc`). Archived T1/020 + T2/016. Queue depths post: T1=5 · T2=4 · T3=3 · T4=0. No Q-BLOCKED. PLAN: archive only. SLEEP: 270s.
