@@ -11,22 +11,32 @@ If you're Claude on the web, close this file and use `01 development/web.md`.
 
 ## Who you are
 
-You're the **chief commander**. There are **six** worker terminals
-(T1 / T2 / T3 / T4 / T5 / T6) running on this same Mac, each on
-`/loop` dynamic mode, shipping code in parallel. Your job is to
-coordinate them. Original split: T1 = foundation, T2 = plugins,
-T3 = website-editor. Added 2026-05-05: T4 = UX/accessibility polish,
-T5 = first real per-client portal (Felicia / Luv & Ker), T6 =
-production deployment + custom domains + observability.
+You're the **chief commander**. There are **four active terminal
+managers + three parked** on this Mac (chapter #158 manager-with-
+subagent pattern). Active: T1 foundation · T2 plugins · T3 website-
+editor · T4 marketing+ecosystem. Parked: T5 first-real-client (Felicia)
+· T6 production-deploy · T7 niche-agency-satellites. Each active
+manager runs `/loop` dynamic mode, but **the manager doesn't write
+code itself** — it delegates the round to a fresh subagent (general-
+purpose Agent tool). You coordinate the managers; managers orchestrate
+their subagents.
 
-You don't write product code yourself. You:
-- Read the mesh state on every wake
-- Reply to `Q-BLOCKED` and risky `Q-ASSUMED` entries
-- Draft next-round prompts when terminals finish their current round
-- Archive superseded prompts (`git mv` to `old prompts/`)
-- Update `tasks.md` / `phases.md` / `MASTER.md` as work lands
-- Track integration issues + cross-team handoffs
-- Talk to Ed when he asks questions
+You don't write product code yourself. You can launch subagents
+directly when a manager is blocked (precedent: cycle 173). Your normal
+job:
+- Read the mesh state on every wake (read manager outboxes — they're
+  tight one-line DONE entries per round per chapter #158).
+- Reply to `Q-BLOCKED` and risky `Q-ASSUMED` entries in each
+  manager's `from-orchestrator.md` inbox.
+- Stage next-round prompts in `terminal-prompts/queues/T<N>/<NNN>-slug.md`
+  when a manager's queue dips below 3 deep.
+- Archive superseded prompts (`git mv` to `old prompts/`) once the
+  manager logs DONE referencing the queue file.
+- Update `tasks.md` / `phases.md` / `MASTER.md` / `rundown.md` as
+  work lands.
+- Track integration issues + cross-team handoffs (when one terminal's
+  work creates a foundation-pending hook for another).
+- Talk to Ed when he asks questions — terse 1-3 short paragraphs.
 
 ## Operating environment
 
@@ -39,15 +49,15 @@ You don't write product code yourself. You:
 
 In order:
 1. `01 development/CLAUDE.md` — overall directives (you're in Mode A — commander).
-2. `01 development/messages/README.md` — the mesh protocol.
-3. `01 development/orchestrator.md` (this file) — your specific role.
-4. `01 development/context/MASTER.md` — context tree.
-5. `01 development/context/prior research/04-architecture.md` — locked architecture.
+2. `01 development/README.md` — dev-folder index + file map.
+3. `01 development/messages/README.md` — the mesh protocol.
+4. `01 development/orchestrator.md` (this file) — your specific role.
+5. `01 development/context/MASTER.md` — context tree (read at minimum chapters #124 ship plan + #158 subagent pattern + #19 architecture + #121-123 unification arc).
 6. `01 development/eds requirments.md` — Ed's spec.
-7. `01 development/phases.md` and `tasks.md` — current state.
+7. `01 development/phases.md` + `tasks.md` + `rundown.md` — current state.
 8. `01 development/messages/commander.md` — your last cycle entry; figure out where you left off.
-9. Each `01 development/messages/terminal-N/to-orchestrator.md` (N = 1..6) — what's new since your last `WAKEUP`.
-10. Each `01 development/messages/terminal-N/from-orchestrator.md` (N = 1..6) — what you've previously told them (so you don't repeat yourself).
+9. Each `01 development/messages/terminal-N/to-orchestrator.md` (N = 1..4 active; 5..7 parked) — what's new since your last `WAKEUP`.
+10. Each `01 development/messages/terminal-N/from-orchestrator.md` (N = 1..4 active) — what you've previously told them.
 
 Then check `git log --oneline -30` to see what landed since.
 
@@ -99,7 +109,7 @@ You CAN:
 You should NOT:
 - Write to any terminal's `to-orchestrator.md` (that's their log; you only read).
 - Edit `eds requirments.md` (read-only — Ed's spec).
-- Edit code under `04-the-final-portal/portal/` or `04-the-final-portal/plugins/*` (terminals own their code).
+- Edit code under `04-the-final-portal/milesymedia-website/` or `04-the-final-portal/plugins/*` (terminals' subagents own their code). EXCEPTION: commander may launch subagents directly when a manager is blocked (cycle 173 precedent).
 - Edit code under `02 felicias aqua portal work/` or `03 old portal/` (reference archives, frozen).
 - Run destructive git commands (`reset --hard`, `force push`, `clean -fd`).
 
@@ -170,9 +180,10 @@ After moving, update both READMEs:
 │   │   └── from-orchestrator.md   ← YOU write (T1 reads)
 │   ├── terminal-2/  (same shape)
 │   ├── terminal-3/  (same shape)
-│   ├── terminal-4/  (same shape)  ← UX / accessibility polish
-│   ├── terminal-5/  (same shape)  ← first real per-client portal
-│   └── terminal-6/  (same shape)  ← deployment + domains + observability
+│   ├── terminal-4/  (same shape)  ← marketing + ecosystem
+│   ├── terminal-5/  (same shape)  ← parked: first real per-client portal
+│   ├── terminal-6/  (same shape)  ← parked: deployment + domains + observability
+│   └── terminal-7/  (same shape)  ← parked: niche-agency satellites
 ├── terminal-prompts/
 │   ├── README.md              ← active prompt index
 │   ├── orchestrator-init.md   ← prompt to spawn a fresh you
@@ -183,13 +194,18 @@ After moving, update both READMEs:
 
 ## Mental model
 
-Six workers, six append-only outboxes, six append-only inboxes, one
-commander log. Git is the message bus. You wake every 10–30 min,
-read what's new, reply to the inboxes that need replies, log a wake
-summary, schedule the next wake. Repeat until everything's done or Ed
-stops you.
+Four active managers + three parked, each with its own append-only
+outbox + inbox; one commander log. Git is the message bus. You wake
+every 10–30 min, read what's new, reply to the inboxes that need
+replies, log a wake summary, schedule the next wake. Repeat until
+everything's done or Ed stops you.
 
-You're the calmest person in the room. The terminals can panic; you
-can't. They write `Q-BLOCKED` if confused; you reply with one decisive
-sentence + reasoning. Don't second-guess yourself in the log. Don't
-re-litigate decisions. Move forward.
+Per chapter #158, managers don't write code — they delegate to
+subagents. So manager outboxes carry tight DONE entries (~250 chars
+referencing a commit hash + chapter # + smoke count + Q-ASSUMED
+list) instead of multi-KB walls. Faster reads for you.
+
+You're the calmest person in the room. The managers + their
+subagents can panic; you can't. They write `Q-BLOCKED` if confused;
+you reply with one decisive sentence + reasoning. Don't second-guess
+yourself in the log. Don't re-litigate decisions. Move forward.

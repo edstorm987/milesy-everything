@@ -1,252 +1,145 @@
 # Tasks — Ship Plan v1 sprint backlog
 
-Reset 2026-05-07. Historical log of every shipped round preserved at
-`old files/tasks-pre-ship-plan-2026-05-07.md`. From here forward,
-this file is a **rolling sprint backlog**, not a chronicle. Each
-sprint shows In progress / To do / Blocked. Shipped rounds drop off
-once the sprint closes.
+Reset 2026-05-07T19:15Z. Rolling sprint backlog (not a chronicle).
+Each sprint shows In progress / To do / Done-this-sprint / Blocked.
+Shipped rounds drop off once the sprint closes. Historical full log
+preserved at `old files/tasks-pre-ship-plan-2026-05-07.md`.
 
-Plan reference: chapter #124 `04-ship-plan-v1.md`. Workstream legend
-(WS-A through WS-F) defined there.
-
----
-
-## Sprint 1 (active — week of 2026-05-07)
-
-Goal: WS-A complete, WS-B half, WS-C R1 done. Ship-gate 4/9 met.
-
-### In progress
-
-_(none — terminals on HOLD pending RESUME signal post-unification)_
-
-### To do — T1 (foundation)
-
-- [x] **R022 — Role-aware post-login redirect** (WS-A). NEW
-      `lib/server/postLoginRedirect.ts` resolver wired into
-      `/api/auth/login` (bootstrap + standard) + `/api/auth/signup` +
-      `/api/auth/magic/verify` + `/dev/pov`. LoginForm chains
-      `data.redirect` behind `returnUrl`. Smoke 11/11. Chapter #125.
-- [x] **R023 — `lead` role added to Role enum + permission grid**
-      (WS-A). `Role` union + ALL_ROLES + `isLeadRole`; `LEAD_AGENCY_ID`
-      sentinel; `effectiveRole` lead → EMPTY; NEW `requireAgencyScope`
-      helper; `createUser` tolerates lead w/ optional agencyId. Smoke
-      9/9. Chapter #127.
-- [x] **R024 — Founder password rotation** (WS-A). Env-driven creds
-      (FOUNDER_EMAIL/PASSWORD/AGENCY_NAME); direct-mutate bypass dropped
-      → seed via `createUser`; production fail-closed guard (≥12 chars +
-      email-not-default); `.env.example` + runbook §2a updated. Smoke
-      12/12. Chapter #129. `grep -r '"123"' src/` clean.
-- [x] **R025 — `agencyIds[]` migration** (WS-C R1). Schema dual-write
-      (`agencyIds[]` + legacy `agencyId` mirror); SessionPayload
-      `activeAgencyId` + `agencyIds`; NEW `userSchemaMigration.ts`
-      runner wired into `ensureHydrated`; createUser writes both
-      shapes; NEW `assertTenantScope` + 3 active-agency helpers in
-      auth.ts. Smoke 10/10. Chapter #131.
-- [x] **R034 — "Clients" → "Pipelines" multi-pipeline kanban refactor** —
-      DONE 2026-05-07. Foundation refactor: single Clients grid retires;
-      agencies own N named Pipelines (fulfilment/leads/sales/custom),
-      each its own kanban + polymorphic cards. NEW `src/server/
-      pipelines.ts` (Pipeline + PipelineCard union + CRUD + idempotent
-      default seed + addCard kind enforcement + client→fulfilment
-      projection + migration runner). Hub page rewrite at `/portal/
-      agency` + per-pipeline view at `/portal/agency/pipelines/[slug]`
-      + sidebar Pipelines retargeted. Smoke 19/19 via `npm run
-      smoke:pipelines-refactor`. Chapter #156.
-- [x] **R035 — Sidebar minimise/maximise toggle** — DONE 2026-05-07.
-      Audit found no auto-collapse code in `Sidebar.tsx` (server
-      component, no route hook); Ed's perceived issue was absence of
-      persisted user intent. Ships `<SidebarCollapseToggle>` (chevron
-      top of sidebar) + `<SidebarCollapseHydrationScript>` (synchronous
-      `<head>` script reads `localStorage["mm-sidebar-collapsed"]`,
-      stamps `data-collapsed` on `<aside>` before paint — no flash).
-      Collapsed = 56px icon-rail (labels/headings/badges/extra hide,
-      first-letter pill + `title=` tooltip on each row); expanded =
-      full sidebar today; mobile slide-over excluded. Nav `<Link>`
-      clicks NEVER mutate the attribute — only the toggle does
-      (smoke-asserted source-marker). 10/10 smoke via
-      `npm run smoke:sidebar-collapse-toggle`. Chapter #153.
-- [x] **R036 — Profile picture upload (circular avatar)** — DONE 2026-05-07.
-      Schema: `ServerUser.avatarUrl?: string` (data URL, 50KB cap).
-      NEW pure validator `src/lib/avatarDataUrl.ts` (allow-list
-      png/jpeg/webp; SVG/GIF rejected; base64 sanity); NEW route
-      `src/app/api/auth/profile/avatar/route.ts` POST + DELETE behind
-      `requireSession` (413 too_large / 400 other / null clears). NEW
-      `<AvatarUploader>` client component on `/portal/account` —
-      click/drag → 256×256 cover-fit `<canvas>` → JPEG q=0.85 → POST
-      JSON `{dataUrl}`. ProfileMenu accepts `avatarUrl` prop, renders
-      `<img class="mm-profile-avatar-img">` else falls back to
-      initials chip; CSS variant added to `_marketing/styles.css`.
-      Topbar threads through; agency/clients/customer layouts pass
-      `getUserById(session.userId)?.avatarUrl`. 21/21 smoke via
-      `npm run smoke:profile-picture-upload`. Chapter #155.
-
-### To do — T2 (plugins)
-
-- [x] **R018 — `@aqua/plugin-onboarding-checklist`** (existing queue). MASTER #126.
-- [x] **R019 — `@aqua/plugin-client-reports`** (existing queue). MASTER #127.
-- [x] **R020 — `@aqua/plugin-feedback-loops`** (existing queue). MASTER #131.
-- [x] **R021 — `@aqua/plugin-public-funnel`** (WS-B R021). HC
-      completion → `lead` user (T1 R023) → auto-signin via SessionPort →
-      `/business-os`. Idempotent on canonical email; emits
-      `public-funnel.lead.captured` (first time) + `.hc.completed`
-      (every time, w/ bucket). 13/13 smoke. Chapter #132.
-- [x] **R022 — `@aqua/plugin-bos-auth-gate`** (WS-B R022). Pure
-      `evaluate` decision engine + `me` endpoint; helpers
-      `matchesBosPath` / `isBosAsset` / `buildLoginRedirect`. Soft-
-      gate via `NEXT_PUBLIC_DEV_BYPASS`. T1 wires foundation
-      middleware. 16/16 smoke. Chapter #137. WS-B Sprint-1 done.
-
-### To do — T3 (website-editor)
-
-- [x] **R037 — Structured data (schema.org)** — DONE 2026-05-07.
-      `lib/structuredData.ts` (buildJsonLd / validateJsonLd /
-      serializeJsonLd) + 30/30 smoke + chapter #125.
-- [x] **R038 — Image srcset + responsive helper** — DONE 2026-05-07.
-      `lib/responsiveImage.ts` (buildImageAttrs / withCdnResize /
-      auditImage) + 34/34 smoke + chapter #128.
-- [x] **R039 — Block schema migration runner** — DONE 2026-05-07.
-      `lib/blockSchemaMigrations.ts` (versioned migrate runner +
-      seed v1→v2 / v2→v3 + loadBlockTreeMigrated) + 23/23 smoke +
-      chapter #130.
-- [x] **R040 — Editor live-preview iframe** — DONE 2026-05-07
-      (pulled from Sprint 2 by queue order). `lib/editorLivePreview.ts`
-      (mint/verify token + buildPreviewSrc + postMessage shapes +
-      split-pref) + `<EditorLivePreview>` component skeleton +
-      26/26 smoke + chapter #132.
-- [x] **R041 — Published-only slug redirect helper** — DONE 2026-05-07
-      (pulled from Sprint 2). `lib/slugRedirects.ts` (buildRedirectMap
-      with self/conflict/cycle issue detection + resolveRedirect with
-      chain-walk + 8-hop runtime cap + withSlugRename helper) + 23/23
-      smoke + chapter #135.
-- [x] **R042 — Page-type templates** — DONE 2026-05-07. `lib/pageTemplates.ts`
-      (6 templates: landing/blog-post/product/about/contact/faq with seoDefaults +
-      applyTemplate restamping ids on every call + uniqueSlug helper) + 20/20
-      smoke + chapter #138.
-- [x] **R043 — Webhook block + form-submission dispatcher** — DONE 2026-05-07.
-      `lib/webhookBlock.ts` (collectWebhookTargets / findWebhookTarget /
-      resolveFormSubmission + dispatchWebhook with HMAC-SHA256 signing
-      Stripe-style `<timestamp>.<body>`) + 26/26 smoke + chapter #142.
-- [x] **R044 — Sitemap.xml + robots.txt host routes** — DONE 2026-05-07.
-      `api/handlers/sitemapHostRoutes.ts` wires R036 advanced generators
-      to /sitemap.xml + /sitemap-<locale>.xml + /robots.txt; routes.ts
-      mounts swapped from R014 narrow → R036 advanced; cache header
-      max-age=300/s-maxage=600. 18/18 smoke + chapter #145.
-- [x] **R045 — JSON-LD injection into page `<head>`** — DONE 2026-05-07.
-      `lib/jsonLdInjection.ts` (deriveOrganization + buildPageJsonLd +
-      buildJsonLdScriptBodies + describeJsonLdEmission for diagnostics);
-      SiteHead.tsx renders `<script type="application/ld+json">` per
-      schema with CSP-safe escape inherited from R037. 23/23 smoke +
-      chapter #149.
-- [x] **R046 — Static export sitemap bundle** — DONE 2026-05-07.
-      `server/staticExport.ts` swap R014 narrow → R036 advanced for
-      bundled `sitemap.xml`+`robots.txt`; per-locale `sitemap-<locale>.xml`
-      when site has any locale-tagged pages; same filter stack as R044
-      runtime routes (drafts/private/noIndex/redirect-sources). 21/21
-      smoke + chapter #152. R033 smoke (34/34) still green.
-- [x] **R047 — Form submission host route + webhook dispatch wiring** —
-      DONE 2026-05-07. `api/handlers/formSubmissionHost.ts` (handleFormSubmit
-      POST /forms/submit + handleListFormWebhookLog GET /forms/webhook-log
-      + listAllWebhookTargets cross-page resolver). Webhook failures 200
-      with internal-fallback persist; per-tenant 200-entry log mirroring
-      R016 shape. 19/19 smoke + chapter #154.
-
-### T4 manual (Ed driving)
-
-- [x] Niche pages mega-menu mirror — sweep `for-skincare/coaching/
-      fitness/agencies` to match `/`'s Resources dropdown (chapter
-      #123 carry-forward). **DONE T4 R001 — chapter #136.**
-- [x] `app/page.tsx` orphan resolution — decide JSX rewrite vs delete.
-      **DONE T4 R003 — Option A (delete) — chapter #140.**
-- [x] Resource sub-page real implementations — replace 3 of 7 stubs
-      this sprint (start with `seo-audit`, `site-speed`,
-      `accessibility-audit`). **DONE T4 R002 — chapter #137.**
-- [x] AquaOasis Demo content pack — `src/app/(seeds)/aquaOasisDemoContent.ts`
-      (3 clients × brand kits + 15 contacts + 30 bookings + 9 leads + 4
-      agency campaigns; Q-ASSUMED T1 wires the runner from
-      `aquaOasisSeed.ts`). **DONE T4 R004 — chapter #143.**
-- [x] Copy polish across marketing surfaces (Ed's flagged items).
-      **DONE T4 R005 — chapter #146.** index Services H2 marketing-ese
-      fix; dev/pov persona `sees:` line; footer parity across all pages;
-      NEW /privacy + /terms stubs (next.config.ts rewrites); deploy
-      date refresh.
-- [x] Marketing home JSX rewrite via SiteShell (post-Sprint-2 polish).
-      **DONE T4 R006 — chapter #148.** `src/app/page.tsx` + `_home/home.html`
-      (fs.readFileSync + dangerouslySetInnerHTML); `/` rewrite dropped;
-      legacy `_marketing/index.html` deleted; SiteShell footer R005 parity;
-      mega-menu sync rule retires for home page.
-- [x] Niche pages JSX rewrite (4 for-* pages). **DONE T4 R007 —
-      chapter #151.** `src/app/for-{skincare,coaching,fitness,agencies}/
-      page.tsx` + `_niches/<slug>.html`; `for-*` rewrites dropped;
-      legacy `_marketing/for-*.html` deleted; mega-menu sync rule
-      (chapter #123 gotcha #6) FULLY RETIRED — surface 5 → 1 file
-      (SiteShell only).
-- [x] HC React rewrite + portal tracking. **DONE T4 R008 —
-      chapter #152.** `src/lib/healthCheck/{types,defaultPack}.ts`
-      + `src/app/health-check/{page,_HCQuiz,_HCResults}.tsx` +
-      `public/_marketing/health-check.css`. Iframe retired; stacked-
-      scrollbar bug gone; HC completion POSTs `/api/portal/public-
-      funnel/hc-complete` (T2 R021) → lead → activity → founder
-      dashboard tile. `skipIf` lifted to a serialisable DSL so future
-      agency packs (Phase 12 R3) plug in unchanged.
-
-### Blocked
-
-_(none yet)_
-
-### Done — Sprint 1
-
-_(populated as rounds ship)_
+Plan reference: chapter **#124** `04-ship-plan-v1.md`.
+Workflow: chapter **#158** `04-subagent-delegation-pattern.md` —
+managers delegate to subagents per round.
+Workstream legend: WS-A auth · WS-B public funnel · WS-C multi-agency
+· WS-D real-data · WS-E hardening · WS-F first real client.
 
 ---
 
-## Sprint 2 (planned)
+## Sprint 1 ✅ closed
 
-Goal: WS-B/C complete; WS-D started; WS-E half. Ship-gate 7/9.
+WS-A complete · WS-C R1 complete · 9/9 autonomous ship-gate criteria
+green by end-of-Sprint-1+2 combined.
 
-- T1: ~~WS-C R026 Topbar agency switcher~~ #133 +
-  ~~WS-E R027 Postgres backend~~ #134 +
-  ~~WS-E R028 durable HMAC nonces~~ #138 +
-  ~~WS-E R029 env secrets policy~~ #142 +
-  ~~WS-E R030 observability~~ #144 +
-  ~~R031 BOS middleware integration~~ #147 +
-  ~~R032 public-funnel/BOS port adapters + dispatcher public:true~~ #150 +
-  ~~R033 ActivityCategory enum batch + chip styling~~ #153 —
-  Sprint 2 T1 + cross-plugin glue ALL complete 2026-05-07.
-- T2: ~~WS-B R023 rank-my-website plugin~~ #141 +
-  ~~WS-D R024 SMTP outbound~~ #144 +
-  ~~WS-D R025 Stripe events~~ #145 +
-  ~~WS-D R026 GA4 readonly~~ #149 +
-  ~~R027 leads-pipeline (CSV import + email campaigns + contacts)~~ #157 —
-  Sprint 2 T2 plugin queue COMPLETE 2026-05-07. T2 queue empty
-  pending commander archive.
-- T3: R040 editor live-preview iframe + R041 published-only redirect
-  helper.
-- T4: AquaOasis demo brand pack; iframe→React rewrites if time.
+Done in Sprint 1: T1 R022 role-redirect (#125) · T1 R023 lead role
+(#127) · T1 R024 founder password rotation (#129) · T1 R025
+agencyIds[] (#131) · T2 R018 onboarding-checklist (#126) · T2 R019
+client-reports (#127) · T2 R020 feedback-loops (#131) · T3 R037
+structured-data · T3 R038 image-srcset · T3 R039 block-schema-
+migration (#130) · T3 R040 editor-live-preview (#132) · T4 R001
+niche-pages mega-menu (#136) · T4 R002 Resource sub-pages real (#139).
 
----
+## Sprint 2 ✅ closed
 
-## Sprint 3 (planned)
+WS-B/C/D/E complete on the autonomous-terminal side.
 
-Goal: ship gate met; production preview live.
+Done: T1 R026 Topbar agency switcher + AquaOasis Demo seed (#133) ·
+T1 R027 Postgres backend (#134) · T1 R028 durable nonces (#138) ·
+T1 R029 env secrets policy (#142) · T1 R030 observability (#144) ·
+T1 R031 BOS middleware integration (#147) · T1 R032 public-funnel
++ BOS port adapters (#150) · T1 R033 ActivityCategory batch (#153) ·
+T2 R016 integrations plugin (#118) · T2 R017 support-desk (#119) ·
+T2 R021 public-funnel (#132) · T2 R022 BOS auth gate (#137) ·
+T2 R023 rank-my-website (#141) · T2 R024 SMTP outbound (#144) ·
+T2 R025 Stripe events (#145) · T2 R026 GA4 read-only (#149) ·
+T3 R041 slug redirects (#135) · T3 R042 page templates · T3 R043
+webhook block · T3 R044 sitemap host routes · T3 R045 jsonld
+injection · T3 R046 static export sitemap bundle (#152) · T3 R047
+form submission host route (#154) · T4 R003 app/page.tsx orphan
+(#140) · T4 R004 AquaOasis Demo content (#143) · T4 R005 final copy
+pass (#145) · T4 R006 marketing JSX rewrite (#147) · T4 R007 niche
+pages JSX rewrite · T4 R008 HC React rewrite + tracking (#152).
 
-- T1: WS-E R029 (env secrets) + R030 (observability + Sentry).
-- T2: WS-D R025 Stripe + R026 GA4.
-- T5: WS-F R001-R003 (Felicia portal end-to-end).
-- T6: production deploy preview + DNS + smoke.
-- T4: final marketing copy pass + content QA.
+## Sprint 2.5 — Ed's UX feedback batch (active)
+
+Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
+(chapter #158 first parallel run).
+
+### Done — Ed's UX batch
+
+- [x] **Login page premium redesign** — two-pane brand panel, refined
+      inputs/buttons/card. Commit `821437c`.
+- [x] **Drop "Create your agency" from login form** — duplicate
+      removed; footer "Get started →" preserved. Commit `cc2770b`.
+- [x] **Dev-bypass slow** — memoized `seedDemoAgency` per-process.
+      ~10× faster repeat clicks. Commit `cc2770b`.
+- [x] **Dev-bypass cards horizontal** — 2-col grid ≥640px. Commit `cc2770b`.
+- [x] **Settings pinned to bottom of sidebar** — `mt-auto` on its
+      section. Commit `c7afe35`.
+- [x] **HC double-scrollbar** — outer page hard-capped to viewport-
+      minus-chrome. Commit `c7afe35`.
+- [x] **Sidebar "Clients" → "Pipelines"** label. Commit `c7afe35`.
+- [x] **Profile menu (edit / preferences / permissions / sign out)**
+      with `/portal/account/*` stubs. Commit `cc2770b`.
+- [x] **404 pages** for portal + website (`not-found.tsx` × 2).
+      Commit `c7afe35`.
+- [x] **`demo portals/` folder scaffold** + README (4 personas).
+      Commit `c7afe35`.
+- [x] **T1 R034 pipelines refactor** — Pipeline + PipelineCard +
+      3-default seed + migration runner + 19/19 smoke. Commit
+      `67ba820`. Chapter #156.
+- [x] **T1 R035 sidebar collapse toggle** — chevron + localStorage
+      persist + sync hydration script + 10/10. Commit `3a50b1b`.
+      Chapter #153.
+- [x] **T1 R036 profile picture upload** — 256×256 client resize,
+      JPEG q=0.85, 50KB cap, fallback initials, 21/21. Commit
+      `e834bb7`. Chapter #155.
+- [x] **T2 R027 leads-pipeline plugin** — CSV import + Lead/Contact
+      domains + Campaign send pipeline + audience filters +
+      public-funnel subscriber + 25/25. Commit `1e26005`. Chapter
+      #157.
+- [x] **Workflow upgrade — chapter #158 manager-with-subagent
+      pattern** — all 4 routers refactored + dev folder docs
+      updated. Commit `25d7c91`.
+
+### To do — Ed's UX batch (queued)
+
+- [ ] **T1 R037 — leads-pipeline foundation glue** (closes T2 R027's
+      5 hooks: ActivityCategory "leads" extension · plugin runtime
+      registration · EmailEnqueuePort + PipelinePort adapters ·
+      event-bus subscription wiring incl `pipelines.card.moved`
+      emit). Queue file `queues/T1/037-leads-pipeline-foundation-glue.md`.
+- [ ] HC + lead-magnet → portal tracking integration verification.
+      T4 R008 wired the React rewrite + completion endpoint; verify
+      lead really appears in leads pipeline post-R037 foundation glue.
+
+### Open Sprint-2.5 items (no queue file yet)
+
+- [ ] "Sign in as employee" persona on `/dev/pov` — code was added
+      twice and reverted by linter. Stage as small T1 follow-up
+      round if Ed wants it explicit.
+- [ ] Performance pass beyond dev-bypass memoize — biggest lever
+      remaining is `PORTAL_BACKEND=postgres` (T1 R027 wired) on a
+      real Postgres URL. Operator action.
+
+## Sprint 3 (planned — Felicia + production)
+
+- T1: WS-E follow-ups (whatever falls out of foundation pass).
+- T2: WS-D upgrades — full Postmark integration, Stripe webhook
+  consumers, GA4 OAuth.
+- T5 (reactivate): WS-F R001-R003 — Felicia portal scaffold +
+  content + end-customer flow.
+- T6 (reactivate): full deploy runbook rewrite + CI pipeline +
+  Vercel config + domain attach + prod-readiness smoke.
+- T4: AquaOasis Demo content polish.
+- Commander: stage; coordinate; archive.
+
+End of Sprint 3 = ship gate — see chapter #124.
 
 ---
 
 ## Cross-sprint reminders
 
 - **Founder password ≠ `"123"`** before any production flip
-  (chapter #122 + chapter #124 ship gate).
-- **Deploy runbook** at `runbooks/deploy.md` is **stale post-
-  unification** — references the deleted `portal/` folder + `_milesy/`
-  copy step. Refresh during WS-E (Sprint 2/3).
-- **`messages/README.md`** is **stale** — still says T4 = "UX/
-  accessibility polish". Update to reflect "Milesy ecosystem +
-  manual unification driver" when convenient.
-- T4's chapter-#123 gotchas (no spaces in project root, absolute asset
-  paths in public/, Turbopack root one level up) apply to every
-  worker terminal touching `milesymedia-website/`.
+  (chapter #122 + chapter #124 ship gate). T1 R024 enforced via
+  env-only seed + prod fail-closed guard.
+- **Deploy runbook** at `runbooks/deploy.md` is **STALE post-
+  unification** — env table refreshed (T1 R024) but §3-§5 still
+  reference the deleted `portal/` folder + `_milesy/` copy step.
+  Full rewrite in T6 R001 when reactivated.
+- **Founder seed env vars** — `FOUNDER_EMAIL` (real address, not
+  default) + `FOUNDER_PASSWORD` (≥12 chars) + `FOUNDER_AGENCY_NAME`
+  (defaults "Milesy Media"). All other prod env in chapter #142
+  `04-env-secrets-policy.md`.
+- **Mesh hazard** — parallel terminals' subagents share `.git/index`.
+  When a subagent's commit lands as part of a commander commit, the
+  work still ships — verify on `origin/main`, log WARN, treat as DONE.
+- **Manager-with-subagent pattern** (chapter #158) — managers
+  delegate; outboxes stay short; commander reads them in seconds.

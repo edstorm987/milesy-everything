@@ -6,13 +6,13 @@ Output: 18 chapters in `01 development/context/prior research/` indexed in
 `MASTER.md`. The next session can load both codebases off-by-heart from the
 chapters alone.
 
-## Phase 1 — Architecture for `04-the-final-portal/` (in progress)
-Lock in the architecture: audience tiers, URL surface, role hierarchy,
-folder layout. Decide what gets ported from `02` (directly), what's
-recreated from `03` (as plugins), and what's net-new.
+## Phase 1 — Architecture for `04-the-final-portal/` ✅
+Locked. Chapter #19 `04-architecture.md`. Audience tiers + URL surface
++ role hierarchy + folder layout + plugin model + multi-tenancy
+all decided. Subsequent chapters refine specific surfaces.
 
 **Locked decisions** (from Ed's directive 2026-05-04):
-- Build `04-the-final-portal/portal/` as the new app — Next.js + plugin model from `02`.
+- Build `04-the-final-portal/milesymedia-website/` (no space — chapter #122 deleted the legacy `portal/` + `milesymedia website/` post-unification) as the single Next.js host. Plugin model lifted from `02`.
 - **Pre-vetted plugins to drop in from `02`**: website editor + ecommerce.
 - Build by plugins (so future features = new plugin folders in `04-the-final-portal/plugins/`).
 - Three audiences: agency staff (Ed's team), clients (Felicia-style), end customers (per-client storefronts + iframe-embedded login).
@@ -21,27 +21,29 @@ recreated from `03` (as plugins), and what's net-new.
 - First feature slice: **fulfillment** — team creates client → selects phase preset (Discovery / Design / Onboarding / Live etc.) → installs plugins per client.
 - Final UX: Milesy Media website hosts a login + Demo button → drops operator into the portal.
 
-## Phase 2 — Foundation
-Auth + role hierarchy + multi-tenancy schema in `04/portal/`. Plugin scaffold.
+## Phase 2 — Foundation ✅
+Auth + role hierarchy + multi-tenancy schema in single Next.js host
+at `04-the-final-portal/milesymedia-website/`. Plugin scaffold.
 First runnable shell.
 
-## Phase 3 — Fulfillment slice
+## Phase 3 — Fulfillment slice ✅
 Team-side: create client + pick phase preset + install plugins per client.
-Recreate `03`'s `FulfilmentBrief` + `FulfilmentDeliverable` + `BriefAssignment`
+Recreated `03`'s `FulfilmentBrief` + `FulfilmentDeliverable` + `BriefAssignment`
 as a `fulfillment` plugin in `04`.
 
-## Phase 4 — Pre-vetted plugins
-Port the **website editor** + **ecommerce** plugins from `02` into `04/plugins/`.
+## Phase 4 — Pre-vetted plugins ✅
+Ported **website editor** + **ecommerce** + ~10 more from `02` into
+`04-the-final-portal/plugins/`. 38 plugins total today.
 
-## Phase 5 — Client portal customisation
-Per-client brand kit + portal variants (login / dashboard / orders / etc.) drive
-the client-facing experience. Stage + role + installed plugins decide what's
-shown.
+## Phase 5 — Client portal customisation ✅
+Per-client brand kit + portal variants (login / dashboard / orders /
+etc.) drive the client-facing experience. Stage + role + installed
+plugins decide what's shown. Brand-kit CSS-vars throughout.
 
-## Phase 6 — Recursive portals (clients' customers)
-Iframe-embed-style login + portal for each client's end customers, branded
-to the client. Same portal-variant + brand-kit machinery as the client portal,
-nested one level.
+## Phase 6 — Recursive portals (clients' customers) ✅
+`/embed/[clientSlug]/[variant]` route + iframe-embed login (T1 R016
+chapter #91). Same portal-variant + brand-kit machinery as the client
+portal, nested one level.
 
 ## Phase 7 — Feature plugins ✅ (largely shipped)
 agency-hr / agency-finance / agency-marketing / agency-ops / agency-domains /

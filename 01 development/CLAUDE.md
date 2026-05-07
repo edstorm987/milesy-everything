@@ -10,24 +10,28 @@ your runtime:
 ### Mode A — Mac terminal (Claude Code)
 
 You're running on Ed's Mac with full shell + filesystem access, can spawn
-subagents, can use `/loop` and `ScheduleWakeup`. **Six worker terminals
-run in parallel** (T1 / T2 / T3 / T4 / T5 / T6) plus chief commander.
-You coordinate via append-only logs at `01 development/messages/`.
+subagents, can use `/loop` and `ScheduleWakeup`. **Four active terminal
+managers + three parked + one chief commander** (chapter #158 manager-
+with-subagent pattern). You coordinate via append-only logs at
+`01 development/messages/`.
 
-Terminal split (current):
-- **T1** — foundation (auth / chrome / plugin runtime / Postgres / stitch)
-- **T2** — plugins (fulfillment / ecommerce / agency-* / memberships / affiliates / forms / email-sender / portal-export / ...)
-- **T3** — website-editor (blocks / editor admin / cross-plugin renderers)
-- **T4** — UX + accessibility polish across the entire surface
-- **T5** — first real per-client portal (Felicia / Luv & Ker) at `clients/luv-and-ker/`
-- **T6** — production deployment + custom domains + observability
+Active terminals (managers — they delegate round work to subagents):
+- **T1** — foundation. `milesymedia-website/src/{server,lib/server,app/api,app/portal,components/chrome}/`, middleware, next.config, plugin `_registry`.
+- **T2** — plugins. `04-the-final-portal/plugins/<id>/` (every plugin except website-editor).
+- **T3** — website-editor. `04-the-final-portal/plugins/website-editor/`.
+- **T4** — Marketing + ecosystem. `milesymedia-website/public/{_marketing,health-check,business-os,incubator}/` + `src/app/{(marketing),health-check,incubator,page.tsx,for-*,_home,_niches}/` + SiteShell + ResourceFinder + lib/resources/catalog.
 
-→ **Read `01 development/messages/README.md`** for the full autonomous-
-mesh protocol. Then read the rest of this file.
+Parked terminals (queues preserved at `queues/T{5,6,7}/`):
+- **T5** — first real client (Felicia / Luv & Ker). Reactivates Sprint 3 (WS-F).
+- **T6** — production deploy + observability. Reactivates Sprint 3.
+- **T7** — niche-agency satellites (Phase 12 R3+). Post-ship.
+
+→ **Read `01 development/messages/README.md`** for the mesh protocol.
+Then read the rest of this file.
 
 Within Mode A there are two roles:
-- **Worker terminal (T1 / T2 / T3 / T4 / T5 / T6)** — paste a prompt from `01 development/terminal-prompts/T<N>-...md`. You build code in your assigned slice.
-- **Chief commander (orchestrator)** — paste `01 development/terminal-prompts/orchestrator-init.md`. You coordinate the workers; full protocol in `01 development/orchestrator.md`. You don't write product code.
+- **Manager terminal (T1 / T2 / T3 / T4)** — paste `01 development/terminal-prompts/T<N>-router.md`. You read the queue, launch a subagent per round, verify the commit, log DONE, chain. **You do NOT write code yourself** — that's the subagent's job (chapter #158).
+- **Chief commander (orchestrator)** — paste `01 development/terminal-prompts/orchestrator-init.md`. You coordinate managers; full protocol in `01 development/orchestrator.md`. You don't write product code.
 
 ### Mode B — Claude web (claude.ai with GitHub connector)
 
@@ -47,14 +51,14 @@ Before any task:
 
 1. `git pull --rebase` (Mac) or pull via the GitHub connector (web).
 2. Read this file (`01 development/CLAUDE.md`).
-3. Mode A: read `01 development/messages/README.md`. Mode B: read `01 development/web.md`.
-4. Read `01 development/context/MASTER.md` (the context tree contents page).
-5. Read `01 development/context/prior research/04-architecture.md` (the locked design).
+3. Read `01 development/README.md` (dev-folder index — file map + boot order).
+4. Mode A: read `01 development/messages/README.md`. Mode B: read `01 development/web.md`.
+5. Read `01 development/context/MASTER.md` (chapter index). Minimum chapters to read for the active state: **#124** (Ship Plan v1) + **#158** (subagent delegation pattern) + **#19** (architecture) + **#121/#122/#123** (unification arc).
 6. Read `01 development/eds requirments.md` (Ed's spec).
-7. Mode A — terminal: read your `messages/terminal-N/from-orchestrator.md` (any reply for you?) AND your `messages/terminal-N/to-orchestrator.md` (your last entry).
+7. Mode A — manager terminal: read your `messages/terminal-N/from-orchestrator.md` (any reply for you?) AND your `messages/terminal-N/to-orchestrator.md` (your last entry).
    Mode A — commander: read `messages/commander.md` AND every terminal's `to-orchestrator.md`.
-   Mode B — web: read the recent `git log` + `tasks.md` to find current state.
-8. Read `01 development/tasks.md` and `phases.md`.
+   Mode B — web: read the recent `git log` + `tasks.md` + `rundown.md` to find current state.
+8. Read `01 development/tasks.md` (sprint backlog) and `01 development/rundown.md` (status snapshot).
 
 While working:
 
@@ -99,8 +103,8 @@ do not edit those folders unless Ed explicitly asks.
 
 ## Authority boundaries
 
-- **Mode A terminals (T1 / T2 / T3)** can: write code in their assigned folder, append to their own `to-orchestrator.md`, append to chapter files within their scope, update `tasks.md` rows for their own task, commit + push.
+- **Mode A terminal managers (T1 / T2 / T3 / T4)** can: launch subagents, append to their own `to-orchestrator.md`, update `tasks.md` rows for their own task, commit small rescue patches. Subagents (which the managers spawn) write the round code, smoke, chapter, MASTER row + commit.
 - **Mode A terminals must NOT**: write to another terminal's folder, write to `commander.md`, write to their own `from-orchestrator.md`, change `04-architecture.md`, modify `eds requirments.md`, modify the messages README/protocol.
-- **Mode A chief commander** can: do anything terminals can + write to per-terminal `from-orchestrator.md` files, append to `commander.md`, edit prompts, edit architecture chapter (rare), edit messages README, plan next rounds.
+- **Mode A chief commander** can: do anything terminals can + write to per-terminal `from-orchestrator.md` files, append to `commander.md`, edit prompts, edit architecture chapter (rare), edit messages README, plan next rounds. Commander may also launch subagents directly when managers are blocked or work is best done from commander context (precedent: cycle 173).
 - **Mode B web** can: edit any file, commit + push, write new chapters, draft new terminal prompts. Should NOT modify `eds requirments.md` or the messages mesh files (`messages/terminal-N/`, `commander.md`) — those are mesh-mode artefacts; in web mode, just commit cleanly.
 - **Ed** is the only authority above all of the above. If Ed says something, it overrides everything in this file.

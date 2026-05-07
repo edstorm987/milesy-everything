@@ -1577,3 +1577,20 @@ Archived T2/027. All queues now empty across T1-T4.
 Ed's plan: ship the foundation glue → revamp the broader terminal workflow into orchestrator/manager/subagent architecture for blitz throughput on remaining ship work.
 
 Queue depths: T1=1 (R037 ready) · T2=0 · T3=0 · T4=0.
+
+[2026-05-07T19:25:00Z] **DEV FOLDER CLEANUP — full doc audit + refresh**. Per Ed's directive after the workflow upgrade.
+
+**New top-level**:
+- `01 development/README.md` (NEW) — dev-folder index. File map · boot order · operating modes · active terminals · how a round flows · pointers to plan + architecture + chapters. Skim-in-30s entry point for any new session.
+
+**Refreshed top-level**:
+- `CLAUDE.md` — terminal split current (4 active managers + 3 parked, T4=marketing+ecosystem not "UX/accessibility polish") · added README.md to pre-read · authority section reflects manager/subagent split per chapter #158 · MASTER pre-read pinned to chapters #124+#158+#19+#121-123.
+- `orchestrator.md` — same updates · cycle 173 precedent (commander launching subagents directly when managers blocked) · file-map updated to terminal-7 · mental model paragraph rewritten for manager-with-subagent shape.
+- `ideas.md` — full reset. Old ideas (chief commander · iframe embed · demo · phase preset) all shipped or matured into chapters. New parking lot: forward platform shape (lead upgrade flow · multi-agency satellites · more Resources tools), UX surface (dashboard widgets marketplace · Cmd-K palette · inline notifications), plugin ideas (content-calendar · feedback-quiz · affiliate-tracker), operational (per-tenant DB · CRDT · AI page builder), things-to-research (deliverability · Stripe Connect · GA4 OAuth), workflow (subagents-of-subagents · per-tenant feature flags · operator dry-run mode).
+- `phases.md` — Phase 1-6 marked ✅ with chapter references; Phase 7+ already ✅; legacy `04/portal/` references swapped to current `milesymedia-website/`.
+- `tasks.md` — refreshed to Sprint 2.5 active state. Sprint 1+2 collapsed to one-line summary each. Ed's UX batch shows Done (14) + To-do (R037 + HC verify) + Open (employee persona, perf pass).
+- `rundown.md` — refreshed to 19:20Z snapshot. Ship gate 9/9 autonomous · only operator items remain · what-lands-today vs blocks-on-Ed split · "what's been shipped" summary across all 4 lanes.
+
+Top-level now has **9 MD files** (README + 8 docs) all internally consistent + cross-referenced. No stale references to the deleted `portal/` folder remain. Manager-with-subagent pattern (chapter #158) referenced consistently from CLAUDE/orchestrator/README/tasks/rundown.
+
+`runbooks/deploy.md` STILL has its STALE banner — full rewrite is T6 R001 when reactivated. `web.md` (Mode B) untouched — non-blocking; refresh when web mode reactivates.
