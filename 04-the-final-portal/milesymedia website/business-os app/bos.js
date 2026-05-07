@@ -448,7 +448,21 @@
   function getAi() { return getJSON(KEY_AI, { remaining: 5, cap: 5, history: [] }); }
   function setAi(a) { setJSON(KEY_AI, a); }
 
+  /* Lazy-load the shared AquaAI scripted-companion library (R007).
+     Lives at `../incubator app/lib/aqua-ai.js`. Injected once; askAi
+     gracefully falls back to the legacy router if it never resolves. */
+  function ensureAquaAILoaded() {
+    if (window.AquaAI) return;
+    if (document.querySelector('script[data-bos-aqua-ai]')) return;
+    var s = document.createElement('script');
+    s.setAttribute('data-bos-aqua-ai', '');
+    s.src = '../incubator app/lib/aqua-ai.js';
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
   function mountAi() {
+    ensureAquaAILoaded();
     if (document.querySelector('.bos-ai-launcher')) return;
     var btn = document.createElement('button');
     btn.className = 'bos-ai-launcher';
@@ -461,7 +475,7 @@
     panel.innerHTML = ''
       + '<div class="bos-ai-head">'
       +   '<div><div class="bos-ai-title">Aqua AI</div>'
-      +   '<div class="bos-ai-sub">Trained on your portal · <span data-bos-ai-remaining>5</span>/<span data-bos-ai-cap>5</span> free messages</div></div>'
+      +   '<div class="bos-ai-sub">Currently scripted — full AI lands when you upgrade · <span data-bos-ai-remaining>5</span>/<span data-bos-ai-cap>5</span> free messages</div></div>'
       +   '<button class="bos-ai-close" aria-label="Close">✕</button>'
       + '</div>'
       + '<div class="bos-ai-body" data-bos-ai-body></div>'
@@ -526,22 +540,30 @@
     a.remaining -= 1;
     setAi(a); paintAi();
     setTimeout(function () {
-      var hc = getJSON(KEY_HEALTH, null);
-      var nm = nicheMeta();
       var reply;
-      var lower = q.toLowerCase();
-      if (lower.indexOf('leak') !== -1 || lower.indexOf('biggest') !== -1) {
-        reply = hc
-          ? "Based on your Health Check, your weakest topic is <strong>" + (hc.topics?.[0]?.name || 'Visibility') + "</strong>. That's where the next 30 days will pay back fastest."
-          : "I can\'t see a Health Check on file yet. Run it first — it takes 12 minutes and lights up the rest of your portal.";
-      } else if (lower.indexOf('module') !== -1 || lower.indexOf('first') !== -1) {
-        reply = "For " + nm.label + ", I'd start with <strong>Get found on Google in 30 days</strong>. It's the foundation everything else compounds on.";
-      } else if (lower.indexOf('cheap') !== -1 || lower.indexOf('quick') !== -1) {
-        reply = "Cheapest win: claim and optimise your Google Business Profile. Free, ~15 minutes, biggest local-search lever there is.";
-      } else if (lower.indexOf('add-on') !== -1 || lower.indexOf('plugin') !== -1) {
-        reply = "Given you're a " + nm.label.replace(' OS', '') + ", the add-ons that move the needle first are usually <strong>All-in-One Inbox</strong> and <strong>Client CRM</strong>.";
+      /* Prefer the shared AquaAI scripted companion (R007). Falls back
+         to the legacy keyword-router below when AquaAI hasn't loaded
+         (e.g. tests or stale cached HTML). */
+      if (window.AquaAI && typeof window.AquaAI.respondTo === 'function') {
+        var res = window.AquaAI.respondTo(q);
+        reply = res.reply;
       } else {
-        reply = "Good question. I'm running on a limited offline preview right now — once we wire the live model it'll pull from your Health Check, your modules and your add-ons to answer this in detail. Until then: try \"What's my biggest leak?\" or \"Which module should I do first?\"";
+        var hc = getJSON(KEY_HEALTH, null);
+        var nm = nicheMeta();
+        var lower = q.toLowerCase();
+        if (lower.indexOf('leak') !== -1 || lower.indexOf('biggest') !== -1) {
+          reply = hc
+            ? "Based on your Health Check, your weakest topic is <strong>" + (hc.topics?.[0]?.name || 'Visibility') + "</strong>. That's where the next 30 days will pay back fastest."
+            : "I can\'t see a Health Check on file yet. Run it first — it takes 12 minutes and lights up the rest of your portal.";
+        } else if (lower.indexOf('module') !== -1 || lower.indexOf('first') !== -1) {
+          reply = "For " + nm.label + ", I'd start with <strong>Get found on Google in 30 days</strong>. It's the foundation everything else compounds on.";
+        } else if (lower.indexOf('cheap') !== -1 || lower.indexOf('quick') !== -1) {
+          reply = "Cheapest win: claim and optimise your Google Business Profile. Free, ~15 minutes, biggest local-search lever there is.";
+        } else if (lower.indexOf('add-on') !== -1 || lower.indexOf('plugin') !== -1) {
+          reply = "Given you're a " + nm.label.replace(' OS', '') + ", the add-ons that move the needle first are usually <strong>All-in-One Inbox</strong> and <strong>Client CRM</strong>.";
+        } else {
+          reply = "Good question. I'm running on a limited offline preview right now — once we wire the live model it'll pull from your Health Check, your modules and your add-ons to answer this in detail. Until then: try \"What's my biggest leak?\" or \"Which module should I do first?\"";
+        }
       }
       a = getAi();
       a.history.push({ role: 'bot', text: reply });

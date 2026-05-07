@@ -48,6 +48,21 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R007 — Aqua AI scripted companion (no API)** — DONE.
+      NEW canonical `incubator app/lib/aqua-ai.js` (~245L) — 35-pattern
+      keyword router across 6 clusters (phase/stuck/what-next/HC-
+      interpret/lesson-rec/human + meta). respondTo(msg, ctx?) →
+      `{reply, suggestedActions[]}`; ctx-aware replies probe HC + brand
+      + phase + mode from localStorage; chips kinds phase/lesson/human/
+      open + `#ai:` self-fire. NEW `lib/aqua-ai-ui.js` (~140L) —
+      floating launcher + 380px slide-in chat panel for Incubator with
+      `aqua.ai.session.incubator` storage (40-msg cap). All 9 Incubator
+      pages wired. BOS refactor: bos.js `ensureAquaAILoaded()` lazy-
+      injects shared aqua-ai.js; askAi consults AquaAI first w/ legacy
+      fallback; disclaimer copy updated. `.inc-ai-*` CSS block (~170L).
+      Honesty contract layered (per-panel disclaimer + meta cluster +
+      fallback). Smoke: 9 pages + 2 lib + BOS app all 200. NEW chapter
+      `04-aqua-ai-scripted.md` + MASTER #83.
 - [x] **T4 R006 — BOS lessons → Incubator phase-advance signal** — DONE.
       Self-report progression (no auto-advance per prompt). NEW
       `incubator app/lib/phase-advance.js` (~165L) carries
