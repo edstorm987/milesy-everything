@@ -13,28 +13,38 @@ window.HC_AREAS = [
           summary: 'No jargon. Two mini-experiments using Google.',
           exercise: [
             { type: 'task', title: 'Mini-experiment #1 — the pub test',
-              body: 'Search <strong>"pub near me"</strong> right here. Scan it for a few seconds, notice where your eyes land, then mark done.',
-              embed: { kind: 'search', query: 'pub near me' },
+              body: 'Search <strong>"pub near me"</strong> in the panel above. Scan it for a few seconds — notice where your eyes land — then mark done.',
+              stickyEmbed: { kind: 'search', query: 'pub near me' },
               done: 'Done — I looked' },
             { type: 'choice', prompt: 'Where did your eyes go first?',
               scoring: false,
+              stickyEmbed: { kind: 'search', query: 'pub near me' },
               options: [
                 { label: 'The top result', score: 0 },
                 { label: 'The map / places box', score: 0 },
                 { label: 'The 2nd or 3rd link', score: 0 },
                 { label: 'I scrolled past page one', score: 0 } ] },
             { type: 'reveal', title: 'Now imagine your customer doing exactly that.',
-              body: '~75% of clicks go to the top three results. Less than 1% reach page two. Whatever you just felt looking for a pub, your customer feels looking for you.' },
+              body: '~75% of clicks go to the top three results. Less than 1% reach page two. Whatever you just felt looking for a pub, your customer feels looking for you.',
+              stickyEmbed: { kind: 'search', query: 'pub near me' } },
             { type: 'task', title: 'Mini-experiment #2 — your turn',
-              body: 'Type <strong>what you sell + your town</strong> into the search box below. Don\'t scroll yet — just look.',
-              embed: { kind: 'search', query: '', editable: true, placeholder: 'e.g. plumber Bristol' },
+              body: 'Type <strong>what you sell + your town</strong> into the search bar above. Don\'t scroll yet — just look.',
+              stickyEmbed: { kind: 'search', editable: true, placeholder: 'e.g. plumber Bristol', queryFromUser: true },
               done: 'Done — I looked' },
             { type: 'choice', prompt: 'Where did YOU appear?',
+              stickyEmbed: { kind: 'search', editable: true, queryFromUser: true },
               options: [
                 { label: 'Top of the page — easy to find', score: 90 },
                 { label: 'On the page somewhere — had to look', score: 60 },
                 { label: 'Page 2 or further', score: 30 },
                 { label: "I couldn't see myself at all", score: 10 } ] },
+            { type: 'lever-calc', prompt: 'So what could that be costing you?',
+              body: "These are <strong>your</strong> numbers — your typical customer value, your guess at how many extra enquiries ranking first would bring you in a year. We just multiply.",
+              ltvDefault: 1000, enqDefault: 10 },
+            { type: 'mental-note', tag: 'seo',
+              prompt: 'Quick gut check.',
+              body: "There's no judgement here — just a note for you (and for us, when we look at your answers).",
+              label: 'Yes — being invisible in search is probably costing me money.' },
             { type: 'choice', prompt: 'Do you have a Google Business Profile?',
               options: [
                 { label: 'Yes — and I keep it updated', score: 90, tag: 'gmb-good' },
@@ -94,7 +104,7 @@ window.HC_AREAS = [
       },
       quickwins: function (slot) {
         var wins = [];
-        var gmbStep = slot.tier === 'beginner' ? 5 : slot.tier === 'intermediate' ? 2 : null;
+        var gmbStep = slot.tier === 'beginner' ? 7 : slot.tier === 'intermediate' ? 2 : null;
         if (gmbStep != null) {
           var raw = slot.raw[gmbStep];
           var tier = AREAS.find(function(a){return a.id==='seo';}).tiers[slot.tier];

@@ -118,6 +118,7 @@
           </div>
           <div class="hc-progress-bar"><span data-hc-progress-fill style="width:0%"></span></div>
         </div>
+        <div class="hc-sticky-embed" data-hc-sticky hidden></div>
         <div class="hc-question-card" data-hc-step-body></div>
 
         <div class="hc-actions hc-nav">
@@ -576,6 +577,69 @@
     }
   }
 
+  /* ─── STICKY EMBED (persists across consecutive steps) ──── */
+  function resolveStickyQuery(embed, slot) {
+    if (embed.queryFromUser) return slot.userSearch || '';
+    return embed.query || '';
+  }
+  function stickySig(embed, slot) {
+    if (!embed) return '';
+    if (embed.kind === 'search') return 's:' + resolveStickyQuery(embed, slot);
+    if (embed.kind === 'site')   return 'u:' + (slot.userSiteUrl || '');
+    return '';
+  }
+  function renderStickyEmbed(step, slot) {
+    var host = $("[data-hc-sticky]");
+    var embed = step.stickyEmbed;
+    if (!embed) { host.hidden = true; host.innerHTML = ''; host.removeAttribute('data-sig'); return; }
+    var sig = stickySig(embed, slot);
+    if (host.getAttribute('data-sig') === sig && !host.hidden) {
+      // same iframe — leave it; just refresh the input value if editable
+      var inp = host.querySelector('[data-hc-sticky-input]');
+      if (inp) inp.value = embed.kind === 'search' ? resolveStickyQuery(embed, slot) : (slot.userSiteUrl || '');
+      return;
+    }
+    host.hidden = false;
+    host.setAttribute('data-sig', sig);
+    if (embed.kind === 'search') {
+      var q = resolveStickyQuery(embed, slot);
+      var src = q ? searchEmbedUrl(q) : '';
+      var input = embed.editable
+        ? '<form class="hc-embed-bar" data-hc-sticky-form><input type="text" class="hc-embed-input" data-hc-sticky-input placeholder="'
+            + (embed.placeholder || 'Search…') + '" value="' + (q || '').replace(/"/g, '&quot;') + '" />'
+            + '<button type="submit" class="btn btn-secondary btn-sm">Search</button></form>'
+        : '<div class="hc-embed-bar hc-embed-bar-static">🔍 ' + q + '</div>';
+      var frame = src
+        ? '<iframe class="hc-embed-frame" src="' + src + '" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" loading="lazy"></iframe>'
+        : '<div class="hc-embed-empty">Type a search above to see real results.</div>';
+      var note = '<div class="hc-embed-note">Live results via DuckDuckGo (Google blocks embedding) — same scan-the-page feel. <a href="https://www.google.com/search?q='
+        + encodeURIComponent(q || '') + '" target="_blank" rel="noopener">Open in Google ↗</a></div>';
+      host.innerHTML = '<div class="hc-embed">' + input + frame + note + '</div>';
+      var f = host.querySelector('[data-hc-sticky-form]');
+      if (f) f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        slot.userSearch = host.querySelector('[data-hc-sticky-input]').value.trim();
+        renderStep();
+      });
+    } else if (embed.kind === 'site') {
+      var u = slot.userSiteUrl || '';
+      var src2 = u ? safeSiteUrl(u) : '';
+      var bar = '<form class="hc-embed-bar" data-hc-sticky-form><input type="url" class="hc-embed-input" data-hc-sticky-input placeholder="'
+        + (embed.placeholder || 'https://…') + '" value="' + (u || '').replace(/"/g, '&quot;') + '" />'
+        + '<button type="submit" class="btn btn-secondary btn-sm">Show me</button></form>';
+      var frame2 = src2
+        ? '<iframe class="hc-embed-frame" src="' + src2 + '" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" loading="lazy"></iframe>'
+        : '<div class="hc-embed-empty">Drop your URL above to load it inline.</div>';
+      host.innerHTML = '<div class="hc-embed">' + bar + frame2 + '</div>';
+      var f2 = host.querySelector('[data-hc-sticky-form]');
+      if (f2) f2.addEventListener('submit', function (e) {
+        e.preventDefault();
+        slot.userSiteUrl = host.querySelector('[data-hc-sticky-input]').value.trim();
+        renderStep();
+      });
+    }
+  }
+
   /* ─── EXERCISE STEP ─────────────────────────── */
   function renderStep() {
     var step = currentStep();
@@ -625,9 +689,37 @@
     } else if (step.type === 'text') {
       html = '<h2 class="hc-q-prompt">' + step.prompt + '</h2>'
         + '<textarea class="hc-text-input" rows="3" data-hc-text>' + (raw || '') + '</textarea>';
+    } else if (step.type === 'lever-calc') {
+      var lc = (raw && typeof raw === 'object') ? raw : { ltv: slot.ltv || step.ltvDefault || 1000, enq: step.enqDefault || 10 };
+      var total = (Number(lc.ltv) || 0) * (Number(lc.enq) || 0);
+      html = '<div class="hc-step-eyebrow">Your numbers, your math</div>'
+        + '<h2 class="hc-q-prompt">' + (step.prompt || 'What might this be costing you?') + '</h2>'
+        + (step.body ? '<p class="hc-step-body">' + step.body + '</p>' : '')
+        + '<div class="hc-lever">'
+        + '  <label class="hc-lever-row"><span>Your average customer lifetime value (£)</span>'
+        + '    <input type="number" min="0" step="50" data-hc-lever="ltv" value="' + (lc.ltv || '') + '" /></label>'
+        + '  <label class="hc-lever-row"><span>If you ranked first, extra enquiries per year (your guess)</span>'
+        + '    <input type="number" min="0" step="1" data-hc-lever="enq" value="' + (lc.enq || '') + '" /></label>'
+        + '  <div class="hc-lever-out">'
+        + '    £<span data-hc-lever-ltv>' + (Number(lc.ltv) || 0).toLocaleString() + '</span>'
+        + '    × <span data-hc-lever-enq>' + (Number(lc.enq) || 0) + '</span>'
+        + '    = <strong>£<span data-hc-lever-total>' + total.toLocaleString() + '</span> / year</strong>'
+        + '    <em>you may be leaving on the table</em>'
+        + '  </div>'
+        + '</div>';
+    } else if (step.type === 'mental-note') {
+      var on = raw === true;
+      html = '<div class="hc-step-eyebrow">A note for yourself</div>'
+        + '<h2 class="hc-q-prompt">' + step.prompt + '</h2>'
+        + (step.body ? '<p class="hc-step-body">' + step.body + '</p>' : '')
+        + '<button class="hc-mental-note' + (on ? ' is-on' : '') + '" data-hc-mental-note>'
+        + '<span class="hc-mental-tick">' + (on ? '✓' : '○') + '</span>'
+        + '<span class="hc-mental-label">' + (step.label || 'Yes — I think this is costing me money.') + '</span>'
+        + '</button>';
     }
 
     body.innerHTML = html;
+    renderStickyEmbed(step, slot);
     wireStepInputs(step, slot);
     updateProgress();
     updateNav(step, raw);
@@ -666,6 +758,29 @@
     } else if (step.type === 'text') {
       var t = $("[data-hc-text]");
       t.addEventListener('input', function () { slot.raw[i] = t.value; updateNav(step, t.value); });
+    } else if (step.type === 'lever-calc') {
+      function readLever() {
+        var ltvEl = $("[data-hc-lever='ltv']");
+        var enqEl = $("[data-hc-lever='enq']");
+        var ltv = parseInt(ltvEl.value, 10) || 0;
+        var enq = parseInt(enqEl.value, 10) || 0;
+        slot.raw[i] = { ltv: ltv, enq: enq };
+        slot.ltv = ltv;
+        slot.leverEstimate = { ltv: ltv, enq: enq, total: ltv * enq };
+        $("[data-hc-lever-ltv]").textContent = ltv.toLocaleString();
+        $("[data-hc-lever-enq]").textContent = enq;
+        $("[data-hc-lever-total]").textContent = (ltv * enq).toLocaleString();
+        updateNav(step, slot.raw[i]);
+      }
+      $$("[data-hc-lever]").forEach(function (el) { el.addEventListener('input', readLever); });
+      if (slot.raw[i] == null) readLever();
+    } else if (step.type === 'mental-note') {
+      $("[data-hc-mental-note]").addEventListener('click', function () {
+        slot.raw[i] = slot.raw[i] === true ? false : true;
+        slot.painAcknowledged = slot.painAcknowledged || {};
+        slot.painAcknowledged[step.tag || 'general'] = slot.raw[i] === true;
+        renderStep();
+      });
     }
   }
 
@@ -678,6 +793,8 @@
     if (step.type === 'slider') return raw != null;
     if (step.type === 'url')    return typeof raw === 'string' && raw.trim().length > 3;
     if (step.type === 'text')   return typeof raw === 'string' && raw.trim().length > 0;
+    if (step.type === 'lever-calc')  return raw != null && raw.ltv > 0 && raw.enq > 0;
+    if (step.type === 'mental-note') return raw === true || raw === false;
     return true;
   }
 
