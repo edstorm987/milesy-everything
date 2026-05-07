@@ -1041,6 +1041,49 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R034 — Version diff view** — DONE.
+      R022 saved page versions; R034 adds side-by-side diff between
+      two snapshots. NEW `src/lib/blockTreeDiff.ts` — pure helpers:
+      `diffTrees(a,b)` flattens both trees into id→Block maps via
+      recursive walk, returns `{added, removed, modified}` w/
+      `propChanges` field-name list (type/props/styles/a11y/seo/
+      children); stable id-sort on every output. `summariseDiff(d)`
+      → counts + `unchanged` flag for chip strip. `jsonLineDiff(a,b)`
+      LCS-based unified line diff → `{kind:"same"\|"add"\|"remove",
+      text, lineA, lineB}` rows. NEW `src/components/editor/
+      VersionDiffPanel.tsx` 2-pane visual + JSON-mode toggle, header
+      chips colour-coded, recursive `<BlockRow>` walker recolouring
+      per id-status (added green / removed red / modified amber),
+      JSON mode spans both columns w/ sigil + paired line numbers.
+      `VersionsDropdown` extended w/ optional `onDiff?: (id) =>
+      void` + per-row "Diff" button (amber palette, only renders
+      when host wires the callback — zero behaviour change else).
+      Smoke 32/32: id-keyed diff cases + identical-empty + type/
+      styles/children-count flagged + nested-flatten + summariseDiff
+      counts + stable sort + jsonLineDiff same/add/remove +
+      appended-line nulls + identical-all-same + empty-both single
+      row + panel testids + chip text "1 added/removed/modified" +
+      pane tone attrs + unchanged badge. package.json chain
+      extended. tsc clean.
+      NOT in scope: cross-page diffs · 3-way merge · inline conflict
+      resolution.
+      Q-ASSUMED: block-id is the diff key (cloned R028 blocks keep
+      unique ids); recursive flatten over id-map (positional walk
+      would falsely flag moves as removed+added); "Diff vs..." in
+      prompt = diff against current draft tree v1 (R+1 = second
+      selector for any-vs-any); JSON-mode line diff over
+      `JSON.stringify(blocks,null,2)` good enough for power users;
+      `propChanges` lists field-names not deep delta (JSON mode
+      shows full delta); "children" propChange entry flags
+      count-mismatch only — id-keyed flatten catches actual
+      structural move on children separately.
+      Files: `04-the-final-portal/plugins/website-editor/src/lib/
+      blockTreeDiff.ts` (NEW) · `src/components/editor/
+      VersionDiffPanel.tsx` (NEW) · `src/components/editor/
+      VersionsDropdown.tsx` (extended) · `__smoke__/r034-version-
+      diff.test.ts` (NEW) · `package.json` chain · `01 development/
+      context/prior research/04-version-diff.md` (NEW chapter) ·
+      MASTER row #116.
 - [x] **T3 R033 — Static site export (download as ZIP)** — DONE.
       Operator clicks Export and gets a single ZIP containing every
       published page as static HTML, plus `assets/brand.css`,

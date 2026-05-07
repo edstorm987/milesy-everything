@@ -4,10 +4,12 @@ import {
   diffTrees, jsonLineDiff, summariseDiff,
 } from "../lib/blockTreeDiff";
 import type { Block } from "../types/block";
+// @ts-expect-error — react-dom/server has no shipped d.ts in plugin scope.
 import * as ReactDomServer from "react-dom/server";
-import * as React from "react";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderToStaticMarkup = (ReactDomServer as { renderToStaticMarkup: (node: any) => string }).renderToStaticMarkup;
+import React from "react";
 import VersionDiffPanel from "../components/editor/VersionDiffPanel";
-const renderToStaticMarkup = (ReactDomServer as { renderToStaticMarkup: (node: unknown) => string }).renderToStaticMarkup;
 
 let passes = 0;
 let failures = 0;

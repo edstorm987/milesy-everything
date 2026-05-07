@@ -53,12 +53,14 @@ function changedFields(a: Block, b: Block): string[] {
   return diffs;
 }
 
-function shallowEq(x: Record<string, unknown>, y: Record<string, unknown>): boolean {
-  const kx = Object.keys(x);
+function shallowEq(x: object, y: object): boolean {
+  const kx = Object.keys(x) as Array<keyof typeof x>;
   const ky = Object.keys(y);
   if (kx.length !== ky.length) return false;
-  for (const k of kx) {
-    if (JSON.stringify(x[k]) !== JSON.stringify(y[k])) return false;
+  const xr = x as Record<string, unknown>;
+  const yr = y as Record<string, unknown>;
+  for (const k of kx as unknown as string[]) {
+    if (JSON.stringify(xr[k]) !== JSON.stringify(yr[k])) return false;
   }
   return true;
 }
