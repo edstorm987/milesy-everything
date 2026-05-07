@@ -10,7 +10,11 @@ import pg from "pg";
 
 const STATE_KEY = "__portal_state__";
 const url = process.env.DATABASE_URL;
-if (!url) { console.error("DATABASE_URL unset"); process.exit(2); }
+if (!url) {
+  // R027 — skip cleanly so dev workflow without Postgres doesn't break.
+  console.log("[smoke-postgres] DATABASE_URL unset → skipped (set DATABASE_URL to run)");
+  process.exit(0);
+}
 
 const u = new URL(url);
 const isLocal = u.hostname === "localhost" || u.hostname === "127.0.0.1";

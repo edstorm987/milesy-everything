@@ -1318,3 +1318,13 @@ T2 still mid-R021 (public-funnel — heaviest plugin in WS-B). T3 chained to R04
 **Ship gate progress: 6/9** — WS-A ✅ · WS-C ✅ · founder pw ✅ · runbook env table ✅. Remaining: WS-B (public funnel) · WS-D (real-data) · WS-E (hardening) · WS-F (Felicia) · final smoke + sign-off.
 
 T1 chains to R027 postgres-backend (WS-E starts). SLEEP: 270s.
+
+[2026-05-07T15:05:00Z] WAKEUP: cycle 152 — autonomous. T2 R021 public-funnel (HC→lead→BOS plugin + LeadUserPort + SessionPort + 13/13) DONE @ 79c8bcb ch#132. **WS-B 1/3 done**. T2 chains to R022 BOS auth gate. T3 STARTED R041 slug-redirects. T1 mid-R027 postgres-backend (mesh signals to come).
+
+Archived T2/021. Queue depths: T1=4 · T2=5 · T3=3.
+
+**Ship gate progress: 7/9 capable** (waiting on WS-B completion + WS-D + WS-E + WS-F).
+
+T2 R021 carries follow-up debt for foundation: ActivityCategory `"public-funnel"` extension + LeadUserPort wrapping T1 R023 createUser + SessionPort adapter + PluginRoleVisibility "lead" + dispatcher `public:true` honour. Will surface as a small T1 follow-up round if not auto-resolved by R022/R023.
+
+SLEEP: 270s.

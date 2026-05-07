@@ -137,7 +137,44 @@ export async function ensureHydrated(): Promise<void> {
   if (!hydratePromise) {
     hydratePromise = (async () => {
       try {
-        const raw = await backend.loadBlob();
+        let raw = await backend.loadBlob();
+        // R027 dual-read fallback. When Postgres is configured but the
+        // blob row is missing (fresh DB / partial migration), read from
+        // the file backend once, hydrate the cache, and stamp Postgres
+        // so subsequent boots find the row natively. Logs a one-time
+        // migration event so operators see the seam.
+        if (!raw && backend.kind === "postgres") {
+          try {
+            const fallback = await fileBackend.loadBlob();
+            if (fallback) {
+              raw = fallback;
+              // Fire-and-forget: write the file blob into Postgres so
+              // the next cold start reads natively. Errors surface in
+              // the warn channel; cache is already populated either way.
+              backend
+                .saveBlob(fallback)
+                .then(() => {
+                  if (process.env.NODE_ENV !== "test") {
+                    console.warn("[portal] dual-read fallback: hydrated cache from file backend + wrote to Postgres.");
+                  }
+                })
+                .catch(err => {
+                  console.warn(
+                    "[portal] dual-read fallback: file→postgres write failed:",
+                    err instanceof Error ? err.message : err,
+                  );
+                });
+            }
+          } catch (fallbackErr) {
+            // File-backend read failure is non-fatal — cache stays empty.
+            if (process.env.NODE_ENV !== "test") {
+              console.warn(
+                "[portal] dual-read fallback: file backend unavailable:",
+                fallbackErr instanceof Error ? fallbackErr.message : fallbackErr,
+              );
+            }
+          }
+        }
         cache = raw ? parseBlob(raw) : empty();
         // R025: migrate legacy single-agency user rows in place. Pure +
         // idempotent — re-running on already-migrated rows is a no-op.
