@@ -2830,3 +2830,8 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       lead-id pool from client-crm; 9 API routes; 4 admin pages;
       onCrmLeadStatusChanged subscriber port + pre-sales.proposal-sent
       event for cross-plugin agency-marketing).
+- [x] T2 R013 — `@aqua/plugin-aqua-resources` shipped (chapter #112,
+      smoke 12/12, NEW agency-scope per-phase resource shelf:
+      ResourceCollection + ResourceItem + 5 default seeded built-in
+      collections w/ delete-protection + per-phase filter + T4
+      Incubator-consumed read endpoint).
