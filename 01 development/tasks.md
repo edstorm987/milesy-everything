@@ -3073,6 +3073,16 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       of fabricated zeroes; activity rides on category "hr" until
       foundation `ActivityCategory` adds "payroll" (R+1); no real
       bank/Stripe — T6 prod gate).
+- [x] T2 R016 — `@aqua/plugin-integrations` shipped (chapter #118,
+      smoke 12/12, NEW per-client + per-agency integrations registry;
+      7 kinds — stripe/mailchimp/google/meta/slack/zapier/custom-
+      webhook; status state machine intended→configured→verified|
+      failed w/ auto-promote on credentialsRef set; credentials
+      referenced via `@aqua/plugin-credentials-vault` (never sees
+      plaintext); manual verify — real OAuth per kind is T6 prod
+      gate; bounded ring-buffer webhook log MAX_LOG_ENTRIES=200 per
+      scope; scopePolicy:"either" w/ agency↔client scope isolation
+      verified; ActivityCategory `integrations` flagged R+1).
 - [x] T1 R19 — End-customer portal (chapter #116, smoke 16/16,
       closes third-audience loop from requirements §3+§6: 5 NEW
       foundation sub-route stubs at /portal/customer/{orders,account,
