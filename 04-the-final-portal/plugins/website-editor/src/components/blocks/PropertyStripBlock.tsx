@@ -10,7 +10,7 @@ import { blockStylesToCss } from "../blockStyles";
 
 interface PropRow {
   key: string;
-  type: "phase" | "select" | "date" | "text";
+  type: "phase" | "select" | "date" | "text" | "url";
   value: string;
 }
 
@@ -20,11 +20,12 @@ export default function PropertyStripBlock({ block }: BlockRenderProps) {
     ?? `${rows.length} more propert${rows.length === 1 ? "y" : "ies"}`;
 
   return (
-    <section data-block-type="property-strip" style={{ padding: "8px 24px", ...blockStylesToCss(block.styles) }}>
+    <section data-block-type="property-strip" style={{ padding: "8px 24px", color: "var(--inc-text, currentColor)", ...blockStylesToCss(block.styles) }}>
       <details style={{ maxWidth: 720, margin: "0 auto" }}>
         <summary style={{
           fontSize: 13, opacity: 0.6, cursor: "pointer", listStyle: "none",
-          padding: "8px 0", borderBottom: "1px solid rgba(255,255,255,0.06)",
+          padding: "8px 0",
+          borderBottom: "1px solid var(--inc-divider, rgba(255,255,255,0.06))",
         }}>
           ▾ {collapsedLabel}
         </summary>
@@ -48,8 +49,17 @@ function PropertyValue({ type, value }: { type: PropRow["type"]; value: string }
     return (
       <span style={{
         display: "inline-block", padding: "2px 8px", borderRadius: 4,
-        background: "rgba(255,255,255,0.06)", fontSize: 12, fontWeight: 500,
+        background: "var(--inc-chip-bg, rgba(255,255,255,0.06))",
+        color: "var(--inc-chip-text, currentColor)",
+        fontSize: 12, fontWeight: 500,
       }}>{value}</span>
+    );
+  }
+  if (type === "url") {
+    return (
+      <a href={value} target="_blank" rel="noreferrer"
+        style={{ color: "var(--inc-link, var(--brand-accent, #ff6b35))", textDecoration: "underline" }}
+      >{value}</a>
     );
   }
   return <span>{value}</span>;

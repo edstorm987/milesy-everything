@@ -24,8 +24,12 @@ export default function IconBlock({ block }: BlockRenderProps) {
       <div data-block-type="icon" data-mode="image" style={wrapStyle}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={image} alt={label ?? ""} width={64} height={64}
-          style={{ width: 64, height: 64, borderRadius: 12, objectFit: "cover", border: "2px solid rgba(0,0,0,0.6)", boxShadow: "0 4px 14px rgba(0,0,0,0.4)" }} />
-        {label && <span style={{ fontSize: 13, opacity: 0.7 }}>{label}</span>}
+          style={{
+            width: 64, height: 64, borderRadius: 12, objectFit: "cover",
+            border: "2px solid var(--inc-icon-ring, rgba(0,0,0,0.6))",
+            boxShadow: "0 4px 14px var(--inc-icon-shadow, rgba(0,0,0,0.4))",
+          }} />
+        {label && <span style={{ fontSize: 13, opacity: 0.7, color: "var(--inc-text, currentColor)" }}>{label}</span>}
       </div>
     );
   }

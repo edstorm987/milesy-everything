@@ -277,6 +277,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R009 — Notion-Incubator blocks (icon/property-strip/toggle/card-grid)** — DONE.
+      All 4 block ids already registered (R002 Aqua Incubator
+      template). R009 closes §15g gaps: Goal C added `url` type
+      to propertyStrip row union (renders external link). Goal F
+      applied CSS-var theme overlay across all 4 blocks with
+      rgba-white fallbacks (zero breakage) — 11 new vars in the
+      `--inc-*` namespace covering text/heading/muted/divider/
+      card chrome/chip pill/link/icon ring + shadow. NEW
+      `__smoke__/r009-notion-incubator-blocks.test.ts` 30/30 via
+      `react-dom/server.renderToStaticMarkup`. package.json test
+      chain extended. website-editor tsc-clean. Chapter
+      `04-blocks-notion-incubator.md` + MASTER row #90.
+      Q-ASSUMED: blocks already registered (evolution not
+      re-creation); rows/cards arrays still hand-edited as JSON;
+      offsetY remains free-form number; rgba-white fallbacks
+      preserve existing dark-mode hosts. Deferred: array editors
+      in properties sidebar, auto-load Incubator preset stylesheet,
+      cover+spacer-overlap helper, url-cluster Resources widget.
 - [x] **T3 R008 — Storefront blog admin** — DONE.
       Goal A: NEW `server/blog.ts` — `BlogPost` w/ BlockTree body
       (richer than 02's HTML), per-site CRUD scoped by

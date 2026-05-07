@@ -36,10 +36,14 @@ export default function CardGridBlock({ block }: BlockRenderProps) {
   if (items && Array.isArray(items)) {
     const minCol = columns === 2 ? 320 : 240;
     return (
-      <section data-block-type="card-grid" data-mode="notion" style={{ padding: "32px 24px", ...blockStylesToCss(block.styles) }}>
+      <section data-block-type="card-grid" data-mode="notion" style={{ padding: "32px 24px", color: "var(--inc-text, currentColor)", ...blockStylesToCss(block.styles) }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           {heading && (
-            <h2 style={{ fontFamily: "var(--font-playfair, Georgia, serif)", fontSize: 22, fontWeight: 600, marginBottom: 18, opacity: 0.8 }}>
+            <h2 style={{
+              fontFamily: "var(--font-playfair, Georgia, serif)",
+              color: "var(--inc-heading, currentColor)",
+              fontSize: 22, fontWeight: 600, marginBottom: 18, opacity: 0.8,
+            }}>
               {heading}
             </h2>
           )}
@@ -54,8 +58,8 @@ export default function CardGridBlock({ block }: BlockRenderProps) {
                 href={it.href}
                 style={{
                   borderRadius: 12,
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "var(--inc-card-bg, rgba(255,255,255,0.03))",
+                  border: "1px solid var(--inc-card-border, rgba(255,255,255,0.08))",
                   overflow: "hidden",
                   display: "flex",
                   flexDirection: "column",
@@ -69,7 +73,7 @@ export default function CardGridBlock({ block }: BlockRenderProps) {
                 )}
                 <div style={{ padding: 16, display: "flex", alignItems: "center", gap: 10 }}>
                   {it.icon && <span aria-hidden="true" style={{ fontSize: 20 }}>{it.icon}</span>}
-                  <span style={{ fontSize: 16, fontWeight: 600 }}>{it.label}</span>
+                  <span style={{ fontSize: 16, fontWeight: 600, color: "var(--inc-heading, currentColor)" }}>{it.label}</span>
                 </div>
               </a>
             ))}
