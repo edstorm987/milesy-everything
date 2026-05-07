@@ -1338,3 +1338,9 @@ Archived T1/027 + T3/041. Queue depths: T1=3 (R028/R029/R030 — Sprint 2/3 WS-E
 T2 still mid-R022 (BOS auth gate). T4 reactivation prompt staged but Ed hasn't pasted yet (last T4 outbox entry is from earlier manual session).
 
 T3 dipping to 2 — borderline. Will stage 2-3 more T3 rounds if it ships R042 fast next cycle. SLEEP: 270s.
+
+[2026-05-07T15:15:00Z] WAKEUP: cycle 154 — autonomous. **T4 IS BACK ONLINE** — Ed pasted T4-router.md, T4 R001 (niche-pages mega-menu mirror swept across 4 for-* pages) DONE @ eab0d2c ch#136. Archived T4/001. T2 R022 BOS auth gate source landing via mesh (untracked `plugins/bos-auth-gate/` directory present) — DONE imminent. T1 chains to R028 durable-nonces. T3 chains to R042 page-templates.
+
+Queue depths: T1=3 · T2=5 · T3=2 · T4=4.
+
+T3 still at 2 — will top up to 4-5 next cycle if R042 ships. SLEEP: 270s.
