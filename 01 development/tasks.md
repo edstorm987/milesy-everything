@@ -2979,3 +2979,12 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       #114, smoke 12/12, NEW agency-scope internal-team library
       distinct from aqua-resources/sops; markdown body + visibleToRoles
       ACL + view-tick counter + recent-activity feed + JSON export).
+- [x] T1 R19 — End-customer portal (chapter #116, smoke 16/16,
+      closes third-audience loop from requirements §3+§6: 5 NEW
+      foundation sub-route stubs at /portal/customer/{orders,account,
+      bookings,membership,affiliate} with shared CustomerSubroute
+      helper that gates on plugin install + redirects to plugin
+      canonicals or renders "not enabled" friendly cards; embed-mode
+      branch in customer layout strips Sidebar+Topbar on
+      `lk_demo_embed=1` cookie so iframes from R013 demo + R016
+      embed route render flush w/ client brand kit injected).
