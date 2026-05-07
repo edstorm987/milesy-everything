@@ -18,12 +18,19 @@ const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 // Founder bypasses every gate.
 const AQUA_HQ: { id: string; label: string; href: string; hint: string; requires: string[] }[] = [
   { id: "dashboard", label: "Dashboard", href: "/portal/agency",                  hint: "Welcome + overview.",       requires: ["clients.view"] },
-  { id: "clients",   label: "Clients",   href: "/portal/agency#clients",          hint: "All therapist clients.",     requires: ["clients.view"] },
+  { id: "pipelines", label: "Pipelines", href: "/portal/agency#clients",          hint: "Kanban — fulfilment, leads, anything.", requires: ["clients.view"] },
   { id: "inbox",     label: "Inbox",     href: "/portal/agency/activity-inbox",   hint: "Activity feed + comms.",     requires: ["clients.view"] },
   { id: "sops",      label: "SOPs",      href: "/portal/agency/sops",             hint: "Aqua System SOP shelf.",     requires: ["sops.view"] },
   { id: "finance",   label: "Finance",   href: "/portal/agency/agency-finance",   hint: "Invoices, expenses, MRR.",   requires: ["finance.view"] },
-  { id: "settings",  label: "Settings",  href: "/portal/agency/settings",         hint: "Brand, billing, team.",      requires: ["clients.edit"] },
 ];
+
+// Pinned to the bottom of the sidebar via `mt-auto` on its <section>.
+// Lives separately so it always sits below "More tools" no matter how
+// many entries the rest of the nav grows to.
+const SETTINGS_ROW = {
+  id: "settings", label: "Settings", href: "/portal/agency/settings",
+  hint: "Brand, billing, team.", requires: ["clients.edit"],
+};
 
 const MORE_TOOLS: { id: string; label: string; href: string }[] = [
   { id: "kanban",     label: "Tasks & Kanban",   href: "/portal/agency/kanban" },
@@ -124,6 +131,19 @@ export function AgencyToolsBallpark({
           </ul>
         )}
       </section>
+
+      {(isFounder || SETTINGS_ROW.requires.every(p => grid.has(p))) && (
+        <section className="mt-auto border-t border-black/10 pt-3">
+          <Link
+            href={SETTINGS_ROW.href}
+            title={SETTINGS_ROW.hint}
+            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-black/75 hover:bg-black/5"
+          >
+            <span aria-hidden="true">⚙</span>
+            <span>{SETTINGS_ROW.label}</span>
+          </Link>
+        </section>
+      )}
     </>
   );
 }
