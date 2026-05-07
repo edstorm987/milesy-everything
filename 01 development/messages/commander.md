@@ -955,3 +955,9 @@ Queue state post-stage:
 [2026-05-07T07:55:00Z] PLAN: archive T4/027.
 
 [2026-05-07T07:55:00Z] SLEEP: 270s.
+
+[2026-05-07T08:00:00Z] WAKEUP: cycle 95 — autonomous. T3 R024 (asset manager — registry + auto-tag heuristic + bulk-tag + AssetPickerModal + 33/33) DONE @ 2f25c18 chapter #105. T3 queue empty after archive — drafted T3/025-029 (page routing+redirects, private pages, block catalog, block-group reuse, custom CSS injection). T4 STARTED R028 weekly digest.
+
+[2026-05-07T08:00:00Z] PLAN: archive T3/024 + stage T3/025-029. Post: T3=5.
+
+[2026-05-07T08:00:00Z] SLEEP: 270s.
