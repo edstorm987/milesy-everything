@@ -3256,3 +3256,63 @@ body.bos-cp-editing .bos-cp-fields textarea {
 }
 .bos-inbox-cta:hover { background: rgba(201,167,106,0.1); }
 .bos-inbox-empty { padding: 28px; text-align: center; color: var(--text-mute, #555); font-style: italic; }
+
+/* ─── R024 Settings page ─── */
+.bos-set-tabs { display: flex; gap: 6px; margin: 14px 0 18px; flex-wrap: wrap; }
+.bos-set-tab {
+  background: var(--bos-card-2, #f5f1e8);
+  color: var(--text, #1a1a1a);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.bos-set-tab:hover { border-color: #C9A76A; }
+.bos-set-tab.is-on { background: #C9A76A; color: #1a1208; border-color: #C9A76A; }
+.bos-set-pane { background: var(--bos-card, #fff); border: 1px solid var(--bos-line, #e6e1d4); border-radius: 14px; padding: 24px; }
+.bos-set-pane h2 { font-family: "Playfair Display", Georgia, serif; margin: 0 0 8px; }
+.bos-set-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 28px; }
+.bos-set-form { display: grid; gap: 12px; margin-top: 12px; }
+.bos-set-form label { display: block; font-size: 14px; }
+.bos-set-form input[type=text], .bos-set-form input[type=url], .bos-set-form select {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--bos-line, #e6e1d4); border-radius: 6px; font: inherit; margin-top: 4px;
+}
+.bos-set-form input[type=color] { width: 60px; height: 36px; padding: 2px; border: 1px solid var(--bos-line, #e6e1d4); border-radius: 6px; }
+.bos-set-preview { background: var(--bos-card-2, #f5f1e8); border-radius: 12px; padding: 18px; }
+.bos-set-swatch {
+  display: flex; align-items: center; gap: 12px;
+  background: #1a1208; border: 2px solid #C9A76A; border-radius: 12px; padding: 18px; min-height: 80px;
+  margin-top: 8px;
+}
+.bos-set-swatch-mark {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: #C9A76A; color: #1a1208; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px;
+}
+.bos-set-swatch-name { font-family: "Playfair Display", Georgia, serif; font-size: 18px; color: #C9A76A; }
+
+.bos-set-prefs { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }
+.bos-set-pref { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--bos-card-2, #f5f1e8); border-radius: 8px; }
+.bos-set-pref-icon { font-size: 18px; }
+.bos-set-pref-label { flex: 1; font-size: 14px; }
+.bos-set-toggle { position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer; }
+.bos-set-toggle input { display: none; }
+.bos-set-toggle span {
+  position: absolute; inset: 0; background: #ccc; border-radius: 999px; transition: 0.15s;
+}
+.bos-set-toggle span:before {
+  content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff;
+  border-radius: 50%; transition: 0.15s;
+}
+.bos-set-toggle input:checked + span { background: #C9A76A; }
+.bos-set-toggle input:checked + span:before { transform: translateX(20px); }
+
+.bos-set-tone-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-mute, #555); margin-top: 4px; }
+.bos-set-billing-card { padding: 18px; background: var(--bos-card-2, #f5f1e8); border-radius: 10px; margin-top: 12px; }
+.bos-set-data-row { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-top: 12px; }
+
+@media (max-width: 760px) {
+  .bos-set-grid { grid-template-columns: 1fr; }
+  .bos-set-data-row { flex-direction: column; align-items: stretch; }
+}

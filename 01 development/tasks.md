@@ -159,6 +159,31 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R024 — BOS settings + preferences page** — DONE.
+      NEW `business-os app/settings.html` (~300L) — 5-tab settings:
+      **Profile** (bos.brand companyName/niche/logoUrl/primary/
+      secondary + live swatch preview, BOSStorage.set save). **Notifications**
+      (iOS-style slide toggles per `Notify.KINDS` → NEW
+      `bos.notifyPrefs={[kind]:{enabled,channel:'inbox'}}`;
+      `Notify.push()` patched to honor — disabled silently dropped at
+      source). **AI** (tone slider 0-100 formal/balanced/playful + length
+      select → NEW `bos.aiPrefs`; honest callout that scripted R007
+      ignores until T6 real-Claude wiring captures these as system-
+      prompt context). **Billing** (reads bos.entitlement via
+      window.BOS.getEntitlement, 3 states Free/Trial/Pro w/
+      Downgrade-to-Free confirm). **Data** (Export-as-JSON dumps every
+      bos./businesses./incubator./hc. key via Blob; Delete-this-
+      business literal-name typing + native confirm → BOSStorage.
+      remove → redirect). All saves fire `Activity.log
+      ('settings.changed')` (NEW KINDS entry ⚙️). CSS `.bos-set-*`
+      (~70L) — pill tabs, 1.6/1fr profile grid (1col<760px), iOS
+      44×24 toggle gold-when-on, swatch card, tone-slider 3-labels.
+      Q-ASSUMED: bos.notifyPrefs + bos.aiPrefs not yet in R012
+      NAMESPACED_KEYS (R+1 register for per-business prefs);
+      cross-tab settings sync R+1 via storage event; logo URL-only
+      today (R+1 data-URL upload). Smoke: settings + notify.js 200;
+      full flow verified end-to-end. NEW chapter `04-bos-settings-
+      page.md` + MASTER #100.
 - [x] **T4 R023 — Aqua AI prompt library (preset prompts)** — DONE.
       NEW `incubator app/lib/aqua-ai-prompts.js` (~80L) exposes
       `window.AquaAIPrompts.{CATEGORIES, all, byCategory}` — 28

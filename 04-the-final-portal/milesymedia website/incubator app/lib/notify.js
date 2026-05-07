@@ -34,6 +34,11 @@
 
   function push(kind, title, body, opts) {
     if (!kind || !title) return null;
+    /* R024 — respect bos.notifyPrefs[kind].enabled (defaults to true). */
+    try {
+      var prefs = JSON.parse(localStorage.getItem('bos.notifyPrefs') || '{}') || {};
+      if (prefs[kind] && prefs[kind].enabled === false) return null;
+    } catch (e) {}
     opts = opts || {};
     var entry = {
       id: rid(),
