@@ -698,17 +698,57 @@
   /* ─── Boot ───────────────────────────────── */
   /* ─── Incubator bridge — render a back-to-Incubator strip when the
      user came in via the Incubator surface (incubator.active === '1').
-     Same-origin link; no structural BOS changes. ─── */
+     R003: phase-aware. If `bos.returnFromPhase` is set (written by a
+     phase page's BOS deep-link), the strip routes back to that phase
+     page instead of the generic Incubator root. Also consumes
+     `bos.deepLink` to scroll the matching `#bos-<section>` into view
+     (consumed once, with a 30s TTL guard against stale links). */
+  var PHASE_PAGE_BY_ID = {
+    'epic-intro':    'phase-1-epic-intro.html',
+    'blueprint':     'phase-2-blueprint.html',
+    'diagnostics':   'phase-3-diagnostics.html',
+    'brand-builder': 'phase-4-brand-builder.html'
+  };
   function mountIncubatorStrip() {
     try {
       if (localStorage.getItem('incubator.active') !== '1') return;
     } catch (e) { return; }
     if (document.querySelector('[data-incubator-strip]')) return;
+
+    var returnPhase = null, returnPage = null;
+    try {
+      returnPhase = localStorage.getItem('bos.returnFromPhase');
+      returnPage = localStorage.getItem('bos.returnFromPhasePage');
+    } catch (e) {}
+    var pageOverride = (returnPhase && PHASE_PAGE_BY_ID[returnPhase]) || returnPage;
+    var href = pageOverride
+      ? '../incubator app/' + pageOverride
+      : '../incubator app/index.html';
+    var label = returnPhase
+      ? '← Back to your phase'
+      : '← Back to The Opulence Incubator';
+
     var strip = document.createElement('div');
     strip.setAttribute('data-incubator-strip', '');
     strip.style.cssText = 'background:#0a0a0a;color:#C9A76A;border-bottom:1px solid #2A2A2A;padding:8px 16px;font-size:13px;text-align:center;letter-spacing:0.02em;';
-    strip.innerHTML = '<a href="../incubator app/index.html" style="color:#D4B888;text-decoration:none;">← Back to The Opulence Incubator</a>';
+    strip.innerHTML = '<a href="' + href + '" style="color:#D4B888;text-decoration:none;">' + label + '</a>';
     document.body.insertBefore(strip, document.body.firstChild);
+
+    consumeBosDeepLink();
+  }
+  function consumeBosDeepLink() {
+    var raw = null;
+    try { raw = localStorage.getItem('bos.deepLink'); } catch (e) { return; }
+    if (!raw) return;
+    var data; try { data = JSON.parse(raw); } catch (e) { data = null; }
+    try { localStorage.removeItem('bos.deepLink'); } catch (e) {}
+    if (!data || !data.section) return;
+    if (Date.now() - (data.ts || 0) > 30000) return; // stale, ignore
+    var target = document.getElementById('bos-' + data.section);
+    if (!target) return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+    }, 80);
   }
 
   document.addEventListener('DOMContentLoaded', function () {

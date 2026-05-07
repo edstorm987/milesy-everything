@@ -207,6 +207,107 @@ window.Incubator.resetPhaseProgress(); // dev / debug only
 - Ticking all checks on a phase advances `incubator.phase` once and
   emits a toast.
 
+## R003 — Phase-aware BOS deep-linking (2026-05-07)
+
+The R001 BOS bridge was generic — it just put the user inside BOS with
+a "← Back to The Opulence Incubator" strip. R003 makes the bridge
+**phase-aware** so phase pages can land the client on the right BOS
+section and bring them back to the originating phase page.
+
+### Storage flags (the contract)
+
+| Key                         | Lifetime          | Written by               | Read by    |
+| --------------------------- | ----------------- | ------------------------ | ---------- |
+| `bos.deepLink`              | consumed once     | incubator.js click delegate | bos.js  |
+| `bos.returnFromPhase`       | persistent        | incubator.js             | bos.js     |
+| `bos.returnFromPhasePage`   | persistent        | incubator.js             | bos.js     |
+
+`bos.deepLink` is JSON: `{ section: "<id>", lessonId: "<id>"|null, ts: <ms> }`.
+`section` matches the `id="bos-<section>"` anchor on the destination
+page's `<main>` element. The 30-second TTL on `ts` guards against stale
+links surviving a tab re-open.
+
+`bos.returnFromPhase` + `bos.returnFromPhasePage` persist across BOS
+navigation so the back-strip still routes to the originating phase
+page even after the user clicks around inside BOS. Cleared implicitly
+on the next deep-link write.
+
+### Deep-link map (per-phase Incubator → BOS)
+
+| Phase            | Incubator card                                     | BOS section / page                  |
+| ---------------- | -------------------------------------------------- | ----------------------------------- |
+| Blueprint        | "Open About my business in BOS"                    | `about` / `company.html`            |
+| Blueprint        | "Strategy worksheets"                              | `files` / `docs.html`               |
+| Diagnostics      | "Run the Business Health Check"                    | (lead-magnet, no deeplink — out of BOS scope) |
+| Diagnostics      | "Diagnostics reading list"                         | `lessons` / `database.html`         |
+| Brand Builder    | "My customers — who's the brand for?" (NEW)        | `customers` / `leads.html`          |
+| Brand Builder    | "Brand lessons" (NEW)                              | `lessons` / `database.html`         |
+| Resources Lite   | "Open My Business OS"                              | `home` / `app.html`                 |
+
+HC stays a direct nav (it's the lead-magnet app, not a BOS section).
+Phase-1 Epic Intro doesn't surface BOS — it's still the welcome video
++ first-action checklist phase.
+
+### Anchor IDs added to BOS pages
+
+| Page              | `id` on `<main>`     |
+| ----------------- | -------------------- |
+| `app.html`        | `bos-home`           |
+| `company.html`    | `bos-about`          |
+| `leads.html`      | `bos-customers`      |
+| `trackers.html`   | `bos-numbers`        |
+| `tasks.html`      | `bos-todos`          |
+| `docs.html`       | `bos-files`          |
+| `database.html`   | `bos-lessons`        |
+
+bos.js consumes `bos.deepLink` after rendering the strip:
+`scrollIntoView({behavior:'smooth', block:'start'})` on the matching
+anchor (when present + ts within TTL), then `removeItem('bos.deepLink')`.
+On pages without the matching anchor (e.g. landed on a different page
+than expected) the consume is a no-op — the flag is still cleared so
+it doesn't trip on subsequent loads.
+
+### Back-strip routing
+
+`mountIncubatorStrip()` reads `bos.returnFromPhase` / `bos.returnFromPhasePage`
+and rewrites the strip:
+
+- with phase: `← Back to your phase` → `../incubator app/phase-N-<slug>.html`
+- without:    `← Back to The Opulence Incubator` → `../incubator app/index.html`
+
+A static lookup `PHASE_PAGE_BY_ID` in bos.js maps the four phase ids
+to their html filenames. If `returnFromPhase` is set but unknown, falls
+back to the explicit `returnFromPhasePage` that incubator.js wrote.
+
+### Public surface (incubator.js)
+
+```js
+// Click delegate — automatic for any <a data-bos-section="…" data-return-phase="…">
+// No imperative API; declarative attribute is the contract.
+```
+
+### R003 smoke (verified 2026-05-07)
+
+- All 7 BOS pages still 200 with new `id` on `<main>`.
+- All 4 touched Incubator pages (phase-2/3/4 + resources) 200.
+- Clicking a `[data-bos-section]` link writes the three flags then
+  navigates; bos.js renders "← Back to your phase" strip and scrolls
+  the matching `#bos-<section>` into view.
+- Refreshing the BOS page after consume: strip stays (returnFromPhase
+  persists), no second scroll (deepLink consumed).
+- Deep-link with stale ts > 30s: scroll skipped, strip still renders.
+
+### Q-ASSUMED + R003 follow-ups
+
+- HC stays a direct nav (not a BOS section). If we later treat the
+  lead-magnet as `section: 'health-check'` we'd need a second consumer
+  in the lead-magnet shell.
+- Cross-tab sync explicitly out of scope (per prompt). Today the flag
+  is per-tab via localStorage; opening BOS in a new tab carries the
+  flag but the originating Incubator tab still sees it until consumed.
+- `lessonId` slot is in the deepLink JSON for R006 (`lessons-to-phase-
+  advance`) but no card writes it yet.
+
 ## Cross-refs
 
 - §15 visual spec — `04-aqua-internals-reference.md` §15a–§15g.

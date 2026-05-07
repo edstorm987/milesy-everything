@@ -215,9 +215,34 @@
     }
   }
 
+  /* ─── BOS deep-link bridge (R003) ─────────
+     Links carrying `data-bos-section="<id>"` write a consumed-once
+     `bos.deepLink` + persistent `bos.returnFromPhase` + `bos.returnFromPhasePage`
+     before navigation. bos.js consumes the deepLink on the destination page
+     and reroutes the back-strip to the originating phase page. */
+  function mountBOSDeepLinks() {
+    document.addEventListener('click', function (ev) {
+      var a = ev.target.closest('a[data-bos-section]');
+      if (!a) return;
+      try {
+        var section = a.getAttribute('data-bos-section');
+        var lessonId = a.getAttribute('data-bos-lesson') || null;
+        var returnPhase = a.getAttribute('data-return-phase') || getPhase();
+        var returnPage = (location.pathname.split('/').pop()) || 'index.html';
+        localStorage.setItem('bos.deepLink', JSON.stringify({
+          section: section, lessonId: lessonId, ts: Date.now()
+        }));
+        localStorage.setItem('bos.returnFromPhase', returnPhase);
+        localStorage.setItem('bos.returnFromPhasePage', returnPage);
+      } catch (e) {}
+      // Let default navigation proceed.
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     mountPhaseChecks();
     applyPhasePathLocks();
+    mountBOSDeepLinks();
   });
 
   /* ─── Public surface for inline scripts / debug ─── */

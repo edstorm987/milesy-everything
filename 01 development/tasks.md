@@ -9,6 +9,19 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T4 R003 — Phase-aware BOS deep-linking from Incubator** — DONE.
+      `bos.deepLink` (consumed-once JSON `{section,lessonId,ts}` w/ 30s
+      TTL) + `bos.returnFromPhase` + `bos.returnFromPhasePage` storage
+      contract. `incubator.js` click delegate writes flags on
+      `[data-bos-section][data-return-phase]` anchors before nav.
+      `bos.js` `mountIncubatorStrip()` reroutes back-strip to "← Back to
+      your phase" → originating phase page; new `consumeBosDeepLink()`
+      scrollIntoView on matching `#bos-<section>` then clears the flag.
+      Added `id="bos-<section>"` to <main> on 7 BOS pages
+      (app/company/leads/trackers/tasks/docs/database). Wired phase-2/3/4
+      + resources links. Phase-4 gained 2 NEW CTA cards (customers +
+      lessons). Smoke: all 11 touched URLs 200. Chapter R003 section +
+      MASTER #79.
 - [x] **T4 R002 — Per-phase Incubator sub-pages** — DONE.
       Added `phase-1-epic-intro.html` 🌅 / `phase-2-blueprint.html` 📐 /
       `phase-3-diagnostics.html` 🔬 / `phase-4-brand-builder.html` 🎨
