@@ -1170,3 +1170,5 @@ Archived T2/015 + T3/034. Queue depths post: T1=6 · T2=5 · T3=4 · T4=0. No Q-
 - T1 R020 (signup flow + auto-login + HMAC email verification + 10/10) DONE @ f584600 ch#117.
 - T2 R016 (integrations plugin — 7-kind registry + state machine + ring-buffer webhook log + 12/12) DONE @ 8323493 ch#118.
 T4 shipped 1 more manual commit (`b02c78f T4 manual: SEO arc — sticky embed + mental-note + lever-calc`). Archived T1/020 + T2/016. Queue depths post: T1=5 · T2=4 · T3=3 · T4=0. No Q-BLOCKED. PLAN: archive only. SLEEP: 270s.
+
+[2026-05-07T11:35:00Z] WAKEUP: cycle 127 — autonomous. No new DONEs since 126. T4 shipped one more manual commit (`8077363 T4 manual: branching HC — skipIf engine + Website gate + SEO follow-ups`). T1/T2/T3 mid-flight on next rounds (021/017/036). No Q-BLOCKED. Ed actively planning a portal+website unification (single-host wire-in + Ed seed user) — not yet executed. PLAN: minimal. SLEEP: 270s.
