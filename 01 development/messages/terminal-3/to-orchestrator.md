@@ -391,3 +391,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T23:04:00Z] WAKE-EMPTY: queue still empty. Streak 3/10. Sleeping 600s.
 
 [2026-05-07T23:14:00Z] WAKE-EMPTY: queue still empty. Streak 4/10. Sleeping 600s.
+
+[2026-05-07T23:18:00Z] WAKE-EMPTY: queue still empty (manual check). Streak 5/10. Sleeping 600s.
