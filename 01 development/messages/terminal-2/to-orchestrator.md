@@ -248,3 +248,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T17:09:00Z] WAKE-EMPTY (2/10): queue still empty, no new inbox. Sleeping 600s.
 
 [2026-05-07T16:18:26Z] WAKE-EMPTY: queues/T2/ empty. Inbox notes Sprint 1 rounds R018-R022 are coming; nothing staged yet. Sleeping pending cadence (600s). Empty count: 1.
+
+[2026-05-07T18:05:00Z] DONE 027-leads-pipeline-csv-campaigns.md. NEW @aqua/plugin-leads-pipeline at 04-the-final-portal/plugins/leads-pipeline/. 11 src files + 3 pages + manifest + smoke. tsc clean. 25/25 smoke green via tsx --test. Chapter #157 + MASTER row + tasks.md. Foundation-pending (5-step): ActivityCategory "leads", plugin runtime registration, EmailEnqueuePort adapter onto email-sender (R024), PipelinePort adapter onto R034 pipelines.ts, event-bus subscription wiring (incl T1 R034 emitting pipelines.card.moved if not already shipped). Cross-plugin: subscribes public-funnel.lead.captured + pipelines.card.moved. Domain: Lead/Contact/Campaign/AudienceFilter; CSV idempotent on canonical email; promotion ladder customer>vendor>lead.
