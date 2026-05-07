@@ -77,7 +77,7 @@ export const RESOURCES: readonly Resource[] = [
       "Where you rank, what's indexed, what's missing. Pulls real Search Console + GBP signals.",
     href: "/resources/seo-audit",
     tags: ["seo", "ranking", "google", "audit", "search"],
-    status: "soon",
+    status: "live",
     group: "Audits & diagnostics",
   },
   {
@@ -88,7 +88,7 @@ export const RESOURCES: readonly Resource[] = [
       "Lighthouse-style read of your homepage — performance, accessibility, SEO, best-practices.",
     href: "/resources/site-speed",
     tags: ["performance", "lighthouse", "speed", "lcp", "audit"],
-    status: "soon",
+    status: "live",
     group: "Audits & diagnostics",
   },
   {
@@ -99,7 +99,7 @@ export const RESOURCES: readonly Resource[] = [
       "WCAG 2.1 AA quick scan. Contrast, keyboard, screen-reader signals.",
     href: "/resources/accessibility-audit",
     tags: ["a11y", "accessibility", "wcag", "audit"],
-    status: "soon",
+    status: "live",
     group: "Audits & diagnostics",
   },
   {

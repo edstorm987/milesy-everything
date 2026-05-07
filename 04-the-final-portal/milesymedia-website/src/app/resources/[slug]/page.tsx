@@ -19,28 +19,11 @@ interface ToolStub {
   relatedHref: string;
 }
 
+// NOTE: seo-audit, site-speed, accessibility-audit have dedicated
+// page.tsx routes (T4 R002) and never hit this catch-all. Removed from
+// STUBS so future-me doesn't edit a dead copy when the live tool drifts.
+
 const STUBS: Record<string, ToolStub> = {
-  "seo-audit": {
-    title: "SEO audit",
-    blurb:
-      "A focused scan of where your site ranks, what's indexed, and which keyword opportunities you're missing. Until the dedicated tool ships, the Visibility & Search section of the Health Check covers the same ground — your numbers, no fabricated benchmarks.",
-    related: "Run the Visibility section of the Health Check",
-    relatedHref: "/health-check",
-  },
-  "site-speed": {
-    title: "Site speed test",
-    blurb:
-      "Lighthouse-style read of your homepage — performance, accessibility, SEO, best practices. The full scanner is in the queue. For now the Your Website section of the Health Check captures the impressions side: 5-second test, conversion clarity, trust signals.",
-    related: "Run the Website section of the Health Check",
-    relatedHref: "/health-check",
-  },
-  "accessibility-audit": {
-    title: "Accessibility audit",
-    blurb:
-      "WCAG 2.1 AA quick scan: contrast, keyboard, screen-reader signals. The dedicated tool is being built; meanwhile we already use the same checks internally on every Incubator build, so audited sites bake a11y in from day one.",
-    related: "Open the Incubator",
-    relatedHref: "/incubator",
-  },
   "ux-orchestration": {
     title: "UX orchestration",
     blurb:

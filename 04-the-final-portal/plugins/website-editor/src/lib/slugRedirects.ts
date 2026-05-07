@@ -162,7 +162,10 @@ export function resolveRedirect(
   slug: string,
   map: RedirectMap | Record<string, string>,
 ): ResolveResult | null {
-  const fwd = "forward" in map ? map.forward : map;
+  const maybe = (map as RedirectMap).forward;
+  const fwd: Record<string, string> = maybe && typeof maybe === "object"
+    ? maybe
+    : (map as Record<string, string>);
   let cur = normalizeSlug(slug);
   const next = fwd[cur];
   if (!next) return null;
