@@ -1207,3 +1207,12 @@ Queue depths post-archive: T1=4 (paused) · T2=3 (paused) · T3=2 (paused) · T4
 - unify-4 @ 3bafc36: marketing → public/_marketing/ + beforeFiles rewrites; all login/admin CTAs swept to /login + /portal/agency. Live 200s across marketing + auth + 3 static apps.
 
 Only Step 5 (cleanup + chapter) remains. Single host live, single cookie, real auth wired, default founder seeded. T1/T2/T3 still HOLD. PLAN: minimal. SLEEP: 1200s.
+
+[2026-05-07T13:05:00Z] WAKEUP: cycle 137 — autonomous. **UNIFICATION COMPLETE 5/5**:
+- unify-5 @ 33e214f: cleanup + chapter #122 (`04-website-portal-unification.md`).
+- 3 follow-up fixes: ec0b514 (absolute asset paths in HC/BOS/Incubator), 1ca40d0 (HC route wrapped in shared SiteShell), e1137d2 (auth surfaces in SiteShell + dev bypass + signup role selector).
+- Session-end NOTE: :3030 single host fully operational. Marketing `/`, `/for-*`, `/health-check`, `/business-os`, `/incubator`, `/login`, `/signup`, `/portal/agency`, `/healthz` all 200. Founder seed lets `edwardhallam07@gmail.com` / `123` sign in. Run `npm run dev` from `milesymedia-website/`.
+
+T1/T2/T3 still HOLD — their queue prompts reference `portal/` paths that no longer exist; need path-sweep before RESUME. Awaiting Ed's signal to lift; will draft RESUME + queue-path updates when greenlit.
+
+PLAN: minimal. SLEEP: 1200s.
