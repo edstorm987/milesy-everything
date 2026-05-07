@@ -55,6 +55,20 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       clicks NEVER mutate the attribute — only the toggle does
       (smoke-asserted source-marker). 10/10 smoke via
       `npm run smoke:sidebar-collapse-toggle`. Chapter #153.
+- [x] **R036 — Profile picture upload (circular avatar)** — DONE 2026-05-07.
+      Schema: `ServerUser.avatarUrl?: string` (data URL, 50KB cap).
+      NEW pure validator `src/lib/avatarDataUrl.ts` (allow-list
+      png/jpeg/webp; SVG/GIF rejected; base64 sanity); NEW route
+      `src/app/api/auth/profile/avatar/route.ts` POST + DELETE behind
+      `requireSession` (413 too_large / 400 other / null clears). NEW
+      `<AvatarUploader>` client component on `/portal/account` —
+      click/drag → 256×256 cover-fit `<canvas>` → JPEG q=0.85 → POST
+      JSON `{dataUrl}`. ProfileMenu accepts `avatarUrl` prop, renders
+      `<img class="mm-profile-avatar-img">` else falls back to
+      initials chip; CSS variant added to `_marketing/styles.css`.
+      Topbar threads through; agency/clients/customer layouts pass
+      `getUserById(session.userId)?.avatarUrl`. 21/21 smoke via
+      `npm run smoke:profile-picture-upload`. Chapter #155.
 
 ### To do — T2 (plugins)
 

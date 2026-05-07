@@ -179,6 +179,11 @@ export interface ServerUser {
   mustChangePassword?: boolean;
   emailVerifiedAt?: number;       // R020: epoch ms when verification token redeemed
   sessionRev?: number;            // R021: rotation counter; bumped on role/password change
+  // R036: optional profile picture as a `data:image/...;base64,...` data URL.
+  // v1 stores inline on the user record (256×256 cap → ~50KB after client-side
+  // canvas resize). R+1 swaps to an external ref via the client-files plugin
+  // once foundation has user-scoped file storage.
+  avatarUrl?: string;
   createdAt: number;
   updatedAt: number;
 }

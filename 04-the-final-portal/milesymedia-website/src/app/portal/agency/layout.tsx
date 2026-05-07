@@ -84,6 +84,7 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
             role={session.role}
             email={session.email}
             name={getUserById(session.userId)?.name}
+            avatarUrl={getUserById(session.userId)?.avatarUrl}
             panels={panels}
             tenantLabel={agency.name}
             currentPath={currentPath}

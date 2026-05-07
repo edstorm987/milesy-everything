@@ -237,6 +237,9 @@ export interface UpdateUserPatch {
   role?: Role;
   clientId?: string;
   mustChangePassword?: boolean;
+  // R036: profile picture data URL. `null` clears the field (DELETE
+  // /api/auth/profile/avatar); `undefined` leaves it untouched.
+  avatarUrl?: string | null;
 }
 
 export function updateUser(
@@ -256,12 +259,20 @@ export function updateUser(
     const roleOrScopeChanged =
       (patch.role !== undefined && patch.role !== stored.role) ||
       (patch.clientId !== undefined && patch.clientId !== stored.clientId);
+    // R036: avatarUrl — explicit `null` clears the field; `undefined`
+    // leaves the existing value untouched. Anything else is the new
+    // data URL (validated upstream at the route boundary).
+    const nextAvatar =
+      patch.avatarUrl === undefined ? stored.avatarUrl
+      : patch.avatarUrl === null ? undefined
+      : patch.avatarUrl;
     saved = {
       ...stored,
       name: patch.name ?? stored.name,
       role: patch.role ?? stored.role,
       clientId: patch.clientId ?? stored.clientId,
       mustChangePassword: patch.mustChangePassword ?? stored.mustChangePassword,
+      avatarUrl: nextAvatar,
       sessionRev: roleOrScopeChanged ? (stored.sessionRev ?? 0) + 1 : stored.sessionRev,
       updatedAt: Date.now(),
     };

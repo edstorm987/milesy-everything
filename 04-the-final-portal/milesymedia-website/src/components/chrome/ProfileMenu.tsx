@@ -29,6 +29,10 @@ interface Props {
   email: string;
   role: Role;
   name?: string;
+  // R036: optional profile picture data URL (data:image/...;base64,...).
+  // When present we render <img class="mm-profile-avatar-img">; falls back
+  // to the initials chip when undefined.
+  avatarUrl?: string;
 }
 
 function initials(seed: string): string {
@@ -39,12 +43,23 @@ function initials(seed: string): string {
   return parts[0]!.slice(0, 2).toUpperCase();
 }
 
-export function ProfileMenu({ email, role, name }: Props) {
+export function ProfileMenu({ email, role, name, avatarUrl }: Props) {
   const display = name?.trim() || email;
   return (
     <details className="mm-profile-menu">
       <summary aria-label={`Account for ${display}`}>
-        <span className="mm-profile-avatar" aria-hidden="true">{initials(display)}</span>
+        {avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className="mm-profile-avatar-img"
+            src={avatarUrl}
+            alt=""
+            aria-hidden="true"
+            data-testid="mm-profile-avatar-img"
+          />
+        ) : (
+          <span className="mm-profile-avatar" aria-hidden="true">{initials(display)}</span>
+        )}
         <span className="mm-profile-display">{display}</span>
         <span className="mm-profile-caret" aria-hidden="true">▾</span>
       </summary>

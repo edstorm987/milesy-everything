@@ -2,6 +2,15 @@ import { ensureHydrated } from "@/server/storage";
 import { requireSession } from "@/lib/server/auth";
 import { getUserById } from "@/server/users";
 import { redirect } from "next/navigation";
+import { AvatarUploader } from "./AvatarUploader";
+
+function deriveInitials(seed: string): string {
+  const t = seed.trim();
+  if (!t) return "?";
+  const parts = t.split(/[\s@.]+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0]! + parts[1][0]!).toUpperCase();
+  return parts[0]!.slice(0, 2).toUpperCase();
+}
 
 export const metadata = { title: "Edit profile · Milesy Media" };
 
@@ -25,6 +34,17 @@ export default async function AccountPage() {
           owner; ping them if you need either changed.
         </p>
       </header>
+
+      <section className="mb-4">
+        <h2 className="mb-2 text-sm font-medium text-black/70">Profile picture</h2>
+        <AvatarUploader
+          initialAvatarUrl={user.avatarUrl}
+          displayInitials={deriveInitials(user.name || user.email)}
+        />
+        <p className="mt-1 text-xs text-black/45">
+          PNG, JPEG, or WebP. Auto-resized to 256×256.
+        </p>
+      </section>
 
       <form
         method="post"

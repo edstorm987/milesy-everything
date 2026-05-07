@@ -19,6 +19,8 @@ interface Props {
   email: string;
   /** Optional display name for the profile menu. Falls back to email. */
   name?: string;
+  /** R036: optional profile picture data URL — threaded through to ProfileMenu. */
+  avatarUrl?: string;
   // When provided, renders the hamburger + drawer with these panels.
   // Each scope layout (agency / client / customer) already builds
   // these for the desktop Sidebar — we just pass the same payload
@@ -33,7 +35,7 @@ interface Props {
   activeAgencyId?: string;
 }
 
-export function Topbar({ title, subtitle, role, email, name, panels, tenantLabel, currentPath, agencies, activeAgencyId }: Props) {
+export function Topbar({ title, subtitle, role, email, name, avatarUrl, panels, tenantLabel, currentPath, agencies, activeAgencyId }: Props) {
   return (
     <header className="flex min-h-14 flex-wrap items-center justify-between gap-2 border-b border-black/10 bg-white/40 px-4 py-2 md:px-6">
       <div className="flex items-center gap-3 min-w-0">
@@ -56,7 +58,7 @@ export function Topbar({ title, subtitle, role, email, name, panels, tenantLabel
         >
           <span aria-hidden>←</span> Back to website
         </Link>
-        <ProfileMenu email={email} role={role} name={name} />
+        <ProfileMenu email={email} role={role} name={name} avatarUrl={avatarUrl} />
       </div>
     </header>
   );

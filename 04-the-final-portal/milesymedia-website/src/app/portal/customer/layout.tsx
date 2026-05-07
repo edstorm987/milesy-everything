@@ -67,6 +67,7 @@ export default async function CustomerLayout({ children }: { children: ReactNode
             role={session.role}
             email={session.email}
             name={getUserById(session.userId)?.name}
+            avatarUrl={getUserById(session.userId)?.avatarUrl}
             panels={panels}
             tenantLabel={client.name}
             currentPath={currentPath}

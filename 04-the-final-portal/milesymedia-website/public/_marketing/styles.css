@@ -1281,6 +1281,16 @@ footer {
   font-weight: 700;
   letter-spacing: 0.04em;
 }
+/* R036 — image variant of the avatar (data URL profile picture) */
+.mm-profile-avatar-img {
+  display: inline-block;
+  width: 28px; height: 28px;
+  border-radius: 999px;
+  object-fit: cover;
+  background: #14120E;
+  border: 1px solid rgba(20, 18, 14, 0.12);
+  flex: 0 0 auto;
+}
 .mm-profile-display {
   font-size: 13px;
   color: #14120E;
