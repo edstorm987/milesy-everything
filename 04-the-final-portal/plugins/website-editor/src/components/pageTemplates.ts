@@ -388,10 +388,13 @@ function aquaIncubatorRootBody(): Block[] {
     blk("heading", { text: "THE OPULENCE INCUBATOR 3.0", level: 1 }),
     blk("text", { text: "Your Onboarding Control Panel — Please Follow Each Step in Order." }),
     blk("property-strip", {
+      // Placeholders resolve via `applyIncubatorClientMetadata` when
+      // the template instantiates with client context — falls back to
+      // sensible literals when metadata is absent (preview / smoke).
       rows: [
-        { key: "Phase", type: "phase", value: "Epic Intro" },
-        { key: "Plan", type: "select", value: "Standard" },
-        { key: "Started", type: "date", value: "" },
+        { key: "Phase",   type: "phase",  value: "{{phase}}" },
+        { key: "Plan",    type: "select", value: "{{planTier}}" },
+        { key: "Started", type: "date",   value: "{{onboardingStartedAt}}" },
       ],
       collapsedLabel: "3 properties",
     }),

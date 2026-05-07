@@ -328,6 +328,31 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R010 — Incubator template preset (§15e)** — DONE.
+      Templates already shipped from R002 — `AQUA_INCUBATOR_TEMPLATE_IDS`
+      exports root + 4 sub-pages (onboarding/portal/resources/
+      discover); marketplace already surfaces them under "Aqua
+      Incubator" tag (R006). R010 closes remaining gaps:
+      NEW `server/incubatorTemplate.ts` ships
+      `IncubatorClientMetadata` (with index signature for arbitrary
+      `{{custom_key}}` placeholders) + `applyIncubatorClientMetadata
+      (blocks, metadata)` deep-cloning placeholder walk +
+      `DEFAULT_INCUBATOR_METADATA` for preview. Root template's
+      propertyStrip rows now carry `{{phase}}` / `{{planTier}}` /
+      `{{onboardingStartedAt}}` rather than literals. Foundation/T1
+      wire-up of "+ New client" modal toggle + post-create
+      `applyStarterVariant`+resolver invocation is Q-FOLLOWUP per
+      prompt — contract documented in chapter §3. NEW
+      `__smoke__/r010-incubator-template-preset.test.ts` 43/43 +
+      package.json test chain extended. tsc-clean. Chapter
+      `04-incubator-template-preset.md` + MASTER row #91.
+      Q-ASSUMED: preset id stays `aqua-incubator` (canonical from
+      R002, not `incubator-template` per prompt); videoEmbed on
+      onboarding sub-page not root per §15e per-page recipe;
+      helpRow/feedbackRow render as toggles in root per §15a.
+      Deferred: T1 modal toggle + wire-up; per-phase placeholder
+      packs; `previewIncubatorTemplate(client)` admin helper;
+      auto-link cardGrid hrefs once T1 persists 5-page set.
 - [x] **T3 R009 — Notion-Incubator blocks (icon/property-strip/toggle/card-grid)** — DONE.
       All 4 block ids already registered (R002 Aqua Incubator
       template). R009 closes §15g gaps: Goal C added `url` type
