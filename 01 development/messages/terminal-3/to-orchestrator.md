@@ -170,3 +170,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T08:24:00Z] DONE: queue file `015-forms-as-block.md` — round shipped. website-editor smoke 14/14 + tsc-clean. Chapter `04-forms-as-block.md` + MASTER row #96 + tasks.md row added. Cross-team: forms plugin's existing public/form + public/submit + admin/forms endpoints are the entire integration surface; no T2 changes needed. Q-ASSUMED: formId operator-typed today (sidebar picker wire-up R+1); runtime fetch (no SSR pre-render); honeypot is plugin's anti-bot; external-webhook returns inline thank-you. Commander may archive 015; queue still has 016.
 [2026-05-07T08:25:00Z] WAKE-PENDING-ARCHIVE: 015 still lowest. Sleeping 1800s.
 [2026-05-07T08:42:00Z] WAKE-PENDING-ARCHIVE: 015 still lowest. Sleeping 600s.
+[2026-05-07T08:54:00Z] STARTED: queue file `016-marketplace-template-polish.md` — extends R006 templateMarketplace + TemplateGallery: fuzzy search, category chip union, install-count tracking, featured row from per-agency JSON, OG-image-derived thumbnails (R014 reuse), preview drawer.
+[2026-05-07T09:08:00Z] COMMIT: pending — staging R016 explicit-path bundle.

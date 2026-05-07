@@ -17,11 +17,24 @@ export interface TemplateCardData {
   label: string;
   description: string;
   tags: string[];
+  category?: string;        // R016
   coverUrl?: string;
   kind: "builtin" | "saved";
+  installCount?: number;    // R016
   blocks?: unknown[];
   savedAt?: string;
   savedBy?: string;
+}
+
+const CATEGORIES = ["Incubator", "Brand", "Storefront", "Member-area", "Affiliate", "Misc"] as const;
+
+// R016 — auto-generated thumbnail via the OG-card endpoint (R014)
+// when no manual cover. `brandColor` should come from the host's
+// brand-kit.
+function autoThumbUrl(t: TemplateCardData, brandColor = "#0ea5e9"): string {
+  if (t.coverUrl) return t.coverUrl;
+  const params = new URLSearchParams({ title: t.label, color: brandColor });
+  return `/api/portal/website-editor/og?${params.toString()}`;
 }
 
 interface Props {
@@ -29,23 +42,34 @@ interface Props {
   onPick: (id: string, kind: "builtin" | "saved") => void;
   // Optional override for tests / SSR — defaults to the live API.
   fetchImpl?: typeof fetch;
+  // Optional brand colour (passed to the OG thumbnail generator).
+  brandColor?: string;
 }
 
-export default function TemplateGallery({ onClose, onPick, fetchImpl }: Props) {
+export default function TemplateGallery({ onClose, onPick, fetchImpl, brandColor }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [templates, setTemplates] = useState<TemplateCardData[]>([]);
+  const [featured, setFeatured] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [sort, setSort] = useState<"newest" | "most-installed">("newest");
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     const f = fetchImpl ?? fetch;
-    f("/api/portal/website-editor/templates")
-      .then(r => r.json() as Promise<{ ok: boolean; templates?: TemplateCardData[]; error?: string }>)
-      .then(data => {
-        if (!data.ok) { setError(data.error ?? "request failed"); return; }
-        setTemplates(data.templates ?? []);
+    Promise.all([
+      f("/api/portal/website-editor/templates")
+        .then(r => r.json() as Promise<{ ok: boolean; templates?: TemplateCardData[]; error?: string }>),
+      f("/api/portal/website-editor/templates/featured")
+        .then(r => r.json() as Promise<{ ok: boolean; featured?: string[] }>)
+        .catch(() => ({ ok: false } as { ok: boolean; featured?: string[] })),
+    ])
+      .then(([listData, featData]) => {
+        if (!listData.ok) { setError(listData.error ?? "request failed"); return; }
+        setTemplates(listData.templates ?? []);
+        setFeatured(featData.ok ? (featData.featured ?? []) : []);
       })
       .catch(e => setError(e instanceof Error ? e.message : String(e)))
       .finally(() => setLoading(false));
@@ -59,12 +83,28 @@ export default function TemplateGallery({ onClose, onPick, fetchImpl }: Props) {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return templates.filter(t => {
+    let out = templates.filter(t => {
+      if (activeCategory && t.category !== activeCategory) return false;
       if (activeTag && !t.tags.includes(activeTag)) return false;
       if (q && !`${t.label} ${t.description} ${t.tags.join(" ")}`.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [templates, query, activeTag]);
+    if (sort === "most-installed") {
+      out = [...out].sort((a, b) => (b.installCount ?? 0) - (a.installCount ?? 0));
+    } else {
+      out = [...out].sort((a, b) => {
+        const aT = a.savedAt ? new Date(a.savedAt).getTime() : 0;
+        const bT = b.savedAt ? new Date(b.savedAt).getTime() : 0;
+        return bT - aT;
+      });
+    }
+    return out;
+  }, [templates, query, activeTag, activeCategory, sort]);
+
+  const featuredEntries = useMemo(
+    () => featured.map(id => templates.find(t => t.id === id)).filter((t): t is TemplateCardData => Boolean(t)).slice(0, 4),
+    [featured, templates],
+  );
 
   const active = activeId ? filtered.find(t => t.id === activeId) ?? templates.find(t => t.id === activeId) : null;
 
@@ -79,13 +119,39 @@ export default function TemplateGallery({ onClose, onPick, fetchImpl }: Props) {
           <button onClick={onClose} className="text-brand-cream/55 hover:text-brand-cream text-2xl leading-none" aria-label="Close gallery">×</button>
         </header>
 
-        <div className="px-6 py-3 border-b border-white/5 flex items-center gap-3">
+        <div className="px-6 py-3 border-b border-white/5 flex items-center gap-3 flex-wrap">
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search templates…"
-            className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-1.5 text-[12px] text-brand-cream placeholder:text-brand-cream/30 focus:outline-none focus:border-cyan-400/40"
+            className="flex-1 min-w-[200px] bg-white/5 border border-white/10 rounded-md px-3 py-1.5 text-[12px] text-brand-cream placeholder:text-brand-cream/30 focus:outline-none focus:border-cyan-400/40"
           />
+          <select
+            value={sort}
+            onChange={e => setSort(e.target.value as "newest" | "most-installed")}
+            className="bg-white/5 border border-white/10 rounded-md px-2 py-1.5 text-[11px] text-brand-cream"
+            aria-label="Sort"
+          >
+            <option value="newest">Newest</option>
+            <option value="most-installed">Most installed</option>
+          </select>
+        </div>
+        <div className="px-6 py-2 border-b border-white/5 flex items-center gap-2 flex-wrap">
+          <span className="text-[10px] text-brand-cream/45 uppercase tracking-wider mr-1">Category:</span>
+          <button
+            onClick={() => setActiveCategory(null)}
+            className={`px-2 py-1 rounded text-[10px] border ${activeCategory === null ? "bg-cyan-500/15 text-cyan-200 border-cyan-400/30" : "bg-white/5 text-brand-cream/65 border-white/10"}`}
+          >All</button>
+          {CATEGORIES.map(c => (
+            <button
+              key={c}
+              onClick={() => setActiveCategory(c === activeCategory ? null : c)}
+              className={`px-2 py-1 rounded text-[10px] border ${activeCategory === c ? "bg-emerald-500/15 text-emerald-200 border-emerald-400/30" : "bg-white/5 text-brand-cream/65 border-white/10 hover:text-brand-cream"}`}
+            >{c}</button>
+          ))}
+        </div>
+        <div className="px-6 py-2 border-b border-white/5 flex items-center gap-2 flex-wrap">
+          <span className="text-[10px] text-brand-cream/45 uppercase tracking-wider mr-1">Tag:</span>
           <button
             onClick={() => setActiveTag(null)}
             className={`px-2 py-1 rounded text-[10px] border ${activeTag === null ? "bg-cyan-500/15 text-cyan-200 border-cyan-400/30" : "bg-white/5 text-brand-cream/65 border-white/10"}`}
@@ -106,6 +172,31 @@ export default function TemplateGallery({ onClose, onPick, fetchImpl }: Props) {
             {!loading && !error && filtered.length === 0 && (
               <p className="text-[12px] text-brand-cream/55">No templates match.</p>
             )}
+
+            {featuredEntries.length > 0 && !query && !activeCategory && !activeTag && (
+              <div className="mb-6">
+                <p className="text-[10px] tracking-[0.18em] uppercase text-amber-300 mb-2">★ Featured</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {featuredEntries.map(t => (
+                    <button
+                      key={t.id}
+                      onClick={() => setActiveId(t.id)}
+                      className={`text-left rounded-md overflow-hidden border ${activeId === t.id ? "border-amber-400/60 bg-amber-500/10" : "border-amber-400/30 bg-amber-500/5 hover:border-amber-400/50"}`}
+                    >
+                      <div className="aspect-video bg-black/40">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={autoThumbUrl(t, brandColor)} alt="" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="p-3">
+                        <p className="text-[12px] text-brand-cream font-medium truncate">{t.label}</p>
+                        <p className="text-[10px] text-brand-cream/55 line-clamp-1">{t.description}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-3 gap-4">
               {filtered.map(t => (
                 <button
@@ -114,11 +205,9 @@ export default function TemplateGallery({ onClose, onPick, fetchImpl }: Props) {
                   onMouseEnter={() => setActiveId(t.id)}
                   className={`text-left rounded-md overflow-hidden border ${activeId === t.id ? "border-cyan-400/50 bg-cyan-500/5" : "border-white/10 bg-white/[0.02] hover:border-white/20"}`}
                 >
-                  <div className="aspect-video bg-black/40 flex items-center justify-center text-brand-cream/40 text-[11px]">
-                    {t.coverUrl
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      ? <img src={t.coverUrl} alt="" className="w-full h-full object-cover" />
-                      : <span>{t.label}</span>}
+                  <div className="aspect-video bg-black/40">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={autoThumbUrl(t, brandColor)} alt="" className="w-full h-full object-cover" />
                   </div>
                   <div className="p-3">
                     <div className="flex items-center justify-between gap-2 mb-1">
@@ -126,10 +215,13 @@ export default function TemplateGallery({ onClose, onPick, fetchImpl }: Props) {
                       {t.kind === "saved" && <span className="text-[9px] text-cyan-300 uppercase tracking-wider">Saved</span>}
                     </div>
                     <p className="text-[10px] text-brand-cream/55 line-clamp-2">{t.description}</p>
-                    <div className="flex flex-wrap gap-1 mt-2">
+                    <div className="flex flex-wrap gap-1 mt-2 items-center">
                       {t.tags.slice(0, 3).map(tag => (
                         <span key={tag} className="text-[9px] text-brand-cream/55 bg-white/5 px-1.5 py-0.5 rounded">{tag}</span>
                       ))}
+                      {(t.installCount ?? 0) > 0 && (
+                        <span className="text-[9px] text-emerald-300 ml-auto">↳ {t.installCount}× used</span>
+                      )}
                     </div>
                   </div>
                 </button>

@@ -60,7 +60,14 @@ import {
 } from "./handlers/discoveries";
 import { handlePromote } from "./handlers/promote";
 import { handleListAssets, handleUploadAsset, handleDeleteAsset } from "./handlers/assets";
-import { handleListTemplates, handleSaveTemplate, handleDeleteTemplate } from "./handlers/templates";
+import {
+  handleListTemplates,
+  handleSaveTemplate,
+  handleDeleteTemplate,
+  handleInstallTick,
+  handleGetFeatured,
+  handleSetFeatured,
+} from "./handlers/templates";
 import { handleGetForcePassword, handleSetForcePassword } from "./handlers/forcePassword";
 import { handleGetBrandKitExtended, handleSaveBrandKitExtended } from "./handlers/brandKit";
 import { handleGetEmbedAllowList, handleSetEmbedAllowList } from "./handlers/embedAllow";
@@ -141,6 +148,9 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/templates", methods: ["GET"], handler: handleListTemplates },
   { path: "/templates", methods: ["POST"], handler: handleSaveTemplate },
   { path: "/templates", methods: ["DELETE"], handler: handleDeleteTemplate },
+  { path: "/templates/install-tick", methods: ["POST"], handler: handleInstallTick },
+  { path: "/templates/featured", methods: ["GET"], handler: handleGetFeatured },
+  { path: "/templates/featured", methods: ["POST"], handler: handleSetFeatured },
 
   // Force-password-change toggle (R007). Login-time redirect itself
   // is foundation/T1 territory; these endpoints surface the flag.

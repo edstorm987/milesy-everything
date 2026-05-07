@@ -23,13 +23,29 @@ import {
   BRAND_PAGE_PACK_ID,
 } from "../components/pageTemplates";
 
+// R016 — top-level category families. Tags are still per-template
+// fine-grained labels; categories are the gallery's filter chips.
+export type TemplateCategory =
+  | "Incubator"
+  | "Brand"
+  | "Storefront"
+  | "Member-area"
+  | "Affiliate"
+  | "Misc";
+
+export const TEMPLATE_CATEGORIES: readonly TemplateCategory[] = [
+  "Incubator", "Brand", "Storefront", "Member-area", "Affiliate", "Misc",
+];
+
 export interface TemplateEntry {
   id: string;
   label: string;
   description: string;
   tags: string[];
+  category: TemplateCategory;     // R016 — category for gallery chip filter
   coverUrl?: string;
   kind: "builtin" | "saved";
+  installCount?: number;          // R016 — running counter, bumped on apply
   // For saved templates only — the captured BlockTree.
   // Builtins resolve their tree via starterLoader on demand.
   blocks?: Block[];
@@ -55,6 +71,17 @@ const SAVED_PREFIX = (agencyId: string) =>
 // Tags are inferred from the template id so the gallery's filter chips
 // stay in sync with whatever PAGE_TEMPLATES expands to over time.
 
+// R016 — derive category from tags. Order of checks defines priority
+// when a template matches multiple categories.
+export function categoryForTags(tags: string[]): TemplateCategory {
+  if (tags.includes("Aqua Incubator")) return "Incubator";
+  if (tags.includes("Brand Pack")) return "Brand";
+  if (tags.includes("Storefront")) return "Storefront";
+  if (tags.includes("Service Portal")) return "Member-area";
+  if (tags.includes("Affiliate Site")) return "Affiliate";
+  return "Misc";
+}
+
 function tagsForBuiltin(id: string): string[] {
   const tags: string[] = [];
   if (id.startsWith("login")) tags.push("Login");
@@ -73,25 +100,26 @@ function tagsForBuiltin(id: string): string[] {
 
 export function listBuiltinTemplates(): TemplateEntry[] {
   const out: TemplateEntry[] = [];
-  // PAGE_TEMPLATES (generic + Aqua + brand presets + login etc).
   for (const t of PAGE_TEMPLATES) {
+    const tags = tagsForBuiltin(t.id);
     out.push({
       id: t.id,
       label: t.label,
       description: t.description,
-      tags: tagsForBuiltin(t.id),
+      tags,
+      category: categoryForTags(tags),
       kind: "builtin",
     });
   }
-  // brand-page-pack composite — surfaces as a single gallery card
-  // even though it's a sibling-seeding meta-starter.
   const about = getTemplate("brand-about");
   if (about) {
+    const tags = ["Brand Pack", "Composite"];
     out.push({
       id: BRAND_PAGE_PACK_ID,
       label: "Brand Pack — full bundle",
       description: "Seeds About + Story + Philosophy + Sustainability + FAQ + Contact + Lab tests as siblings.",
-      tags: ["Brand Pack", "Composite"],
+      tags,
+      category: categoryForTags(tags),
       kind: "builtin",
     });
   }
@@ -116,6 +144,8 @@ export async function listSavedTemplates(
   const keys = await storage.list(SAVED_PREFIX(agencyId));
   const out: TemplateEntry[] = [];
   for (const k of keys) {
+    // Skip sidecar records (install-counts / featured list).
+    if (k.startsWith(`${SAVED_PREFIX(agencyId)}_`)) continue;
     const rec = await storage.get<SavedTemplateRecord>(k);
     if (!rec) continue;
     out.push({
@@ -123,6 +153,7 @@ export async function listSavedTemplates(
       label: rec.label,
       description: rec.description,
       tags: rec.tags,
+      category: categoryForTags(rec.tags),
       ...(rec.coverUrl ? { coverUrl: rec.coverUrl } : {}),
       kind: "saved",
       blocks: rec.blocks,
@@ -137,11 +168,95 @@ export async function listAllTemplates(
   storage: PluginStorage,
   agencyId: string,
 ): Promise<TemplateEntry[]> {
-  const [builtin, saved] = await Promise.all([
+  const [builtin, saved, counts] = await Promise.all([
     Promise.resolve(listBuiltinTemplates()),
     listSavedTemplates(storage, agencyId),
+    listInstallCounts(storage, agencyId),
   ]);
-  return [...saved, ...builtin];
+  // Saved-first; merge install counts onto each entry.
+  return [...saved, ...builtin].map(t => ({
+    ...t,
+    installCount: counts[t.id] ?? 0,
+  }));
+}
+
+// ─── Install count tracking (R016) ─────────────────────────────────────────
+// Per-agency map `templateId → count`. Single sidecar record so the gallery
+// can hydrate the whole feed in one read.
+
+const INSTALL_COUNTS_KEY = (agencyId: string) =>
+  `${SAVED_PREFIX(agencyId)}_install-counts`;
+
+export async function listInstallCounts(
+  storage: PluginStorage, agencyId: string,
+): Promise<Record<string, number>> {
+  return (await storage.get<Record<string, number>>(INSTALL_COUNTS_KEY(agencyId))) ?? {};
+}
+
+export async function bumpInstallCount(
+  storage: PluginStorage, agencyId: string, templateId: string,
+): Promise<number> {
+  const cur = await listInstallCounts(storage, agencyId);
+  const next = (cur[templateId] ?? 0) + 1;
+  cur[templateId] = next;
+  await storage.set(INSTALL_COUNTS_KEY(agencyId), cur);
+  return next;
+}
+
+// ─── Featured row (R016) ───────────────────────────────────────────────────
+// Hand-picked template ids per agency. Stored as a single ordered list;
+// gallery renders the first 3-4 above the main grid.
+
+const FEATURED_KEY = (agencyId: string) =>
+  `${SAVED_PREFIX(agencyId)}_featured`;
+
+export async function listFeaturedIds(
+  storage: PluginStorage, agencyId: string,
+): Promise<string[]> {
+  return (await storage.get<string[]>(FEATURED_KEY(agencyId))) ?? [];
+}
+
+export async function setFeaturedIds(
+  storage: PluginStorage, agencyId: string, ids: string[],
+): Promise<string[]> {
+  const cleaned = Array.from(new Set(ids.map(s => s.trim()).filter(Boolean))).slice(0, 8);
+  await storage.set(FEATURED_KEY(agencyId), cleaned);
+  return cleaned;
+}
+
+// ─── Filter + search + sort utilities (R016) ───────────────────────────────
+
+export interface TemplateFilter {
+  query?: string;            // fuzzy substring match on label + description + tags
+  category?: TemplateCategory;
+  tag?: string;
+  sort?: "newest" | "most-installed";
+}
+
+export function filterTemplates(
+  templates: TemplateEntry[],
+  filter: TemplateFilter = {},
+): TemplateEntry[] {
+  let out = [...templates];
+  if (filter.category) out = out.filter(t => t.category === filter.category);
+  if (filter.tag) out = out.filter(t => t.tags.includes(filter.tag!));
+  if (filter.query) {
+    const q = filter.query.trim().toLowerCase();
+    out = out.filter(t =>
+      `${t.label} ${t.description} ${t.tags.join(" ")}`.toLowerCase().includes(q),
+    );
+  }
+  if (filter.sort === "most-installed") {
+    out.sort((a, b) => (b.installCount ?? 0) - (a.installCount ?? 0));
+  } else {
+    // "newest" → saved templates by savedAt desc, builtins fall after.
+    out.sort((a, b) => {
+      const aT = a.savedAt ? new Date(a.savedAt).getTime() : 0;
+      const bT = b.savedAt ? new Date(b.savedAt).getTime() : 0;
+      return bT - aT;
+    });
+  }
+  return out;
 }
 
 export interface SaveTemplateInput {
@@ -175,6 +290,7 @@ export async function saveTemplate(
     label: rec.label,
     description: rec.description,
     tags: rec.tags,
+    category: categoryForTags(rec.tags),
     ...(rec.coverUrl ? { coverUrl: rec.coverUrl } : {}),
     kind: "saved",
     blocks: rec.blocks,

@@ -573,6 +573,38 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R016 — Marketplace + template gallery polish** — DONE.
+      Polishes R006 marketplace. Goal A: NEW
+      `TemplateCategory` union + `categoryForTags` helper +
+      filterTemplates pure utility (query/category/tag/sort);
+      `GET /templates` extended with `?q/category/tag/sort`
+      params; response includes `categories[]`. Goal B: auto-
+      generated thumbnails via R014's `/og` endpoint when
+      `coverUrl` unset; install-count tracking with NEW
+      `bumpInstallCount` + `listInstallCounts` + `POST
+      /templates/install-tick?id=…`; cards show `↳ N× used` +
+      sort by most-installed. Goal C: preview drawer deferred
+      (auto-thumbnail closes gap; live BlockTree render needs
+      host-injected `__aquaRenderBlocks` per R008 pattern,
+      Q-ASSUMED). Goal D: NEW `_featured` per-agency list
+      (max 8, dedup + trim) + `GET/POST /templates/featured`
+      endpoints; gallery surfaces a Featured strip at top
+      (4 amber-highlighted cards, only when no active
+      filters). `TemplateGallery.tsx` extended with sort
+      selector + category chip row (emerald) + featured strip
+      + auto thumbnails + brandColor prop. listSavedTemplates
+      now skips sidecar records. Goal E: NEW
+      `__smoke__/r016-marketplace-polish.test.ts` 34/34;
+      R006 25/25 still passes (no regression). package.json
+      test chain extended. tsc-clean. Chapter
+      `04-marketplace-polish.md` + MASTER row #97.
+      Q-ASSUMED: live-render preview drawer deferred to host
+      wiring; featured editor is API today (visual R+1);
+      substring search not fuzzy lib; applyStarterVariant
+      doesn't auto-tick (host POSTs explicitly). Deferred:
+      live preview drawer, visual featured editor, screenshot
+      capture, per-phase featured packs, auto-tick on
+      applyStarterVariant.
 - [x] **T3 R015 — Forms-as-block** — DONE.
       Forms plugin already exposes the public surface this round
       needs (public/form, public/submit, admin /forms). NEW
