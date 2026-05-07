@@ -351,3 +351,6 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 [2026-05-07T11:21:03Z] NOTE: unify-step-3 DONE — founder seed at src/lib/server/founderSeed.ts. edwardhallam07@gmail.com / 123 / agency-owner / Milesy Media. Wired into GET /login + POST /api/auth/login. Live smoke: API returns 200 with seeded user. Commit 77336d2.
 
 [2026-05-07T11:24:35Z] NOTE: unify-step-4 DONE — marketing → public/_marketing/, beforeFiles rewrites for / and /for-*. CTAs swept: login.html → /login, admin.html → /portal/agency. Live smoke 200 across marketing + auth + 3 static apps. Commit 3bafc36.
+
+[2026-05-07T11:34:40Z] NOTE: unify-step-5 DONE — public/_milesy + public/aqua-incubator + scripts/prepare-milesy.mjs deleted; chapter 122 (04-website-portal-unification.md) authored + MASTER row added. Commit 33e214f.
+[2026-05-07T11:34:40Z] NOTE: unify session ended — :3030 single host fully operational. Marketing /, /for-* niche pages, /health-check, /business-os, /incubator, /login, /signup, /portal/agency, /healthz all 200. Founder seed lets edwardhallam07@gmail.com / 123 sign in immediately. Run `npm run dev` from milesymedia-website/.
