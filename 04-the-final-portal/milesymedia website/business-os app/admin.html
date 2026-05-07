@@ -165,6 +165,7 @@
 
   </main>
 
+  <script src="../incubator app/lib/storage.js"></script>
   <script src="../lead magnet app/hc-questions.js"></script>
   <script>
     /* ─── Admin gate ──────────────────────────── */
@@ -317,7 +318,23 @@
               '<button type="button" class="btn btn-primary" data-admin-lead-save="' + escapeHtml(id) + '">Save note</button>' +
             '</div>' +
           '</div>' +
+          /* R020 — Preview as this client */
+          '<div style="border-top:1px solid #2A2A2A;padding-top:14px;margin-top:14px">' +
+            '<h4 style="margin:0 0 6px">👁 Preview as this client</h4>' +
+            '<p class="muted" style="font-size:13px;margin:0 0 8px">Previews BOS + Incubator from a client\'s POV for 60 min. Switches active business + flags every page with a banner you can exit.</p>' +
+            '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
+              '<select data-admin-preview-biz style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;min-width:180px"></select>' +
+              '<button type="button" class="btn btn-secondary" data-admin-preview-as="' + escapeHtml(id) + '" data-admin-preview-name="' + escapeHtml(l.name || l.email || '?') + '">Preview as this client →</button>' +
+            '</div>' +
+          '</div>' +
         '</div>';
+      /* Populate the business select from BOSStorage. */
+      var bizSel = host.querySelector('[data-admin-preview-biz]');
+      var businesses = (window.BOSStorage && window.BOSStorage.list && window.BOSStorage.list()) || [];
+      var activeId = window.BOSStorage && window.BOSStorage.activeId && window.BOSStorage.activeId();
+      bizSel.innerHTML = businesses.length
+        ? businesses.map(function (b) { return '<option value="' + escapeHtml(b.id) + '"' + (b.id === activeId ? ' selected' : '') + '>' + escapeHtml(b.name) + '</option>'; }).join('')
+        : '<option value="">(no businesses — add one in BOS sidebar)</option>';
     }
 
     document.addEventListener('click', function (ev) {
@@ -341,6 +358,28 @@
         setJson('bos.leadNotes', notes);
         var st = document.querySelector('[data-admin-lead-note-status]');
         if (st) { st.textContent = 'Saved.'; setTimeout(function () { st.textContent = ''; }, 2500); }
+      }
+      /* R020 — Preview as this client. Writes bos.previewAs + switches business. */
+      var prev = ev.target.closest('[data-admin-preview-as]');
+      if (prev) {
+        var leadId = prev.getAttribute('data-admin-preview-as');
+        var leadName = prev.getAttribute('data-admin-preview-name') || 'client';
+        var bizSel = document.querySelector('[data-admin-preview-biz]');
+        var bizId = bizSel && bizSel.value;
+        if (!bizId) { alert('No business to preview as. Add one from the BOS sidebar switcher first.'); return; }
+        var origin = (window.BOSStorage && window.BOSStorage.activeId && window.BOSStorage.activeId()) || null;
+        var now = Date.now();
+        setJson('bos.previewAs', {
+          businessId: bizId,
+          originalBusinessId: origin,
+          leadId: leadId, leadName: leadName,
+          startedAt: new Date(now).toISOString(),
+          expiresAt: new Date(now + 60 * 60 * 1000).toISOString()
+        });
+        if (window.BOSStorage && window.BOSStorage.switch && origin !== bizId) {
+          window.BOSStorage.switch(bizId);
+        }
+        window.open('app.html', '_blank', 'noopener');
       }
     });
 

@@ -849,6 +849,49 @@
     document.body.insertBefore(bar, document.body.firstChild);
   }
 
+  /* R020 — Preview-as-client banner. Reads `bos.previewAs`, validates
+     expiry (auto-clears + switches back to originalBusinessId if past),
+     renders sticky violet banner top-of-body w/ leadName + remaining
+     time + "Exit preview" button. Same code path mirrored on Incubator
+     pages via incubator.js — single source of truth would be ideal but
+     surface markup differs slightly so duplication is small + clear. */
+  function readPreviewAs() {
+    try { return JSON.parse(localStorage.getItem('bos.previewAs') || 'null'); }
+    catch (e) { return null; }
+  }
+  function writePreviewAs(v) {
+    if (v == null) { try { localStorage.removeItem('bos.previewAs'); } catch (e) {} ; return; }
+    try { localStorage.setItem('bos.previewAs', JSON.stringify(v)); } catch (e) {}
+  }
+  function exitPreview(p) {
+    writePreviewAs(null);
+    if (p && p.originalBusinessId && window.BOSStorage && window.BOSStorage.switch) {
+      window.BOSStorage.switch(p.originalBusinessId);
+    }
+    location.reload();
+  }
+  function mountPreviewBanner() {
+    var p = readPreviewAs();
+    if (!p) return;
+    var now = Date.now();
+    if (!p.expiresAt || +new Date(p.expiresAt) < now) {
+      // Auto-expire — silent flip back, no banner.
+      exitPreview(p); return;
+    }
+    if (document.querySelector('[data-bos-preview-banner]')) return;
+    var remMs = +new Date(p.expiresAt) - now;
+    var remMin = Math.max(1, Math.round(remMs / 60000));
+    var bar = document.createElement('div');
+    bar.setAttribute('data-bos-preview-banner', '');
+    bar.style.cssText = 'background:#3b2c52;color:#d4c1f0;border-bottom:1px solid #5c4880;padding:10px 16px;font-size:13px;text-align:center;letter-spacing:0.02em;';
+    bar.innerHTML = '👁 Previewing as <strong>' + (p.leadName || 'client') + '</strong> · expires in ~' + remMin + ' min · <a href="#" data-bos-preview-exit style="color:#a48ed1;font-weight:700;margin-left:6px">Exit preview</a>';
+    document.body.insertBefore(bar, document.body.firstChild);
+    bar.querySelector('[data-bos-preview-exit]').addEventListener('click', function (ev) {
+      ev.preventDefault();
+      exitPreview(p);
+    });
+  }
+
   /* R016 — cart icon top-right when bos.cart.addons.length > 0.
      Renders a small floating pill linking to cart.html. */
   function mountCartIcon() {
@@ -868,6 +911,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     ensureSwitcherLoaded();
+    mountPreviewBanner();
     mountIncubatorStrip();
     mountTrialBanner();
     mountCartIcon();

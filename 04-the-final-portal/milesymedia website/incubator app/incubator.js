@@ -113,7 +113,40 @@
     } catch (e) { el.textContent = iso.slice(0, 10); }
   }
 
+  /* R020 — preview-as-client banner. Mirrors bos.js mountPreviewBanner;
+     same `bos.previewAs` storage shape so the banner shows on every
+     Incubator surface as well. */
+  function mountPreviewBanner() {
+    var p; try { p = JSON.parse(localStorage.getItem('bos.previewAs') || 'null'); } catch (e) { return; }
+    if (!p) return;
+    var now = Date.now();
+    if (!p.expiresAt || +new Date(p.expiresAt) < now) {
+      try { localStorage.removeItem('bos.previewAs'); } catch (e) {}
+      if (p.originalBusinessId && window.BOSStorage && window.BOSStorage.switch) {
+        window.BOSStorage.switch(p.originalBusinessId);
+      }
+      location.reload();
+      return;
+    }
+    if (document.querySelector('[data-bos-preview-banner]')) return;
+    var remMin = Math.max(1, Math.round((+new Date(p.expiresAt) - now) / 60000));
+    var bar = document.createElement('div');
+    bar.setAttribute('data-bos-preview-banner', '');
+    bar.style.cssText = 'background:#3b2c52;color:#d4c1f0;border-bottom:1px solid #5c4880;padding:10px 16px;font-size:13px;text-align:center;letter-spacing:0.02em;';
+    bar.innerHTML = '👁 Previewing as <strong>' + ((p.leadName || 'client')) + '</strong> · expires in ~' + remMin + ' min · <a href="#" data-bos-preview-exit style="color:#a48ed1;font-weight:700;margin-left:6px">Exit preview</a>';
+    document.body.insertBefore(bar, document.body.firstChild);
+    bar.querySelector('[data-bos-preview-exit]').addEventListener('click', function (ev) {
+      ev.preventDefault();
+      try { localStorage.removeItem('bos.previewAs'); } catch (e) {}
+      if (p.originalBusinessId && window.BOSStorage && window.BOSStorage.switch) {
+        window.BOSStorage.switch(p.originalBusinessId);
+      }
+      location.reload();
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    mountPreviewBanner();
     renderPhaseChip();
     renderStartedAt();
     applyCardLocks();

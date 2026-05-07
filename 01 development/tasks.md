@@ -140,6 +140,31 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R020 — "As a client" preview mode** — DONE.
+      NEW `bos.previewAs={businessId, originalBusinessId, leadId,
+      leadName, startedAt, expiresAt}` top-level localStorage flag
+      (60-min auto-expire). Admin lead-detail panel (R009) gains
+      "👁 Preview as this client" section with `<select>` of
+      `BOSStorage.list()` businesses (defaults to current activeId)
+      + button — click writes previewAs, calls BOSStorage.switch if
+      changing, opens app.html in new tab. NEW `mountPreviewBanner()`
+      mirrored in bos.js + incubator.js boot: reads previewAs;
+      expiresAt-past → silent clear + switch back to
+      `originalBusinessId` + reload (no banner = honest auto-expire);
+      else renders sticky violet banner top-of-body `👁 Previewing
+      as <name> · expires in ~Nm · Exit preview` (idempotent via
+      data-bos-preview-banner). Exit click clears flag, switches
+      back, reloads. print.css updated to hide banner on print.
+      Admin gained explicit `<script src="../incubator app/lib/
+      storage.js">` (was lazy-loaded by bos.js but admin needs
+      BOSStorage at preview-time). Honest: banner always shows lead
+      name + countdown; exit one click; preview is read-write
+      (Q-FLAG for R+1 read-only mode). Smoke: admin/app/incubator
+      all 200; preview→new-tab→banner→exit-restores end-to-end
+      verified. R+1: lead→business mapping (today defaults to
+      operator's own); read-only mode via BOSStorage.set guard;
+      cross-tab refresh via storage event; preview lifecycle Activity
+      log kinds. NEW chapter `04-as-client-preview.md` + MASTER #96.
 - [x] **T4 R019 — Per-niche asset / imagery packs** — DONE.
       4 copy-packs each got NEW `assets:{tokens:{--inc-pack-accent,
       --inc-pack-tint, --inc-pack-deep}, emojis:{card:[6 glyphs]}}`
