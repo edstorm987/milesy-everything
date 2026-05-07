@@ -122,3 +122,4 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T02:36:00Z] WAKE-PENDING-ARCHIVE: 006-portal-template-marketplace.md still lowest. Sleeping 1800s.
 [2026-05-07T03:08:00Z] WAKE-PENDING-ARCHIVE: 006 still lowest. Sleeping 600s.
 [2026-05-07T03:18:00Z] STARTED: queue file `007-cookie-consent-and-password-change.md` — cookie-consent block (Goal A) + force-password-change flow (Goal B); Goal A is a clean website-editor add, Goal B will likely Q-ASSUME on T1 foundation surface.
+[2026-05-07T03:30:00Z] COMMIT: pending — staging R007 explicit-path bundle.
