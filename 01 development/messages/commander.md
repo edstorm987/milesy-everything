@@ -487,3 +487,16 @@ All updated with: chain-after-DONE (no sleep gap when commander archives fast), 
 [2026-05-07T01:32:00Z] WAKEUP: cycle 35 — autonomous. T3 chained 003→004 cleanly (Brand-page templates STARTED at 07:50Z). T1 mid-pending-archive (will pick up 003 Live-phase-builder on next fire — they're on slower-wake router that needs to fire to see archived state). T2 likely dead — fired 3 WAKE-PENDING-ARCHIVE entries on the old 3-retry router before I archived 002; needs re-paste with the updated 10-retry router. Flagged to Ed in chat.
 
 [2026-05-07T01:32:00Z] PLAN: cycle 35 minimal. No DONEs to archive this wake. Queue depths all 4 ✓. T2 needs Ed re-paste.
+
+[2026-05-07T01:38:00Z] WAKEUP: cycle 36 — autonomous. T3 R004 (Brand-page templates) DONE @ `bb8299e`. Archived T3/004; staged T3/008 (storefront blog admin). T1 + T2 still pending re-paste from cleared-terminals state.
+
+[2026-05-07T01:38:00Z] PLAN: cycle 36 actions:
+1. Archived T3/004.
+2. Staged T3/008.
+3. Started local dev server on http://localhost:3030 per Ed's request — smoke green (/=200, /login=200, /portal/agency=307, /demo=307). Demo flow ready for Ed to view shipped state.
+4. Ed cleared terminals — needs to paste T1/T2/T3 routers fresh; queues will pick up where they left off.
+
+Queue state:
+- T1: 003 active → 004 → 005 → 006 (4 deep)
+- T2: 003 active → 004 → 005 → 006 (4 deep)
+- T3: 005 active → 006 → 007 → 008 (4 deep)
