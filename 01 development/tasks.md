@@ -36,9 +36,12 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       → seed via `createUser`; production fail-closed guard (≥12 chars +
       email-not-default); `.env.example` + runbook §2a updated. Smoke
       12/12. Chapter #129. `grep -r '"123"' src/` clean.
-- [ ] **R025 — `agencyIds[]` migration** (WS-C R1). Replace
-      `ServerUser.agencyId` with `agencyIds: string[]`. Migration
-      runner. Default `[primaryAgencyId]` so legacy code keeps working.
+- [x] **R025 — `agencyIds[]` migration** (WS-C R1). Schema dual-write
+      (`agencyIds[]` + legacy `agencyId` mirror); SessionPayload
+      `activeAgencyId` + `agencyIds`; NEW `userSchemaMigration.ts`
+      runner wired into `ensureHydrated`; createUser writes both
+      shapes; NEW `assertTenantScope` + 3 active-agency helpers in
+      auth.ts. Smoke 10/10. Chapter #131.
 
 ### To do — T2 (plugins)
 
