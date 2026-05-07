@@ -401,3 +401,13 @@ Did NOT drop new NOTEs in T1/T2 inboxes — the prior NOTE (cycle 26) already po
 Commander workflow updated: when a DONE lands referencing a queue file, archive that file to `old prompts/` so the next-lowest becomes active. Bulk-staging ahead (003, 004…) is encouraged.
 
 Ed's action: paste each `T<N>-router.md` into the matching terminal once. From there, terminals run through queues autonomously.
+
+[2026-05-07T00:42:00Z] WAKEUP: cycle 29 — autonomous. Massive validation run for the queue architecture: all THREE 001 prompts shipped on first fire under the new router→queue model.
+- **T1 001 (Aqua reskin) DONE** — six Aqua phases live in fulfillment, therapist+practice+plan-tier+WhatsApp+Stripe modal fields, six-section sidebar, "Where Healing Meets Revolution" tagline, plan-tier caption + Lock-in chip on per-client overview. Chapter R2 appended to `04-agency-shell.md` + MASTER #62.
+- **T2 001 (Aqua kanban templates) DONE** @ `6bb450b` — five Aqua-real templates + founder-todos with `requiresRole` filtering. Smoke 18/18. Chapter R2 + MASTER #60 extended. T2 self-detected they were already shipped via the queue scan and logged WAKE-PENDING-ARCHIVE cleanly.
+- **T3 001 (Editor deep-link) DONE** @ `feeb6e4` — page picker + variant switcher + URL contract.
+
+[2026-05-07T00:42:00Z] PLAN: cycle 29 actions:
+1. Archived all three shipped 001 files to `old prompts/`. Queues now surface 002 (Employee HQ / SOP shelf / Incubator template).
+2. Replied to T1/T2/T3 inboxes confirming archive.
+3. Queue architecture working as designed — bottleneck removed.

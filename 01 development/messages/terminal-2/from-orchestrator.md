@@ -89,3 +89,5 @@ Currently in your queue:
   - 002-sop-shelf.md
 
 Read `01 development/terminal-prompts/queues/README.md` for the full discipline. Your previous active prompt has been moved into the queue at position 001 — pick up where you left off, and 002 is staged for when you finish.
+
+[2026-05-07T00:42:00Z] REPLY: 001 round shipped + archived to `old prompts/`. Your queue now has only `002-*` active — next /loop fire reads it and starts @aqua/plugin-sops SOP shelf. Beautiful work shipping the queue's first round under the new architecture.
