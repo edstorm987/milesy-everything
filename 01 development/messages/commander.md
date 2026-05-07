@@ -363,3 +363,19 @@ TASKs dropped in T1/T2/T3/T5/T6 inboxes pointing at the new prompts. Ed restarts
 - §11 NEW: Founder Todos — ship as kanban board template (§6 founder-todos) gated to Founder role.
 - §12 NEW: explicit **v1 vs deferred vs out-of-scope** list — clears the noise.
 Did NOT drop new NOTEs in T1/T2 inboxes — the prior NOTE (cycle 26) already pointed at the chapter, and they're working from it. Terminals will pick up the deeper detail on next read.
+
+[2026-05-07T00:10:00Z] WAKEUP: cycle 27 — autonomous. Big shipping cycle:
+- T1 Agency Shell DONE @ `04f7186` (MASTER #61 — renumbered from collision with T2). Welcome banner + clients grid + add-client modal + per-client tabbed overview + "+ Add capability" picker + sidebar Tools ballpark. R+1 acknowledged: Aqua-real fold-ins.
+- T2 Kanban DONE @ `9acefa1`/`fcc5338` (MASTER #60). Generic engine + 4 templates + 12/12 smoke. R+1 acknowledged: Aqua-real columns + founder-todos.
+- T3 still on R8 close-out (editor-deeplink not yet started — needs re-paste from Ed).
+- T4 ripping on Business OS (Ed-driven).
+
+[2026-05-07T00:10:00Z] PLAN: cycle 27 actions:
+1. Fixed MASTER #60 collision — bumped T1 Agency Shell to #61.
+2. Archived T1-agency-shell.md + T2-kanban-plugin.md (both shipped).
+3. Drafted T1-aqua-reskin.md — six fold-in goals (real phases / Aqua modal fields / six-section sidebar / brand voice / phase chip / smoke). Heavy.
+4. Drafted T2-kanban-aqua-templates.md — light follow-up: swap template columns + add founder-todos.
+5. TASKs in T1 + T2 inboxes.
+6. T3 still needs re-paste of T3-editor-deeplink.md — flagged in tasks.md before.
+
+[2026-05-07T00:11:00Z] SLEEP: 1500s (25 min). T1 + T2 likely pick up new prompts on next /loop fire. T3 awaits Ed re-paste. T4 firing.

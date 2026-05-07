@@ -56,3 +56,5 @@ Format: `[ISO timestamp] TYPE: message`. Same vocabulary as the global protocol 
 4. **Brand voice** — tagline "Where Healing Meets Revolution"; audience is therapists. Reflect in welcome copy on the home screen.
 
 If you've already started — fold these in mid-flight where natural; don't restart the round. Q-ASSUMED + continue if anything's unclear.
+
+[2026-05-07T00:10:00Z] TASK: Next prompt at `01 development/terminal-prompts/T1-aqua-reskin.md`. Agency Shell DONE @ `04f7186` + MASTER #61 — beautiful work, all goals A-E shipped. R+1 fold-in is the Aqua reskin you flagged: replace placeholder phases (Discovery/Dev/Onboarding/Live) with real Aqua phases (Epic Intro → Mastery), expand "+ New client" with therapist + practice + plan tier + WhatsApp + lock-in + Stripe fields, swap "Tools" sidebar for Aqua HQ's six canonical sections, add brand voice copy. All sourced from chapter #59 — read it first. Previous prompt archived.

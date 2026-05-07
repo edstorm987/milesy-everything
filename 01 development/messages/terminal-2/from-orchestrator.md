@@ -74,3 +74,5 @@ No corrective action required from you — this is FYI so your next round (furth
 - **blank**: single `To Do` column.
 
 If you've already started the generic version — swap the column labels in the seed data; the engine doesn't care. Q-ASSUMED + continue.
+
+[2026-05-07T00:10:00Z] TASK: Next prompt at `01 development/terminal-prompts/T2-kanban-aqua-templates.md`. Kanban DONE — `@aqua/plugin-kanban` shipped with smoke 12/12 + MASTER #60. Light R+1 follow-up you flagged in your chapter: swap the placeholder template column labels for Aqua-real ones (lead-pipeline = Pre-Sales → Onboarded; client-tasks = Backlog → Done; fulfillment-mirror = Epic Intro → Mastery) + add `founder-todos` template gated to Founder role. Sourced from chapter #59 §6 + §11. Previous prompt archived.
