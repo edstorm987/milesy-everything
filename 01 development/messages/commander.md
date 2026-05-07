@@ -1058,3 +1058,7 @@ Queue state post-stage:
 [2026-05-07T09:25:00Z] PLAN: archive T3/029 + stage T3/030-032. Post: T3=3.
 
 [2026-05-07T09:25:00Z] SLEEP: 270s.
+
+[2026-05-07T09:30:00Z] WAKEUP: cycle 113 — autonomous. No new DONEs. All terminals on long sleeps.
+
+[2026-05-07T09:30:00Z] PLAN: minimal. SLEEP: 270s.
