@@ -31,7 +31,7 @@ import EditorOutliner, { type EditorTarget } from "../components/editor/EditorOu
 import EditorFunnelStage from "../components/editor/EditorFunnelStage";
 import EditorBlockStage from "../components/editor/EditorBlockStage";
 import { GenerateModal } from "../components/editor/GenerateModal";
-import { LivePreview } from "../components/editor/LivePreview";
+import { LivePreview, useLivePreviewOpenState } from "../components/editor/LivePreview";
 import {
   loadDeviceState, saveDeviceState, getDevicePreset, effectiveViewport,
   type DeviceState,
@@ -595,7 +595,7 @@ function VisualEditorPageInner() {
         <div className="flex-1" />
         {target.kind === "page" && currentPage && mode !== "live" && (
           <button
-            onClick={() => setLivePreviewOpen(o => !o)}
+            onClick={() => setLivePreviewOpen(!livePreviewOpen)}
             aria-pressed={livePreviewOpen}
             className="text-[10px] uppercase tracking-[0.18em] text-brand-cream/55 hover:text-brand-cream border border-white/10 rounded px-2 py-0.5"
           >

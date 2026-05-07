@@ -561,14 +561,51 @@
       return { area: a, score: score, status: status, slot: slot };
     });
     var scored = pillars.filter(function (p) { return p.score != null; });
-    var overall = scored.length
-      ? Math.round(scored.reduce(function (s, p) { return s + p.score; }, 0) / scored.length)
-      : 50;
 
-    var moneyEstimate = Math.max(800, Math.round((100 - overall) * 95));
+    /* ── No-data state: nothing answered, don't fabricate ── */
+    if (!scored.length) {
+      $("[data-hc-money-headline]").innerHTML = "We don't know enough about you yet.";
+      $("[data-hc-money-sub]").innerHTML = 'Skip-to-results without answering anything is honest — but useless. Pick a topic and answer at least one question, even if just the easy one. Your numbers will be your numbers — not made-up averages.';
+      $("[data-hc-leak-visibility]").innerHTML = '—';
+      $("[data-hc-leak-trust]").innerHTML = '—';
+      $("[data-hc-leak-dependence]").innerHTML = '—';
+      $("[data-hc-quickwins]").innerHTML = '<div class="hc-quickwin-empty"><p class="muted">Quick wins are computed from your answers. Answer one topic and they\'ll appear here.</p></div>';
+      $("[data-hc-recos]").innerHTML = '';
+      $("[data-hc-pillars]").innerHTML = '';
+      $("[data-hc-section-nav]").innerHTML = pillars.map(function (p, i) {
+        return '<button class="hc-section-nav-card is-pending" data-hc-jump="' + i + '">'
+          + '<div class="hc-section-nav-icon">' + p.area.icon + '</div>'
+          + '<div class="hc-section-nav-meta">'
+          +   '<div class="hc-section-nav-title">' + p.area.name + '</div>'
+          +   '<div class="hc-section-nav-sub">Not explored yet</div>'
+          + '</div>'
+          + '<div class="hc-section-nav-cta">Start →</div>'
+          + '</button>';
+      }).join('');
+      $$("[data-hc-jump]").forEach(function (b) {
+        b.addEventListener('click', function () {
+          state.areaIdx = parseInt(b.getAttribute('data-hc-jump'), 10);
+          state.tier = null; state.exerciseIdx = 0;
+          show('overview'); renderOverview();
+        });
+      });
+      return;
+    }
+
+    var overall = Math.round(scored.reduce(function (s, p) { return s + p.score; }, 0) / scored.length);
+
+    /* ── Honest money range ─────────────────────
+       Two anchors: how much room there is to improve (100 - overall) and
+       how confident we can be in that read (coverage). Range, not point.
+       Expressed in £/month. Floors to £0. */
+    var confidence = coveredCount / AREAS.length;        // 0.2 .. 1.0
+    var room       = (100 - overall) / 100;              // 0 .. 1
+    var lowMonthly  = Math.round((room * confidence * 1500) / 100) * 100; // £100 step
+    var highMonthly = Math.round((room * confidence * 5000) / 100) * 100;
+    var moneyEstimate = Math.round((lowMonthly + highMonthly) / 2);
     persistToBOS(pillars, moneyEstimate);
-    /* Mirror any captured HC contact into the BOS lead store too —
-       cross-app same-origin localStorage. */
+
+    /* Mirror any captured HC contact into the BOS lead store too. */
     try {
       var contact = JSON.parse(localStorage.getItem('hc.contact') || 'null');
       if (contact) {
@@ -589,17 +626,53 @@
         }
       }
     } catch (e) {}
-    var unanswered = AREAS.length - coveredCount;
-    var unansweredHint = unanswered > 0
-      ? ' <span class="hc-headline-hint">(based on ' + coveredCount + '/' + AREAS.length + ' topics — answer the rest to sharpen this)</span>'
-      : '';
-    $("[data-hc-money-headline]").innerHTML = "You're leaving an estimated <span class='accent'>£" + moneyEstimate.toLocaleString() + "/month</span> on the table." + unansweredHint;
 
-    var leakVis = state.answers['seo'] ? Math.max(5, Math.min(95, scoreArea('seo'))) : 12;
-    $("[data-hc-leak-visibility]").innerHTML = leakVis + '<span>%</span>';
-    $("[data-hc-leak-trust]").innerHTML = '5<span>s</span>';
-    var leakDep = state.answers['flow'] ? Math.max(20, Math.min(95, 100 - scoreArea('flow'))) : 78;
-    $("[data-hc-leak-dependence]").innerHTML = leakDep + '<span>%</span>';
+    /* Honest headline — range, not £X point estimate, with explicit
+       confidence. Plus a "How we got this" expander that shows the
+       maths and what we'd need to verify against real data. */
+    var coverPct = Math.round(confidence * 100);
+    if (lowMonthly === 0 && highMonthly === 0) {
+      $("[data-hc-money-headline]").innerHTML = 'You\'re ahead of most of the businesses we audit.';
+    } else {
+      $("[data-hc-money-headline]").innerHTML =
+        'Likely upside: <span class="accent">£' + lowMonthly.toLocaleString()
+        + '–£' + highMonthly.toLocaleString() + '/month</span>';
+    }
+    $("[data-hc-money-sub]").innerHTML =
+      'Range based on ' + coveredCount + '/' + AREAS.length + ' topics answered (confidence: ~' + coverPct + '%). '
+      + 'These are <strong>self-reported answers</strong>, not pulled from your live data. To make this real, see "How we got this" below.';
+
+    /* Leak cards — only show real numbers if the topic was answered. */
+    var seoSlot = state.answers['seo'];
+    var siteSlot = state.answers['site'];
+    var flowSlot = state.answers['flow'];
+
+    if (seoSlot) {
+      var seoScore = scoreArea('seo');
+      $("[data-hc-leak-visibility]").innerHTML = seoScore + '<span>/100</span>';
+      $("[data-hc-leak-visibility]").parentElement.querySelector('.leak-lbl').textContent = 'visibility score';
+    } else {
+      $("[data-hc-leak-visibility]").innerHTML = '—';
+      $("[data-hc-leak-visibility]").parentElement.querySelector('.muted').textContent = 'Answer the Visibility topic to fill this.';
+    }
+
+    if (siteSlot) {
+      var siteScore = scoreArea('site');
+      $("[data-hc-leak-trust]").innerHTML = siteScore + '<span>/100</span>';
+      $("[data-hc-leak-trust]").parentElement.querySelector('.leak-lbl').textContent = 'website score';
+    } else {
+      $("[data-hc-leak-trust]").innerHTML = '—';
+      $("[data-hc-leak-trust]").parentElement.querySelector('.muted').textContent = 'Answer the Website topic to fill this.';
+    }
+
+    if (flowSlot) {
+      var flowScore = 100 - scoreArea('flow');
+      $("[data-hc-leak-dependence]").innerHTML = flowScore + '<span>%</span>';
+      $("[data-hc-leak-dependence]").parentElement.querySelector('.leak-lbl').textContent = 'channel-concentration risk';
+    } else {
+      $("[data-hc-leak-dependence]").innerHTML = '—';
+      $("[data-hc-leak-dependence]").parentElement.querySelector('.muted').textContent = 'Answer the Customer-flow topic to fill this.';
+    }
 
     /* ── Quick wins (action-rich) ──────────────── */
     var allWins = [];

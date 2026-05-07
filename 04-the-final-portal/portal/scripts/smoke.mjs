@@ -226,6 +226,44 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Employee HQ");
+  // List default seeded roles via the agency-hr API.
+  const rolesRes = await go("GET", "/api/portal/agency-hr/roles");
+  record("roles endpoint 200", rolesRes.status === 200);
+  const rolesJson = rolesRes.status === 200 ? await rolesRes.json().catch(() => null) : null;
+  const roles = rolesJson?.roles ?? [];
+  for (const expected of ["Founder", "Admin", "Designer", "Copywriter", "Ops"]) {
+    record(`seed role ${expected} present`, roles.some(r => r.label === expected && r.seed === true));
+  }
+  // Roles page renders.
+  const rolesPage = await go("GET", "/portal/agency/agency-hr/roles");
+  record("roles page 200", rolesPage.status === 200);
+  // Employees page renders.
+  const empPage = await go("GET", "/portal/agency/agency-hr/employees");
+  record("employees page 200", empPage.status === 200);
+  // Cloning a seed role produces an editable role.
+  const founder = roles.find(r => r.label === "Founder");
+  if (founder) {
+    const clone = await go("POST", "/api/portal/agency-hr/roles", {
+      body: JSON.stringify({ label: `Founder (clone ${Date.now()})`, permissions: founder.permissions }),
+    });
+    record("clone role POST 200/201", clone.status === 200 || clone.status === 201);
+  }
+  // Inviting an employee with agencyEmployee:true persists.
+  const empCreate = await go("POST", "/api/portal/agency-hr/staff", {
+    body: JSON.stringify({
+      name: `Smoke Employee ${Date.now()}`,
+      email: `smoke.${Date.now()}@example.com`,
+      role: "agency-staff",
+      title: "Smoke Designer",
+      joinedAt: new Date().toISOString().slice(0, 10),
+      agencyEmployee: true,
+      customRoleId: founder?.id,
+      metadata: { ndaSigned: true, payrollLink: "https://example.com/payroll" },
+    }),
+  });
+  record("invite employee POST 200/201", empCreate.status === 200 || empCreate.status === 201, `status=${empCreate.status}`);
+
   console.log(`\n${failures.length === 0 ? "✓" : "✗"} ${total - failures.length}/${total} checks passed`);
   if (failures.length > 0) {
     console.log("Failures:");

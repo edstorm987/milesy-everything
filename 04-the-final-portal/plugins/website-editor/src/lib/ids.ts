@@ -38,3 +38,4 @@ export const pageId = () => makeId("page", 10);
 export const siteId = () => makeId("site", 10);
 export const themeId = () => makeId("theme", 10);
 export const variantId = () => makeId("variant", 10);
+export const assetId = () => makeId("asset", 10);

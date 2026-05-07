@@ -444,3 +444,30 @@ Each queue now has minimum 2-3 staged ahead of the active round. Will keep at 3-
 - T3 002 already archived (T3 003 in flight).
 - T1 002 (Employee HQ) STARTED, in flight with 3 Q-ASSUMEDs (EmployeeProfile inline / NDA via metadata / opt-in permissionGuard). All sound — no REPLY needed.
 - Resolved a self-merge conflict on T1-router.md (auto-stash collision from cycle 32's parallel edits).
+
+[2026-05-07T01:30:00Z] HANDOFF: Ed clearing all terminals + commander to re-paste fresh after current rounds finish. State of the world for the incoming commander session:
+
+**Active rounds in flight (terminals working, not yet DONE):**
+- T1 002 — Employee HQ + Role Builder. Significant in-flight commits at `15c48f1` + `369b8fd` (RoleService, EmployeesPage, RolesPage, manifest routes, onInstall seedDefaults). Terminal logged STARTED at 03:15Z with 3 sound Q-ASSUMEDs (no REPLY needed).
+- T2 003 — Activity inbox. Pre-read; not yet STARTED (last log was WAKE-PENDING-ARCHIVE waiting for 002 archive — now archived).
+- T3 003 — Video embed + cover upload + LivePreview ergonomics. STARTED at 06:30Z. In-flight test file `video-and-preview.test.ts` absorbed.
+
+**Queues (each 4-deep, target ≥3-ahead):**
+- T1: 002 (active) → 003 live-phase-builder → 004 sops-surfacing → 005 founder-todos-widget
+- T2: 003 (active) → 004 credentials-vault → 005 notification-channels → 006 bookings-plugin
+- T3: 003 (active) → 004 brand-page-templates → 005 ai-image-editing → 006 portal-template-marketplace
+
+**Routers (paste once each, after Ed re-engages):**
+- `01 development/terminal-prompts/T1-router.md`
+- `01 development/terminal-prompts/T2-router.md`
+- `01 development/terminal-prompts/T3-router.md`
+All updated with: chain-after-DONE (no sleep gap when commander archives fast), 10-retry empty-wake limit, 270s/600s cadence guidance.
+
+**Commander prompt (paste into a fresh Claude Code terminal at `~/Desktop/ker-v3/`):**
+- `01 development/terminal-prompts/orchestrator-init.md` — fully updated for queue-based architecture, lists T1/T2/T3 active + T4 hands-off + T5/T6 paused, names chapter #59 Aqua internals as a key context anchor, defines the per-wake checklist starting with Archive priority.
+
+**Key chapter anchor (read first):**
+- `01 development/context/prior research/04-aqua-internals-reference.md` (#59) — 14 sections grounding the agency-side build in Ed's real Aqua operating shape (Aqua HQ 6-section sidebar, three plan tiers, real 6-phase progression, Aqua-real kanban templates, Communication SOP, add-client field set, Employee HQ spec, SOP shelf taxonomy, Founder Todos pattern, v1/deferred/out-of-scope list, Notion-style Incubator client-onboarding visual pattern).
+
+**Macro arc:**
+- v1-shippable threshold ≈ T1 002 + T2 003 + T3 003 ship cleanly, then Live-phase-builder (T1 003) closes the third recursion. After that: Employee HQ surfacing in T1 004, SOPs surfacing in T1 004 + T2 003 inbox + T2 004 credentials → Aqua HQ feels complete.
