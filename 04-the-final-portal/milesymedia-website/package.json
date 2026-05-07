@@ -10,6 +10,7 @@
     "start": "next start -p 3030",
     "typecheck": "tsc --noEmit",
     "smoke": "node scripts/smoke.mjs",
+    "smoke:post-deploy": "node scripts/post-deploy-smoke.mjs",
     "smoke:postgres": "node scripts/smoke-postgres.mjs",
     "smoke:ux": "node scripts/smoke-ux.mjs",
     "smoke:perf": "node scripts/smoke-perf.mjs",

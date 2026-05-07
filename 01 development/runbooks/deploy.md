@@ -144,7 +144,7 @@ Smoke the preview URL against §5 below. Scripted subset:
 ```bash
 cd '04-the-final-portal/milesymedia-website'
 node scripts/post-deploy-smoke.mjs --url=https://<preview>.vercel.app
-# exit 0 = all pass; 1 = any fail (chapter #165 — T6 R003).
+# exit 0 = all pass; 1 = any fail (chapter #166 — T6 R003).
 ```
 
 If everything passes, promote.
@@ -202,6 +202,18 @@ GET /embed/<slug>/<variant>                 → 200
 GET /api/auth/me                            → 200 / 401
 GET /healthz                                → 200 JSON
 GET /healthz/full                           → 200 JSON (chapter #144 R030)
+```
+
+**Canonical post-deploy smoke** (T6 R005, chapter #167) — runs every
+route above plus a real founder login + HC-completion flow against the
+deploy URL. Exits 0 only when all checks pass; refuses to run (exit 2)
+when `FOUNDER_PASSWORD` is the dev placeholder `"123"`:
+
+```bash
+cd 04-the-final-portal/milesymedia-website
+npm run smoke:post-deploy -- --url=https://<preview>.vercel.app \
+  --founder-pass=$FOUNDER_PASSWORD
+# add --verbose for response bodies; --founder-email=<addr> if non-default
 ```
 
 Curl one-liners for the cheap subset:
@@ -324,7 +336,7 @@ re-attached).
 ## 8. Crons (staged — flip when Ed approves quota)
 
 Root `vercel.json` carries the live deploy config (chapter #163 +
-#165) — `framework`, `regions: ["lhr1"]` (London — Ed-leaning UK
+#166) — `framework`, `regions: ["lhr1"]` (London — Ed-leaning UK
 audience; configurable, swap to `iad1` / `fra1` / etc. by editing
 the array), `buildCommand`, `outputDirectory`, `cleanUrls`,
 `trailingSlash`. JSON has no comments so the staged crons block
@@ -355,7 +367,7 @@ The three crons (verbatim from `vercel.crons.example.json`):
 }
 ```
 
-Endpoint readiness (chapter #165 verification):
+Endpoint readiness (chapter #166 verification):
 
 - `/api/dev/seed-demo` — exists today (`src/app/api/dev/seed-demo/
   route.ts`).

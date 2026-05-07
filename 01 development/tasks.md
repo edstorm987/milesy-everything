@@ -257,6 +257,15 @@ End of Sprint 3 = ship gate — see chapter #124.
   PR Vercel preview (skips cleanly when `VERCEL_TOKEN` unset). Operator
   needs to: enable branch protection on `main` requiring CI checks +
   set `VERCEL_TOKEN` repo secret.
+- **Vercel config + crons** SHIPPED in T6 R003 (chapter #166): root
+  `vercel.json` gains `regions: ["lhr1"]` (configurable); 3 crons staged
+  in sibling `vercel.crons.example.json` (NOT in vercel.json — JSON has
+  no comments + Vercel `crons` schema lacks per-entry disable). NEW
+  `04-the-final-portal/milesymedia-website/scripts/post-deploy-smoke.mjs`
+  for deploy-time HTTP probe. Endpoint gaps flagged: `/api/portal/ops/
+  healthcheck` is POST-only (cron invoker is GET — needs T2 ops wrapper);
+  `/api/portal/ops/backup` route does not exist (T2 ops plugin owner).
+  Don't enable those two crons until T2 closes the gaps.
 - **Founder seed env vars** — `FOUNDER_EMAIL` (real address, not
   default) + `FOUNDER_PASSWORD` (≥12 chars) + `FOUNDER_AGENCY_NAME`
   (defaults "Milesy Media"). All other prod env in chapter #142

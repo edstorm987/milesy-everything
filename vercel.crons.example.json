@@ -1,0 +1,9 @@
+{
+  "_README": "Crons block staged for T6 R003 — NOT active. To enable: copy the `crons` array below into root vercel.json (merge with existing keys) and redeploy. Each firing counts toward Vercel's cron quota — flip live only after Ed approves quota. Routes: /api/dev/seed-demo (exists), /api/portal/ops/healthcheck (POST handler in @aqua/plugin-ops — see chapter #166 — verify it accepts GET from Vercel's cron invoker before flipping), /api/portal/ops/backup (endpoint pending — owner: T2 ops plugin). Auth: each cron path gates on NEXT_PUBLIC_DEV_BYPASS=1 for the cron's environment OR a service token (chapter #163 §8).",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    { "path": "/api/dev/seed-demo?reset=1", "schedule": "0 4 * * *" },
+    { "path": "/api/portal/ops/healthcheck", "schedule": "0 * * * *" },
+    { "path": "/api/portal/ops/backup", "schedule": "30 3 * * *" }
+  ]
+}
