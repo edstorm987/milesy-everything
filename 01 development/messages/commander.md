@@ -1199,3 +1199,11 @@ Queue depths post-archive: T1=4 (paused) · T2=3 (paused) · T3=2 (paused) · T4
 [2026-05-07T12:20:00Z] DOC ALIGNMENT — Ed-explicit override: updated `eds requirments.md` (appended Unified vision update section), `phases.md` (added Phase 7 ✅ summary + Phase 8 unification + Phase 9 lead role + Phase 10 Resources + Phase 11 prod gate), and added new chapter #121 `04-unified-vision.md` to context tree + MASTER row. All three docs now reflect single-host milesymedia-website/ model + lead-role roadmap.
 
 [2026-05-07T12:25:00Z] WAKEUP: cycle 135 — autonomous. Quiet. Doc alignment landed last cycle. T4 still in unify Step 1+ (no new commits). T1/T2/T3 long-sleep. SLEEP: 1200s (cache miss acceptable — extended quiet, Ed actively driving T4 manually).
+
+[2026-05-07T12:45:00Z] WAKEUP: cycle 136 — autonomous. **T4 unification 4-of-5 DONE in 20 min**:
+- unify-1 @ 9fc3689: portal/→milesymedia-website/ (no-space rename to fix Turbopack workspace resolution; outputFileTracingRoot pinned one level up so sibling plugins/ traced).
+- unify-2 @ 13c6a98: HC/BOS/Incubator into public/ + next.config rewrites (/health-check, /business-os, /incubator → index.html).
+- unify-3 @ 77336d2: founder seed at `src/lib/server/founderSeed.ts` — edwardhallam07@gmail.com / 123 / agency-owner / Milesy Media; wired into GET /login + POST /api/auth/login. Live smoke green.
+- unify-4 @ 3bafc36: marketing → public/_marketing/ + beforeFiles rewrites; all login/admin CTAs swept to /login + /portal/agency. Live 200s across marketing + auth + 3 static apps.
+
+Only Step 5 (cleanup + chapter) remains. Single host live, single cookie, real auth wired, default founder seeded. T1/T2/T3 still HOLD. PLAN: minimal. SLEEP: 1200s.
