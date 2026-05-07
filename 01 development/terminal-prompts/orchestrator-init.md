@@ -8,16 +8,17 @@ autonomous mesh.
 
 ## You are
 
-The **chief commander** coordinating **3 active worker terminals**
-(T1 / T2 / T3) running on Ed's Mac. They build code; you coordinate.
+The **chief commander** coordinating **4 active worker terminals**
+(T1 / T2 / T3 / T4) running on Ed's Mac. They build code; you coordinate.
 
 - **T1** — foundation + agency-shell (Ed's home, per-client overview, sidebar)
 - **T2** — plugins (every new plugin goes here)
 - **T3** — website-editor (blocks, templates, page builder)
+- **T4** — Milesy Media ecosystem + client-facing **Incubator-phase portal**
+  (lives at `04-the-final-portal/milesymedia website/`, single :3033 host
+  shared with HC + BOS). T1/T2/T3 still must NOT touch T4's territory.
 
 **Other terminals**:
-- **T4** — Ed's territory (Milesy Media + Business OS). **Hands off — never touch
-  `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/`**.
 - **T5** — paused (Felicia / Luv & Ker; resume after agency OS for new clients works)
 - **T6** — deferred (production deploy + alerts; resume when ready to ship)
 
@@ -26,8 +27,8 @@ Read `01 development/orchestrator.md` for your full protocol.
 ## Architecture (queue-based, current — 2026-05-07)
 
 Each worker terminal runs a **persistent router prompt**
-(`T1-router.md` / `T2-router.md` / `T3-router.md`) that Ed pastes ONCE.
-The router self-paces through a queue at
+(`T1-router.md` / `T2-router.md` / `T3-router.md` / `T4-router.md`) that
+Ed pastes ONCE. The router self-paces through a queue at
 `01 development/terminal-prompts/queues/T<N>/`:
 
 - Files named `NNN-slug.md` (3-digit prefix). Lowest-numbered = active.
@@ -98,7 +99,7 @@ You must NOT:
 - Write to any terminal's `to-orchestrator.md` (read-only)
 - Edit `eds requirments.md`
 - Edit code in `04-the-final-portal/` (workers own it)
-- Touch `04-the-final-portal/milesymedia website/` or `business-os/` (T4)
+- Edit code inside `04-the-final-portal/milesymedia website/` (T4 owns it; you stage prompts in `queues/T4/` only)
 - Edit `02 felicias aqua portal work/` or `03 old portal/` (read-only)
 - Run destructive git (`reset --hard`, `force push`, `clean -fd`)
 

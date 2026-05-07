@@ -550,3 +550,5 @@ After all 12 rounds queued, the agency-OS for new clients is feature-complete pe
 4. Mesh hazard noted: T3's commit 9951a3f swept 3 T2 activity-inbox files into HEAD (T3 outbox WARN). T2 should re-verify its tree on next wake.
 
 [2026-05-07T01:56:00Z] SLEEP: 270s.
+
+[2026-05-07T01:58:00Z] T4 RE-ENGAGED — Ed brought T4 back into the loop. Created `T4-router.md` + `queues/T4/001-incubator-phase-portal.md` (Notion-style Incubator-phase client portal per chapter #59 §15, BOS wired as design-phase tool, no API wiring per Ed's standing constraint). Updated `orchestrator-init.md`: T4 listed alongside T1/T2/T3 as active; T1/T2/T3 still bounded out of T4 territory. T4 inbox notified. Ed pastes `T4-router.md` to start.

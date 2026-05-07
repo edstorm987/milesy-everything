@@ -59,6 +59,7 @@ import {
 } from "./handlers/discoveries";
 import { handlePromote } from "./handlers/promote";
 import { handleListAssets, handleUploadAsset, handleDeleteAsset } from "./handlers/assets";
+import { handleListTemplates, handleSaveTemplate, handleDeleteTemplate } from "./handlers/templates";
 
 export const apiRoutes: PluginApiRoute[] = [
   // Pages
@@ -121,4 +122,9 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/assets", methods: ["GET"], handler: handleListAssets },
   { path: "/assets", methods: ["POST"], handler: handleUploadAsset },
   { path: "/assets", methods: ["DELETE"], handler: handleDeleteAsset },
+
+  // Template marketplace (R006) — builtin gallery + per-agency saved.
+  { path: "/templates", methods: ["GET"], handler: handleListTemplates },
+  { path: "/templates", methods: ["POST"], handler: handleSaveTemplate },
+  { path: "/templates", methods: ["DELETE"], handler: handleDeleteTemplate },
 ];
