@@ -81,6 +81,7 @@ export interface CreateClientBody {
   websiteUrl?: string;
   stage: string;                  // ClientStage
   brand?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 export async function createClientHandler(req: Request, ctx: PluginCtx): Promise<Response> {
@@ -101,6 +102,7 @@ export async function createClientHandler(req: Request, ctx: PluginCtx): Promise
       websiteUrl: body.websiteUrl,
       stage: body.stage as never,
       brand: body.brand as never,
+      metadata: body.metadata,
     });
     return json({ ok: true, ...result }, 201);
   } catch (err) {

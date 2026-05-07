@@ -173,3 +173,183 @@ package + scripts.
   helper into `server/activity.ts`.
 - Empty-state coverage in smoke once a `?reset=1` exists for the
   whole-agency wipe (currently only demo agency has it).
+
+---
+
+## Round 2 — Aqua reskin
+
+The R1 generic shell got reskinned to Ed's actual operating shape per
+chapter #59 (Aqua internals reference). Five fold-ins, one schema
+extension, no architectural change.
+
+### Goal A — Real phase progression
+
+Replaced fulfillment's `DEFAULT_PHASE_PRESETS` (Discovery / Design /
+Development / Onboarding / Live / Churned) with Aqua's six-phase
+Incubator 3.0 + Churned tail:
+
+1. **Epic Intro** — onboarding scroll only, no plugins.
+2. **Blueprint Setup** — `website-editor + client-crm + forms`.
+3. **Diagnostics / Foundations** — adds `ai-builder`.
+4. **Brand Builder + Verification** — same set; brand kit baked into
+   `website-editor`.
+5. **Traffic (Expansion Plan)** — adds `ecommerce + agency-marketing
+   + email-sender`.
+6. **Mastery & Ascension** — adds `memberships + affiliates`.
+
+`ClientStage` (foundation `types.ts` + fulfillment `tenancy.ts`) gained
+six new string members `aqua-epic-intro` … `aqua-mastery` while
+**keeping the legacy stages** (`lead`/`discovery`/`design`/`development`
+/`onboarding`/`live`/`churned`) so existing seeds + the Live custom-
+portal flag (architecture 19b) keep working without migration.
+`phaseLabel()` learned the six new labels.
+
+### Goal B — Aqua-real "+ New client" modal
+
+`_NewClientButton.tsx` rewritten:
+
+- **Therapist name** + **Practice name** — composed display name
+  `"<Therapist> · <Practice>"` (graceful when only one is supplied).
+  Slug auto-derives from the composed name until the operator edits
+  the slug field.
+- **Plan tier** — Foundational Flow / Expansion Plan / Mastery Plan
+  (chapter #59 §4); each option has a one-liner hint surfaced under
+  the select.
+- **Starting Aqua phase** — six-phase preset list fetched from
+  `/api/portal/fulfillment/presets` with a static Aqua fallback so a
+  fresh store still works.
+- **WhatsApp group invite** + **Stripe / invoice link** — optional
+  URL fields.
+- **Lock-in deposit (£100) paid** — boolean checkbox.
+
+Submit POSTs to `/api/portal/fulfillment/clients` with all the above
+plus `metadata: { therapistName, practiceName, planTier, whatsappLink,
+stripeLink, lockInPaid }`. The handler forwards `metadata` through
+`createWithPhase` → `clientStoreAdapter.createClient` → foundation
+`tenants.createClient`.
+
+### Goal C — Schema extension (the only new typed field)
+
+Added optional `metadata?: Record<string, unknown>` to `Client`
+(foundation `types.ts`). Threaded through:
+
+- `tenants.ts` `CreateClientInput` + `UpdateClientPatch` (merge-on-
+  update so partial patches don't clobber siblings).
+- `plugins/_types.ts` `CreateClientInput` (the canonical port surface).
+- `clientStoreAdapter.ts` createClient passthrough.
+- Fulfillment plugin's `ports.ts` `CreateClientInput` +
+  `clients.ts` `CreateClientWithPhaseInput` +
+  `handlers.ts` `CreateClientBody`.
+
+Everything Aqua-specific (planTier, whatsappLink, etc.) lives inside
+that bag — no per-feature schema growth.
+
+### Goal D — Aqua HQ six-section sidebar
+
+`AgencyToolsBallpark.tsx` rewritten. Replaces the generic Tools list
+with the canonical Aqua HQ sections (chapter #59 §2):
+
+| Row | Maps to |
+|---|---|
+| Leads & Clients HQ | `/portal/agency` |
+| Client Billing & Finance | `agency-finance` |
+| Tasks & To-Do's | `kanban` (T2 in flight) |
+| SOPs, Docs & Templates | `/portal/agency/sops` (placeholder until notes plugin lands) |
+| Social Media Planner | `agency-marketing` |
+| Passwords & Access | `/portal/agency/passwords` (placeholder until credential vault plugin) |
+
+Each row carries a one-line hint via `title=` for hover discoverability.
+A secondary collapsed **More tools** group (closed by default) keeps
+HR / Forms / Email / Ops / Domains / Affiliates one click away.
+
+The two placeholder hrefs (`/sops`, `/passwords`) intentionally point
+at routes that don't exist yet — clicking lands on Next's 404, which
+is the right signal until those plugins ship. Q-ASSUMED in lieu of
+hiding rows: discoverability matters even before the surface exists.
+
+### Goal E — Welcome copy + per-client overview
+
+- Agency home: subtitle `"Where Healing Meets Revolution."` rendered
+  in italic brand-primary right under the welcome H1.
+- Empty-state copy: `"Onboard your first therapist to begin the Aqua
+  Incubator."` Direct, audience-framed.
+- Active-state copy: `"{n} therapist{s} active in {agencyName}."`
+- Per-client header gained:
+  - Plan tier caption beside the phase chip
+    (`Plan tier: Expansion Plan`).
+  - Lock-in paid emerald chip when `metadata.lockInPaid === true`.
+  - Quick-action buttons in the Overview tab: `Open WhatsApp group ↗`
+    (emerald-tinted when `metadata.whatsappLink` set), `Stripe /
+    invoice ↗` (neutral) — both new-tab.
+
+### Goal F — Smoke
+
+Extended `scripts/smoke.mjs` with a "§ Aqua reskin" block:
+
+- `/api/portal/fulfillment/presets` 200 + every Aqua phase id present.
+- `/portal/agency` body contains `"Where Healing Meets Revolution"`
+  and `"Aqua HQ"`.
+- Add-client POST with metadata fields persists; overview body
+  contains the plan tier label, the WhatsApp action, and the Lock-in
+  paid chip.
+
+### File map
+
+```
+04-the-final-portal/portal/src/
+  server/types.ts                                 [PATCH — ClientStage union + Client.metadata]
+  server/phases.ts                                [PATCH — labels for the six aqua phases]
+  server/tenants.ts                               [PATCH — metadata in/out]
+  app/portal/agency/page.tsx                      [PATCH — welcome subtitle + empty-state copy]
+  app/portal/agency/_NewClientButton.tsx          [REWRITE — therapist + practice + plan + WA + lock-in + Stripe]
+  app/portal/clients/[clientId]/page.tsx          [PATCH — plan caption, lock-in chip, WA + Stripe quick actions]
+  components/chrome/AgencyToolsBallpark.tsx       [REWRITE — Aqua HQ six + More tools collapsed]
+  plugins/_types.ts                               [PATCH — CreateClientInput.metadata]
+  plugins/foundation-adapters/clientStoreAdapter.ts [PATCH — passthrough]
+  scripts/smoke.mjs                               [PATCH — §Aqua reskin block]
+04-the-final-portal/plugins/fulfillment/src/
+  lib/tenancy.ts                                  [PATCH — ClientStage union]
+  server/presets.ts                               [REWRITE — Aqua six + Churned tail]
+  server/clients.ts                               [PATCH — CreateClientWithPhaseInput.metadata]
+  server/ports.ts                                 [PATCH — CreateClientInput.metadata]
+  api/handlers.ts                                 [PATCH — CreateClientBody.metadata + forward]
+  components/PhasesSettingsList.tsx               [PATCH — STAGES list]
+```
+
+### Hard boundary respected
+
+Zero touches to `04-the-final-portal/milesymedia website/` or
+`04-the-final-portal/business-os/`. All edits inside the portal +
+fulfillment packages.
+
+### Q-ASSUMED / deviations
+
+- ClientStage union extended additively rather than replaced — keeps
+  the Live custom-portal flag and the demo seed working without a
+  migration shim.
+- `metadata` typed as `Record<string, unknown>` rather than a typed
+  Aqua-specific shape; per chapter #59 §8 ("Most live in metadata: {}
+  so no schema changes"). If the bag grows past ~6 fields, lift them
+  into a typed sub-interface.
+- Sidebar SOPs + Passwords rows link to non-existent routes for now;
+  hiding them was the alternative — discoverability won.
+- Plan tier rendered in the overview but NOT in the home grid card —
+  card density already tight; Q-ASSUMED a phase chip + plugin count
+  is enough at the grid level.
+- Lock-in chip shown but NOT validated against any payment system;
+  it's just a manual operator flag for now (chapter #59 §8 — Stripe
+  Connect onboarding tracking is a future round).
+
+### Cross-team / R+1
+
+- T2 kanban (in flight) — once it ships, the `Tasks & To-Do's`
+  sidebar row already points at `/portal/agency/kanban`; no change
+  needed when the route lights up.
+- Future credential-vault plugin — replace the `Passwords & Access`
+  href when it lands.
+- Future notes/SOP plugin — replace the `SOPs, Docs & Templates` href
+  when it lands; until then a website-editor "SOPs" page covers the
+  surface.
+- Plan-tier driven phase gating (e.g. Foundational Flow caps at
+  Diagnostics) is NOT enforced yet — a future round can wire it via
+  fulfillment's transition guards.

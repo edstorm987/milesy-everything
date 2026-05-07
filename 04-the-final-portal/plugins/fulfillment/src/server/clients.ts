@@ -41,6 +41,7 @@ export interface CreateClientWithPhaseInput {
   websiteUrl?: string;
   stage: ClientStage;             // pick one of the agency's phase rows
   brand?: Partial<BrandKit>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface CreateClientWithPhaseResult {
@@ -80,6 +81,7 @@ export class ClientLifecycleService {
       websiteUrl: input.websiteUrl,
       stage: input.stage,
       brand: input.brand,
+      metadata: input.metadata,
     });
 
     const scope = { agencyId: input.agencyId, clientId: client.id };

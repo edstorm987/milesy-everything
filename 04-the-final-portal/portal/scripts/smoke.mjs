@@ -180,6 +180,52 @@ async function main() {
     record("new client overview 200", overview.status === 200);
   }
 
+  console.log("\n§ Aqua reskin");
+  // Phase preset list returns Aqua's six.
+  const presetsRes = await go("GET", "/api/portal/fulfillment/presets");
+  record("presets endpoint 200", presetsRes.status === 200);
+  const presetsJson = presetsRes.status === 200 ? await presetsRes.json().catch(() => null) : null;
+  const presets = presetsJson?.presets ?? [];
+  const aquaIds = ["aqua-epic-intro", "aqua-blueprint", "aqua-diagnostics", "aqua-brand-builder", "aqua-traffic", "aqua-mastery"];
+  for (const id of aquaIds) {
+    record(`preset ${id} present`, presets.some(p => p.stage === id));
+  }
+
+  // Welcome copy includes the Aqua tagline.
+  const homeRes = await go("GET", "/portal/agency");
+  const homeBodyAqua = homeRes.status === 200 ? await homeRes.text() : "";
+  record("home shows tagline 'Where Healing Meets Revolution'", homeBodyAqua.includes("Where Healing Meets Revolution"));
+  record("home sidebar shows 'Aqua HQ'", homeBodyAqua.includes("Aqua HQ"));
+
+  // Add-client with metadata fields persists.
+  const aquaCreate = await go("POST", "/api/portal/fulfillment/clients", {
+    body: JSON.stringify({
+      name: "Smoke Therapist · Aqua Practice",
+      stage: "aqua-blueprint",
+      brand: { primaryColor: "#9333EA" },
+      metadata: {
+        therapistName: "Smoke Therapist",
+        practiceName:  "Aqua Practice",
+        planTier:      "expansion",
+        whatsappLink:  "https://chat.whatsapp.com/aqua-smoke",
+        stripeLink:    "https://buy.stripe.com/aqua-smoke",
+        lockInPaid:    true,
+      },
+    }),
+  });
+  record("aqua add-client POST 200/201", aquaCreate.status === 200 || aquaCreate.status === 201, `status=${aquaCreate.status}`);
+  const aquaCreateJson = aquaCreate.status < 300 ? await aquaCreate.json().catch(() => null) : null;
+  const aquaId = aquaCreateJson?.client?.id ?? aquaCreateJson?.clientId;
+  record("aqua client returned id", typeof aquaId === "string");
+  if (aquaId) {
+    const ovr = await go("GET", `/portal/clients/${aquaId}`);
+    record("aqua client overview 200", ovr.status === 200);
+    const ovrBody = ovr.status === 200 ? await ovr.text() : "";
+    record("overview shows plan tier", ovrBody.includes("Expansion Plan"));
+    record("overview shows WhatsApp action", ovrBody.includes("Open WhatsApp group"));
+    record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
+  }
+
   console.log(`\n${failures.length === 0 ? "✓" : "✗"} ${total - failures.length}/${total} checks passed`);
   if (failures.length > 0) {
     console.log("Failures:");

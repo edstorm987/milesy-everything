@@ -51,105 +51,120 @@ export interface PhasePresetSeed {
   clientTasks: string[];
 }
 
+// Aqua Incubator 3.0 — the real progression Ed runs. Chapter #59 §5/§5a
+// is the source of truth for both the phase ordering and the per-phase
+// plugin install map. Each phase extends the previous (per architecture
+// §7 the auto-disable diff only removes plugins NOT in the new preset).
 export const DEFAULT_PHASE_PRESETS: readonly PhasePresetSeed[] = [
   {
-    stage: "discovery",
-    label: "Discovery",
-    description: "Initial consultation, scoping, and kick-off.",
+    stage: "aqua-epic-intro",
+    label: "Epic Intro",
+    description: "Onboarding form + welcome scroll. No plugin installs yet.",
     order: 10,
-    pluginPreset: ["website-editor"],
-    starterVariantId: "starter-discovery",
+    pluginPreset: [],
+    starterVariantId: "starter-epic-intro",
     internalTasks: [
-      "Schedule kickoff call",
-      "Send discovery doc",
-      "Note budget + timeline",
+      "Send Epic Intro pack",
+      "Schedule Blueprint call",
+      "Confirm WhatsApp group invite",
     ],
     clientTasks: [
-      "Complete discovery questionnaire",
-      "Provide brand assets",
+      "Read the Epic Intro scroll",
+      "Confirm lock-in deposit",
     ],
   },
   {
-    stage: "design",
-    label: "Design",
-    description: "Mood-boards, wireframes, and the design proposal.",
+    stage: "aqua-blueprint",
+    label: "Blueprint Setup",
+    description: "Aqua Playbook walk-through; gather brand + audience signals.",
     order: 20,
-    pluginPreset: ["website-editor"],
-    starterVariantId: "starter-design",
-    // Note: same set as discovery — design extends rather than replaces.
-    // Architecture §7: `auto-disable` removes only plugins NOT in the
-    // new preset. So discovery → design is a no-op on installs; only
-    // the variant + checklist swap.
+    pluginPreset: ["website-editor", "client-crm", "forms"],
+    starterVariantId: "starter-blueprint",
     internalTasks: [
-      "Build mood-board",
-      "Wireframe 3 versions",
-      "Internal review",
+      "Run Blueprint call",
+      "Capture audience + offer notes",
+      "Open the practice's CRM record",
     ],
     clientTasks: [
-      "Approve mood-board",
-      "Pick wireframe variant",
+      "Complete Aqua Playbook",
+      "Submit brand assets",
     ],
   },
   {
-    stage: "development",
-    label: "Development",
-    description: "Build the site / portal / app.",
+    stage: "aqua-diagnostics",
+    label: "Diagnostics / Foundations",
+    description: "Diagnostics surveys + foundation content generation.",
     order: 30,
-    pluginPreset: ["website-editor", "ecommerce"],
-    starterVariantId: "starter-development",
+    pluginPreset: ["website-editor", "client-crm", "forms", "ai-builder"],
+    starterVariantId: "starter-diagnostics",
     internalTasks: [
-      "Convert design to blocks",
-      "Wire forms",
-      "QA on staging",
+      "Issue diagnostics surveys",
+      "Generate foundation copy via AI builder",
+      "Internal review of diagnostics",
     ],
     clientTasks: [
-      "Provide content (copy + images)",
-      "Test staging URL",
+      "Complete diagnostics surveys",
+      "Approve foundation copy",
     ],
   },
   {
-    stage: "onboarding",
-    label: "Onboarding",
-    description: "Pre-launch training and plugin configuration.",
+    stage: "aqua-brand-builder",
+    label: "Brand Builder + Verification",
+    description: "Brand kit baked into website-editor; identity verified.",
     order: 40,
-    // Adds memberships — Felicia's tier offering goes live before
-    // public launch so existing customers can join during onboarding.
-    pluginPreset: ["website-editor", "ecommerce", "memberships"],
-    starterVariantId: "starter-onboarding",
+    // Same plugin set as diagnostics — brand-kit lives inside
+    // website-editor, no extra install needed.
+    pluginPreset: ["website-editor", "client-crm", "forms", "ai-builder"],
+    starterVariantId: "starter-brand-builder",
     internalTasks: [
-      "Set up Stripe",
-      "Configure email provider",
-      "Train client",
+      "Apply brand kit to portal variants",
+      "Verify identity (Stripe / business)",
+      "Lock in tone-of-voice samples",
     ],
     clientTasks: [
-      "Provide payment processor details",
-      "Invite team members",
+      "Approve brand kit",
+      "Submit verification docs",
     ],
   },
   {
-    stage: "live",
-    label: "Live",
-    description: "Site is live; ongoing optimisation.",
+    stage: "aqua-traffic",
+    label: "Traffic (Expansion Plan)",
+    description: "Storefront + marketing + email distribution go live.",
     order: 50,
-    // Adds affiliates — referral programme launches at Live so members
-    // can start earning commissions on referred orders. Memberships
-    // already established during Onboarding.
-    pluginPreset: ["website-editor", "ecommerce", "memberships", "affiliates"],
-    starterVariantId: "starter-live",
+    pluginPreset: ["website-editor", "client-crm", "forms", "ai-builder", "ecommerce", "agency-marketing", "email-sender"],
+    starterVariantId: "starter-traffic",
     internalTasks: [
-      "Weekly performance review",
-      "Monthly audit",
+      "Wire Stripe + email sender",
+      "Schedule first 30-day content calendar",
+      "Configure agency-marketing campaigns",
     ],
     clientTasks: [
-      "Submit support tickets via portal",
-      "Review monthly reports",
+      "Provide payment processor + email sender details",
+      "Approve first content batch",
+    ],
+  },
+  {
+    stage: "aqua-mastery",
+    label: "Mastery & Ascension",
+    description: "Memberships + affiliates layer; Live custom-portal stage.",
+    order: 60,
+    pluginPreset: ["website-editor", "client-crm", "forms", "ai-builder", "ecommerce", "agency-marketing", "email-sender", "memberships", "affiliates"],
+    starterVariantId: "starter-mastery",
+    internalTasks: [
+      "Launch membership tier",
+      "Open affiliate programme",
+      "Plan the Live custom-portal build",
+    ],
+    clientTasks: [
+      "Welcome members + affiliates",
+      "Review monthly performance reports",
     ],
   },
   {
     stage: "churned",
     label: "Churned",
     description: "Engagement ended. All plugins disabled, config preserved.",
-    order: 60,
+    order: 90,
     pluginPreset: [],
     internalTasks: [
       "Archive deliverables",

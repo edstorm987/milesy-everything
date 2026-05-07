@@ -57,6 +57,21 @@ export default async function ClientHome({
   const currentPhase = phases.find(p => p.stage === client.stage);
   const presetIds = new Set(currentPhase?.pluginPreset ?? []);
 
+  const meta = (client.metadata ?? {}) as {
+    planTier?: "foundational" | "expansion" | "mastery";
+    whatsappLink?: string;
+    stripeLink?: string;
+    lockInPaid?: boolean;
+    therapistName?: string;
+    practiceName?: string;
+  };
+  const PLAN_LABELS: Record<NonNullable<typeof meta.planTier>, string> = {
+    foundational: "Foundational Flow",
+    expansion:    "Expansion Plan",
+    mastery:      "Mastery Plan",
+  };
+  const planLabel = meta.planTier ? PLAN_LABELS[meta.planTier] : null;
+
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-center gap-4">
@@ -81,6 +96,14 @@ export default async function ClientHome({
             >
               {phaseLabel(client.stage)}
             </span>
+            {planLabel && (
+              <span className="text-[11px] text-black/55">Plan tier: <span className="font-medium text-black/75">{planLabel}</span></span>
+            )}
+            {meta.lockInPaid && (
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-800">
+                Lock-in paid
+              </span>
+            )}
             {client.websiteUrl && (
               <a href={client.websiteUrl} target="_blank" rel="noreferrer" className="hover:underline">
                 {client.websiteUrl}
@@ -117,6 +140,26 @@ export default async function ClientHome({
               <Link href={`/portal/clients/${client.id}?tab=tools`} className="rounded-md border border-black/15 px-3 py-2 text-xs hover:bg-black/5">
                 + Add capability
               </Link>
+              {meta.whatsappLink && (
+                <a
+                  href={meta.whatsappLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800 hover:bg-emerald-100"
+                >
+                  Open WhatsApp group ↗
+                </a>
+              )}
+              {meta.stripeLink && (
+                <a
+                  href={meta.stripeLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-md border border-black/15 px-3 py-2 text-xs hover:bg-black/5"
+                >
+                  Stripe / invoice ↗
+                </a>
+              )}
             </div>
           </div>
           <div className="rounded-xl border border-black/10 bg-white p-4 md:col-span-2">

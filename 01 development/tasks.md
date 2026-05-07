@@ -9,6 +9,25 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 Agency Shell R2 — Aqua reskin** — DONE.
+      Goal A: replaced fulfillment's `DEFAULT_PHASE_PRESETS` with Aqua's
+      six (Epic Intro → Mastery & Ascension) + Churned tail. ClientStage
+      union extended additively (foundation + fulfillment) with six
+      `aqua-*` members; legacy stages kept. Goal B: `_NewClientButton`
+      rewritten — therapist + practice name (composed display, auto
+      slug), plan tier select w/ hints, starting Aqua phase, WhatsApp /
+      Stripe URLs, lock-in £100 checkbox; metadata bag posted. Goal C:
+      `Client.metadata?` added on foundation; threaded through tenants
+      (merge-on-update), plugins/_types, clientStoreAdapter, fulfillment
+      ports + lifecycle + handler. Goal D: AgencyToolsBallpark replaced
+      with Aqua HQ six sections + collapsed "More tools" (HR/Forms/
+      Email/Ops/Domains/Affiliates). Goal E: tagline "Where Healing
+      Meets Revolution." subtitle; audience-framed empty + active copy;
+      per-client plan tier caption + Lock-in paid chip + WhatsApp/Stripe
+      quick actions. Goal F: smoke "§ Aqua reskin" block (six aqua-*
+      preset ids, tagline + "Aqua HQ" in home body, metadata
+      persistence + render). HARD BOUNDARY honoured; tsc clean. Chapter
+      `04-agency-shell.md` Round-2 section + MASTER row #62.
 - [x] **T1 Agency Shell — Ed's home** — DONE.
       Goal A: `/portal/agency` rewritten as a hero — Welcome banner +
       single primary "New client" CTA + clients grid (brand mark, name,

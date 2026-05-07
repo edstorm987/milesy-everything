@@ -119,6 +119,7 @@ export interface CreateClientInput {
   stage?: ClientStage;
   brand?: Partial<BrandKit>;
   endCustomers?: import("./types").ClientEndCustomerConfig;
+  metadata?: Record<string, unknown>;
 }
 
 export function createClient(agencyId: string, input: CreateClientInput): Client {
@@ -141,6 +142,7 @@ export function createClient(agencyId: string, input: CreateClientInput): Client
       websiteUrl: input.websiteUrl,
       status: "active",
       endCustomers: input.endCustomers,
+      metadata: input.metadata,
       createdAt: now,
       updatedAt: now,
     };
@@ -178,6 +180,7 @@ export interface UpdateClientPatch {
   status?: AgencyStatus;
   stage?: ClientStage;
   endCustomers?: import("./types").ClientEndCustomerConfig;
+  metadata?: Record<string, unknown>;
 }
 
 export function updateClient(agencyId: string, clientId: string, patch: UpdateClientPatch): Client | null {
@@ -201,6 +204,9 @@ export function updateClient(agencyId: string, clientId: string, patch: UpdateCl
       endCustomers: patch.endCustomers !== undefined
         ? { ...(existing.endCustomers ?? {}), ...patch.endCustomers }
         : existing.endCustomers,
+      metadata: patch.metadata !== undefined
+        ? { ...(existing.metadata ?? {}), ...patch.metadata }
+        : existing.metadata,
       updatedAt: Date.now(),
     };
     state.clients[clientId] = saved;

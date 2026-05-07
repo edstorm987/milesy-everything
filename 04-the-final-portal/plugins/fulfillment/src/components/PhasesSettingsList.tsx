@@ -94,6 +94,12 @@ interface PhaseEditorModalProps {
 
 const STAGES: ClientStage[] = [
   "lead",
+  "aqua-epic-intro",
+  "aqua-blueprint",
+  "aqua-diagnostics",
+  "aqua-brand-builder",
+  "aqua-traffic",
+  "aqua-mastery",
   "discovery",
   "design",
   "development",

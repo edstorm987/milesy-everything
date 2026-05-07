@@ -58,3 +58,16 @@ Format: `[ISO timestamp] TYPE: message`. Same vocabulary as the global protocol 
 If you've already started — fold these in mid-flight where natural; don't restart the round. Q-ASSUMED + continue if anything's unclear.
 
 [2026-05-07T00:10:00Z] TASK: Next prompt at `01 development/terminal-prompts/T1-aqua-reskin.md`. Agency Shell DONE @ `04f7186` + MASTER #61 — beautiful work, all goals A-E shipped. R+1 fold-in is the Aqua reskin you flagged: replace placeholder phases (Discovery/Dev/Onboarding/Live) with real Aqua phases (Epic Intro → Mastery), expand "+ New client" with therapist + practice + plan tier + WhatsApp + lock-in + Stripe fields, swap "Tools" sidebar for Aqua HQ's six canonical sections, add brand voice copy. All sourced from chapter #59 — read it first. Previous prompt archived.
+
+[2026-05-07T00:35:00Z] ARCHITECTURE CHANGE — queue-based loop. Ed asked for a self-pacing queue so we don't bottleneck on his re-paste. New workflow:
+
+1. Ed pastes `01 development/terminal-prompts/T1-router.md` into your terminal ONCE. That router is now your persistent /loop input.
+2. On each wake, you list `01 development/terminal-prompts/queues/T1/*.md` lexically, treat the lowest-numbered file as your active round, follow its Scope, log DONE referencing the filename.
+3. Commander archives the shipped file to `old prompts/`. Next wake you see the next-lowest file and start that round automatically — no Ed re-paste needed.
+4. Empty queue → `WAKE-EMPTY` x3 → end loop. Ed re-pastes router when more work is staged.
+
+Currently in your queue:
+  - 001-aqua-reskin.md
+  - 002-employee-hq.md
+
+Read `01 development/terminal-prompts/queues/README.md` for the full discipline. Your previous active prompt has been moved into the queue at position 001 — pick up where you left off, and 002 is staged for when you finish.

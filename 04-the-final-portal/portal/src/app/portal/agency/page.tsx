@@ -47,10 +47,13 @@ export default async function AgencyHome() {
           <h1 className="text-2xl font-semibold tracking-tight text-black/90">
             Welcome back, {greet}.
           </h1>
+          <p className="mt-1 text-sm italic text-[var(--brand-primary)]/80">
+            Where Healing Meets Revolution.
+          </p>
           <p className="mt-1 text-sm text-black/60">
             {clients.length === 0
-              ? "Add your first client to get started."
-              : <>{clients.length} client{clients.length === 1 ? "" : "s"} under {agency.name}.</>}
+              ? "Onboard your first therapist to begin the Aqua Incubator."
+              : <>{clients.length} therapist{clients.length === 1 ? "" : "s"} active in {agency.name}.</>}
           </p>
         </div>
         {clients.length > 0 && <NewClientButton />}
@@ -59,9 +62,9 @@ export default async function AgencyHome() {
       {clients.length === 0 ? (
         <section className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-black/15 bg-white/50 px-6 py-16 text-center">
           <div className="text-4xl" aria-hidden="true">🌱</div>
-          <h2 className="text-lg font-medium text-black/85">No clients yet</h2>
+          <h2 className="text-lg font-medium text-black/85">No therapists onboarded yet</h2>
           <p className="max-w-md text-sm text-black/60">
-            Each client is a tenant inside your agency. The starting phase decides which plugins install automatically — you can change anything later.
+            Add your first therapist client to begin the Aqua Incubator. The starting phase decides which plugins install automatically — you can change anything later.
           </p>
           <NewClientButton />
         </section>

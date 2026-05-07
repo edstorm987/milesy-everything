@@ -50,6 +50,7 @@ export interface CreateClientInput {
   websiteUrl?: string;
   stage?: import("@/server/types").ClientStage;
   brand?: Partial<import("@/server/types").BrandKit>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface UpdateClientPatch {

@@ -38,6 +38,9 @@ export interface Agency {
 // phases (Decisions log #2) can extend without a code change. The seven
 // defaults match the ones in `04-architecture.md §7` plus a "lead" entry
 // inherited from `03/old-portal-roles-tenancy.md`.
+// Pre-Aqua stages kept for back-compat with seeded data + the Live
+// custom-portal flag (architecture 19b). The six "aqua-*" stages are
+// the canonical progression Ed actually uses — see chapter #59 §5.
 export type ClientStage =
   | "lead"
   | "discovery"
@@ -45,7 +48,13 @@ export type ClientStage =
   | "development"
   | "onboarding"
   | "live"
-  | "churned";
+  | "churned"
+  | "aqua-epic-intro"
+  | "aqua-blueprint"
+  | "aqua-diagnostics"
+  | "aqua-brand-builder"
+  | "aqua-traffic"
+  | "aqua-mastery";
 
 // End-customer surface configuration. Optional — when absent the client
 // uses the foundation defaults (signups enabled, no return URL).
@@ -65,6 +74,10 @@ export interface Client {
   websiteUrl?: string;
   status: AgencyStatus;
   endCustomers?: ClientEndCustomerConfig;
+  // Free-form per-client metadata (planTier, whatsappLink, lockInPaid,
+  // stripeLink, therapistName, practiceName, …). Anything that doesn't
+  // need a typed field of its own goes here so the schema stays stable.
+  metadata?: Record<string, unknown>;
   createdAt: number;
   updatedAt: number;
 }

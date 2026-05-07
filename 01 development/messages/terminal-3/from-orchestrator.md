@@ -40,3 +40,16 @@ Format: `[ISO timestamp] TYPE: message`. Same vocabulary as the global protocol 
 **HARD BOUNDARY** (in every prompt): do NOT touch `04-the-final-portal/milesymedia website/` or `04-the-final-portal/business-os/` — Ed owns those (T4's territory). Q-BLOCKED if your work would cross the line.
 
 [2026-05-06T23:33:00Z] TASK: Next prompt at `01 development/terminal-prompts/T3-editor-deeplink.md`. Lift Inventory shipped @ `8611db8` (chapter #58) — beautiful work, 19-entry revival list now in hand. R9 close-out chapter @ `179270c` (#57). Next round: **editor deep-link contract** so T1's agency-shell "Edit website" CTA opens the editor at the right client + page + variant; plus a page-picker toolbar so the editor feels like a website manager. Light round, supports T1's work directly. Lift-inventory prompt archived.
+
+[2026-05-07T00:35:00Z] ARCHITECTURE CHANGE — queue-based loop. Ed asked for a self-pacing queue so we don't bottleneck on his re-paste. New workflow:
+
+1. Ed pastes `01 development/terminal-prompts/T3-router.md` into your terminal ONCE. That router is now your persistent /loop input.
+2. On each wake, you list `01 development/terminal-prompts/queues/T3/*.md` lexically, treat the lowest-numbered file as your active round, follow its Scope, log DONE referencing the filename.
+3. Commander archives the shipped file to `old prompts/`. Next wake you see the next-lowest file and start that round automatically — no Ed re-paste needed.
+4. Empty queue → `WAKE-EMPTY` x3 → end loop. Ed re-pastes router when more work is staged.
+
+Currently in your queue:
+  - 001-editor-deeplink.md
+  - 002-incubator-template.md
+
+Read `01 development/terminal-prompts/queues/README.md` for the full discipline. Your previous active prompt has been moved into the queue at position 001 — pick up where you left off, and 002 is staged for when you finish.

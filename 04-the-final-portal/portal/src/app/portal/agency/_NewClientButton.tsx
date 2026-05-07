@@ -1,9 +1,13 @@
 "use client";
 
-// Inline modal for "New client" on the agency home. Calls the
-// fulfillment plugin's POST /api/portal/fulfillment/clients endpoint
-// (which creates the client + applies the chosen phase preset). On
-// success, redirects to the new client's overview page.
+// Inline modal for "+ New client" on the agency home — Aqua reskin.
+//
+// The display name composes "<Therapist> · <Practice>" (with sensible
+// fallback when only one is supplied). Plan tier / WhatsApp link /
+// lock-in deposit / Stripe link all ride on `client.metadata` so no
+// foundation schema needs to change. Phase preset list is fetched from
+// the fulfillment plugin (`/api/portal/fulfillment/presets`) which now
+// returns Aqua's six phases (chapter #59 §5).
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -14,33 +18,60 @@ interface PhasePreset {
   pluginPreset: readonly string[];
 }
 
+type PlanTier = "foundational" | "expansion" | "mastery";
+
 interface FormState {
-  name: string;
+  therapistName: string;
+  practiceName: string;
   slug: string;
   email: string;
   brandColor: string;
   logoUrl: string;
   stage: string;
+  planTier: PlanTier;
+  whatsappLink: string;
+  stripeLink: string;
+  lockInPaid: boolean;
 }
 
 const DEFAULT_STATE: FormState = {
-  name: "",
+  therapistName: "",
+  practiceName: "",
   slug: "",
   email: "",
   brandColor: "#0EA5A4",
   logoUrl: "",
-  stage: "discovery",
+  stage: "aqua-epic-intro",
+  planTier: "foundational",
+  whatsappLink: "",
+  stripeLink: "",
+  lockInPaid: false,
 };
 
 const FALLBACK_PRESETS: PhasePreset[] = [
-  { stage: "discovery",   label: "Discovery",   pluginPreset: ["website-editor"] },
-  { stage: "development", label: "Development", pluginPreset: ["website-editor", "ecommerce"] },
-  { stage: "onboarding",  label: "Onboarding",  pluginPreset: ["website-editor", "ecommerce", "memberships"] },
-  { stage: "live",        label: "Live",        pluginPreset: ["website-editor", "ecommerce", "memberships", "affiliates"] },
+  { stage: "aqua-epic-intro",    label: "Epic Intro",                   pluginPreset: [] },
+  { stage: "aqua-blueprint",     label: "Blueprint Setup",              pluginPreset: ["website-editor", "client-crm", "forms"] },
+  { stage: "aqua-diagnostics",   label: "Diagnostics / Foundations",    pluginPreset: ["website-editor", "client-crm", "forms", "ai-builder"] },
+  { stage: "aqua-brand-builder", label: "Brand Builder + Verification", pluginPreset: ["website-editor", "client-crm", "forms", "ai-builder"] },
+  { stage: "aqua-traffic",       label: "Traffic (Expansion Plan)",     pluginPreset: ["website-editor", "client-crm", "forms", "ai-builder", "ecommerce", "agency-marketing", "email-sender"] },
+  { stage: "aqua-mastery",       label: "Mastery & Ascension",          pluginPreset: ["website-editor", "client-crm", "forms", "ai-builder", "ecommerce", "agency-marketing", "email-sender", "memberships", "affiliates"] },
+];
+
+const PLAN_TIERS: { value: PlanTier; label: string; hint: string }[] = [
+  { value: "foundational", label: "Foundational Flow", hint: "Entry tier — Epic Intro through Diagnostics." },
+  { value: "expansion",    label: "Expansion Plan",    hint: "Brand Builder + Traffic." },
+  { value: "mastery",      label: "Mastery Plan",      hint: "Full Aqua Incubator + Mastery & Ascension." },
 ];
 
 function slugify(s: string): string {
   return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function composedDisplayName(state: FormState): string {
+  const t = state.therapistName.trim();
+  const p = state.practiceName.trim();
+  if (t && p) return `${t} · ${p}`;
+  return t || p;
 }
 
 export function NewClientButton() {
@@ -70,7 +101,9 @@ export function NewClientButton() {
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setState(s => {
       const next = { ...s, [key]: value };
-      if (key === "name" && !slugTouched.current) next.slug = slugify(value as string);
+      if ((key === "therapistName" || key === "practiceName") && !slugTouched.current) {
+        next.slug = slugify(composedDisplayName(next));
+      }
       if (key === "slug") slugTouched.current = true;
       return next;
     });
@@ -78,8 +111,9 @@ export function NewClientButton() {
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!state.name.trim()) {
-      setError("Name is required.");
+    const display = composedDisplayName(state);
+    if (!display) {
+      setError("Therapist or practice name is required.");
       return;
     }
     setBusy(true);
@@ -89,13 +123,21 @@ export function NewClientButton() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          name: state.name.trim(),
+          name: display,
           slug: state.slug.trim() || undefined,
           ownerEmail: state.email.trim() || undefined,
           stage: state.stage,
           brand: {
             primaryColor: state.brandColor,
             logoUrl: state.logoUrl.trim() || undefined,
+          },
+          metadata: {
+            therapistName: state.therapistName.trim() || undefined,
+            practiceName:  state.practiceName.trim()  || undefined,
+            planTier:      state.planTier,
+            whatsappLink:  state.whatsappLink.trim()  || undefined,
+            stripeLink:    state.stripeLink.trim()    || undefined,
+            lockInPaid:    state.lockInPaid,
           },
         }),
       });
@@ -116,7 +158,7 @@ export function NewClientButton() {
   }
 
   const selectedPreset = presets.find(p => p.stage === state.stage);
-  const isLive = state.stage === "live";
+  const planHint = PLAN_TIERS.find(p => p.value === state.planTier)?.hint;
 
   return (
     <>
@@ -134,27 +176,41 @@ export function NewClientButton() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="new-client-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-6"
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
           <form
             onSubmit={submit}
-            className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+            className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
           >
             <h3 id="new-client-title" className="text-lg font-semibold text-black/90">New client</h3>
-            <p className="mt-1 text-xs text-black/60">A new tenant under your agency. The starting phase decides which plugins install automatically.</p>
+            <p className="mt-1 text-xs text-black/60">
+              Onboard a therapist into the Aqua Incubator. The starting phase decides which plugins install automatically.
+            </p>
 
-            <div className="mt-4 flex flex-col gap-3 text-sm">
-              <label className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-black/70">Name</span>
-                <input
-                  value={state.name}
-                  onChange={(e) => update("name", e.target.value)}
-                  required autoFocus disabled={busy}
-                  placeholder="e.g. Luv & Ker"
-                  className="rounded-md border border-black/15 px-3 py-2"
-                />
-              </label>
+            <div className="mt-4 grid gap-3 text-sm">
+              <div className="grid grid-cols-2 gap-3">
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-black/70">Therapist name</span>
+                  <input
+                    value={state.therapistName}
+                    onChange={(e) => update("therapistName", e.target.value)}
+                    autoFocus disabled={busy}
+                    placeholder="Felicia Carter"
+                    className="rounded-md border border-black/15 px-3 py-2"
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-black/70">Practice name</span>
+                  <input
+                    value={state.practiceName}
+                    onChange={(e) => update("practiceName", e.target.value)}
+                    disabled={busy}
+                    placeholder="Luv & Ker"
+                    className="rounded-md border border-black/15 px-3 py-2"
+                  />
+                </label>
+              </div>
 
               <label className="flex flex-col gap-1">
                 <span className="text-xs font-medium text-black/70">Slug</span>
@@ -168,7 +224,7 @@ export function NewClientButton() {
               </label>
 
               <label className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-black/70">Owner email</span>
+                <span className="text-xs font-medium text-black/70">Contact email</span>
                 <input
                   type="email"
                   value={state.email}
@@ -204,7 +260,22 @@ export function NewClientButton() {
               </div>
 
               <label className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-black/70">Starting phase</span>
+                <span className="text-xs font-medium text-black/70">Plan tier</span>
+                <select
+                  value={state.planTier}
+                  onChange={(e) => update("planTier", e.target.value as PlanTier)}
+                  disabled={busy}
+                  className="rounded-md border border-black/15 px-3 py-2"
+                >
+                  {PLAN_TIERS.map(t => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
+                {planHint && <small className="text-[11px] text-black/55">{planHint}</small>}
+              </label>
+
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-black/70">Starting Aqua phase</span>
                 <select
                   value={state.stage}
                   onChange={(e) => update("stage", e.target.value)}
@@ -215,18 +286,48 @@ export function NewClientButton() {
                     <option key={p.stage} value={p.stage}>{p.label}</option>
                   ))}
                 </select>
-                {selectedPreset && !isLive && (
+                {selectedPreset && (
                   <small className="text-[11px] text-black/55">
                     {selectedPreset.pluginPreset.length > 0
                       ? <>Will install: {selectedPreset.pluginPreset.join(", ")}.</>
-                      : <>No plugins auto-install for this phase.</>}
+                      : <>No plugins auto-install at this phase yet.</>}
                   </small>
                 )}
-                {isLive && (
-                  <small className="text-[11px] text-black/55">
-                    Live skips presets — you’ll land in the custom-portal builder for this client.
-                  </small>
-                )}
+              </label>
+
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-black/70">WhatsApp group invite</span>
+                <input
+                  type="url"
+                  value={state.whatsappLink}
+                  onChange={(e) => update("whatsappLink", e.target.value)}
+                  disabled={busy}
+                  placeholder="https://chat.whatsapp.com/…"
+                  className="rounded-md border border-black/15 px-3 py-2 text-xs"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-black/70">Stripe / invoice link</span>
+                <input
+                  type="url"
+                  value={state.stripeLink}
+                  onChange={(e) => update("stripeLink", e.target.value)}
+                  disabled={busy}
+                  placeholder="optional"
+                  className="rounded-md border border-black/15 px-3 py-2 text-xs"
+                />
+              </label>
+
+              <label className="flex items-center gap-2 rounded-md border border-black/10 bg-black/[0.02] px-3 py-2">
+                <input
+                  type="checkbox"
+                  checked={state.lockInPaid}
+                  onChange={(e) => update("lockInPaid", e.target.checked)}
+                  disabled={busy}
+                  className="h-4 w-4"
+                />
+                <span className="text-xs text-black/75">Lock-in deposit (£100) paid</span>
               </label>
 
               {error && <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">{error}</p>}

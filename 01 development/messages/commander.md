@@ -383,3 +383,21 @@ Did NOT drop new NOTEs in T1/T2 inboxes — the prior NOTE (cycle 26) already po
 [2026-05-07T00:25:00Z] PLAN: Ed pointed at 7 Incubator screenshots in `01 development/ed-dropbox/screenshots/Incubator (client onboarding)/`. Looked at all 7 — the actual Aqua Incubator client onboarding portal (THE OPULENCE INCUBATOR 3.0). Notion-style: cover banner + icon chip + big title + "X more properties" disclosure + Vimeo embed + ▸ Toggle disclosures + 2-col card grids (gold-marble cover imagery) + inline buttons + sub-page recursion.
 - Expanded chapter #59 with §15 — full visual pattern: §15a anatomy, §15b block taxonomy + which 4 new blocks needed (icon / propertyStrip / toggle / cardGrid), §15c navigation pattern from screenshots, §15d visual register (dark + gold-marble + mythos copy), §15e "Incubator Template" preset structure, §15f bridge button incubator→portal, §15g round-shape proposal.
 - Did NOT draft a new round prompt yet — Ed wants T1+T2 R+1 to finish first. Round-shape captured in §15g for when they're done.
+
+[2026-05-07T00:35:00Z] PLAN: cycle 28 — Ed asked for queue-based loop architecture. Built it:
+- New per-terminal queue dirs `terminal-prompts/queues/T1/`, T2/, T3/.
+- New router prompts `T1-router.md` / T2 / T3 — Ed pastes ONCE, terminal self-paces through queue.
+- README at `queues/README.md` documents the discipline.
+- Moved active prompts into queue position 001:
+  - T1: 001-aqua-reskin.md
+  - T2: 001-kanban-aqua-templates.md
+  - T3: 001-editor-deeplink.md
+- Pre-staged 002 prompts (terminals will pick up automatically after 001 ships):
+  - T1 002 — Employee HQ + Role Builder (per chapter §9)
+  - T2 002 — `@aqua/plugin-sops` SOP shelf (per chapter §9c)
+  - T3 002 — Incubator client-onboarding template + 4 Notion-style blocks (per chapter §15)
+- Dropped TASK-style notes in T1/T2/T3 inboxes explaining the change + listing what's in their queue.
+
+Commander workflow updated: when a DONE lands referencing a queue file, archive that file to `old prompts/` so the next-lowest becomes active. Bulk-staging ahead (003, 004…) is encouraged.
+
+Ed's action: paste each `T<N>-router.md` into the matching terminal once. From there, terminals run through queues autonomously.

@@ -19,6 +19,12 @@ const DEFAULT_PHASE_LABELS: Record<ClientStage, string> = {
   onboarding: "Onboarding",
   live: "Live",
   churned: "Churned",
+  "aqua-epic-intro":    "Epic Intro",
+  "aqua-blueprint":     "Blueprint Setup",
+  "aqua-diagnostics":   "Diagnostics / Foundations",
+  "aqua-brand-builder": "Brand Builder + Verification",
+  "aqua-traffic":       "Traffic (Expansion)",
+  "aqua-mastery":       "Mastery & Ascension",
 };
 
 export function phaseLabel(stage: ClientStage): string {

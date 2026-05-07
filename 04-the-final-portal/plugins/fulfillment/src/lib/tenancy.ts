@@ -8,6 +8,8 @@ export type EndCustomerId = string;
 export type UserId = string;
 export type PluginId = string;
 
+// Pre-Aqua stages kept for back-compat; the six "aqua-*" entries are
+// the canonical Aqua Incubator 3.0 progression (chapter #59 §5).
 export type ClientStage =
   | "lead"
   | "discovery"
@@ -15,7 +17,13 @@ export type ClientStage =
   | "development"
   | "onboarding"
   | "live"
-  | "churned";
+  | "churned"
+  | "aqua-epic-intro"
+  | "aqua-blueprint"
+  | "aqua-diagnostics"
+  | "aqua-brand-builder"
+  | "aqua-traffic"
+  | "aqua-mastery";
 
 export type Role =
   | "agency-owner"

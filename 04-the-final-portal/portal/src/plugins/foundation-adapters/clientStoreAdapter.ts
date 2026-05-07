@@ -16,6 +16,7 @@ export const clientStoreAdapter: ClientStorePort = {
       websiteUrl: input.websiteUrl,
       stage: input.stage,
       brand: input.brand,
+      metadata: input.metadata,
     });
   },
   getClient(id) { return tenants.getClient(id); },

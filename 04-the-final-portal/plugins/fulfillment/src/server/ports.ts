@@ -38,6 +38,7 @@ export interface CreateClientInput {
   websiteUrl?: string;
   stage?: ClientStage;
   brand?: Partial<BrandKit>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface UpdateClientPatch {

@@ -76,3 +76,16 @@ No corrective action required from you — this is FYI so your next round (furth
 If you've already started the generic version — swap the column labels in the seed data; the engine doesn't care. Q-ASSUMED + continue.
 
 [2026-05-07T00:10:00Z] TASK: Next prompt at `01 development/terminal-prompts/T2-kanban-aqua-templates.md`. Kanban DONE — `@aqua/plugin-kanban` shipped with smoke 12/12 + MASTER #60. Light R+1 follow-up you flagged in your chapter: swap the placeholder template column labels for Aqua-real ones (lead-pipeline = Pre-Sales → Onboarded; client-tasks = Backlog → Done; fulfillment-mirror = Epic Intro → Mastery) + add `founder-todos` template gated to Founder role. Sourced from chapter #59 §6 + §11. Previous prompt archived.
+
+[2026-05-07T00:35:00Z] ARCHITECTURE CHANGE — queue-based loop. Ed asked for a self-pacing queue so we don't bottleneck on his re-paste. New workflow:
+
+1. Ed pastes `01 development/terminal-prompts/T2-router.md` into your terminal ONCE. That router is now your persistent /loop input.
+2. On each wake, you list `01 development/terminal-prompts/queues/T2/*.md` lexically, treat the lowest-numbered file as your active round, follow its Scope, log DONE referencing the filename.
+3. Commander archives the shipped file to `old prompts/`. Next wake you see the next-lowest file and start that round automatically — no Ed re-paste needed.
+4. Empty queue → `WAKE-EMPTY` x3 → end loop. Ed re-pastes router when more work is staged.
+
+Currently in your queue:
+  - 001-kanban-aqua-templates.md
+  - 002-sop-shelf.md
+
+Read `01 development/terminal-prompts/queues/README.md` for the full discipline. Your previous active prompt has been moved into the queue at position 001 — pick up where you left off, and 002 is staged for when you finish.
