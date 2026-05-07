@@ -88,8 +88,8 @@ expect("bridge button href is /portal/customer (same-origin gateway)",
 const onboardingTree = getTemplate("aqua-incubator-onboarding")!.build();
 expect("onboarding sub-page has ≥1 toggle (Introduction)",
   onboardingTree.some(b => b.type === "toggle"));
-expect("onboarding sub-page has video block",
-  findBlock(onboardingTree, "video") !== undefined);
+expect("onboarding sub-page has video-embed block",
+  findBlock(onboardingTree, "video-embed") !== undefined);
 
 console.log("\ndiscover sub-page — 6-card grid");
 const discoverTree = getTemplate("aqua-incubator-discover")!.build();

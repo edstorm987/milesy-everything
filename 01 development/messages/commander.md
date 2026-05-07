@@ -436,3 +436,5 @@ Actions:
 - T2: 004-credentials-vault.md, 005-notification-channels.md
 - T3: 004-brand-page-templates.md, 005-ai-image-editing.md, 006-portal-template-marketplace.md
 Each queue now has minimum 2-3 staged ahead of the active round. Will keep at 3-ahead going forward — every wake check queue depth + add more as ones ship.
+
+[2026-05-07T01:18:00Z] PLAN: cycle 32 — Ed: routers should "after DONE check next file rather than sleep". Updated all 3 routers' step 7 to chain immediately after DONE: pull → re-list queue → if new lowest exists, start step 4 with it (back-to-back in same /loop fire); only sleep when archive pending or queue empty. Combined with 270s commander cadence + 3-deep queues, chains stay tight. Re-paste needed for terminals to pick up new routing behavior. Cycle 32 commit `0650856` also absorbed T1's in-flight Employee HQ work (`RoleMatrixClient.tsx` + ~200 LOC) — verifying T1 002 progress next wake.

@@ -446,7 +446,7 @@ function buildAquaIncubatorTemplates(): PageTemplate[] {
         "Aqua Onboarding - Start Here!",
         "Watch the intro and complete each form below.",
         [
-          blk("video", { src: "" }),
+          blk("video-embed", { provider: "raw", url: "" }),
           blk("toggle", { label: "Introduction", defaultOpen: true }, [
             blk("text", { text: "Welcome — operator replaces this with the introduction copy." }),
           ]),
