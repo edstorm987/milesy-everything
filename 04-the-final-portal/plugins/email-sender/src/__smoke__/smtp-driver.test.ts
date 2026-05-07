@@ -217,7 +217,7 @@ describe("@aqua/plugin-email-sender SMTP driver smoke (T2 R024)", () => {
       smtp: { host: "smtp.example", port: 587, user: "u", secure: "starttls" },
     }, ACTOR);
     // Create a sender identity + enqueue a message via the service.
-    const id = await c.identities.create({ name: "Aqua", email: "send@aqua.example", isDefault: true }, ACTOR);
+    const id = { const _id = await c.identities.create({ name: "Aqua", email: "send@aqua.example", isDefault: true }, ACTOR); await c.identities.verifyDomain(_id.id, ACTOR); }
     void id;
     const msg = await c.emails.enqueue({
       to: "recipient@example.com",
@@ -241,7 +241,7 @@ describe("@aqua/plugin-email-sender SMTP driver smoke (T2 R024)", () => {
       apiKey: "nope",
       smtp: { host: "smtp.example", port: 587, user: "u", secure: "starttls" },
     }, ACTOR);
-    await c.identities.create({ name: "Aqua", email: "send@aqua.example", isDefault: true }, ACTOR);
+    { const _id = await c.identities.create({ name: "Aqua", email: "send@aqua.example", isDefault: true }, ACTOR); await c.identities.verifyDomain(_id.id, ACTOR); }
     const msg = await c.emails.enqueue({ to: "x@example.com", subject: "y", bodyText: "z" });
     const r = await c.delivery.deliver(msg.id);
     assert.equal(r.ok, false);
@@ -264,7 +264,7 @@ describe("@aqua/plugin-email-sender SMTP driver smoke (T2 R024)", () => {
       apiKey: "p",
       smtp: { host: "h", port: 587, user: "u", secure: "starttls" },
     }, ACTOR);
-    await c.identities.create({ name: "Aqua", email: "send@aqua.example", isDefault: true }, ACTOR);
+    { const _id = await c.identities.create({ name: "Aqua", email: "send@aqua.example", isDefault: true }, ACTOR); await c.identities.verifyDomain(_id.id, ACTOR); }
     const msg = await c.emails.enqueue({ to: "x@example.com", subject: "y", bodyText: "z" });
     const r1 = await c.delivery.deliver(msg.id);
     const r2 = await c.delivery.deliver(msg.id);
@@ -277,7 +277,7 @@ describe("@aqua/plugin-email-sender SMTP driver smoke (T2 R024)", () => {
   test("10. enqueue with the same externalRef collapses onto the prior row (cross-plugin idempotency)", async () => {
     const world = buildWorld(async () => ({ ok: true as const, externalRef: "smtp_1" }));
     const c = container(world, async () => ({ ok: true as const, externalRef: "smtp_1" }));
-    await c.identities.create({ name: "Aqua", email: "send@aqua.example", isDefault: true }, ACTOR);
+    { const _id = await c.identities.create({ name: "Aqua", email: "send@aqua.example", isDefault: true }, ACTOR); await c.identities.verifyDomain(_id.id, ACTOR); }
     const a = await c.emails.enqueue({
       to: "x@example.com", subject: "Hi", bodyText: "z",
       triggeredByPlugin: "memberships", externalRef: "ext-42",

@@ -69,29 +69,33 @@ async function signInAs(persona: Persona) {
   redirect(landing);
 }
 
-const POVS: Array<{ id: Persona; title: string; sub: string; landing: string }> = [
+const POVS: Array<{ id: Persona; title: string; sub: string; sees: string; landing: string }> = [
   {
     id: "founder",
     title: "Ed — Founder (agency-owner)",
     sub: "edwardhallam07@gmail.com · Milesy Media",
+    sees: "All agencies in the switcher, every plugin admin, full activity inbox.",
     landing: "/portal/agency",
   },
   {
     id: "demo-owner",
     title: "Demo agency-owner",
     sub: "demo@aqua.dev · Demo · Aqua",
+    sees: "One agency dashboard, the demo client roster, plugin admins for that agency only.",
     landing: "/portal/agency",
   },
   {
     id: "demo-client",
     title: "Demo client-owner (Felicia)",
     sub: "felicia@luvandker.demo · Luv & Ker",
+    sees: "Their own client portal — onboarding, kanban, reports — scoped to one client.",
     landing: "/portal/clients/<slug>",
   },
   {
     id: "demo-customer",
     title: "Demo end-customer (shopper)",
     sub: "demo-shopper@aqua.test",
+    sees: "The storefront face — only what a paying customer of one client sees.",
     landing: "/portal/customer",
   },
 ];
@@ -120,6 +124,7 @@ export default function DevPovPage() {
                 <button type="submit" className="mm-pov-btn">
                   <span className="mm-pov-btn-title">{p.title}</span>
                   <span className="mm-pov-btn-sub">{p.sub}</span>
+                  <span className="mm-pov-btn-sees">{p.sees}</span>
                   <span className="mm-pov-btn-landing">→ {p.landing}</span>
                 </button>
               </form>

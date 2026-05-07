@@ -112,7 +112,7 @@ export async function handleLocaleSitemapXml(
   );
   const filtered = selectSitemapPages(pages, {
     redirectFromSlugs: redirectSources,
-  }).filter((p) => p.locales && (p.locales as Record<string, unknown>)[locale]);
+  }).filter((p) => p.locales && (p.locales as unknown as Record<string, unknown>)[locale]);
   const xml = buildSitemap(filtered, { baseUrl: deriveBaseUrl(req) });
   return new Response(xml, {
     status: 200,
