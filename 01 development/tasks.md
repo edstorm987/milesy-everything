@@ -2255,3 +2255,9 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       routes; client-crm subscriber port for cross-plugin touchpoint
       logging). Q-ASSUMED kept scopePolicy:"agency" (R+1 migration to
       "client" flagged).
+- [x] T2 R009 — `@aqua/plugin-agency-ops` shipped (chapter #102,
+      smoke 12/12, NEW plugin distinct from existing monitoring `ops`
+      plugin: RecurringTask cron-like cadence with roll-forward on
+      completion + StatusBoard manual checks + Incident lifecycle
+      with idempotent resolution + HealthPage honesty empty state +
+      8 default seed tasks).
