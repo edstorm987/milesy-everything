@@ -85,17 +85,19 @@ export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
   await ensureHydrated();
   const snap = getDemoSnapshot();
   if (snap) {
-    _demoSeedPromise = Promise.resolve({
+    const cached: SeedDemoResult = {
       agency: snap.agency,
       client: snap.client,
       ownerUser: snap.ownerUser,
       clientUser: snap.clientUser,
       customerUser: snap.customerUser,
-      createdAgency: false,
-      createdClient: false,
-      installedPlugins: [],
+      bootstrapped: { agency: false, client: false, customer: false },
+      installedClientPlugins: [],
+      installedAgencyPlugins: [],
+      seededChecklist: null,
       seededExtraClients: [],
-    });
+    };
+    _demoSeedPromise = Promise.resolve(cached);
     return _demoSeedPromise;
   }
   _demoSeedPromise = seedDemoAgencyImpl(actor);

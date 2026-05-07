@@ -8,6 +8,7 @@ import { ensureHydrated } from "@/server/storage";
 import { requireRole, getSessionAgencyIds, getActiveAgencyId } from "@/lib/server/auth";
 import { AGENCY_ROLES } from "@/server/types";
 import { getAgency } from "@/server/tenants";
+import { getUserById } from "@/server/users";
 import { listInstalledFor } from "@/server/pluginInstalls";
 import { buildSidebar } from "@/lib/chrome/sidebarLayout";
 import { effectiveRole } from "@/lib/server/effectiveRole";
@@ -82,6 +83,7 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
             subtitle="Agency workspace"
             role={session.role}
             email={session.email}
+            name={getUserById(session.userId)?.name}
             panels={panels}
             tenantLabel={agency.name}
             currentPath={currentPath}

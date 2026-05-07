@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ensureHydrated } from "@/server/storage";
 import { requireRole } from "@/lib/server/auth";
 import { getClientForAgency } from "@/server/tenants";
+import { getUserById } from "@/server/users";
 import { listInstalledFor } from "@/server/pluginInstalls";
 import { buildSidebar } from "@/lib/chrome/sidebarLayout";
 import { ThemeInjector } from "@/components/chrome/ThemeInjector";
@@ -65,6 +66,7 @@ export default async function CustomerLayout({ children }: { children: ReactNode
             subtitle={client.name}
             role={session.role}
             email={session.email}
+            name={getUserById(session.userId)?.name}
             panels={panels}
             tenantLabel={client.name}
             currentPath={currentPath}

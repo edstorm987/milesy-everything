@@ -11,6 +11,7 @@ import { ensureHydrated } from "@/server/storage";
 import { requireRoleForClient } from "@/lib/server/auth";
 import { ALL_ROLES } from "@/server/types";
 import { getClientForAgency } from "@/server/tenants";
+import { getUserById } from "@/server/users";
 import { listInstalledFor } from "@/server/pluginInstalls";
 import { buildSidebar } from "@/lib/chrome/sidebarLayout";
 import { effectiveRole } from "@/lib/server/effectiveRole";
@@ -66,6 +67,7 @@ export default async function ClientLayout({
             subtitle={`Stage · ${client.stage}`}
             role={session.role}
             email={session.email}
+            name={getUserById(session.userId)?.name}
             panels={panels}
             tenantLabel={client.name}
             currentPath={currentPath}
