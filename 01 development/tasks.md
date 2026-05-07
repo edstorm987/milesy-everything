@@ -106,6 +106,12 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       when site has any locale-tagged pages; same filter stack as R044
       runtime routes (drafts/private/noIndex/redirect-sources). 21/21
       smoke + chapter #152. R033 smoke (34/34) still green.
+- [x] **R047 — Form submission host route + webhook dispatch wiring** —
+      DONE 2026-05-07. `api/handlers/formSubmissionHost.ts` (handleFormSubmit
+      POST /forms/submit + handleListFormWebhookLog GET /forms/webhook-log
+      + listAllWebhookTargets cross-page resolver). Webhook failures 200
+      with internal-fallback persist; per-tenant 200-entry log mirroring
+      R016 shape. 19/19 smoke + chapter #154.
 
 ### T4 manual (Ed driving)
 
