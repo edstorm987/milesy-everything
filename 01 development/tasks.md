@@ -3082,3 +3082,12 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       branch in customer layout strips Sidebar+Topbar on
       `lk_demo_embed=1` cookie so iframes from R013 demo + R016
       embed route render flush w/ client brand kit injected).
+- [x] T1 R20 — Real signup flow (chapter #117, smoke 10/10,
+      closes R013 Demo-banner "Sign up →" placeholder gap: NEW
+      /signup page + form, /api/auth/signup POST creating new
+      Agency + agency-owner user via bootstrapAgency w/ core-plugin
+      seed, HMAC email-verification token w/ 24h TTL + single-use
+      nonce store, /api/auth/verify-email GET redeeming tokens to
+      mark `ServerUser.emailVerifiedAt`, auto-login session cookie,
+      DemoBanner CTA updated to /signup?from=demo, LoginForm gets
+      "Create your agency →" link).
