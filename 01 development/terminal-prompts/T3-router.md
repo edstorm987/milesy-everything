@@ -36,8 +36,13 @@ self-pace through `01 development/terminal-prompts/queues/T3/`.
 6. When the round is fully shipped (chapter + MASTER row + tasks.md
    row), append `DONE` to outbox referencing the active prompt's
    filename. Commander archives the file.
-7. On next wake: re-read queue. If previous round is still lowest, log
-   `WAKE-PENDING-ARCHIVE` and sleep. If new lowest appears, start step 4.
+7. **Immediately after DONE — chain to next round, do NOT sleep yet**:
+   `git pull --rebase --autostash` again, re-list the queue. If a NEW
+   lowest-numbered file has appeared (commander archived fast), start at
+   step 4 with that new file — chain rounds back-to-back in the same /loop
+   fire. Only sleep if previous round is still lowest (log
+   `WAKE-PENDING-ARCHIVE`) or queue is empty. Cadence is 270s and
+   commander archives within ~270s, so chaining usually wins.
 8. Empty queue → `WAKE-EMPTY`. 10 consecutive empties → end loop.
 
 Queue files start with `/loop` as a cosmetic header — ignore it; you're

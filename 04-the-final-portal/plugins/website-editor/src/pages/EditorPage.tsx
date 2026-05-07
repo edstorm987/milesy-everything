@@ -229,7 +229,7 @@ function VisualEditorPageInner() {
       if (!data || data.source !== "portal-edit-overlay") return;
       if (data.type === "ready")   setIframeReady(true);
       if (data.type === "unsaved") setUnsaved(data.unsaved ?? 0);
-      if (data.type === "saved")   setUnsaved(0);
+      if (data.type === "saved")   { setUnsaved(0); setLastSaveAt(Date.now()); }
       if (data.type === "select" && data.key && data.elementType) {
         setSelected({
           key: data.key,
@@ -605,6 +605,7 @@ function VisualEditorPageInner() {
           <LivePreview
             pageSlug={currentPage.slug}
             reloadKey={reloadKey}
+            lastSaveAt={lastSaveAt}
             onSelectBlock={blockId => {
               setSelected({ key: blockId, type: "text", value: "" });
             }}
