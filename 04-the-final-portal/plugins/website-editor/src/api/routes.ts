@@ -90,6 +90,13 @@ import {
   handleUnlockPage,
 } from "./handlers/pagePrivacy";
 import {
+  handleListComponents,
+  handleGetComponent,
+  handleCreateComponent,
+  handleUpdateComponent,
+  handleDeleteComponent,
+} from "./handlers/components";
+import {
   handleListBlogPosts,
   handleGetBlogPost,
   handleGetBlogPostBySlug,
@@ -216,4 +223,11 @@ export const apiRoutes: PluginApiRoute[] = [
   // Page privacy (R026) — public/unlisted/password/members-only.
   { path: "/pages/privacy", methods: ["POST"], handler: handleSetPagePrivacy },
   { path: "/pages/privacy/unlock", methods: ["POST"], handler: handleUnlockPage },
+
+  // Components (R028) — reusable block-group components.
+  { path: "/components", methods: ["GET"], handler: handleListComponents },
+  { path: "/components/get", methods: ["GET"], handler: handleGetComponent },
+  { path: "/components", methods: ["POST"], handler: handleCreateComponent },
+  { path: "/components", methods: ["PATCH"], handler: handleUpdateComponent },
+  { path: "/components", methods: ["DELETE"], handler: handleDeleteComponent },
 ];

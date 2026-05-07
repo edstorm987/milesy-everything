@@ -984,6 +984,36 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R028 — Save block group as reusable component** — DONE.
+      NEW `server/components.ts`: `ComponentRecord` + CRUD +
+      `expandComponentRefs(blocks, components, depth?=0)` (deep-
+      clone, recursive ref expansion, cycle guard depth 5,
+      missing/unknown id flagged `_missing`+`_missingId`, child
+      ids suffixed `::<refId>` so duplicates don't collide) +
+      `countComponentRefs(blocks)` walks nested children +
+      `COMPONENT_CATEGORIES` 6-tuple. Update strips description
+      via delete (not spread-over). NEW
+      `api/handlers/components.ts` + 5 routes (GET list returns
+      `{ components, categories[] }`; GET get 200/404; POST 201
+      + 400×2 missing name/non-array-tree/invalid category;
+      PATCH 200/400 invalid category/404; DELETE 200/404). All
+      `requireClientScope`-gated. Renderer pipeline calls
+      `expandComponentRefs` before render — source edit
+      propagates to every ref next render. NEW
+      `__smoke__/r028-block-group-reuse.test.ts` 36/36 (CRUD
+      + expansion edge cases + cycle guard + countRefs +
+      HTTP). package.json test chain extended. tsc-clean.
+      Chapter `04-block-group-reuse.md` + MASTER row #109.
+      Q-ASSUMED: `componentRef` not in blockRegistry today
+      (renderer expands before render; R+1 adds with Reference
+      category); cycle guard caps depth no save-warn (R+1);
+      per-instance overrides + cross-tenant library out of
+      scope; Components sidebar UI is host-page composition
+      mirroring R027 pattern. Deferred: register componentRef,
+      save-time cycle detection, per-instance overrides
+      (Figma variants), cross-tenant library, notify-on-source-
+      change toast, "Detach" affordance, Components sidebar
+      UI mount.
 - [x] **T3 R027 — In-editor block catalog** — DONE.
       NEW `BlockCatalog.tsx` reads `listBlockDefinitions()` from
       existing registry (no registry change), groups by category
