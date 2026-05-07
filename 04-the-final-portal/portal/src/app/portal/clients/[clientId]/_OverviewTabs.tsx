@@ -14,6 +14,7 @@ export const TABS = [
   { id: "finance",  label: "Finance"  },
   { id: "assets",   label: "Assets"   },
   { id: "sops",     label: "SOPs"     },
+  { id: "files",    label: "Files"    },
   { id: "tools",    label: "Tools"    },
 ] as const;
 

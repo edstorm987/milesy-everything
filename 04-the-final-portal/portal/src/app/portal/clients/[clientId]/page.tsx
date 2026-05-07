@@ -25,6 +25,7 @@ import { BuildPortalWizard, type WizardPlugin } from "./_BuildPortalWizard";
 import { ClientSopsTab } from "./_ClientSopsTab";
 import { KanbanTabClient } from "./_KanbanTabClient";
 import { CommsRow } from "./_CommsRow";
+import { FilesTabClient, type FileCategory } from "./_FilesTabClient";
 import { assertSopsAccess, familiesForStage, SopsAccessError } from "@/lib/server/sopsAccess";
 import { RequirePermission } from "@/lib/server/RequirePermission";
 import { OnboardingDashboardPanel, type OnboardingPhase } from "./_OnboardingDashboardPanel";
@@ -408,6 +409,16 @@ export default async function ClientHome({
           <ClientSopsTab families={families} phaseLabel={phaseLabel(client.stage)} />
         );
       })()}
+
+      {tab === "files" && (
+        <FilesTabClient
+          clientId={client.id}
+          initialFiles={(((client.metadata ?? {}) as { files?: Array<{
+            id: string; name: string; url: string;
+            category: FileCategory; uploadedBy?: string; uploadedAt: number;
+          }> }).files) ?? []}
+        />
+      )}
 
       {tab === "tools" && (
         <RequirePermission session={session} requires={["plugins.install"]}>

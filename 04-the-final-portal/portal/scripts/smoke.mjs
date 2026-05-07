@@ -226,6 +226,40 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Files tab");
+  if (clientId) {
+    const f = await go("GET", `/portal/clients/${clientId}?tab=files`);
+    record("client files tab 200", f.status === 200);
+    const fbody = f.status === 200 ? await f.text() : "";
+    record("files tab carries client-files-tab testid", fbody.includes("client-files-tab"));
+    // Add a file via paste-link API.
+    const add = await go("POST", "/api/tenants/client-files", {
+      body: JSON.stringify({
+        clientId,
+        action: "add",
+        file: { name: "Smoke deliverable", url: "https://example.com/smoke.pdf", category: "deliverable" },
+      }),
+    });
+    record("client-files add 200", add.status === 200, `status=${add.status}`);
+    const addJson = add.status === 200 ? await add.json().catch(() => null) : null;
+    const newFileId = addJson?.file?.id;
+    record("add returns file id", typeof newFileId === "string");
+    // Empty body → 400.
+    const bad = await go("POST", "/api/tenants/client-files", { body: JSON.stringify({}) });
+    record("client-files rejects empty body", bad.status === 400);
+    // Re-render shows the file.
+    if (newFileId) {
+      const f2 = await go("GET", `/portal/clients/${clientId}?tab=files`);
+      const body2 = f2.status === 200 ? await f2.text() : "";
+      record("files tab shows added file name", body2.includes("Smoke deliverable"));
+      // Cleanup — delete it.
+      const del = await go("POST", "/api/tenants/client-files", {
+        body: JSON.stringify({ clientId, action: "delete", fileId: newFileId }),
+      });
+      record("client-files delete 200", del.status === 200);
+    }
+  }
+
   console.log("\n§ Comms widget");
   if (clientId) {
     // Per-client header carries the comms row.

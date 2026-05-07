@@ -9,6 +9,25 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 010 — Per-client Files tab (v0 paste-link)** — DONE.
+      T2 R010 plugin not shipped yet → fallback path per prompt:
+      operator-pasted Drive/Dropbox/Notion URLs stored on
+      `client.metadata.files[]`. Goal A: NEW `_FilesTabClient.tsx`
+      two-pane component (12rem left rail + 1fr right grid). Goal B:
+      paste-link form on top of right pane (name+URL+category select+
+      Add); NEW `POST /api/tenants/client-files` route handles
+      add/delete via `updateClient(metadata:{files})`. Goal C: left
+      rail with All + 5 categories from chapter §15c (Brand · Brief ·
+      Deliverables · Invoices · Misc) + count chips + filter state.
+      NEW `files` tab inserted between `sops` and `tools` in
+      `_OverviewTabs.tsx`; per-client `page.tsx` reads
+      `metadata.files`. Q-ASSUMED: paste-link only (no real upload),
+      drag-drop UI omitted as no-op affordance, fixed 5 categories
+      per §15c, `Assets` tab (website-editor library) kept distinct.
+      Goal D: smoke `§ Files tab` (6 — tab 200 + testid + add 200 +
+      empty 400 + name re-renders + delete 200). Chapter
+      `04-files-tab.md`; MASTER row #85; tsc clean. HARD BOUNDARY
+      honoured.
 - [x] **T1 009 — Per-client comms widget (WhatsApp + email)** — DONE.
       Goal A: NEW `_CommsRow.tsx` on per-client header (below name) —
       emerald WhatsApp pill / dashed placeholder; blue mailto pill /
