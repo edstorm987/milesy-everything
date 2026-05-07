@@ -1291,11 +1291,20 @@ footer {
   border: 1px solid rgba(20, 18, 14, 0.12);
   flex: 0 0 auto;
 }
+/* Tighter max-width so the pill stays compact when the topbar's
+   tenant-switcher button takes the title slot (Ed's directive
+   2026-05-08). Hidden below sm to keep mobile clean. */
 .mm-profile-display {
+  max-width: 140px;
+}
+@media (max-width: 640px) {
+  .mm-profile-display { display: none; }
+}
+.mm-profile-menu summary { padding-right: 10px; }
+.mm-profile-display-fallback {
   font-size: 13px;
   color: #14120E;
   font-weight: 500;
-  max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -1,9 +1,11 @@
-# Vercel deploys the Next.js portal at `04-the-final-portal/portal/`,
-# bundling the milesymedia static files into its public/ via the
-# build-portal.mjs prebuild step. Per-client portals at
-# `04-the-final-portal/clients/<slug>/` deploy as SEPARATE Vercel
-# projects (one per Live client), each with rootDirectory pinned to
-# their own folder — this file isn't read for those.
+# Vercel deploys the unified Next.js host at
+# `04-the-final-portal/milesymedia-website/` (chapter #122 unification —
+# replaces the legacy `portal/` + `milesymedia website/` split + the
+# old build-portal.mjs copy step). vercel.json's buildCommand cd's
+# into that folder + runs `npm install && npm run build`.
+# Per-client portals at `04-the-final-portal/clients/<slug>/` deploy as
+# SEPARATE Vercel projects (one per Live client) — this file isn't
+# read for those.
 
 # Reference codebases — not part of any deployment.
 01 development/
