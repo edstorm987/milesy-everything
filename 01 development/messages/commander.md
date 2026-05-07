@@ -586,3 +586,12 @@ Queue state post-stage:
 - T4: 11 files (001 active awaiting Ed paste + 10 ahead).
 
 [2026-05-07T03:00:00Z] PLAN: bulk stage now committed. Next loop cycles continue normal archive cadence — when DONEs land, archive promptly and queue stays 7-10 ahead at all times. Ed's threshold for "app complete to my requirements" is the union of all 41 rounds shipped (28 prior + 13 already-staged + 32 new = 73 total round prompts written, of which ~25 already shipped). After the 73rd, v1 = feature-complete per requirements + chapter #59 + #66-74. T6 production gate + T5 Felicia/Luv&Ker remain after that.
+
+[2026-05-07T03:25:00Z] WAKEUP: cycle 41 — autonomous. 3 DONEs to archive:
+- T1 R004 sops-surfacing DONE @ c318700 (mesh-absorbed a15b653 with T4 R001 work).
+- T3 R006 portal-template-marketplace DONE @ chapter #76.
+- T4 R001 incubator-phase-portal DONE @ 0fd9c98 (mesh-absorbed in a15b653).
+
+[2026-05-07T03:25:00Z] PLAN: cycle 41 — archive T1/004 + T3/006 + T4/001. Post-archive depth: T1=9, T2=10, T3=10, T4=10 — all healthy at 9-10 ahead. T4 actively shipping (chained into 002 next wake). Mesh hazard hit twice this cycle (a15b653 absorbed cross-team work between T1+T4, c318700 absorbed only T1's actual work) — work all on origin, no recovery needed.
+
+[2026-05-07T03:25:00Z] SLEEP: 270s.
