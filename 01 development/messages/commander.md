@@ -1260,3 +1260,10 @@ README.md fully rewritten as a concrete index — table of active prompts + subf
 **T5 (Felicia portal)** — 3 new in NEW `queues/T5/` directory (R001 felicia-portal-scaffold · R002 felicia-content · R003 end-customer-flow). T5 dormant until Sprint 3 activates; queue ready when commander pastes T5 prompt.
 
 Note: T1 R022 (role-aware redirect) STARTED at 12:45Z, source file present, awaiting DONE log. Tasks.md was pre-marked [x] (looks like Ed-edit) — actual DONE entry from T1 will land soon.
+
+[2026-05-07T14:00:00Z] WAKEUP: cycle 140 — autonomous. **TRIPLE DONE — Sprint 1 in motion**:
+- T1 R022 (role-aware post-login redirect — resolver + 4 call-sites wired + 11/11 smoke) DONE @ 617e75f / mesh-absorbed 497d511. Chapter #125. WS-A 1/3 done.
+- T2 R018 (onboarding-checklist plugin — 8-item default seed + KanbanPort soft-pair + 13/13) DONE @ 1ea3ea5. Chapter #126.
+- T3 R037 (structured data JSON-LD — Article/Product/FAQPage/Breadcrumb/Organization + 30/30 smoke) DONE @ 949f9dd.
+
+Archived all three. Queue depths post: T1=8 · T2=8 · T3=6 · T4=manual · T5=3 (dormant). Plenty of runway. SLEEP: 270s.
