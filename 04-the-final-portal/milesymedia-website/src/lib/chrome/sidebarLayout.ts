@@ -145,6 +145,7 @@ export function buildSidebar(input: BuildSidebarInput): NavPanel[] {
 
   // Settings — every scope sees a settings entry. Plugins can add more.
   if (input.scope === "agency" && isAgencyRole(input.role)) {
+    appendIntoPanel(itemsByPanel, { id: "agency-phases", label: "Phases", href: "/portal/agency/phases", panelId: "settings", order: 95 });
     appendIntoPanel(itemsByPanel, { id: "agency-settings", label: "Agency settings", href: "/portal/agency/settings", panelId: "settings", order: 100 });
   } else if (input.scope === "client" && input.currentClient && (isAgencyRole(input.role) || isClientRole(input.role))) {
     appendIntoPanel(itemsByPanel, {

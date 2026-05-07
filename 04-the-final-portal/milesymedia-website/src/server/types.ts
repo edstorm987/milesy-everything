@@ -310,6 +310,15 @@ export interface PhaseDefinition {
   pluginPreset: string[];        // pluginIds installed when this phase becomes active
   portalVariantId?: string;      // T3-owned editor page id
   checklist: PhaseChecklistItem[];
+  // T1 R+ phases-preview: marks seeded defaults so the UI can refuse
+  // deletion. Custom phases added through the agency UI omit the flag.
+  isDefault?: boolean;
+  // Operator-authored CSS / JS injected into the client portal head
+  // when previewing this phase. NOT sanitised — only operators with
+  // founder / agency-manager scope can author. Treat as the same
+  // trust level as a code-pushed brand kit override.
+  customCss?: string;
+  customJs?: string;
 }
 
 export interface PhaseChecklistItem {

@@ -54,6 +54,13 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
 
 ### Done — Ed's UX batch
 
+- [x] **Phases preview UI** — `/portal/agency/phases` lists every phase
+      with "Preview as demo client" button (re-issues demo session +
+      `lk_preview_phase` cookie), "Edit" page, and inline "Add custom
+      phase" form with optional CSS / JS injection. Founder + agency-
+      manager only; default phases protected from delete. Chapter #164.
+
+
 - [x] **Login page premium redesign** — two-pane brand panel, refined
       inputs/buttons/card. Commit `821437c`.
 - [x] **Drop "Create your agency" from login form** — duplicate

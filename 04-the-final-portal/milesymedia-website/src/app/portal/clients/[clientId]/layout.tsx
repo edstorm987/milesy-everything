@@ -19,6 +19,7 @@ import { ThemeInjector } from "@/components/chrome/ThemeInjector";
 import { Sidebar } from "@/components/chrome/Sidebar";
 import { Topbar } from "@/components/chrome/Topbar";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { getPreviewPhase, escapeStyleContent, escapeScriptContent } from "@/lib/server/previewPhase";
 
 export default async function ClientLayout({
   children,
@@ -56,8 +57,28 @@ export default async function ClientLayout({
   const h = await headers();
   const currentPath = h.get("x-invoke-path") ?? h.get("x-pathname") ?? `/portal/clients/${client.id}`;
 
+  // Preview-phase override (founder uses /portal/agency/phases). When the
+  // cookie is set + the phase belongs to this client's agency, inject
+  // its operator-authored CSS / JS into the portal head. NOT sanitised
+  // — author scope is gated to founder + agency-manager (chapter
+  // `04-phases-preview-ui.md` documents the trade-off).
+  const previewPhase = await getPreviewPhase();
+  const previewActive = previewPhase && previewPhase.agencyId === client.agencyId;
+
   return (
     <>
+      {previewActive && previewPhase?.customCss ? (
+        <style
+          data-phase-preview={previewPhase.id}
+          dangerouslySetInnerHTML={{ __html: escapeStyleContent(previewPhase.customCss) }}
+        />
+      ) : null}
+      {previewActive && previewPhase?.customJs ? (
+        <script
+          data-phase-preview={previewPhase.id}
+          dangerouslySetInnerHTML={{ __html: escapeScriptContent(previewPhase.customJs) }}
+        />
+      ) : null}
       <ThemeInjector brand={client.brand} scope="client" />
       <div className="flex min-h-screen">
         <Sidebar panels={panels} tenantLabel={client.name} currentPath={currentPath} />
