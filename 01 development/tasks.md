@@ -640,6 +640,30 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R018 — Editor keyboard shortcuts + Cmd-K palette** — DONE.
+      NEW `lib/editorShortcuts.ts` (pure SSR-safe registry):
+      `KeyBinding { id, label, key, scope, meta?, shift?, alt? }`
+      + `DEFAULT_BINDINGS` 14 entries (global ⌘K/⌘S/⌘⇧P/⌘E/⌘Z/
+      ⌘⇧Z/? + block-selected D/Del/[/]/⌘↑/⌘↓/Esc) + `matchesBinding`
+      (Cmd OR Ctrl satisfies meta, case-insensitive char, exact
+      modifier match) + `resolveShortcut` (scope-aware dispatch)
+      + `formatBinding` (⌘/⇧/⌥/arrow/Esc/Del/? glyphs). NEW
+      `CommandPalette.tsx` with fuzzy search + arrow nav + group
+      headers + hint pills. NEW `ShortcutsHelpModal.tsx` with
+      Global + Block-selected sections + kbd-styled formatted
+      bindings. All CSS-var driven (R011 surface). Pure components
+      ready for host-page mount; host wires single global keydown
+      listener + routes binding id (skeleton in chapter §4). NEW
+      `__smoke__/r018-editor-shortcuts.test.ts` 47/47. package.json
+      test chain extended. tsc-clean. Chapter
+      `04-editor-shortcuts.md` + MASTER row #99.
+      Q-ASSUMED: pure components (host wires keydown + composes
+      commands); meta:true honours Cmd+Ctrl cross-platform;
+      modifiers exact-match (⌘K ≠ ⌘⇧K); single-char case-
+      insensitive; Vim mode + multi-select drag out-of-scope.
+      Deferred: host topbar wire-up, per-agency keybindings,
+      Insert-block palette entries auto-from-blockRegistry,
+      multi-select bulk ops, macros, Vim motion.
 - [x] **T3 R017 — Block library polish (5 new blocks)** — DONE.
       Audit pass: registry already has 70+ ids (chapter-07
       floor of 58 over-shot). R017 fills 5 high-utility gaps

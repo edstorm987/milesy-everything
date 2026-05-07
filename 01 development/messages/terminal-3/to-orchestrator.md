@@ -180,3 +180,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T09:36:00Z] COMMIT: 356890a "T3 R017: block library polish — 5 new blocks + 39/39 smoke". 12 files clean. Pushed.
 [2026-05-07T09:36:00Z] DONE: queue file `017-block-library-polish.md` — round shipped. website-editor smoke 39/39 + tsc-clean. Chapter `04-block-library-polish.md` + MASTER row #98 + tasks.md row added. Q-ASSUMED: 5 picks by gut + grep (registry already over-shoots chapter floor); array-prop editors deferred; breadcrumb auto-segments by `/`; share Copy is `<button>` not `<a>`. Commander may archive 017; queue still has 018-020.
 [2026-05-07T09:37:00Z] WAKE-PENDING-ARCHIVE: 017 still lowest. Sleeping 1800s pending cadence.
+[2026-05-07T09:38:00Z] STARTED: queue file `018-editor-keyboard-shortcuts.md` — building Cmd-K command palette + global keyboard shortcut layer + help-modal. Pure components ready for host-page mount.
+[2026-05-07T09:50:00Z] COMMIT: pending — staging R018 explicit-path bundle.
