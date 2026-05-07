@@ -34,6 +34,7 @@
     "smoke:public-funnel-port-adapters": "tsx --test scripts/smoke-public-funnel-port-adapters.test.ts",
     "smoke:activity-category-batch": "tsx --test scripts/smoke-activity-category-batch.test.ts",
     "smoke:profile-picture-upload": "tsx --test scripts/smoke-profile-picture-upload.test.ts",
+    "smoke:pipelines-refactor": "tsx --test scripts/smoke-pipelines-refactor.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

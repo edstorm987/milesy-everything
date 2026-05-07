@@ -18,7 +18,7 @@ const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 // Founder bypasses every gate.
 const AQUA_HQ: { id: string; label: string; href: string; hint: string; requires: string[] }[] = [
   { id: "dashboard", label: "Dashboard", href: "/portal/agency",                  hint: "Welcome + overview.",       requires: ["clients.view"] },
-  { id: "pipelines", label: "Pipelines", href: "/portal/agency#clients",          hint: "Kanban — fulfilment, leads, anything.", requires: ["clients.view"] },
+  { id: "pipelines", label: "Pipelines", href: "/portal/agency/pipelines/fulfilment", hint: "Kanban — fulfilment, leads, anything.", requires: ["clients.view"] },
   { id: "inbox",     label: "Inbox",     href: "/portal/agency/activity-inbox",   hint: "Activity feed + comms.",     requires: ["clients.view"] },
   { id: "sops",      label: "SOPs",      href: "/portal/agency/sops",             hint: "Aqua System SOP shelf.",     requires: ["sops.view"] },
   { id: "finance",   label: "Finance",   href: "/portal/agency/agency-finance",   hint: "Invoices, expenses, MRR.",   requires: ["finance.view"] },

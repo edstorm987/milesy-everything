@@ -42,6 +42,16 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       runner wired into `ensureHydrated`; createUser writes both
       shapes; NEW `assertTenantScope` + 3 active-agency helpers in
       auth.ts. Smoke 10/10. Chapter #131.
+- [x] **R034 — "Clients" → "Pipelines" multi-pipeline kanban refactor** —
+      DONE 2026-05-07. Foundation refactor: single Clients grid retires;
+      agencies own N named Pipelines (fulfilment/leads/sales/custom),
+      each its own kanban + polymorphic cards. NEW `src/server/
+      pipelines.ts` (Pipeline + PipelineCard union + CRUD + idempotent
+      default seed + addCard kind enforcement + client→fulfilment
+      projection + migration runner). Hub page rewrite at `/portal/
+      agency` + per-pipeline view at `/portal/agency/pipelines/[slug]`
+      + sidebar Pipelines retargeted. Smoke 19/19 via `npm run
+      smoke:pipelines-refactor`. Chapter #156.
 - [x] **R035 — Sidebar minimise/maximise toggle** — DONE 2026-05-07.
       Audit found no auto-collapse code in `Sidebar.tsx` (server
       component, no route hook); Ed's perceived issue was absence of

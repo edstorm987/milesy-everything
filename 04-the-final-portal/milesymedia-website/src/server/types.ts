@@ -318,6 +318,96 @@ export interface PhaseChecklistItem {
   done?: boolean;
 }
 
+// ─── Pipelines (T1 R034) ──────────────────────────────────────────────────
+//
+// Multi-pipeline kanban model. Each agency owns N named pipelines — the
+// "Clients" tab is no longer a single grid; it's the **fulfilment**
+// pipeline among many (leads / sales / custom). Foundation owns the
+// domain shape + storage; T2's kanban plugin (R+1) renders cards.
+
+export type PipelineKind = "fulfilment" | "leads" | "sales" | "custom";
+
+export type PipelineCardKind = "client" | "lead" | "deal" | "custom";
+
+export interface PipelineColumn {
+  id: string;
+  label: string;
+  color?: string;     // hex, optional palette tint
+  order: number;
+}
+
+export interface LeadSnapshot {
+  email: string;
+  phone?: string;
+  name?: string;
+  source?: string;
+  capturedAt?: number;
+}
+
+export interface DealSnapshot {
+  title: string;
+  amount?: number;
+  contactEmail?: string;
+}
+
+// Polymorphic card. Foundation declares the union; T2 R027 renders.
+// Each pipeline declares its `allowedCardKinds` — runtime helpers
+// reject inserts of disallowed kinds.
+export type PipelineCard =
+  | {
+      id: string;
+      pipelineId: string;
+      columnId: string;
+      order: number;
+      kind: "client";
+      clientId: string;
+      createdAt: number;
+      updatedAt: number;
+    }
+  | {
+      id: string;
+      pipelineId: string;
+      columnId: string;
+      order: number;
+      kind: "lead";
+      lead: LeadSnapshot;
+      createdAt: number;
+      updatedAt: number;
+    }
+  | {
+      id: string;
+      pipelineId: string;
+      columnId: string;
+      order: number;
+      kind: "deal";
+      deal: DealSnapshot;
+      createdAt: number;
+      updatedAt: number;
+    }
+  | {
+      id: string;
+      pipelineId: string;
+      columnId: string;
+      order: number;
+      kind: "custom";
+      payload: Record<string, unknown>;
+      createdAt: number;
+      updatedAt: number;
+    };
+
+export interface Pipeline {
+  id: string;
+  agencyId: string;
+  kind: PipelineKind;
+  name: string;
+  slug: string;
+  columns: PipelineColumn[];
+  allowedCardKinds: PipelineCardKind[];
+  sortOrder: number;
+  createdAt: number;
+  updatedAt: number;
+}
+
 // ─── PortalState — the single typed object behind storage ─────────────────
 
 export interface PortalState {
@@ -329,4 +419,8 @@ export interface PortalState {
   pluginData: Record<string, Record<string, unknown>>; // installId → key → value
   phases: Record<string, PhaseDefinition>;
   activity: ActivityEntry[];
+  // T1 R034 — multi-pipeline kanban model. Optional in parsed blobs
+  // (legacy state lacks these fields); storage parser injects defaults.
+  pipelines: Record<string, Pipeline>;
+  pipelineCards: Record<string, PipelineCard>;
 }

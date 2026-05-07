@@ -7,6 +7,7 @@ import "server-only";
 import { createAgency, type CreateAgencyInput } from "./tenants";
 import { installCorePluginsForScope } from "@/plugins/_runtime";
 import { logActivity } from "./activity";
+import { seedDefaultPipelines, migrateClientsToFulfilment } from "./pipelines";
 import type { Agency } from "./types";
 
 export interface BootstrapAgencyResult {
@@ -19,6 +20,11 @@ export async function bootstrapAgency(
   installedBy?: string,
 ): Promise<BootstrapAgencyResult> {
   const agency = createAgency(input);
+  // T1 R034 — seed default pipelines (fulfilment / leads / sales) before
+  // installing core plugins so kanban-aware plugins find a fulfilment
+  // pipeline to attach to. Idempotent — safe to call from re-bootstrap.
+  seedDefaultPipelines(agency.id);
+  migrateClientsToFulfilment(agency.id);
   await installCorePluginsForScope({ agencyId: agency.id }, installedBy);
   // Snapshot which core plugins ended up installed (mostly diagnostic).
   const { listInstalledForAgencyOnly } = await import("./pluginInstalls");

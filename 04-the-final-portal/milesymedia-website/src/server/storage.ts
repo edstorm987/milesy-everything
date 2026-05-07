@@ -24,6 +24,8 @@ const empty = (): PortalState => ({
   pluginData: {},
   phases: {},
   activity: [],
+  pipelines: {},
+  pipelineCards: {},
 });
 
 // ─── Backend interface ────────────────────────────────────────────────────
@@ -210,6 +212,8 @@ function parseBlob(raw: string): PortalState {
       pluginData: parsed.pluginData ?? {},
       phases: parsed.phases ?? {},
       activity: Array.isArray(parsed.activity) ? parsed.activity : [],
+      pipelines: parsed.pipelines ?? {},
+      pipelineCards: parsed.pipelineCards ?? {},
     };
   } catch {
     return empty();
