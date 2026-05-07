@@ -78,6 +78,10 @@ import {
   handleLocaleSitemapXml,
 } from "./handlers/sitemapHostRoutes";
 import {
+  handleFormSubmit,
+  handleListFormWebhookLog,
+} from "./handlers/formSubmissionHost";
+import {
   handleSaveVersion,
   handleListVersions,
   handleGetVersion,
@@ -217,6 +221,10 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/sitemap-:locale.xml", methods: ["GET"], handler: handleLocaleSitemapXml },
   { path: "/robots.txt", methods: ["GET"], handler: handleAdvancedRobotsTxt },
   { path: "/og", methods: ["GET"], handler: handleOgCard },
+
+  // R047 — Form submission host route + webhook-log listing.
+  { path: "/forms/submit", methods: ["POST"], handler: handleFormSubmit },
+  { path: "/forms/webhook-log", methods: ["GET"], handler: handleListFormWebhookLog },
 
   // Page versions (R022) — auto-save + named checkpoints.
   { path: "/pages/versions", methods: ["GET"], handler: handleListVersions },

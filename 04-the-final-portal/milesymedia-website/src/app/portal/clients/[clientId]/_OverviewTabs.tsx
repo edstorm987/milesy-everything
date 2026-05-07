@@ -5,20 +5,9 @@
 // Server-rendered content lives in `page.tsx`; this is just the bar.
 
 import Link from "next/link";
+import { TABS, type TabId } from "./_tabs";
 
-export const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "website",  label: "Website"  },
-  { id: "portal",   label: "Portal"   },
-  { id: "kanban",   label: "Kanban"   },
-  { id: "finance",  label: "Finance"  },
-  { id: "assets",   label: "Assets"   },
-  { id: "sops",     label: "SOPs"     },
-  { id: "files",    label: "Files"    },
-  { id: "tools",    label: "Tools"    },
-] as const;
-
-export type TabId = (typeof TABS)[number]["id"];
+export type { TabId };
 
 export function OverviewTabs({ clientId, active }: { clientId: string; active: TabId }) {
   return (
