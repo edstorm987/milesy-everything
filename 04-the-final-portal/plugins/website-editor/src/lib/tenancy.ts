@@ -36,6 +36,20 @@ export interface BrandKit {
   fontBody?: string;
   borderRadius?: string;
   customCSS?: string;
+
+  // R011 — extended brand-kit fields per requirements §5. All
+  // optional. Foundation `BrandKit` doesn't carry these yet; the
+  // website-editor's `extendedBrandToCss` reads them off `Agency.brand`
+  // via this vendored type and emits CSS vars when present.
+  bg?: string;             // page background
+  bgElevated?: string;     // card / panel background
+  text?: string;           // body text colour
+  textMuted?: string;      // secondary copy / captions
+  border?: string;         // hairline border default
+  radiusSm?: string;
+  radiusMd?: string;       // alias / superset of `borderRadius`
+  radiusLg?: string;
+  darkMode?: boolean;      // palette hint
 }
 
 export type EntityStatus = "active" | "suspended" | "archived";

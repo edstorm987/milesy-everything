@@ -61,6 +61,7 @@ import { handlePromote } from "./handlers/promote";
 import { handleListAssets, handleUploadAsset, handleDeleteAsset } from "./handlers/assets";
 import { handleListTemplates, handleSaveTemplate, handleDeleteTemplate } from "./handlers/templates";
 import { handleGetForcePassword, handleSetForcePassword } from "./handlers/forcePassword";
+import { handleGetBrandKitExtended, handleSaveBrandKitExtended } from "./handlers/brandKit";
 import {
   handleListBlogPosts,
   handleGetBlogPost,
@@ -149,4 +150,10 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/blog/posts", methods: ["POST"], handler: handleCreateBlogPost },
   { path: "/blog/posts", methods: ["PATCH"], handler: handleUpdateBlogPost },
   { path: "/blog/posts", methods: ["DELETE"], handler: handleDeleteBlogPost },
+
+  // Brand-kit extended fields (R011) — per-install bg/text/border/
+  // radius scale / darkMode hint. Foundation owns the primary /
+  // secondary / accent / fonts.
+  { path: "/brand-kit/extended", methods: ["GET"], handler: handleGetBrandKitExtended },
+  { path: "/brand-kit/extended", methods: ["POST"], handler: handleSaveBrandKitExtended },
 ];

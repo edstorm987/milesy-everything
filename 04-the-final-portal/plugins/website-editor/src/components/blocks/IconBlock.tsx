@@ -36,7 +36,9 @@ export default function IconBlock({ block }: BlockRenderProps) {
 
   const glyph = (block.props.glyph as string | undefined) ?? "✦";
   const size = (block.props.size as string | undefined) ?? "32px";
-  const color = (block.props.color as string | undefined) ?? "#ff6b35";
+  // brand-kit-todo (R011 §C): glyph default falls back to var(--brand-accent)
+  // when the operator hasn't set a colour, so brand-kit changes propagate.
+  const color = (block.props.color as string | undefined) ?? "var(--brand-accent, #ff6b35)";
   const style = { fontSize: size, color, lineHeight: 1, display: "inline-block", ...blockStylesToCss(block.styles) };
   return <span data-block-type="icon" data-mode="glyph" style={style} aria-hidden="true">{glyph}</span>;
 }

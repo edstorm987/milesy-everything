@@ -346,6 +346,36 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R011 — Brand-kit CSS variables** — DONE.
+      Per `eds requirments.md` §5 (no hardcoded brand colours).
+      Goal A: vendored `BrandKit` (`lib/tenancy.ts`) gains 9 optional
+      fields — bg, bgElevated, text, textMuted, border, radiusSm,
+      radiusMd, radiusLg, darkMode. Foundation source-of-truth
+      `BrandKit` left untouched (T1 territory). Goal B-style
+      `BrandKitProvider` deferred — foundation `ThemeInjector`
+      already emits 7 vars per-tenant; new vars layer additively
+      via NEW `lib/brandKitCss.ts::extendedBrandToCss` (16 vars
+      with dark-friendly fallbacks; `extendedBrandToStyleString`
+      with custom scope; `looksLikeHardcodedBrandColour` regex
+      heuristic for the audit smoke). Goal C: 90 hex hardcodes
+      surveyed in `components/blocks/`; most utility (error red /
+      muted / dark surfaces) — kept. Brand-coloured defaults
+      already read `var(--brand-accent, #ff6b35)` (R002+ pattern);
+      only `IconBlock::color` default patched + `// brand-kit-todo`
+      grep marker landed. Goal D: 2 new routes `GET /brand-kit/
+      extended` + `POST /brand-kit/extended` (allow-list partial,
+      empty-string clears one field, 400 on malformed). Visual
+      settings page (colour pickers + logo upload + font picker)
+      deferred — endpoints + helper are the structural prereq.
+      Goal E: NEW `__smoke__/r011-brand-kit-css-vars.test.ts`
+      31/31 pass + package.json test chain extended. tsc-clean.
+      Chapter `04-brand-kit-css-vars.md` + MASTER row #92.
+      Q-ASSUMED: vendored BrandKit only (foundation absorbs later);
+      `BrandKitSettingsPage` deferred to R+1; 90-hex audit kept
+      utility colours as-is. Deferred: T1 foundation BrandKit
+      extension, CI step running heuristic over blocks, BrandKit
+      picker for `--inc-*` Notion-Incubator vars (R009), darkMode
+      propagation into block rgba lightness.
 - [x] **T3 R010 — Incubator template preset (§15e)** — DONE.
       Templates already shipped from R002 — `AQUA_INCUBATOR_TEMPLATE_IDS`
       exports root + 4 sub-pages (onboarding/portal/resources/
