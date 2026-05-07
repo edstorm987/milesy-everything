@@ -100,6 +100,10 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
 - [x] Resource sub-page real implementations — replace 3 of 7 stubs
       this sprint (start with `seo-audit`, `site-speed`,
       `accessibility-audit`). **DONE T4 R002 — chapter #137.**
+- [x] AquaOasis Demo content pack — `src/app/(seeds)/aquaOasisDemoContent.ts`
+      (3 clients × brand kits + 15 contacts + 30 bookings + 9 leads + 4
+      agency campaigns; Q-ASSUMED T1 wires the runner from
+      `aquaOasisSeed.ts`). **DONE T4 R004 — chapter #143.**
 - [ ] Copy polish across marketing surfaces (Ed's flagged items).
 
 ### Blocked

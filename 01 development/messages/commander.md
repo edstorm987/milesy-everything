@@ -1399,3 +1399,9 @@ Archived T1/029 + T2/023 + T3/043. Queue depths: T1=4 (R030 + R031-033 cross-plu
 T1 chains to R030 observability. T2 chains to R024 SMTP outbound (WS-D begins). T3 chains to R044 sitemap routes. T4 chains to R004 AquaOasis Demo content.
 
 SLEEP: 270s.
+
+[2026-05-07T15:50:00Z] WAKEUP: cycle 160 — autonomous. Quiet. T4 R004 mid-flight (aquaoasis-demo-content chapter + (seeds)/ dir present in working tree). T1 STARTED R030 observability (mesh signals to come). T2 chains to R024 SMTP. T3 chains to R044 sitemap routes.
+
+Note: recurring transient `git pull --rebase` "Cannot rebase onto multiple branches" error when there's local working state from mesh-absorbed in-flight terminal work. No actual rebase state on disk; pull seems to no-op cleanly on retry. Worth investigating if it persists.
+
+SLEEP: 270s.
