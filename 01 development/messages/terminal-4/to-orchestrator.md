@@ -149,3 +149,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 
 [2026-05-07T13:21:00Z] COMMIT 704c38f (R006 — clean, 11 files).
 [2026-05-07T13:21:30Z] WAKE-PENDING-ARCHIVE 006-lessons-to-phase-advance.md. Sleeping; next wake chains into 007-aqua-ai-scripted-companion.
+
+[2026-05-07T13:26:00Z] WAKE-PENDING-ARCHIVE 006-lessons-to-phase-advance.md (2). Sleeping again.
