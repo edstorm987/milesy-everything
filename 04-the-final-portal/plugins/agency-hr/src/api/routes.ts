@@ -7,15 +7,19 @@ import {
   archiveStaffHandler,
   cancelLeaveHandler,
   createDepartmentHandler,
+  createRoleHandler,
   createStaffHandler,
   decideLeaveHandler,
   deleteDepartmentHandler,
+  deleteRoleHandler,
   getStaffHandler,
   listDepartmentsHandler,
   listLeaveHandler,
+  listRolesHandler,
   listStaffHandler,
   requestLeaveHandler,
   updateDepartmentHandler,
+  updateRoleHandler,
   updateStaffHandler,
 } from "./handlers";
 
@@ -41,4 +45,10 @@ export const ROUTES: PluginApiRoute[] = [
   { path: "leave", methods: ["POST"], handler: requestLeaveHandler, visibleToRoles: [...AGENCY_ALL_ROLES] },
   { path: "leave/decide", methods: ["POST"], handler: decideLeaveHandler, visibleToRoles: [...AGENCY_ADMIN_ROLES] },
   { path: "leave/cancel", methods: ["POST"], handler: cancelLeaveHandler, visibleToRoles: [...AGENCY_ALL_ROLES] },
+
+  // Roles (Employee HQ)
+  { path: "roles", methods: ["GET"], handler: listRolesHandler, visibleToRoles: [...AGENCY_ALL_ROLES] },
+  { path: "roles", methods: ["POST"], handler: createRoleHandler, visibleToRoles: [...AGENCY_ADMIN_ROLES] },
+  { path: "roles", methods: ["PATCH"], handler: updateRoleHandler, visibleToRoles: [...AGENCY_ADMIN_ROLES] },
+  { path: "roles", methods: ["DELETE"], handler: deleteRoleHandler, visibleToRoles: [...AGENCY_ADMIN_ROLES] },
 ];

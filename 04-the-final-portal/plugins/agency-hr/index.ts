@@ -58,6 +58,22 @@ const manifest: AquaPlugin = {
       visibleToRoles: [...AGENCY_VIEWERS],
     },
     {
+      id: "agency-hr.employees",
+      label: "Employees",
+      href: "/portal/agency/agency-hr/employees",
+      panelId: "agency-hr",
+      order: 40,
+      visibleToRoles: [...AGENCY_ADMINS],
+    },
+    {
+      id: "agency-hr.roles",
+      label: "Roles",
+      href: "/portal/agency/agency-hr/roles",
+      panelId: "agency-hr",
+      order: 50,
+      visibleToRoles: [...AGENCY_ADMINS],
+    },
+    {
       id: "agency-hr.settings",
       label: "Settings",
       href: "/portal/agency/agency-hr/settings",
@@ -72,6 +88,8 @@ const manifest: AquaPlugin = {
     { path: "staff", component: () => import("./src/pages/StaffPage") },
     { path: "departments", component: () => import("./src/pages/DepartmentsPage") },
     { path: "leave", component: () => import("./src/pages/LeaveRequestsPage") },
+    { path: "employees", component: () => import("./src/pages/EmployeesPage") },
+    { path: "roles", component: () => import("./src/pages/RolesPage") },
     { path: "settings", component: () => import("./src/pages/SettingsPage") },
   ],
 
@@ -133,6 +151,7 @@ const manifest: AquaPlugin = {
     });
     if (!c) return;
     await c.departments.seedDefaults(ctx.actor);
+    await c.roles.seedDefaults(ctx.actor);
   },
 
   healthcheck: async (ctx: PluginCtx): Promise<HealthStatus> => {

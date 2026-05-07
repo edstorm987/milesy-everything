@@ -14,11 +14,13 @@ import { containerFor } from "../server/foundationAdapter";
 import type {
   CreateDepartmentInput,
   CreateLeaveInput,
+  CreateRoleInput,
   CreateStaffInput,
   DecideLeaveInput,
   LeaveFilter,
   StaffFilter,
   UpdateDepartmentPatch,
+  UpdateRolePatch,
   UpdateStaffPatch,
 } from "../lib/domain";
 
@@ -204,4 +206,54 @@ export async function cancelLeaveHandler(req: Request, ctx: PluginCtx): Promise<
   if (!id) return badRequest("id required.");
   const ok = await buildContainer(ctx).leave.cancel(id, ctx.actor);
   return ok ? json({ ok: true }) : notFound("leave request not found");
+}
+
+// ─── Roles (Employee HQ) ──────────────────────────────────────────────────
+
+export async function listRolesHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  if (req.method !== "GET") return json({ ok: false, error: "method_not_allowed" }, 405);
+  const roles = await buildContainer(ctx).roles.list();
+  return json({ ok: true, roles });
+}
+
+export async function createRoleHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const body = await safeJson<CreateRoleInput>(req);
+  if (!body || !body.label) return badRequest("label required.");
+  try {
+    const role = await buildContainer(ctx).roles.create(
+      { label: body.label, permissions: body.permissions ?? [], visibleViewIds: body.visibleViewIds, requiresAuth: body.requiresAuth },
+      ctx.actor,
+    );
+    return json({ ok: true, role }, 201);
+  } catch (err) {
+    return unprocessable(err instanceof Error ? err.message : String(err));
+  }
+}
+
+export async function updateRoleHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "PATCH");
+  if (guard) return guard;
+  const body = await safeJson<{ id: string; patch: UpdateRolePatch }>(req);
+  if (!body?.id || !body.patch) return badRequest("id + patch required.");
+  try {
+    const role = await buildContainer(ctx).roles.update(body.id, body.patch, ctx.actor);
+    return role ? json({ ok: true, role }) : notFound("role not found");
+  } catch (err) {
+    return unprocessable(err instanceof Error ? err.message : String(err));
+  }
+}
+
+export async function deleteRoleHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "DELETE");
+  if (guard) return guard;
+  const id = new URL(req.url).searchParams.get("id") ?? (await safeJson<{ id: string }>(req))?.id;
+  if (!id) return badRequest("id required.");
+  try {
+    const ok = await buildContainer(ctx).roles.delete(id, ctx.actor);
+    return ok ? json({ ok: true }) : notFound("role not found");
+  } catch (err) {
+    return unprocessable(err instanceof Error ? err.message : String(err));
+  }
 }
