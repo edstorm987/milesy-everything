@@ -792,6 +792,16 @@ footer {
 }
 @media (max-width: 900px) { .mm-audiences-grid { grid-template-columns: 1fr; } }
 
+/* Dark text on light-bg sections (cream bg + white cards) — global --text is near-white */
+.mm-audiences .section-head h2,
+.mm-audiences .mm-audience h3,
+.mm-founding .section-head h2,
+.mm-founding .mm-founding-col h3 { color: #1f1a14; }
+.mm-audiences .section-head p,
+.mm-audiences .mm-audience > p,
+.mm-founding .section-head p,
+.mm-founding .mm-founding-card > p { color: #4a4538; }
+
 /* What Aqua replaces — comparison strip */
 .mm-replaces { padding: 88px 0; background: #0F0F0F; color: #E9E5DA; }
 .mm-replaces .section-head h2,
