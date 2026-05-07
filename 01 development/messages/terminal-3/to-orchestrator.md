@@ -166,3 +166,6 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T07:52:00Z] WAKE-PENDING-ARCHIVE: 014 still lowest. Sleeping 600s.
 [2026-05-07T08:09:00Z] STARTED: queue file `015-forms-as-block.md` — forms plugin already exposes `GET /forms/public/form/:formId` + `POST /forms/public/submit/:formId` + `GET /forms/forms` admin list. R015 ships NEW `formEmbed` block, FormPickerModal, smoke + chapter.
 [2026-05-07T08:23:00Z] COMMIT: pending — staging R015 explicit-path bundle.
+[2026-05-07T08:24:00Z] COMMIT: 90eae3d "T3 R015: forms-as-block — FormEmbedBlock + FormPickerModal + 14/14 smoke". 8 files clean. Pushed.
+[2026-05-07T08:24:00Z] DONE: queue file `015-forms-as-block.md` — round shipped. website-editor smoke 14/14 + tsc-clean. Chapter `04-forms-as-block.md` + MASTER row #96 + tasks.md row added. Cross-team: forms plugin's existing public/form + public/submit + admin/forms endpoints are the entire integration surface; no T2 changes needed. Q-ASSUMED: formId operator-typed today (sidebar picker wire-up R+1); runtime fetch (no SSR pre-render); honeypot is plugin's anti-bot; external-webhook returns inline thank-you. Commander may archive 015; queue still has 016.
+[2026-05-07T08:25:00Z] WAKE-PENDING-ARCHIVE: 015 still lowest. Sleeping 1800s.
