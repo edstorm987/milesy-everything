@@ -152,6 +152,7 @@ export interface ServerUser {
   clientId?: string;             // set for client-* roles + freelancer + end-customer
   mustChangePassword?: boolean;
   emailVerifiedAt?: number;       // R020: epoch ms when verification token redeemed
+  sessionRev?: number;            // R021: rotation counter; bumped on role/password change
   createdAt: number;
   updatedAt: number;
 }
@@ -171,6 +172,11 @@ export interface SessionPayload {
   // (not by `/api/auth/login`). Surfaces a banner + POV toggle in the
   // portal chrome and isolates the demo agency from real tenants.
   isDemo?: boolean;
+  // R021: session-rotation revision. When user.sessionRev > payload.sessionRev
+  // the session is stale (role/password changed) and should be rejected on
+  // user-aware paths (getCurrentUser / requireRole+lookup). Stateless verify
+  // via HMAC stays cheap; rotation enforcement is opt-in at the lookup layer.
+  sessionRev?: number;
   iat: number;
   exp: number;
 }

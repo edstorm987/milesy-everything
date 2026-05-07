@@ -207,6 +207,7 @@ export function setUserPassword(
       ...stored,
       passwordHash: hashPassword(password),
       mustChangePassword: false,
+      sessionRev: (stored.sessionRev ?? 0) + 1, // R021: invalidate existing sessions
       updatedAt: Date.now(),
     };
     ok = true;
@@ -233,12 +234,18 @@ export function updateUser(
   mutate(state => {
     const stored = state.users[key];
     if (!stored) return;
+    // R021: bump sessionRev when role or clientId changes — stale cookies
+    // carrying the old role/scope fail freshness checks at the lookup layer.
+    const roleOrScopeChanged =
+      (patch.role !== undefined && patch.role !== stored.role) ||
+      (patch.clientId !== undefined && patch.clientId !== stored.clientId);
     saved = {
       ...stored,
       name: patch.name ?? stored.name,
       role: patch.role ?? stored.role,
       clientId: patch.clientId ?? stored.clientId,
       mustChangePassword: patch.mustChangePassword ?? stored.mustChangePassword,
+      sessionRev: roleOrScopeChanged ? (stored.sessionRev ?? 0) + 1 : stored.sessionRev,
       updatedAt: Date.now(),
     };
     state.users[key] = saved;
@@ -254,6 +261,24 @@ export function markEmailVerified(userId: string): ServerUser | null {
     for (const [key, u] of Object.entries(state.users)) {
       if (u.id === userId) {
         const next: ServerUser = { ...u, emailVerifiedAt: Date.now(), updatedAt: Date.now() };
+        state.users[key] = next;
+        saved = next;
+        return;
+      }
+    }
+  });
+  return saved;
+}
+
+// R021: bump the user's session-rotation counter — call from setUserPassword
+// and updateUser when role/clientId changes. Stale cookies fail the
+// freshness check in `getCurrentUser` / `isSessionFresh`.
+export function rotateUserSession(userId: string): ServerUser | null {
+  let saved: ServerUser | null = null;
+  mutate(state => {
+    for (const [key, u] of Object.entries(state.users)) {
+      if (u.id === userId) {
+        const next: ServerUser = { ...u, sessionRev: (u.sessionRev ?? 0) + 1, updatedAt: Date.now() };
         state.users[key] = next;
         saved = next;
         return;

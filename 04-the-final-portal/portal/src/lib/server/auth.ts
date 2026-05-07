@@ -48,6 +48,10 @@ interface IssueSessionInput {
   // render the demo banner + POV toggle; the seed/reset endpoints use it
   // to scope writes to the demo agency only.
   isDemo?: boolean;
+  // R021: session rotation revision. Pass the user's current `sessionRev`
+  // here so the cookie gets stamped — later rotations bump the user record's
+  // value and stale tokens fail freshness checks at the lookup layer.
+  sessionRev?: number;
 }
 
 export function issueSession(input: IssueSessionInput): string {
@@ -59,6 +63,7 @@ export function issueSession(input: IssueSessionInput): string {
     agencyId: input.agencyId,
     clientId: input.clientId,
     isDemo: input.isDemo === true ? true : undefined,
+    sessionRev: input.sessionRev ?? 0,
     iat: now,
     exp: now + COOKIE_MAX_AGE,
   };
@@ -106,7 +111,21 @@ export async function getSessionFromRequest(req: NextRequest): Promise<SessionPa
 export async function getCurrentUser(): Promise<ServerUser | null> {
   const session = await getSession();
   if (!session) return null;
-  return getUserById(session.userId);
+  const user = getUserById(session.userId);
+  if (!user) return null;
+  // R021: session rotation freshness check. When the user record's rev is
+  // ahead of the cookie's, the cookie is stale (role/password changed) →
+  // refuse it. Defaults to 0 on either side keep legacy tokens valid.
+  if (!isSessionFresh(session, user)) return null;
+  return user;
+}
+
+// R021: helper for routes that already loaded the user — keeps `verifyToken`
+// (sync, hot-path) cheap while still enforcing rotation at the lookup layer.
+export function isSessionFresh(session: SessionPayload, user: ServerUser): boolean {
+  const stamped = session.sessionRev ?? 0;
+  const current = user.sessionRev ?? 0;
+  return stamped >= current;
 }
 
 // ─── Role gate ────────────────────────────────────────────────────────────
