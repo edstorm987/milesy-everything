@@ -59,9 +59,66 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 <Link href="/for-fitness">💪 Fitness studios</Link>
               </div>
             </span>
-            <Link href="/health-check">Health Check</Link>
-            <Link href="/business-os">Business OS</Link>
-            <Link href="/incubator">Incubator</Link>
+            <span className="nav-dropdown nav-dropdown-mega">
+              <Link href="/resources" className="nav-dropdown-toggle">
+                Resources ▾
+              </Link>
+              <div className="nav-dropdown-menu nav-mega-menu">
+                <div className="nav-mega-col">
+                  <span className="nav-mega-heading">Audits & diagnostics</span>
+                  <Link href="/health-check">
+                    🩺 <strong>Health Check</strong>
+                    <em>The flagship 12-min business audit</em>
+                  </Link>
+                  <Link href="/resources/seo-audit">
+                    🔎 <strong>SEO audit</strong>
+                    <em>Where you rank, what's missing</em>
+                  </Link>
+                  <Link href="/resources/site-speed">
+                    ⚡ <strong>Site speed test</strong>
+                    <em>Lighthouse-style read of your homepage</em>
+                  </Link>
+                  <Link href="/resources/accessibility-audit">
+                    ♿ <strong>Accessibility audit</strong>
+                    <em>WCAG quick scan</em>
+                  </Link>
+                </div>
+                <div className="nav-mega-col">
+                  <span className="nav-mega-heading">Operating tools</span>
+                  <Link href="/business-os">
+                    🧭 <strong>Business OS</strong>
+                    <em>The free operating layer</em>
+                  </Link>
+                  <Link href="/incubator">
+                    🌱 <strong>Incubator</strong>
+                    <em>Four-phase build engagement</em>
+                  </Link>
+                  <Link href="/resources/ux-orchestration">
+                    🎯 <strong>UX orchestration</strong>
+                    <em>Map your customer journey</em>
+                  </Link>
+                  <Link href="/resources/copy-clinic">
+                    ✍️ <strong>Copy clinic</strong>
+                    <em>5-second-test your homepage hero</em>
+                  </Link>
+                </div>
+                <div className="nav-mega-col">
+                  <span className="nav-mega-heading">Reading & playbooks</span>
+                  <Link href="/resources/playbooks">
+                    📖 <strong>Playbooks</strong>
+                    <em>Honest write-ups, no fluff</em>
+                  </Link>
+                  <Link href="/resources/case-studies">
+                    📊 <strong>Case studies</strong>
+                    <em>What actually moved the needle</em>
+                  </Link>
+                  <Link href="/resources">
+                    🔗 <strong>All resources →</strong>
+                    <em>Hub page with everything</em>
+                  </Link>
+                </div>
+              </div>
+            </span>
           </nav>
           <div className="nav-cta">
             <Link href="/login" className="btn btn-ghost">
