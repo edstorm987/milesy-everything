@@ -27,6 +27,8 @@ import AppShowcaseBlock from "./blocks/AppShowcaseBlock";
 import AuthorBioBlock from "./blocks/AuthorBioBlock";
 import BannerBlock from "./blocks/BannerBlock";
 import CookieConsentBlock from "./blocks/CookieConsentBlock";
+import BlogFeedBlock from "./blocks/BlogFeedBlock";
+import BlogPostBlock from "./blocks/BlogPostBlock";
 import BeforeAfterBlock from "./blocks/BeforeAfterBlock";
 import BookingWidgetBlock from "./blocks/BookingWidgetBlock";
 import ButtonBlock from "./blocks/ButtonBlock";
@@ -296,6 +298,29 @@ export const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
       ] },
       { key: "dismissible", label: "Dismissible", type: "boolean", default: true },
       { key: "sticky", label: "Stick to top", type: "boolean", default: false },
+    ],
+  },
+  "blog-feed": {
+    type: "blog-feed", label: "Blog feed", icon: "📰", category: "content", isContainer: false,
+    Component: BlogFeedBlock,
+    defaultProps: { count: 6, layout: "grid" },
+    fields: [
+      { key: "count", label: "Post count", type: "number", default: 6 },
+      { key: "layout", label: "Layout", type: "select", default: "grid", options: [
+        { value: "grid", label: "Grid" }, { value: "list", label: "List" },
+      ] },
+      { key: "filterTag", label: "Filter by tag", type: "text" },
+      { key: "linkBase", label: "Link base", type: "text", default: "/blog" },
+      { key: "siteId", label: "Site ID override", type: "text" },
+    ],
+  },
+  "blog-post": {
+    type: "blog-post", label: "Blog post", icon: "📄", category: "content", isContainer: false,
+    Component: BlogPostBlock,
+    defaultProps: { slug: "auto" },
+    fields: [
+      { key: "slug", label: "Post slug ('auto' = read URL)", type: "text", default: "auto" },
+      { key: "siteId", label: "Site ID override", type: "text" },
     ],
   },
   "cookie-consent": {

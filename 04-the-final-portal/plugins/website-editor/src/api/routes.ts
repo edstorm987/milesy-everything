@@ -61,6 +61,14 @@ import { handlePromote } from "./handlers/promote";
 import { handleListAssets, handleUploadAsset, handleDeleteAsset } from "./handlers/assets";
 import { handleListTemplates, handleSaveTemplate, handleDeleteTemplate } from "./handlers/templates";
 import { handleGetForcePassword, handleSetForcePassword } from "./handlers/forcePassword";
+import {
+  handleListBlogPosts,
+  handleGetBlogPost,
+  handleGetBlogPostBySlug,
+  handleCreateBlogPost,
+  handleUpdateBlogPost,
+  handleDeleteBlogPost,
+} from "./handlers/blog";
 
 export const apiRoutes: PluginApiRoute[] = [
   // Pages
@@ -133,4 +141,12 @@ export const apiRoutes: PluginApiRoute[] = [
   // is foundation/T1 territory; these endpoints surface the flag.
   { path: "/users/force-password", methods: ["GET"], handler: handleGetForcePassword },
   { path: "/users/force-password", methods: ["POST"], handler: handleSetForcePassword },
+
+  // Blog (R008) — admin CRUD + public-by-slug for storefront blocks.
+  { path: "/blog/posts", methods: ["GET"], handler: handleListBlogPosts },
+  { path: "/blog/posts/get", methods: ["GET"], handler: handleGetBlogPost },
+  { path: "/blog/posts/by-slug", methods: ["GET"], handler: handleGetBlogPostBySlug },
+  { path: "/blog/posts", methods: ["POST"], handler: handleCreateBlogPost },
+  { path: "/blog/posts", methods: ["PATCH"], handler: handleUpdateBlogPost },
+  { path: "/blog/posts", methods: ["DELETE"], handler: handleDeleteBlogPost },
 ];

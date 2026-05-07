@@ -42,6 +42,14 @@ export const storageKeys = {
   embedTheme: (a: AgencyId, c: ClientId, siteId: string) =>
     `${T(a, c)}/embed-theme/${siteId}`,
 
+  // Blog posts (R008) — keyed per (siteId, postId). Slug index keeps
+  // slug→id lookups cheap for `/blog/[slug]` route resolution.
+  blogIndex: (a: AgencyId, c: ClientId, siteId: string) => `${T(a, c)}/blog/${siteId}/index`,
+  blogPost: (a: AgencyId, c: ClientId, siteId: string, postId: string) =>
+    `${T(a, c)}/blog/${siteId}/${postId}`,
+  blogSlugIndex: (a: AgencyId, c: ClientId, siteId: string) =>
+    `${T(a, c)}/blog/${siteId}/_slug-index`,
+
   // Discovery (host-scoped — agency-wide).
   discoveries: (a: AgencyId) => `t/${a}/_discoveries/index`,
   discovery: (a: AgencyId, host: string) => `t/${a}/_discoveries/${encodeURIComponent(host)}`,

@@ -242,6 +242,37 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R008 — Storefront blog admin** — DONE.
+      Goal A: NEW `server/blog.ts` — `BlogPost` w/ BlockTree body
+      (richer than 02's HTML), per-site CRUD scoped by
+      `(agencyId, clientId, siteId)`, slug→id sidecar index for
+      O(1) /blog/[slug] lookup. createBlogPost auto-disambiguates
+      slugs `-2/-3/…`; updateBlogPost throws `BlogSlugConflictError`
+      on collision. `draft→published` stamps `publishedAt`;
+      subsequent edits keep original (SEO-stable). listBlogPosts
+      filter: `{ status?, tag?, query?, limit? }` — default hides
+      archived; `status:"all"` surfaces them. Goal B: NEW
+      `api/handlers/blog.ts` + 6 routes — GET list / GET get /
+      GET by-slug (404 on archived = storefront gate) / POST
+      (201/400) / PATCH (200/404/409) / DELETE (200/404). Goal C:
+      NEW `BlogFeedBlock.tsx` (`blog-feed` 📰) + NEW
+      `BlogPostBlock.tsx` (`blog-post` 📄) registered in
+      blockRegistry; feed renders cards (grid/list, cover, tag
+      chips, N-min-read excerpt-derived); post block reads slug
+      from URL last-segment when `slug="auto"`, body renders via
+      host-injected `window.__aquaRenderBlocks` (debug fallback if
+      not injected). Goal D: sitemap deliberately NOT auto-injecting
+      `/blog`+`/blog/[slug]` — operator drops the blocks where they
+      want them. Goal E: NEW `__smoke__/r008-blog.test.ts` 49/49
+      pass + package.json test chain extended. tsc-clean. Chapter
+      `04-blog-admin.md` + MASTER row #85.
+      Q-ASSUMED: BlockTree body not HTML; read-time excerpt-derived
+      at 250 wpm (body-walk R+1); admin list/edit pages deferred —
+      operators drive end-to-end via API today; archived gated 404
+      from public by-slug. Deferred: admin pages mounted on existing
+      editor visual, auto-inject /blog routes via editor-settings
+      toggle, RSS feed, comments/Disqus, multi-author permissions,
+      scheduled posts (domain shape already absorbs the field).
 - [x] **T3 R007 — Cookie consent + force-password-change** — DONE.
       Goal A: NEW `CookieConsentBlock.tsx` registered in blockRegistry
       under `cookie-consent` (🍪, content category). Props
