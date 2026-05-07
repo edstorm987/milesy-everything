@@ -385,3 +385,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T22:43:00Z] WAKE-EMPTY: queue empty (047 archived). Empty streak 1/10. Sleeping 600s.
 
 [2026-05-07T22:53:00Z] WAKE-EMPTY: queue still empty. Streak 2/10. Sleeping 600s.
+
+[2026-05-07T22:54:00Z] WARN: mesh absorption in commit a44ca81 — `git add -A` swept up uncommitted T4 (`public/_marketing/styles.css`) + T1 (`src/app/login/LoginForm.tsx`, `src/lib/server/demoSeed.ts`) changes alongside my outbox edit. Already pushed. Switching back to scoped `git add <path>` for outbox-only commits going forward.
