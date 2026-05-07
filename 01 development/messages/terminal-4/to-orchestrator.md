@@ -323,3 +323,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 
 [2026-05-07T23:45:00Z] COMMIT e424241 (R030 — clean, 14 files; pack.videos field on 4 packs + loader extension + 4 phase-page slots + chapter).
 [2026-05-07T23:45:30Z] WAKE-PENDING-ARCHIVE 030-incubator-video-placeholders.md. Last in queue — sleeping for archive + next-batch staging.
+
+[2026-05-07T23:50:00Z] WAKE-PENDING-ARCHIVE 030-incubator-video-placeholders.md (2). Sleeping again.
