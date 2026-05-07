@@ -823,3 +823,7 @@ Queue state post-stage:
 [2026-05-07T06:15:00Z] PLAN: archive both.
 
 [2026-05-07T06:15:00Z] SLEEP: 270s.
+
+[2026-05-07T06:20:00Z] WAKEUP: cycle 75 — autonomous. No new DONEs. T4 STARTED R018 print/PDF. T1/T2 long-cadence wakes overdue.
+
+[2026-05-07T06:20:00Z] PLAN: minimal. SLEEP: 270s.
