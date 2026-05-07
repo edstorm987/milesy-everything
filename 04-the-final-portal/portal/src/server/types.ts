@@ -151,6 +151,7 @@ export interface ServerUser {
   agencyId: string;              // every user belongs to one agency
   clientId?: string;             // set for client-* roles + freelancer + end-customer
   mustChangePassword?: boolean;
+  emailVerifiedAt?: number;       // R020: epoch ms when verification token redeemed
   createdAt: number;
   updatedAt: number;
 }

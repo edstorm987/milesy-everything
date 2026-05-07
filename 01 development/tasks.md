@@ -1041,6 +1041,46 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R035 — Draft / published state separation** — DONE.
+      Until R035 every editor save went live. R035 splits: edits
+      land in `draftBlocks`; explicit Publish promotes draft →
+      `publishedBlocks` + live `blocks` slot. Storefront serves
+      `published` only w/ `?preview=1` escape hatch. NEW `src/lib/
+      draftPublished.ts` pure helpers: getDraftTree (draftBlocks
+      ?? blocks), getPublishedTree (publishedBlocks else blocks
+      when status="published" else null), hasDraftAhead (JSON-
+      stringify compare; true only when previously-published +
+      draft differs), pageStatus → draft/published/draft-ahead,
+      saveToDraftPatch, promoteToPublishedPatch (canonical shape:
+      status="published", blocks=draft, publishedBlocks=draft,
+      draftBlocks:undefined, publishedAt, publishedBy, updatedAt),
+      resolveStorefrontTree({preview?}) → {tree, source:
+      "published"|"draft-fallback"|"draft-preview", isFallback}.
+      NEW `src/components/editor/PageStatusChip.tsx` — three chip
+      states w/ distinct visual: Draft (dashed neutral) ·
+      Published (solid green) · Draft ahead (solid amber). data-
+      status + data-testid markers. Smoke 25/25.
+      No schema migration — pre-R035 rows w/ only `blocks` keep
+      working via fallbacks; chip renders simple draft/published
+      binary until first explicit publish. package.json chain
+      extended. tsc clean.
+      NOT in scope: scheduled publishing · per-block draft state
+      · refactor of server `publishPage` to call helper (host
+      one-liner R+1) · editor topbar wiring of chip + Publish
+      button (host EditorPage composition).
+      Q-ASSUMED: R022 publishPage left as-is — already moves
+      draftBlocks→blocks + clears; promoteToPublishedPatch is
+      canonical going forward, R+1 refactor; "draft ahead" via
+      JSON.stringify (block trees POJOs, stable serialisation);
+      never-published-w/-draft is status="draft" not "draft-
+      ahead" (ahead semantically requires prior live version);
+      `?preview=1` is the contract, host decides token gating.
+      Files: `04-the-final-portal/plugins/website-editor/src/lib/
+      draftPublished.ts` (NEW) · `src/components/editor/
+      PageStatusChip.tsx` (NEW) · `__smoke__/r035-draft-
+      published.test.ts` (NEW) · `package.json` chain · `01
+      development/context/prior research/04-draft-published.md`
+      (NEW chapter) · MASTER row #117.
 - [x] **T3 R034 — Version diff view** — DONE.
       R022 saved page versions; R034 adds side-by-side diff between
       two snapshots. NEW `src/lib/blockTreeDiff.ts` — pure helpers:
