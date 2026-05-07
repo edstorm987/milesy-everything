@@ -1271,3 +1271,196 @@ footer {
   font-weight: 600;
   margin-top: 6px;
 }
+
+/* ─── T4 unify-fix · Resource Finder (search + filter) ──── */
+.mm-finder-wrap { padding: 40px 0 80px; }
+.mm-finder { max-width: 880px; margin: 0 auto; }
+.mm-finder-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFF;
+  border: 1.5px solid rgba(20, 18, 14, 0.1);
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 6px 20px rgba(20, 18, 14, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.mm-finder-bar:focus-within {
+  border-color: #C9A76A;
+  box-shadow: 0 8px 28px rgba(201, 167, 106, 0.18);
+}
+.mm-finder-icon { font-size: 18px; opacity: 0.7; }
+.mm-finder-input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 16px;
+  color: #14120E;
+  font-family: inherit;
+  min-width: 0;
+}
+.mm-finder-input::placeholder { color: #8A8377; }
+.mm-finder-clear {
+  background: rgba(20, 18, 14, 0.06);
+  border: 0;
+  border-radius: 6px;
+  width: 26px; height: 26px;
+  cursor: pointer;
+  color: #6B635A;
+  font-size: 13px;
+}
+.mm-finder-clear:hover { background: rgba(20, 18, 14, 0.12); }
+
+.mm-finder-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.mm-finder-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid rgba(20, 18, 14, 0.1);
+  background: #FFF;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #6B635A;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.12s ease;
+}
+.mm-finder-chip:hover { border-color: #C9A76A; color: #14120E; }
+.mm-finder-chip.is-on {
+  background: #14120E;
+  border-color: #14120E;
+  color: #FFF;
+}
+.mm-finder-chip-count {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 11px;
+}
+.mm-finder-chip.is-on .mm-finder-chip-count {
+  background: rgba(255, 255, 255, 0.18);
+  color: #FFF;
+}
+
+.mm-finder-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 4px 12px;
+  font-size: 13px;
+  color: #6B635A;
+  border-bottom: 1px solid rgba(20, 18, 14, 0.06);
+  margin-bottom: 24px;
+}
+.mm-finder-reset {
+  background: transparent;
+  border: 0;
+  color: #C9A76A;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+}
+.mm-finder-reset:hover { color: #8E7340; }
+
+.mm-finder-empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: #FAF7EE;
+  border-radius: 14px;
+  border: 1px dashed rgba(20, 18, 14, 0.12);
+}
+.mm-finder-empty p { margin: 0 0 8px; color: #14120E; font-size: 16px; }
+.mm-finder-empty p.muted { color: #6B635A; font-size: 14px; }
+.mm-finder-empty a { color: #C9A76A; }
+
+.mm-finder-group { margin-top: 32px; }
+.mm-finder-group:first-child { margin-top: 0; }
+.mm-finder-group h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  margin: 0 0 14px;
+  color: #14120E;
+  font-weight: 600;
+}
+.mm-finder-group-count {
+  font-family: ui-sans-serif, system-ui;
+  font-size: 13px;
+  color: #8A8377;
+  font-weight: 400;
+}
+.mm-finder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+.mm-finder-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 18px;
+  background: #FFF;
+  border: 1.5px solid rgba(20, 18, 14, 0.08);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: all 0.15s ease;
+  min-height: 180px;
+}
+.mm-finder-card:hover {
+  border-color: #C9A76A;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(20, 18, 14, 0.06);
+}
+.mm-finder-card-status {
+  position: absolute;
+  top: 14px; right: 14px;
+  font-size: 10px;
+  background: rgba(20, 18, 14, 0.06);
+  color: #6B635A;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.mm-finder-card.is-live .mm-finder-card-status {
+  background: rgba(34, 139, 91, 0.12);
+  color: #228B5B;
+}
+.mm-finder-card-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 17px;
+  color: #14120E;
+  padding-right: 80px;
+  line-height: 1.3;
+}
+.mm-finder-card-excerpt {
+  font-size: 13px;
+  color: #6B635A;
+  line-height: 1.5;
+  flex: 1;
+}
+.mm-finder-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+.mm-finder-tag {
+  font-size: 10px;
+  background: rgba(201, 167, 106, 0.1);
+  color: #8E7340;
+  padding: 2px 7px;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+}
