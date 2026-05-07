@@ -48,7 +48,9 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
 
 ### To do — T3 (website-editor)
 
-- [ ] **R037 — Structured data (schema.org)** (existing queue).
+- [x] **R037 — Structured data (schema.org)** — DONE 2026-05-07.
+      `lib/structuredData.ts` (buildJsonLd / validateJsonLd /
+      serializeJsonLd) + 30/30 smoke + chapter #125.
 - [ ] **R038 — Image srcset + responsive helper** (existing queue).
 - [ ] **R039 — Block schema migration runner** (forward-compat for
       evolving block schemas; pure helper + smoke).
