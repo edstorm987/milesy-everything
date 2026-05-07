@@ -389,9 +389,24 @@
      This is what populates the action-rich quick-wins section on results. */
 
   /* AREAS comes from hc-questions.js. Admin can override via
-     localStorage['bos.hcQuestions']. Falls back to the default. */
+     localStorage['bos.hcQuestions']. Bump HC_SCHEMA_VERSION whenever
+     the default shape adds new fields (stickyEmbed, lever-calc,
+     mental-note, skipIf, etc.) so stale overrides get discarded.
+     `?fresh=1` forces defaults regardless. */
+  var HC_SCHEMA_VERSION = 3;
   var AREAS = (function () {
     try {
+      if (/[?&]fresh=1/.test(location.search)) {
+        localStorage.removeItem('bos.hcQuestions');
+        localStorage.removeItem('bos.hcQuestions.version');
+        return window.HC_AREAS || [];
+      }
+      var storedVer = parseInt(localStorage.getItem('bos.hcQuestions.version') || '0', 10);
+      if (storedVer < HC_SCHEMA_VERSION) {
+        localStorage.removeItem('bos.hcQuestions');
+        localStorage.setItem('bos.hcQuestions.version', String(HC_SCHEMA_VERSION));
+        return window.HC_AREAS || [];
+      }
       var ovr = JSON.parse(localStorage.getItem('bos.hcQuestions') || 'null');
       if (ovr && Array.isArray(ovr) && ovr.length) return ovr;
     } catch (e) {}
