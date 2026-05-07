@@ -82,3 +82,15 @@ Latest commits in T4 scope: `3a2a633` (HC honesty), `31d1764` (admin editor live
 Net: T4 has shipped a working three-app ecosystem (milesy site + HC + BOS) at the lead-magnet tier. Ready to be picked up by anyone — full architecture spec is in chapter #66 with the rest cross-referenced.
 
 [2026-05-07T09:40:30Z] COMMIT pending (chapters + MASTER rows).
+
+[2026-05-07T10:10:00Z] DETAILED HANDOFF · Per Ed "make it incredibly detailed nothing missed all plans how we built it as well" — three new dense chapters added on top of the original 6:
+
+- **04-t4-build-history.md** (#72) — chronological round-by-round log R0→R23. Every Ed prompt → what was built → files touched → deviations / Q-ASSUMED → commit hash. Cumulative commit list with mesh-absorbed pieces flagged.
+- **04-t4-architecture-reference.md** (#73) — file-by-file architecture. Every page documented (purpose, structure, JS hooks, state shape, dependencies). bos.js function-by-function breakdown. Every CSS component section listed.
+- **04-t4-copy-content-reference.md** (#74) — every piece of copy / data shipped. Niches table · Levels · Achievements · Marketplace add-ons · 5 lessons section-by-section · 22-row module library · full HC topic+tier reference w/ scoring tags · sidebar labels · marketing site verbatim · BOS home copy · HC end-of-flow copy · roadmap · help / request / Pro lockup · Aqua AI replies.
+
+Plus the 6 originals: #66 master snapshot · #67 plugin handoff spec · #68 HC honesty contract · #69 admin questions editor · #70 free-vs-Pro gating · #71 open follow-ups.
+
+MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugin handoff · honesty contract · admin editor · gating · open Qs · build history · architecture ref · copy ref. Anyone picking up T4 cold can read #66 as the entry point and follow cross-refs to reconstruct the entire thread + every implementation detail + every word of copy.
+
+[2026-05-07T10:10:30Z] COMMIT pending (3 chapters + 3 MASTER rows + outbox).
