@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { LoginForm } from "./LoginForm";
 import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
 import { seedFounder } from "@/lib/server/founderSeed";
+import { SiteShell } from "@/components/SiteShell";
 
 export const metadata = {
   title: "Sign in · Milesy Media",
@@ -13,23 +14,26 @@ export default async function LoginPage() {
   // form renders, so a fresh `npm run dev` can sign in immediately.
   await seedFounder();
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
-      <div className="w-full max-w-sm">
-        <div className="mb-6 text-center">
-          <Link href="/" className="text-xs uppercase tracking-wide text-black/50 hover:text-black/80">
-            ← Aqua portal
-          </Link>
-          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-black/90">
-            Welcome back
-          </h1>
-          <p className="mt-1 text-sm text-black/60">
-            Sign in to your agency or client portal.
-          </p>
+    <SiteShell>
+      <main className="mm-auth-shell">
+        <div className="mm-auth-card">
+          <div className="mm-auth-card-head">
+            <h1>Welcome back</h1>
+            <p>Sign in to your agency, Business OS or client portal.</p>
+          </div>
+          <Suspense fallback={<div className="h-40" aria-hidden />}>
+            <LoginForm googleEnabled={isGoogleOAuthConfigured()} />
+          </Suspense>
+          <div className="mm-auth-foot">
+            <span>
+              New here? <Link href="/signup">Get started →</Link>
+            </span>
+            <Link href="/dev/pov" className="mm-dev-bypass" prefetch={false}>
+              ⚡ Dev bypass
+            </Link>
+          </div>
         </div>
-        <Suspense fallback={<div className="h-40" aria-hidden />}>
-          <LoginForm googleEnabled={isGoogleOAuthConfigured()} />
-        </Suspense>
-      </div>
-    </main>
+      </main>
+    </SiteShell>
   );
 }

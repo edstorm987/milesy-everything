@@ -961,3 +961,152 @@ footer {
   border: 0;
   background: #0a0a0a;
 }
+
+/* ─── T4 unify-fix · Auth surfaces (login / signup / dev-pov) ──── */
+.mm-auth-shell {
+  min-height: calc(100vh - 56px - 64px - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px 80px;
+  background: #FAF7EE;
+}
+.mm-auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: #FFF;
+  border: 1px solid rgba(20, 18, 14, 0.1);
+  border-radius: 14px;
+  padding: 36px 32px 28px;
+  box-shadow: 0 16px 48px rgba(20, 18, 14, 0.08);
+}
+.mm-signup-picker { max-width: 760px; }
+.mm-dev-card { max-width: 560px; border-color: rgba(201, 167, 106, 0.5); }
+.mm-auth-card-head { text-align: center; margin-bottom: 22px; position: relative; }
+.mm-auth-card-head h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 28px;
+  margin: 6px 0 6px;
+  color: #14120E;
+}
+.mm-auth-card-head p { color: #6B635A; font-size: 14px; margin: 0; }
+.mm-auth-back {
+  position: absolute; top: -8px; left: 0;
+  font-size: 12px; color: #8A8377; text-decoration: none;
+}
+.mm-auth-back:hover { color: #C9A76A; }
+.mm-auth-foot {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(20, 18, 14, 0.06);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; color: #6B635A;
+}
+.mm-auth-foot a { color: #C9A76A; text-decoration: none; }
+.mm-auth-foot a:hover { text-decoration: underline; }
+
+.mm-dev-bypass {
+  font-size: 12px;
+  background: rgba(201, 167, 106, 0.12);
+  border: 1px solid rgba(201, 167, 106, 0.4);
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #B89254 !important;
+  font-weight: 600;
+}
+.mm-dev-bypass:hover { background: rgba(201, 167, 106, 0.2); text-decoration: none !important; }
+
+/* ─── Dev POV picker buttons ─── */
+.mm-dev-eyebrow {
+  display: inline-block;
+  background: rgba(201, 167, 106, 0.15);
+  color: #B89254;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.mm-pov-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.mm-pov-list form { margin: 0; }
+.mm-pov-btn {
+  width: 100%; text-align: left;
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 18px;
+  background: #FAF7EE;
+  border: 1px solid rgba(20, 18, 14, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+.mm-pov-btn:hover {
+  border-color: #C9A76A;
+  background: #FFF;
+  transform: translateY(-1px);
+}
+.mm-pov-btn-title { font-weight: 600; color: #14120E; font-size: 15px; }
+.mm-pov-btn-sub { font-size: 12px; color: #8A8377; }
+.mm-pov-btn-landing { font-size: 11px; color: #C9A76A; margin-top: 2px; font-family: ui-monospace, monospace; }
+
+/* ─── Signup role grid ─── */
+.mm-role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 6px;
+}
+@media (max-width: 600px) {
+  .mm-role-grid { grid-template-columns: 1fr; }
+}
+.mm-role-card {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 22px 20px;
+  background: #FAF7EE;
+  border: 1.5px solid rgba(20, 18, 14, 0.08);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: all 0.15s ease;
+}
+.mm-role-card.is-available { background: #FFF; border-color: rgba(201, 167, 106, 0.3); }
+.mm-role-card:hover {
+  border-color: #C9A76A;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(20, 18, 14, 0.06);
+}
+.mm-role-badge {
+  position: absolute; top: 14px; right: 14px;
+  font-size: 10px;
+  background: rgba(20, 18, 14, 0.06);
+  color: #6B635A;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.mm-role-card.is-available .mm-role-badge {
+  background: rgba(34, 139, 91, 0.12);
+  color: #228B5B;
+}
+.mm-role-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+  color: #14120E;
+  padding-right: 70px;
+}
+.mm-role-sub {
+  font-size: 13px;
+  color: #6B635A;
+  line-height: 1.5;
+}
+.mm-role-cta {
+  font-size: 13px;
+  color: #C9A76A;
+  font-weight: 600;
+  margin-top: 6px;
+}
