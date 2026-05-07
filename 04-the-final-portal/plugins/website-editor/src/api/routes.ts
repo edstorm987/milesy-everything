@@ -73,6 +73,13 @@ import { handleGetBrandKitExtended, handleSaveBrandKitExtended } from "./handler
 import { handleGetEmbedAllowList, handleSetEmbedAllowList } from "./handlers/embedAllow";
 import { handleSitemapXml, handleRobotsTxt, handleOgCard } from "./handlers/seoMeta";
 import {
+  handleSaveVersion,
+  handleListVersions,
+  handleGetVersion,
+  handleDeleteVersion,
+  handleRenameVersion,
+} from "./handlers/pageVersions";
+import {
   handleListBlogPosts,
   handleGetBlogPost,
   handleGetBlogPostBySlug,
@@ -181,4 +188,11 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/sitemap.xml", methods: ["GET"], handler: handleSitemapXml },
   { path: "/robots.txt", methods: ["GET"], handler: handleRobotsTxt },
   { path: "/og", methods: ["GET"], handler: handleOgCard },
+
+  // Page versions (R022) — auto-save + named checkpoints.
+  { path: "/pages/versions", methods: ["GET"], handler: handleListVersions },
+  { path: "/pages/versions/get", methods: ["GET"], handler: handleGetVersion },
+  { path: "/pages/versions", methods: ["POST"], handler: handleSaveVersion },
+  { path: "/pages/versions", methods: ["PATCH"], handler: handleRenameVersion },
+  { path: "/pages/versions", methods: ["DELETE"], handler: handleDeleteVersion },
 ];

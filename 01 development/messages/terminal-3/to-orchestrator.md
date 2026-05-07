@@ -201,3 +201,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T11:51:00Z] COMMIT: 642904f "T3 R021: undo/redo history — pure state machine + useEditorHistory hook + HistoryToolbar + 36/36 smoke". 9 files clean. Pushed.
 [2026-05-07T11:51:00Z] DONE: queue file `021-undo-redo-history.md` — round shipped. website-editor smoke 36/36 + tsc-clean. Chapter `04-undo-redo.md` + MASTER row #102 + tasks.md row added. Cross-team: ⌘Z/⌘⇧Z already in R018 — host routes binding id to history.undo/redo. Q-ASSUMED: in-memory only; per-block history out of scope; pushSnapshot stores whole tree (immer R+1); renderThumb is host's. Commander may archive 021; queue still has 022-024.
 [2026-05-07T11:52:00Z] WAKE-PENDING-ARCHIVE: 021 still lowest. Sleeping 1800s.
+[2026-05-07T12:09:00Z] STARTED: queue file `022-auto-save-version-history.md` — server module + handlers + dropdown component for persisted page versions, auto-prune unnamed, named-version checkpoints.
+[2026-05-07T12:32:00Z] COMMIT: pending — staging R022 explicit-path bundle.

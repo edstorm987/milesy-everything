@@ -785,6 +785,29 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R022 — Auto-save + persisted version history** — DONE.
+      NEW `server/pageVersions.ts`: `PageVersion`,
+      `saveVersion`/`listVersions`/`getVersion`/`deleteVersion`/
+      `renameVersion`, `AUTO_VERSION_CAP=30` (named survive cap).
+      NEW `api/handlers/pageVersions.ts` + 5 routes
+      (POST/GET/GET-by-id/PATCH/DELETE under `/pages/versions`).
+      NEW `VersionsDropdown.tsx` separates Named (★ amber) from
+      Auto-saves with Preview/Restore CTAs + "Save checkpoint"
+      input that calls `onSaveNamed(label)`. Host wires 5s
+      debounced auto-save POST (skeleton in chapter §4); restore
+      is caller-composed (orthogonal to page CRUD, same pattern
+      as R012 portal variants). NEW
+      `__smoke__/r022-version-history.test.ts` 32/32 (server CRUD
+      + capacity trim + named-survives-trim + HTTP shape across
+      5 endpoints incl. all 400/404 paths). package.json test
+      chain extended. tsc-clean. Chapter `04-version-history.md`
+      + MASTER row #103.
+      Q-ASSUMED: restore caller-composed; debounce dispatch is
+      host concern; capacity walk O(N) per save fine at N=30
+      (batch trim R+1); diff view + multi-user conflict out of
+      scope. Deferred: diff view via R020 compareTrees,
+      multi-user conflict, identical-tree dedup, gzip
+      compression, per-page cap setting.
 - [x] **T3 R021 — Undo/redo history** — DONE.
       Snapshot-based ring buffer capped at 50. NEW
       `lib/editorHistory.ts` pure state machine
