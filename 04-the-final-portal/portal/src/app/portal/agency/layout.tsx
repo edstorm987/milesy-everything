@@ -14,6 +14,7 @@ import { ThemeInjector } from "@/components/chrome/ThemeInjector";
 import { Sidebar } from "@/components/chrome/Sidebar";
 import { Topbar } from "@/components/chrome/Topbar";
 import { AgencyToolsBallpark } from "@/components/chrome/AgencyToolsBallpark";
+import { NotificationBell } from "@/components/chrome/NotificationBell";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 export default async function AgencyLayout({ children }: { children: ReactNode }) {
@@ -48,7 +49,12 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
           panels={panels}
           tenantLabel={agency.name}
           currentPath={currentPath}
-          extra={<AgencyToolsBallpark />}
+          extra={
+            <>
+              <NotificationBell agencyId={agency.id} actor={session.userId} />
+              <AgencyToolsBallpark />
+            </>
+          }
         />
         <div className="flex flex-1 flex-col">
           <Topbar

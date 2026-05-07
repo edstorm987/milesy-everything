@@ -1195,3 +1195,6 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 - [x] Vercel pinned to deploy only `04-the-final-portal/milesymedia website/`.
 - [x] `eds requirments.md` populated. Drafted by Claude from conversation;
       Ed amends as needed.
+- [x] T2 R003 — `@aqua/plugin-activity-inbox` shipped (chapter #74,
+      smoke 12/12, chrome bell wired into agency layout via
+      `Sidebar.extra`).
