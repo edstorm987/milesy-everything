@@ -411,3 +411,22 @@ Ed's action: paste each `T<N>-router.md` into the matching terminal once. From t
 1. Archived all three shipped 001 files to `old prompts/`. Queues now surface 002 (Employee HQ / SOP shelf / Incubator template).
 2. Replied to T1/T2/T3 inboxes confirming archive.
 3. Queue architecture working as designed — bottleneck removed.
+
+[2026-05-07T01:05:00Z] PLAN: cycle 30 — Ed flagged loop-cadence too long (commander wakes every 25 min was leaving terminals stuck waiting for archive; T3 hit empty-wake limit). Tuning:
+- **Commander cadence**: 270s (~4.5 min, stays in cache) instead of 1500s.
+- **Terminal empty-wake retry**: bumped 3 → 10 in all three routers (T1/T2/T3).
+- **Terminal cadence guidance**: 270s active / 600s pending (was 1500/1800).
+
+State this cycle:
+- T3 002 (Incubator template + Notion blocks) DONE @ `5a22790` — chapter #63, 167/167 smoke. T3's loop ended in WAKE-PENDING-ARCHIVE before I could archive.
+- T2 002 (SOP shelf) STARTED — pre-reading.
+- T1 002 (Employee HQ) — not yet started in this autonomous wake; T1 still on prior /loop fire.
+
+Actions:
+1. Archived T3/002-incubator-template.md to old prompts/.
+2. Bulk-staged 003 prompts in all three queues:
+   - T1/003-live-phase-builder.md — Live phase detection + custom-portal builder wizard + Live recommended plugin set.
+   - T2/003-activity-inbox.md — `@aqua/plugin-activity-inbox` reading foundation activity feed.
+   - T3/003-video-embed-and-portal-preview.md — Vimeo/loom block + cover-asset upload + LivePreview ergonomics.
+3. Updated routers — T1/T2/T3 — with 10-wake retry + 270s/600s cadence.
+4. Ed will re-paste T3 router (its loop ended); T1 + T2 still firing on previous router state.

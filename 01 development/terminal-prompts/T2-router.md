@@ -38,7 +38,7 @@ self-pace through `01 development/terminal-prompts/queues/T2/`.
    filename. Commander archives the file.
 7. On next wake: re-read queue. If previous round is still lowest, log
    `WAKE-PENDING-ARCHIVE` and sleep. If new lowest appears, start step 4.
-8. Empty queue → `WAKE-EMPTY`. 3 consecutive empties → end loop.
+8. Empty queue → `WAKE-EMPTY`. 10 consecutive empties → end loop.
 
 Queue files start with `/loop` as a cosmetic header — ignore it; you're
 already running via this router.
@@ -48,7 +48,7 @@ already running via this router.
 - Q-ASSUMED + continue when reasonable.
 - Mesh hazard: shared `.git/index` with other terminals — verify
   post-pull, log `WARN` if absorbed.
-- Cadence: 1500s active / 1800s pending.
+- Cadence: 270s active / 600s pending.
 
 ## Authority boundaries
 

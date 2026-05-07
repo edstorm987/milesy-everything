@@ -50,7 +50,7 @@ If a change you'd like to make crosses these, log Q-BLOCKED and wait.
    `WAKE-PENDING-ARCHIVE` and sleep again. If a new lowest-numbered file
    has appeared, that's your new round — start at step 4.
 8. If the queue is empty (no `*.md` files), log `WAKE-EMPTY` in your
-   outbox. After **3 consecutive empty wakes**, end the loop per
+   outbox. After **10 consecutive empty wakes**, end the loop per
    discipline; Ed re-pastes this router when there's more work.
 
 ## Round-prompt shape (what to expect in queue files)
@@ -80,7 +80,7 @@ is already running via this router.
   --rebase --autostash` absorbs uncommitted work into another commit,
   the work still landed — log a `WARN` and verify post-pull before
   treating it as lost.
-- Cadence: 1500s (25 min) when actively shipping, 1800s when waiting on
+- Cadence: 270s (under 5 min, stays in cache) when actively shipping, 600s when waiting on
   archive or empty queue.
 
 ## Authority boundaries
