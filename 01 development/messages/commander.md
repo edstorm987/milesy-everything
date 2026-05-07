@@ -1241,3 +1241,10 @@ Open carry-forward follow-ups (will surface as queue rounds when T1-T3 resume): 
 **RESUME notices posted** to T1/T2/T3 inboxes — HOLD lifted. They'll boot to the new queue on next wake. Queue depths post: T1=4 · T2=5 · T3=3 · T4=manual.
 
 PLAN: monitor; archive DONEs; coordinate. SLEEP: 1200s (idle until terminals start firing).
+
+[2026-05-07T13:45:00Z] DEV-FOLDER CLEANUP — terminal-prompts/ reorganised per Ed's request. Top-level now holds only the 5 files actually pasted (orchestrator-init, T1/T2/T3-router, T4-manual). Moved retired/dormant prompts:
+- T4-manual-unification.md → `old prompts/T4-manual-unification-DONE-2026-05-07.md` (job shipped)
+- T4-milesymedia-website.md → `old prompts/T4-milesymedia-website-pre-router.md` (superseded by T4-router + T4-manual)
+- T4-router.md → `_dormant/T4-router.md` (T4 currently manual; reactivate later)
+- T6-production-gate.md → `_dormant/T6-production-gate.md` (T6 dormant until Sprint 3)
+README.md fully rewritten as a concrete index — table of active prompts + subfolder map + reactivation notes. Folder is now self-explanatory.
