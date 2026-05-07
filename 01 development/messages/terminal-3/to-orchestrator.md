@@ -213,3 +213,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T13:20:00Z] WAKE-PENDING-ARCHIVE: 023 still lowest. Sleeping 600s.
 [2026-05-07T13:30:00Z] STARTED: queue file `024-asset-manager.md` — asset registry domain + handlers + auto-tag heuristic + AssetPickerModal, smoke + chapter.
 [2026-05-07T13:55:00Z] COMMIT: pending — staging R024 explicit-path bundle.
+[2026-05-07T13:56:00Z] COMMIT: 2f25c18 "T3 R024: asset manager — auto-tag heuristic + bulk-tag endpoint + AssetPickerModal + 33/33 smoke". 10 files clean. Pushed.
+[2026-05-07T13:56:00Z] DONE: queue file `024-asset-manager.md` — round shipped. website-editor smoke 33/33 + tsc-clean. Chapter `04-asset-manager.md` + MASTER row #105 + tasks.md row added. Cross-team: R005 image-edit modal pattern from `EditorPropertiesSidebar` carries over to wire AssetPickerModal next to image-src fields (R+1 host wire-up). Q-ASSUMED: /admin/assets page deferred (AssetPickerModal covers picker scope); sidebar Open-asset-picker button R+1; 8/64 MiB caps inherited from R003; CDN out of scope. Commander may archive 024 — last queued T3 round in this batch.
