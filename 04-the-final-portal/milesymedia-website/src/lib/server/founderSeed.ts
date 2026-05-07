@@ -92,8 +92,8 @@ export function seedFounderForDevBypass(): Promise<void> {
 
 async function devRun(): Promise<void> {
   await ensureHydrated();
-  if (getUser(FOUNDER_EMAIL)) return;
 
+  // Build the founder + Milesy agency if missing.
   const agencyName = readFounderAgencyName();
   let agency = getAgencyBySlug(FOUNDER_AGENCY_SLUG);
   if (!agency) {
@@ -105,13 +105,32 @@ async function devRun(): Promise<void> {
     agency = result.agency;
   }
 
-  createUser({
-    email: FOUNDER_EMAIL,
-    password: DEV_FOUNDER_PASSWORD,
-    role: "agency-owner",
-    agencyId: agency.id,
-    name: FOUNDER_NAME,
-  });
+  let founder = getUser(FOUNDER_EMAIL);
+  if (!founder) {
+    founder = createUser({
+      email: FOUNDER_EMAIL,
+      password: DEV_FOUNDER_PASSWORD,
+      role: "agency-owner",
+      agencyId: agency.id,
+      name: FOUNDER_NAME,
+    });
+  }
+
+  // Same as the env-driven seed: also stand up AquaOasis Demo + make
+  // the founder a master. Without this the Topbar agency switcher
+  // hides (only 1 agency = no switcher). Idempotent — second run
+  // short-circuits on the slug check.
+  try {
+    const { seedAquaOasisDemo, addUserAgencyMembership } = await import("./aquaOasisSeed");
+    const { agency: aquaAgency } = await seedAquaOasisDemo(founder.id);
+    addUserAgencyMembership(founder.id, aquaAgency.id);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      "[founderSeed-dev] AquaOasis Demo seed failed — switcher will show only Milesy Media:",
+      e instanceof Error ? e.message : e,
+    );
+  }
 }
 
 async function run(): Promise<void> {

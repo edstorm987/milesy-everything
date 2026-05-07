@@ -1,33 +1,38 @@
 "use client";
-// AgencySwitcher — Topbar dropdown to flip the session's active agency.
-// T1 R026 (chapter `04-topbar-agency-switcher.md`).
+// AgencySwitcher — the agency-name TITLE button in the Topbar (Ed's
+// directive 2026-05-07). Used to be a small chip in the right
+// cluster + hidden when ≤1 agency; now it's the prominent left-side
+// title and ALWAYS shows, with "+ Add agency" at the bottom of the
+// dropdown so Ed can spin up new tenants from the UI.
 //
-// Hidden when only one agency is in scope (single-agency operators
-// see no UI noise). Multi-agency: <details> dropdown lists each
-// agency with its brand swatch; clicking POSTs /api/auth/agency-switch
-// then navigates to the response's `redirect` (role-aware).
+// T1 R026 (chapter #133) shipped the original chip; this round
+// promotes it to title + adds the agency-add flow.
 
 import { useState } from "react";
 
 export interface AgencyOption {
   id: string;
   name: string;
-  swatch?: string;          // hex; falls back to a neutral chip
+  swatch?: string;
   isActive?: boolean;
 }
 
 interface Props {
   agencies: AgencyOption[];
   activeAgencyId: string;
+  /** Subtitle line under the agency name — e.g. "Agency workspace". */
+  subtitle?: string;
 }
 
-export function AgencySwitcher({ agencies, activeAgencyId }: Props) {
+export function AgencySwitcher({ agencies, activeAgencyId, subtitle }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [newName, setNewName] = useState("");
 
-  if (!agencies || agencies.length <= 1) return null;
-
-  const active = agencies.find(a => a.id === activeAgencyId) ?? agencies[0];
+  // Falls back gracefully when called with [] (parked T5/T6 cases).
+  const list = agencies && agencies.length > 0 ? agencies : [];
+  const active = list.find(a => a.id === activeAgencyId) ?? list[0];
 
   async function onPick(agencyId: string) {
     if (agencyId === activeAgencyId) return;
@@ -46,39 +51,57 @@ export function AgencySwitcher({ agencies, activeAgencyId }: Props) {
         return;
       }
       const target = data.redirect ?? "/portal";
-      // Hard navigate so server-rendered chrome (Topbar / Sidebar) re-fetches
-      // the new agency's data.
-      if (typeof window !== "undefined") {
-        window.location.href = target;
-      }
+      if (typeof window !== "undefined") window.location.href = target;
     } catch {
       setError("Network error. Try again.");
       setBusy(false);
     }
   }
 
+  async function onAdd(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!newName.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/auth/agency-add", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ name: newName.trim() }),
+      });
+      const data = (await res.json()) as { ok: boolean; redirect?: string; error?: string };
+      if (!res.ok || !data.ok) {
+        setError(data.error ?? "Couldn't add agency.");
+        setBusy(false);
+        return;
+      }
+      const target = data.redirect ?? "/portal/agency";
+      if (typeof window !== "undefined") window.location.href = target;
+    } catch {
+      setError("Network error. Try again.");
+      setBusy(false);
+    }
+  }
+
+  if (!active) return null;
+
   return (
-    <details
-      className="relative"
-      data-testid="agency-switcher"
-    >
-      <summary
-        className="flex cursor-pointer list-none items-center gap-2 rounded-md border border-black/10 bg-white px-2 py-1 text-xs text-black/80 hover:bg-black/[0.03]"
-        aria-label={`Active agency: ${active.name}. Click to switch.`}
-      >
+    <details className="mm-tenant-switcher" data-testid="agency-switcher">
+      <summary aria-label={`Active agency: ${active.name}. Click to switch or add another.`}>
         <span
           aria-hidden
-          className="inline-block h-3 w-3 rounded-sm border border-black/10"
+          className="mm-tenant-swatch"
           style={{ background: active.swatch ?? "#e5e7eb" }}
         />
-        <span className="max-w-[10ch] truncate">{active.name}</span>
-        <span aria-hidden className="text-black/40">▾</span>
+        <span className="mm-tenant-label">
+          <span className="mm-tenant-name">{active.name}</span>
+          {subtitle && <span className="mm-tenant-sub">{subtitle}</span>}
+        </span>
+        <span aria-hidden className="mm-tenant-caret">▾</span>
       </summary>
-      <div
-        role="menu"
-        className="absolute right-0 z-20 mt-1 w-56 rounded-md border border-black/10 bg-white p-1 text-xs shadow-lg"
-      >
-        {agencies.map(a => (
+      <div role="menu" className="mm-tenant-pop">
+        <div className="mm-tenant-pop-head">Switch agency</div>
+        {list.map(a => (
           <button
             key={a.id}
             type="button"
@@ -87,22 +110,58 @@ export function AgencySwitcher({ agencies, activeAgencyId }: Props) {
             disabled={busy}
             data-agency-id={a.id}
             data-active={a.id === activeAgencyId ? "true" : undefined}
-            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left hover:bg-black/[0.04] disabled:opacity-50"
+            className="mm-tenant-row"
           >
             <span
               aria-hidden
-              className="inline-block h-3 w-3 rounded-sm border border-black/10"
+              className="mm-tenant-swatch"
               style={{ background: a.swatch ?? "#e5e7eb" }}
             />
-            <span className="flex-1 truncate">{a.name}</span>
-            {a.id === activeAgencyId && (
-              <span aria-label="Currently active" className="text-black/40">✓</span>
-            )}
+            <span className="mm-tenant-row-name">{a.name}</span>
+            {a.id === activeAgencyId && <span className="mm-tenant-tick" aria-label="Active">✓</span>}
           </button>
         ))}
-        {error && (
-          <p role="alert" className="mt-1 px-2 py-1 text-[11px] text-red-600">{error}</p>
+
+        <div className="mm-tenant-divider" aria-hidden />
+
+        {!adding ? (
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => { setAdding(true); setError(null); }}
+            disabled={busy}
+            className="mm-tenant-row mm-tenant-add-trigger"
+          >
+            <span aria-hidden className="mm-tenant-plus">＋</span>
+            <span>Add new agency</span>
+          </button>
+        ) : (
+          <form onSubmit={onAdd} className="mm-tenant-add-form">
+            <label className="mm-tenant-add-label">
+              <span>Agency name</span>
+              <input
+                type="text"
+                value={newName}
+                onChange={e => setNewName(e.target.value)}
+                autoFocus
+                required
+                disabled={busy}
+                placeholder="AquaOasis · Therapists"
+                className="mm-tenant-add-input"
+              />
+            </label>
+            <div className="mm-tenant-add-actions">
+              <button type="button" onClick={() => { setAdding(false); setNewName(""); setError(null); }} disabled={busy} className="mm-tenant-add-cancel">
+                Cancel
+              </button>
+              <button type="submit" disabled={busy || !newName.trim()} className="mm-tenant-add-submit">
+                {busy ? "Adding…" : "Create + switch"}
+              </button>
+            </div>
+          </form>
         )}
+
+        {error && <p role="alert" className="mm-tenant-error">{error}</p>}
       </div>
     </details>
   );

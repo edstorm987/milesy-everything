@@ -36,21 +36,28 @@ interface Props {
 }
 
 export function Topbar({ title, subtitle, role, email, name, avatarUrl, panels, tenantLabel, currentPath, agencies, activeAgencyId }: Props) {
+  // Ed's directive 2026-05-07 — the agency-name title slot IS the
+  // tenant switcher. Renders a real <details> button with brand
+  // swatch + "+ Add agency" entry. Falls back to plain title text
+  // when the layout doesn't pass agencies (client / customer
+  // surfaces today; they get richer multi-tenancy in R+1).
+  const showSwitcher = !!(agencies && activeAgencyId);
   return (
     <header className="flex min-h-14 flex-wrap items-center justify-between gap-2 border-b border-black/10 bg-white/40 px-4 py-2 md:px-6">
       <div className="flex items-center gap-3 min-w-0">
         {panels && tenantLabel && currentPath && (
           <MobileNav panels={panels} tenantLabel={tenantLabel} currentPath={currentPath} />
         )}
-        <div className="min-w-0">
-          <div className="truncate text-base font-semibold text-black/90">{title}</div>
-          {subtitle && <div className="truncate text-xs text-black/50">{subtitle}</div>}
-        </div>
+        {showSwitcher ? (
+          <AgencySwitcher agencies={agencies!} activeAgencyId={activeAgencyId!} subtitle={subtitle} />
+        ) : (
+          <div className="min-w-0">
+            <div className="truncate text-base font-semibold text-black/90">{title}</div>
+            {subtitle && <div className="truncate text-xs text-black/50">{subtitle}</div>}
+          </div>
+        )}
       </div>
       <div className="flex flex-wrap items-center gap-2 text-xs sm:gap-3">
-        {agencies && activeAgencyId && (
-          <AgencySwitcher agencies={agencies} activeAgencyId={activeAgencyId} />
-        )}
         <Link
           href="/"
           aria-label="Back to the marketing site"
