@@ -121,9 +121,22 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
       #138 durable-nonce / #144 observability — NOT SMTP — chapter #144 was
       misremembered, treated `emailEnqueuePort` from #159 as the canonical
       enqueue handle).
-- [ ] HC + lead-magnet → portal tracking integration verification.
+- [x] HC + lead-magnet → portal tracking integration verification.
       T4 R008 wired the React rewrite + completion endpoint; verify
       lead really appears in leads pipeline post-R037 foundation glue.
+      **Done — chapter #161**. NEW `scripts/smoke-hc-leads-pipeline-integration.test.ts`
+      12/12 hybrid source-marker + runtime smoke drives FunnelService
+      directly with real ports + eventBus + leadsPipelineFoundation
+      subscriber. tsc clean. **4 gaps catalogued honestly**: (1)
+      public-funnel NOT in `_registry.ts` — no workspace dep, no
+      `registerFunnelFoundation` call → `/api/portal/public-funnel/hc-complete`
+      404s in prod today (T1 R032 shipped adapters but never closed
+      registry-side wiring); (2) leads-pipeline manifest id mismatch
+      breaks `installPlugin` lookup so subscriber short-circuits in
+      prod; (3) email-sender foundation registration pending; (4)
+      funnelMePort honest skeleton (hcSlot undefined). Manual
+      operator checklist (10 steps) in chapter walks Ed through the
+      end-to-end happy path once gap 1 + 2 close.
 
 ### Done — T4 R009 (chapter #159, 2026-05-07)
 

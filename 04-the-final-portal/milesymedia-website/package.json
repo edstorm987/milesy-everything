@@ -37,6 +37,7 @@
     "smoke:profile-picture-upload": "tsx --test scripts/smoke-profile-picture-upload.test.ts",
     "smoke:pipelines-refactor": "tsx --test scripts/smoke-pipelines-refactor.test.ts",
     "smoke:leads-pipeline-foundation-glue": "tsx --test scripts/smoke-leads-pipeline-foundation-glue.test.ts",
+    "smoke:hc-leads-pipeline-integration": "tsx --test scripts/smoke-hc-leads-pipeline-integration.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {
