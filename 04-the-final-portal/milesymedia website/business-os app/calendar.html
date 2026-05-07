@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="../incubator app/print.css" media="print" />
+</head>
+<body class="bos-body">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="calendar.html"></nav>
+    </aside>
+
+    <main class="bos-main bos-cal">
+
+      <header class="bos-section-head">
+        <div>
+          <span class="eyebrow">Calendar</span>
+          <h1>Everything that\'s due, in one view.</h1>
+          <p class="muted">Aggregates your to-dos, custom events, and Incubator phase targets. Self-report — no external calendar sync (T6 territory).</p>
+        </div>
+        <div>
+          <button type="button" class="btn btn-secondary" data-bos-cal-prev>← Prev</button>
+          <button type="button" class="btn btn-secondary" data-bos-cal-today>Today</button>
+          <button type="button" class="btn btn-secondary" data-bos-cal-next>Next →</button>
+        </div>
+      </header>
+
+      <div class="bos-cal-shell">
+        <div class="bos-cal-grid">
+          <h2 class="bos-cal-month-head"><span data-bos-cal-month></span></h2>
+          <div class="bos-cal-weekdays">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+          <div class="bos-cal-days" data-bos-cal-days></div>
+
+          <details class="bos-cal-add">
+            <summary>+ Add event</summary>
+            <form data-bos-cal-form class="bos-cal-form">
+              <label>Title<input type="text" name="title" placeholder="Strategy review · launch deadline · ..." required /></label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <label>Date<input type="date" name="date" required /></label>
+                <label>Time<input type="time" name="time" /></label>
+              </div>
+              <label>Kind
+                <select name="kind">
+                  <option value="event">Event</option>
+                  <option value="milestone">Milestone</option>
+                  <option value="reminder">Reminder</option>
+                </select>
+              </label>
+              <label>Link <span class="muted" style="font-weight:400">(optional)</span><input type="url" name="link" placeholder="https://…" /></label>
+              <label class="bos-cal-recur"><input type="checkbox" name="recurWeekly" /> Repeat weekly (12 weeks)</label>
+              <button type="submit" class="btn btn-primary">Add event</button>
+            </form>
+          </details>
+        </div>
+
+        <aside class="bos-cal-drawer" data-bos-cal-drawer>
+          <div class="bos-cal-drawer-empty">Click any day to see what\'s on.</div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../incubator app/lib/storage.js"></script>
+  <script src="../incubator app/lib/activity.js"></script>
+  <script src="bos.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function $(s, r) { return (r || document).querySelector(s); }
+    function escape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+    function getJ(k, d) { try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); } catch (e) { return d; } }
+    function setJ(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    function dayKey(d) { var y=d.getFullYear(), m=('0'+(d.getMonth()+1)).slice(-2), dd=('0'+d.getDate()).slice(-2); return y+'-'+m+'-'+dd; }
+    function startOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+    function isoToDate(iso) { try { return new Date(iso); } catch (e) { return null; } }
+
+    var view = startOfMonth(new Date());
+    var selectedDayKey = dayKey(new Date());
+
+    /* ─── Source aggregator ─── */
+    function gatherItems() {
+      var items = [];
+      // bos.tasks — handle both array shape ([{title, dueAt, done}]) and the
+      // existing object-of-buckets shape ({today:[],week:[],done:[]}). When
+      // dueAt is missing we skip — calendar only surfaces dated items.
+      var tasksRaw = getJ('bos.tasks', null);
+      function pushTask(t) {
+        if (!t || !t.dueAt) return;
+        items.push({ title: t.title || t.text || 'To-do', when: t.dueAt, kind: t.done ? 'done' : 'task', source: 'task' });
+      }
+      if (Array.isArray(tasksRaw)) tasksRaw.forEach(pushTask);
+      else if (tasksRaw && typeof tasksRaw === 'object') {
+        ['today','week','done'].forEach(function (k) {
+          (tasksRaw[k] || []).forEach(pushTask);
+        });
+      }
+
+      // bos.events
+      var events = getJ('bos.events', []);
+      events.forEach(function (e) {
+        if (!e || !e.when) return;
+        items.push({ id: e.id, title: e.title, when: e.when, kind: e.kind || 'event', link: e.link || null, source: 'event' });
+        // Weekly recur — generate next 11 occurrences.
+        if (e.recurWeekly) {
+          var d = new Date(e.when);
+          for (var i = 1; i < 12; i++) {
+            d.setDate(d.getDate() + 7);
+            items.push({ id: e.id + '-r' + i, title: e.title + ' (recur)', when: new Date(d).toISOString(), kind: e.kind || 'event', link: e.link || null, source: 'event' });
+          }
+        }
+      });
+
+      // incubator.phaseTargetDates
+      var targets = getJ('incubator.phaseTargetDates', {});
+      var labels = { 'epic-intro':'Epic Intro target','blueprint':'Blueprint target','diagnostics':'Diagnostics target','brand-builder':'Brand Builder target' };
+      Object.keys(targets).forEach(function (pid) {
+        if (!targets[pid]) return;
+        items.push({ title: labels[pid] || pid, when: targets[pid], kind: 'milestone', source: 'incubator' });
+      });
+
+      return items;
+    }
+
+    /* ─── Render month grid ─── */
+    function renderMonth() {
+      $('[data-bos-cal-month]').textContent = view.toLocaleDateString(undefined, { month:'long', year:'numeric' });
+      var first = startOfMonth(view);
+      // Mon-first; getDay returns 0=Sun..6=Sat. Convert to Mon=0..Sun=6.
+      var dow = (first.getDay() + 6) % 7;
+      var daysInMonth = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+      var todayKey = dayKey(new Date());
+
+      var items = gatherItems();
+      var byDay = {};
+      items.forEach(function (it) {
+        var k = dayKey(new Date(it.when));
+        (byDay[k] = byDay[k] || []).push(it);
+      });
+
+      var html = '';
+      // 6 weeks max; render leading blanks
+      for (var i = 0; i < dow; i++) html += '<div class="bos-cal-day is-blank"></div>';
+      for (var d = 1; d <= daysInMonth; d++) {
+        var date = new Date(view.getFullYear(), view.getMonth(), d);
+        var k = dayKey(date);
+        var on = byDay[k] || [];
+        var dots = on.slice(0, 4).map(function (it) {
+          return '<span class="bos-cal-dot bos-cal-dot--' + escape(it.kind) + '" title="' + escape(it.title) + '"></span>';
+        }).join('');
+        var cls = 'bos-cal-day' + (k === todayKey ? ' is-today' : '') + (k === selectedDayKey ? ' is-selected' : '') + (on.length ? ' has-items' : '');
+        html += '<button type="button" class="' + cls + '" data-cal-pick="' + k + '">'
+          + '<span class="bos-cal-day-num">' + d + '</span>'
+          + (on.length ? '<span class="bos-cal-dots">' + dots + '</span>' : '')
+          + '</button>';
+      }
+      $('[data-bos-cal-days]').innerHTML = html;
+    }
+
+    /* ─── Render day drawer ─── */
+    function renderDrawer() {
+      var items = gatherItems().filter(function (it) { return dayKey(new Date(it.when)) === selectedDayKey; });
+      items.sort(function (a, b) { return +new Date(a.when) - +new Date(b.when); });
+      var label = new Date(selectedDayKey).toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+      var host = $('[data-bos-cal-drawer]');
+      if (!items.length) {
+        host.innerHTML = '<h3>' + escape(label) + '</h3><p class="muted">Nothing on this day. Add an event below the grid to fill it.</p>';
+        return;
+      }
+      host.innerHTML = '<h3>' + escape(label) + '</h3><ul class="bos-cal-drawer-list">' +
+        items.map(function (it) {
+          var t = new Date(it.when);
+          var time = t.getHours() || t.getMinutes() ? t.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' }) : 'all day';
+          var linkHtml = it.link ? ' · <a href="' + escape(it.link) + '" target="_blank" rel="noopener">open ↗</a>' : '';
+          return '<li class="bos-cal-drawer-item bos-cal-drawer-item--' + escape(it.kind) + '">' +
+            '<strong>' + escape(it.title) + '</strong>' +
+            '<div class="muted" style="font-size:12px">' + escape(it.kind) + ' · ' + escape(time) + ' · ' + escape(it.source) + linkHtml + '</div>' +
+          '</li>';
+        }).join('') + '</ul>';
+    }
+
+    function paint() { renderMonth(); renderDrawer(); }
+    paint();
+
+    /* ─── Event listeners ─── */
+    $('[data-bos-cal-prev]').addEventListener('click', function () {
+      view = new Date(view.getFullYear(), view.getMonth() - 1, 1); paint();
+    });
+    $('[data-bos-cal-next]').addEventListener('click', function () {
+      view = new Date(view.getFullYear(), view.getMonth() + 1, 1); paint();
+    });
+    $('[data-bos-cal-today]').addEventListener('click', function () {
+      view = startOfMonth(new Date()); selectedDayKey = dayKey(new Date()); paint();
+    });
+    document.addEventListener('click', function (ev) {
+      var d = ev.target.closest('[data-cal-pick]');
+      if (!d) return;
+      selectedDayKey = d.getAttribute('data-cal-pick');
+      paint();
+    });
+
+    /* ─── Add event form ─── */
+    $('[data-bos-cal-form]').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var fd = new FormData(ev.target);
+      var date = fd.get('date'); if (!date) return;
+      var time = fd.get('time') || '';
+      var iso = time ? (date + 'T' + time + ':00') : (date + 'T09:00:00');
+      var entry = {
+        id: 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+        title: (fd.get('title') || '').toString().trim(),
+        when: new Date(iso).toISOString(),
+        kind: fd.get('kind') || 'event',
+        link: (fd.get('link') || '').toString().trim() || null,
+        recurWeekly: !!fd.get('recurWeekly'),
+        createdAt: new Date().toISOString()
+      };
+      if (!entry.title) return;
+      var events = getJ('bos.events', []); events.push(entry); setJ('bos.events', events);
+      if (window.Activity && typeof window.Activity.log === 'function') {
+        window.Activity.log('event.created', { id: entry.id, title: entry.title, when: entry.when, kind: entry.kind, recurWeekly: entry.recurWeekly });
+      }
+      ev.target.reset();
+      // Jump to the day of the new event so the user sees it land.
+      selectedDayKey = dayKey(new Date(entry.when));
+      view = startOfMonth(new Date(entry.when));
+      paint();
+    });
+  });
+  </script>
+
+</body>
+</html>

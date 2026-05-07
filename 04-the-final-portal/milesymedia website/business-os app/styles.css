@@ -3074,3 +3074,142 @@ body.bos-cp-editing .bos-cp-fields textarea {
   .bos-cart-shell { grid-template-columns: 1fr; }
   .bos-cart-summary { position: static; }
 }
+
+/* ─── R021 Calendar (business-os app/calendar.html) ─── */
+.bos-cal-shell {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 24px;
+  margin-top: 14px;
+}
+.bos-cal-grid {
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 14px;
+  padding: 20px;
+}
+.bos-cal-month-head {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  margin: 0 0 14px;
+  text-align: center;
+}
+.bos-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-mute, #555);
+  text-align: center;
+}
+.bos-cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.bos-cal-day {
+  background: var(--bos-card-2, #f5f1e8);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  min-height: 64px;
+  padding: 6px 8px;
+  cursor: pointer;
+  position: relative;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.1s ease, background 0.1s ease;
+}
+.bos-cal-day:hover { border-color: #C9A76A; }
+.bos-cal-day.is-blank { background: transparent; cursor: default; pointer-events: none; }
+.bos-cal-day.is-today { border-color: #C9A76A; }
+.bos-cal-day.is-today .bos-cal-day-num { background: #C9A76A; color: #1a1208; padding: 1px 6px; border-radius: 999px; font-weight: 700; }
+.bos-cal-day.is-selected { border-color: #1a1a1a; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.bos-cal-day.has-items { font-weight: 600; }
+.bos-cal-day-num { font-size: 13px; }
+.bos-cal-dots {
+  position: absolute;
+  bottom: 6px;
+  left: 8px;
+  display: flex;
+  gap: 3px;
+}
+.bos-cal-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #888;
+}
+.bos-cal-dot--task     { background: #4a6e8e; }
+.bos-cal-dot--event    { background: #C9A76A; }
+.bos-cal-dot--milestone{ background: #5a7a3a; }
+.bos-cal-dot--reminder { background: #d05959; }
+.bos-cal-dot--done     { background: #b3d28a; opacity: 0.5; }
+
+.bos-cal-add { margin-top: 18px; }
+.bos-cal-add summary {
+  cursor: pointer;
+  padding: 10px 14px;
+  background: var(--bos-card-2, #f5f1e8);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 10px;
+  list-style: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+.bos-cal-add summary::-webkit-details-marker { display: none; }
+.bos-cal-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 14px;
+  background: var(--bos-card-2, #f5f1e8);
+  border-radius: 10px;
+}
+.bos-cal-form input, .bos-cal-form select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 6px;
+  font: inherit;
+}
+.bos-cal-recur { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.bos-cal-recur input { width: auto; }
+
+.bos-cal-drawer {
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 14px;
+  padding: 20px;
+  position: sticky;
+  top: 18px;
+  height: fit-content;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.bos-cal-drawer h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+.bos-cal-drawer-empty { color: var(--text-mute, #555); font-style: italic; padding: 12px 0; }
+.bos-cal-drawer-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.bos-cal-drawer-item {
+  background: var(--bos-card-2, #f5f1e8);
+  border-left: 3px solid #888;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+.bos-cal-drawer-item--task     { border-left-color: #4a6e8e; }
+.bos-cal-drawer-item--event    { border-left-color: #C9A76A; }
+.bos-cal-drawer-item--milestone{ border-left-color: #5a7a3a; }
+.bos-cal-drawer-item--reminder { border-left-color: #d05959; }
+.bos-cal-drawer-item--done     { border-left-color: #b3d28a; opacity: 0.7; text-decoration: line-through; }
+
+@media (max-width: 880px) {
+  .bos-cal-shell { grid-template-columns: 1fr; }
+  .bos-cal-drawer { position: static; max-height: none; }
+}

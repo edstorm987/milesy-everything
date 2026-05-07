@@ -140,6 +140,35 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R021 — BOS calendar surface** — DONE.
+      NEW `business-os app/calendar.html` (~250L) — month-grid
+      calendar tab in BOS aggregating existing `bos.tasks[]` (with
+      dueAt), NEW `bos.events[]={id,title,when:ISO,kind:event|
+      milestone|reminder, link?, recurWeekly?}`, and NEW
+      `incubator.phaseTargetDates={phaseId:ISO}` (optional). 2-col
+      layout (collapses to 1col under 880px) — left = month grid w/
+      today gold pill + per-kind colour dots + Mon-first weekday
+      strip + prev/today/next nav + collapsible "+ Add event" form
+      (title required + date required + time optional defaults
+      09:00 + kind select + optional link + Repeat-weekly checkbox);
+      right (sticky) = day-detail drawer w/ items left-bordered
+      per kind. `gatherItems()` handles BOTH array shape AND
+      existing object-of-buckets shape `{today,week,done}` for
+      bos.tasks back-compat (only items w/ dueAt surfaced).
+      recurWeekly generates 11 future occurrences (12-week cap,
+      " (recur)" suffix). Submit fires R013 `Activity.log
+      ('event.created')` + jumps view+selected-day to new event so
+      it lands visibly. R013 KINDS gained `event.created` (📅) +
+      `event.completed` (✅ registered for symmetry, no surface
+      fires yet). CSS `.bos-cal-*` (~140L) — 7-col grid w/ dot
+      indicators (task=blue/event=gold/milestone=green/reminder=
+      red/done=muted-green) + drawer left-border per kind. Self-
+      report only — no external sync (T6). Smoke: calendar +
+      activity.js both 200; today + add-event + recur + tasks-
+      dueAt + phase-target dot all verified. Q-ASSUMED: edit/
+      delete + per-business namespacing of bos.events + phase-
+      target picker UI + print wire all R+1. NEW chapter `04-bos-
+      calendar.md` + MASTER #97.
 - [x] **T4 R020 — "As a client" preview mode** — DONE.
       NEW `bos.previewAs={businessId, originalBusinessId, leadId,
       leadName, startedAt, expiresAt}` top-level localStorage flag
