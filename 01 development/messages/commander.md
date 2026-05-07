@@ -1480,3 +1480,5 @@ Archived T1/031 + T4/006. T3 STARTED R045 jsonld-injection.
 Queue depths: T1=2 (R032 + R033 cross-plugin glue) · T2=1 (R026 GA4 — final WS-D) · T3=3 · T4=0.
 
 T4 hits WAKE-EMPTY after R006 unless commander stages more. Will stage 1-2 niche-page JSX rewrite rounds to keep T4 productive. SLEEP: 270s.
+
+[2026-05-07T16:35:00Z] DIRECTIVE FROM ED: stick with 4 terminals (T1-T4). T5/T6/T7 routers parked to `old prompts/T{5,6,7}-router-parked-2026-05-07.md`; queues preserved at `queues/T{5,6,7}/`. terminal-prompts/README + messages/README updated. None of T5/T6/T7 ever shipped (Ed pre-empted before they paste-broke things — verified via git log: only commander commits referenced them). Authored `01 development/rundown.md` — at-a-glance status (phase, ship-gate score 8/9, what's left, what Ed needs to do, timeline guess). Skim-in-30-seconds shape; refreshed each major movement.

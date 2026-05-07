@@ -24,32 +24,44 @@ interface RouteParams {
 
 async function dispatch(req: NextRequest, params: RouteParams["params"], method: string): Promise<Response> {
   await ensureHydrated();
-  let session;
-  try { session = await requireSession(); }
-  catch (e) { return authErrorResponse(e); }
 
   const { plugin: pluginId, rest } = await params;
-
-  // Determine scope. Body lookup happens lazily — most callers pass
-  // ?clientId in the search params, which is safe to peek without
-  // consuming the body.
   const url = new URL(req.url);
-  const queryClientId = url.searchParams.get("clientId");
-  const headerClientId = req.headers.get("x-aqua-client-id");
-  const explicitClientId = queryClientId ?? headerClientId ?? undefined;
+  const queryAgencyId = url.searchParams.get("agencyId") ?? req.headers.get("x-aqua-agency-id") ?? undefined;
+  const queryClientId = url.searchParams.get("clientId") ?? req.headers.get("x-aqua-client-id") ?? undefined;
+
+  // R032: peek the route to see if it's flagged `public: true`. We need
+  // to resolve at least once before knowing whether session is required;
+  // for public routes the agency must come from the URL/headers (no
+  // session to fall back on).
+  const peekScope = {
+    agencyId: queryAgencyId ?? "",
+    clientId: queryClientId,
+  };
+  const peeked = peekScope.agencyId
+    ? resolvePluginApiRoute(pluginId, rest, peekScope, method)
+    : null;
+  const isPublic = peeked?.route.public === true;
+
+  let session: Awaited<ReturnType<typeof requireSession>> | null = null;
+  if (!isPublic) {
+    try { session = await requireSession(); }
+    catch (e) { return authErrorResponse(e); }
+  }
 
   // For client-* roles the URL clientId must match their session's clientId.
-  if (session.role.startsWith("client-") || session.role === "freelancer" || session.role === "end-customer") {
-    if (explicitClientId && session.clientId && explicitClientId !== session.clientId) {
+  if (session && (session.role.startsWith("client-") || session.role === "freelancer" || session.role === "end-customer")) {
+    if (queryClientId && session.clientId && queryClientId !== session.clientId) {
       return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
     }
   }
-  const scopeClientId = explicitClientId ?? (session.role.startsWith("client-") ? session.clientId : undefined);
+  const scopeAgencyId = session?.agencyId ?? queryAgencyId ?? "";
+  const scopeClientId = queryClientId ?? (session?.role.startsWith("client-") ? session.clientId : undefined);
 
-  const resolved = resolvePluginApiRoute(
+  const resolved = peeked ?? resolvePluginApiRoute(
     pluginId,
     rest,
-    { agencyId: session.agencyId, clientId: scopeClientId },
+    { agencyId: scopeAgencyId, clientId: scopeClientId },
     method,
   );
   if (!resolved) {
@@ -57,10 +69,12 @@ async function dispatch(req: NextRequest, params: RouteParams["params"], method:
   }
   const { route, install } = resolved;
 
-  // Role gate.
-  const allowed = route.visibleToRoles ?? route.roles;
-  if (allowed && !allowed.includes(session.role)) {
-    return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
+  // Role gate — only when session present (public routes skip).
+  if (session) {
+    const allowed = route.visibleToRoles ?? route.roles;
+    if (allowed && !allowed.includes(session.role)) {
+      return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
+    }
   }
 
   // Feature gate.
@@ -74,7 +88,7 @@ async function dispatch(req: NextRequest, params: RouteParams["params"], method:
     install,
     storage: makePluginStorage(install.id),
     services: FOUNDATION_SERVICES,
-    actor: session.userId,
+    actor: session?.userId ?? "anonymous",
   };
 
   return route.handler(req, ctx);

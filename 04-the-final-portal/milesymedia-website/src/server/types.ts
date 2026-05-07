@@ -264,6 +264,8 @@ export type ActivityCategory =
   | "finance"       // T2 agency-finance
   | "marketing"     // T2 agency-marketing
   | "crm"           // T2 client-crm
+  | "public-funnel" // T2 public-funnel (R032 promotion)
+  | "bos-auth-gate" // T2 bos-auth-gate (R032 promotion)
   | "settings"
   | "system";
 

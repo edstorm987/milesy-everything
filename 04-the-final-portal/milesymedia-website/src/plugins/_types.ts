@@ -384,6 +384,16 @@ export interface PluginApiRoute {
   requiresFeature?: string;
   visibleToRoles?: Role[];
   roles?: Role[];
+  // T1 R032: when true, the dispatcher skips the session-required
+  // pre-check. Used by public-funnel HC submit, rank-my-website
+  // diagnostic run, memberships webhooks, Stripe webhooks, forms
+  // public-submit — anything that lands as an anonymous visitor.
+  // Plugin-level decision: the route handler still implements its
+  // own auth (HMAC, capture handoff, etc) before trusting the body.
+  // For per-tenant scope on public routes, the plugin must read the
+  // agency/client from the URL or body — `ctx.agencyId` falls back
+  // to a default sentinel so the dispatcher can build a PluginCtx.
+  public?: boolean;
 }
 
 // ─── Storefront contributions (T3-territory; contract lives here) ────────

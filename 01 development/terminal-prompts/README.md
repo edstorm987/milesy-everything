@@ -12,14 +12,18 @@ spin them up. One file per terminal role.
 | `T1-router.md` | Ed → fresh terminal | Autonomous T1 (foundation) | Reads queue at `queues/T1/`, ships rounds, logs DONE. Sprint 1 owner of WS-A + WS-C. |
 | `T2-router.md` | Ed → fresh terminal | Autonomous T2 (plugins) | Reads queue at `queues/T2/`. Sprint 1 owner of WS-B. |
 | `T3-router.md` | Ed → fresh terminal | Autonomous T3 (website-editor) | Reads queue at `queues/T3/`. |
-| `T4-router.md` | Ed → fresh terminal | Autonomous T4 (Sprint 2 polish lane) | Reactivated 2026-05-07. Reads queue at `queues/T4/`, ships polish rounds. |
-| `T5-router.md` | Ed → fresh terminal | Autonomous T5 (first real client — Felicia) | Reads queue at `queues/T5/` (3 rounds: portal scaffold · content · end-customer flow). Sprint 3 WS-F. |
-| `T6-router.md` | Ed → fresh terminal | Autonomous T6 (production deploy + observability) | Reads queue at `queues/T6/` (5 rounds: deploy runbook rewrite · CI pipeline · vercel config · domain attach · prod-readiness smoke). Sprint 3 WS-E final lap. |
-| `T7-router.md` | Ed → fresh terminal | Autonomous T7 (niche-agency satellites + parallel scale) | Reads queue at `queues/T7/` (5 rounds: domain-aware marketing · per-agency lead-magnet packs · agency-spawner plugin · therapist niche pack · 3 more niches). Phase 12 R3+ scale lane. |
+| `T4-router.md` | Ed → fresh terminal | Autonomous T4 (polish + JSX rewrites) | Reactivated 2026-05-07. Reads queue at `queues/T4/`. |
 
-That's the live set. **Eight files** (1 commander + 7 worker terminals).
+That's the live set. **Five files** (1 commander + 4 worker terminals).
 If you're not sure what to paste, paste `orchestrator-init.md` for the
 commander or `T<N>-router.md` for an autonomous worker.
+
+**Why only 4 workers?** Ed's directive 2026-05-07: stick with T1-T4 to
+prevent terminals editing wrong files / overlapping territory. T5/T6/T7
+work is captured as **parked queues** at `queues/T5/`, `queues/T6/`,
+`queues/T7/` — when Ed wants to bring them back online, the routers
+sit at `old prompts/T{5,6,7}-router-parked-2026-05-07.md`. Until then
+that work waits.
 
 ## Subfolders
 
