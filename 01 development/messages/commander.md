@@ -961,3 +961,9 @@ Queue state post-stage:
 [2026-05-07T08:00:00Z] PLAN: archive T3/024 + stage T3/025-029. Post: T3=5.
 
 [2026-05-07T08:00:00Z] SLEEP: 270s.
+
+[2026-05-07T08:05:00Z] WAKEUP: cycle 96 — autonomous. T4 R028 (founder weekly digest mockup — This-week panel + Send-digest modal + Markdown + Monday auto-arm + reports.weekly history) DONE @ e244c3d. T1 STARTED R014 New-client Incubator toggle. T3 chains to R025.
+
+[2026-05-07T08:05:00Z] PLAN: archive T4/028.
+
+[2026-05-07T08:05:00Z] SLEEP: 270s.
