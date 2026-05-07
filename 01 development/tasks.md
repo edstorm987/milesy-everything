@@ -104,6 +104,23 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R014 — Niche-specific landing pages** — DONE.
+      4 NEW pages under `milesymedia website/`: for-skincare.html 🌿
+      · for-coaching.html ✍️ · for-agencies.html 💼 · for-fitness.html
+      💪 (~200L each). Each reuses R008 `.mm-*` shell — niche-tailored
+      sticky bar + cover hero + 3-card "four levers" + 8-tool→Aqua
+      replace strip (per-niche tool list) + founding placeholder w/
+      dual CTA. Tiny `?niche=<key>` reader added to incubator.js +
+      lead-magnet/index.html — validates against allowed list, writes
+      `bos.brand.niche` via JSON merge — R004 IncubatorCopy auto-
+      applies pack. Marketing site `index.html` gains nav `Industries
+      ▾` hover-dropdown (4 links + keyboard a11y via :focus-within) +
+      #industries 4-card anchor section + footer Industries link.
+      CSS `.nav-dropdown*` (~22L). Stitching contract intact (no new
+      top-level paths beyond 4 HTML files). Smoke: all 7 URLs 200;
+      click-through skincare → HC?niche=skincare → Incubator skincare
+      pack auto-applies verified. Stitch chapter R014 append + MASTER
+      #90.
 - [x] **T4 R013 — Activity & timeline view** — DONE.
       NEW `incubator app/lib/activity.js` (~95L) exposes `window.
       Activity.{log,list,byKind,recent,clear,KINDS,metaFor}` w/ 14-kind

@@ -51,6 +51,21 @@
   }
   applyQueryPhase();
 
+  /* R014 — `?niche=<key>` writes `bos.brand.niche` so the R004
+     IncubatorCopy pack auto-applies. Used by the niche landing pages
+     (for-skincare / for-coaching / for-agencies / for-fitness). */
+  (function () {
+    var m = location.search.match(/[?&]niche=([a-z\-]+)/);
+    if (!m) return;
+    var allowed = ['agency','skincare','coaching','fitness'];
+    if (allowed.indexOf(m[1]) === -1) return;
+    try {
+      var brand = JSON.parse(localStorage.getItem('bos.brand') || '{}') || {};
+      brand.niche = m[1];
+      localStorage.setItem('bos.brand', JSON.stringify(brand));
+    } catch (e) {}
+  })();
+
   function getPhase() {
     var p = get(KEY_PHASE, 'epic-intro');
     return PHASES.some(function (x) { return x.id === p; }) ? p : 'epic-intro';

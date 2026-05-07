@@ -257,3 +257,49 @@ Stitching contract intact:
   redirect still works.
 - "Last deployed YYYY-MM-DD" footer line preserved (still 2026-05-04;
   bump on next deploy).
+
+## Append — R014 niche-specific landing pages (2026-05-07)
+
+4 NEW niche landing pages added under `milesymedia website/`:
+
+```
+for-skincare.html   — 🌿 "From product to ritual"
+for-coaching.html   — ✍️ "Leverage without losing intimacy"
+for-agencies.html   — 💼 "Run a portfolio without burning out"
+for-fitness.html    — 💪 "From sessions to a practice"
+```
+
+Each reuses the R008 `.mm-*` shell — sticky bar, nav, cover hero,
+3-card "four levers" section, dark `.mm-replaces` 8-tool comparison
+(niche-specific tool list per industry — Helpscout/Glofox/Klaviyo
+varies), `.mm-founding` honesty placeholder. CTAs link to
+`health-check.html?niche=<key>` and `incubator app/index.html?niche=<key>`.
+
+**Niche-param plumbing**: tiny `?niche=<key>` reader added to:
+- `incubator app/incubator.js` (next to `applyQueryPhase`).
+- `lead magnet app/index.html` (inline script before `hc-questions.js`).
+
+Both validate against `['agency','skincare','coaching','fitness']`,
+write `bos.brand.niche=<key>` (preserving other `bos.brand.*` fields
+via JSON merge). The R004 `IncubatorCopy` loader auto-applies the
+matching pack on next render — niche pack is "default expanded" for
+that niche, no other interaction required.
+
+**Marketing site nav** (`index.html`) gains an `Industries ▾`
+hover-dropdown (4 links) between Services and Clients. New
+`#industries` anchor section added between `.mm-audiences` and
+`.mm-replaces` on the home page — 4 niche cards linking to each
+landing page (one row at 4-col grid). Footer link row gains
+`Industries`.
+
+CSS appended to `styles.css` — `.nav-dropdown*` block (~22L,
+hover + focus-within for keyboard a11y).
+
+**Stitching contract intact**: no new top-level paths beyond the 4
+new HTML files (which Vercel serves directly from `/_milesy/`); no
+vercel.json rewrite changes needed. The `data-aqua-action` portal-
+base rewriter is included in each landing page's bottom script for
+the existing Sign-in / Demo CTAs to keep working in prod stitch.
+
+The HC also gets `?niche=` consumption — no rewrite changes needed
+(query-string survives whatever path resolution happens).

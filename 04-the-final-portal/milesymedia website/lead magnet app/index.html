@@ -334,6 +334,21 @@
 
   <script src="../incubator app/lib/storage.js"></script>
   <script src="../incubator app/lib/activity.js"></script>
+  <script>
+    /* R014 — `?niche=<key>` writes `bos.brand.niche` so HC results +
+       Incubator pack auto-apply. Used by niche landing pages. */
+    (function () {
+      var m = location.search.match(/[?&]niche=([a-z\-]+)/);
+      if (!m) return;
+      var allowed = ['agency','skincare','coaching','fitness'];
+      if (allowed.indexOf(m[1]) === -1) return;
+      try {
+        var brand = JSON.parse(localStorage.getItem('bos.brand') || '{}') || {};
+        brand.niche = m[1];
+        localStorage.setItem('bos.brand', JSON.stringify(brand));
+      } catch (e) {}
+    })();
+  </script>
   <script src="hc-questions.js"></script>
   <script>
   /* ─── DATA ──────────────────────────────────── */

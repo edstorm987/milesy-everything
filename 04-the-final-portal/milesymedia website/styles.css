@@ -894,3 +894,30 @@ footer {
   flex-wrap: wrap;
 }
 @media (max-width: 760px) { .mm-founding-row { grid-template-columns: 1fr; } }
+
+/* ─── R014 nav Industries dropdown ─── */
+.nav-dropdown { position: relative; display: inline-block; }
+.nav-dropdown-toggle { cursor: pointer; }
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #e6e1d4;
+  border-radius: 10px;
+  padding: 6px 0;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  z-index: 100;
+  display: none;
+}
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu { display: block; }
+.nav-dropdown-menu a {
+  display: block;
+  padding: 8px 14px;
+  text-decoration: none;
+  color: #1a1a1a;
+  font-size: 14px;
+}
+.nav-dropdown-menu a:hover { background: rgba(201,167,106,0.12); color: #8E7340; }
