@@ -13,7 +13,8 @@ window.HC_AREAS = [
           summary: 'No jargon. Two mini-experiments using Google.',
           exercise: [
             { type: 'task', title: 'Mini-experiment #1 — the pub test',
-              body: 'Open a new tab. Go to Google. Type <strong>"pub near me"</strong>. Look for a few seconds, then come back.',
+              body: 'Search <strong>"pub near me"</strong> right here. Scan it for a few seconds, notice where your eyes land, then mark done.',
+              embed: { kind: 'search', query: 'pub near me' },
               done: 'Done — I looked' },
             { type: 'choice', prompt: 'Where did your eyes go first?',
               scoring: false,
@@ -25,7 +26,8 @@ window.HC_AREAS = [
             { type: 'reveal', title: 'Now imagine your customer doing exactly that.',
               body: '~75% of clicks go to the top three results. Less than 1% reach page two. Whatever you just felt looking for a pub, your customer feels looking for you.' },
             { type: 'task', title: 'Mini-experiment #2 — your turn',
-              body: 'Open a new tab. Google <strong>what you sell + your town</strong>. Don\'t scroll yet.',
+              body: 'Type <strong>what you sell + your town</strong> into the search box below. Don\'t scroll yet — just look.',
+              embed: { kind: 'search', query: '', editable: true, placeholder: 'e.g. plumber Bristol' },
               done: 'Done — I looked' },
             { type: 'choice', prompt: 'Where did YOU appear?',
               options: [
@@ -143,7 +145,8 @@ window.HC_AREAS = [
           summary: 'A 5-second test of your own site.',
           exercise: [
             { type: 'task', title: 'The 5-second test',
-              body: 'Open your website in a new tab. Look at the homepage for <strong>5 seconds</strong>. Then close the tab and come back.',
+              body: 'Drop your homepage URL below. We\'ll show it for <strong>5 seconds</strong>, then dim it — answer based on your first impression only.',
+              embed: { kind: 'site', editable: true, placeholder: 'https://yourbusiness.co.uk', timer: 5 },
               done: 'Done' },
             { type: 'choice', prompt: 'In one breath — could a stranger tell what you sell?',
               options: [

@@ -500,6 +500,82 @@
     });
   }
 
+  /* ─── INLINE EMBED (search / site preview) ──── */
+  function searchEmbedUrl(q) {
+    return 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(q || '');
+  }
+  function safeSiteUrl(u) {
+    if (!u) return '';
+    var s = String(u).trim();
+    if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+    return s;
+  }
+  function renderEmbed(embed, slot) {
+    if (!embed) return '';
+    var key = 'embed_' + state.exerciseIdx;
+    var stored = slot.embed && slot.embed[key];
+    if (embed.kind === 'search') {
+      var q = stored != null ? stored : (embed.query || '');
+      var src = q ? searchEmbedUrl(q) : '';
+      var input = embed.editable
+        ? '<form class="hc-embed-bar" data-hc-embed-form><input type="text" class="hc-embed-input" data-hc-embed-input placeholder="'
+            + (embed.placeholder || 'Search…') + '" value="' + (q || '').replace(/"/g, '&quot;') + '" />'
+            + '<button type="submit" class="btn btn-secondary btn-sm">Search</button></form>'
+        : '<div class="hc-embed-bar hc-embed-bar-static">🔍 ' + q + '</div>';
+      var frame = src
+        ? '<iframe class="hc-embed-frame" data-hc-embed-frame src="' + src
+            + '" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" loading="lazy"></iframe>'
+        : '<div class="hc-embed-empty">Type a search above to see real results.</div>';
+      var note = '<div class="hc-embed-note">Live results via DuckDuckGo (Google blocks embedding) — same scan-the-page feel. <a href="https://www.google.com/search?q='
+        + encodeURIComponent(q || '') + '" target="_blank" rel="noopener">Open in Google ↗</a></div>';
+      return '<div class="hc-embed" data-hc-embed-kind="search">' + input + frame + note + '</div>';
+    }
+    if (embed.kind === 'site') {
+      var u = stored != null ? stored : '';
+      var src2 = u ? safeSiteUrl(u) : '';
+      var bar = '<form class="hc-embed-bar" data-hc-embed-form><input type="url" class="hc-embed-input" data-hc-embed-input placeholder="'
+        + (embed.placeholder || 'https://…') + '" value="' + (u || '').replace(/"/g, '&quot;') + '" />'
+        + '<button type="submit" class="btn btn-secondary btn-sm">Show me</button></form>';
+      var frame2 = src2
+        ? '<div class="hc-embed-stage' + (embed.timer ? ' hc-embed-timer' : '') + '" data-hc-embed-timer="' + (embed.timer || 0) + '">'
+            + '<iframe class="hc-embed-frame" data-hc-embed-frame src="' + src2
+            + '" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" loading="lazy"></iframe>'
+            + (embed.timer ? '<div class="hc-embed-veil" data-hc-embed-veil><span data-hc-embed-countdown>' + embed.timer + '</span><em>Look away — answer from first impression only.</em></div>' : '')
+            + '</div>'
+        : '<div class="hc-embed-empty">Drop your URL above to load it inline.</div>';
+      var note2 = src2
+        ? '<div class="hc-embed-note">Loaded in a sandboxed frame. Some sites block embedding — <a href="' + src2 + '" target="_blank" rel="noopener">open in a new tab ↗</a> if it looks blank.</div>'
+        : '';
+      return '<div class="hc-embed" data-hc-embed-kind="site">' + bar + frame2 + note2 + '</div>';
+    }
+    return '';
+  }
+  function wireEmbed(step, slot) {
+    if (!step.embed) return;
+    var key = 'embed_' + state.exerciseIdx;
+    slot.embed = slot.embed || {};
+    var form = $("[data-hc-embed-form]");
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var v = $("[data-hc-embed-input]").value.trim();
+        slot.embed[key] = v; renderStep();
+      });
+    }
+    var stage = $("[data-hc-embed-timer]");
+    if (stage && parseInt(stage.getAttribute('data-hc-embed-timer'), 10) > 0) {
+      var n = parseInt(stage.getAttribute('data-hc-embed-timer'), 10);
+      var cd = $("[data-hc-embed-countdown]");
+      var veil = $("[data-hc-embed-veil]");
+      if (veil) veil.style.opacity = '0';
+      var t = setInterval(function () {
+        n -= 1;
+        if (cd) cd.textContent = n;
+        if (n <= 0) { clearInterval(t); if (veil) { veil.style.opacity = '1'; } }
+      }, 1000);
+    }
+  }
+
   /* ─── EXERCISE STEP ─────────────────────────── */
   function renderStep() {
     var step = currentStep();
@@ -512,6 +588,7 @@
       html = '<div class="hc-step-eyebrow">Try this →</div>'
         + '<h2 class="hc-q-prompt">' + step.title + '</h2>'
         + '<p class="hc-step-body">' + step.body + '</p>'
+        + renderEmbed(step.embed, slot)
         + '<button class="btn btn-secondary hc-task-done' + (raw === true ? ' is-on' : '') + '" data-hc-task-done>'
         + (raw === true ? '✓ ' : '') + (step.done || 'Done') + '</button>';
     } else if (step.type === 'reveal') {
@@ -560,6 +637,7 @@
     var i = state.exerciseIdx;
     if (step.type === 'task') {
       $("[data-hc-task-done]").addEventListener('click', function () { slot.raw[i] = true; renderStep(); });
+      wireEmbed(step, slot);
     } else if (step.type === 'choice') {
       $$("[data-hc-opt]").forEach(function (b) {
         b.addEventListener('click', function () {

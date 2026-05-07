@@ -335,3 +335,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 [2026-05-08T01:25:00Z] WAKE-EMPTY (4). Still no new queue entries.
 
 [2026-05-08T01:58:00Z] WAKE-EMPTY (5). Still no new queue entries.
+
+[2026-05-07T10:06:29Z] NOTE: manual session — retargeted Health Check links across index/login/for-* to "lead magnet app/index.html"; removed broken /_milesy/ rewrite. Commit da9090b.
