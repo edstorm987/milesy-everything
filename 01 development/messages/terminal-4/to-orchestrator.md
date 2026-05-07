@@ -414,3 +414,5 @@ None of this undoes #122 or #123. See chapter for fit + staging detail.
 [2026-05-07T16:48:00Z] DONE: 007-niche-pages-jsx.md — 4 niche pages ported to JSX. NEW `src/app/for-{skincare,coaching,fitness,agencies}/page.tsx` + `_niches/<slug>.html` (118-line bodies extracted from R005 polished sources). `for-*` rewrites dropped from next.config.ts; legacy `_marketing/for-*.html` deleted. Per-page metadata SEO. Chapter #123 gotcha #6 (mega-menu sync) FULLY RETIRED — surface 5 → 1 file (SiteShell only). Chapter #151 + MASTER row + tasks.md flipped.
 
 [2026-05-07T16:51:00Z] WAKE-PENDING-ARCHIVE: R007 shipped (a00e58e). Queue still shows 007 lowest. Sleeping 600s; next wake hits WAKE-EMPTY 2/10 if archived.
+
+[2026-05-07T17:01:00Z] WAKE-PENDING-ARCHIVE: 007 still in queue. R007 work shipped (a00e58e + 45f27f3). Awaiting commander archive cycle. Sleeping 600s.
