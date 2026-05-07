@@ -38,6 +38,8 @@ const VALID_PANEL_IDS = new Set([
   // current scope's panelId/href anyway, so unknown panels are inert).
   "agency-hr", "agency-finance", "agency-marketing", "memberships", "affiliates",
   "growth",
+  // R162 — email-sender uses "operations".
+  "operations",
 ]);
 const VALID_SCOPE_POLICIES = new Set(["client", "agency", "either"]);
 
