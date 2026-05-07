@@ -637,6 +637,203 @@ window.BOS_LESSONS = {
       + '<h2 id="ritual">Weekly review ritual</h2>'
       + '<p>Same time every week. 25 minutes. For each number: <em>where it is</em> · <em>where it should be</em> · <em>one action this week</em>. Write the action down. Re-read last week\'s action first.</p>'
       + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> name your five numbers today. Write them on a post-it. Review them next Monday at the same time.</div></div>'
+  },
+
+  /* ─── 3.7 — Tasks & daily rhythm (R025) ─────── */
+  'daily-rhythm': {
+    id: 'daily-rhythm', track: 'Sales & marketing', step: '3.7', icon: '⏱',
+    title: 'Tasks & daily rhythm.',
+    lead: "What you do every day, week and month so revenue is never a surprise.",
+    progress: { current: 7, total: 8, pct: 88 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'why',   title: 'Why rhythm beats intensity' },
+      { id: 'daily', title: 'The daily 90' },
+      { id: 'week',  title: 'The Monday + Friday rituals' },
+      { id: 'month', title: 'Monthly: the leak audit' }
+    ],
+    next: { href: 'module.html?id=clarity-page', label: 'Step 3.8 — Clarity, the one-page plan →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Cadence patterns; team rituals deepen in Pro Mastery.</div></div>'
+      + '<h2 id="why">Why rhythm beats intensity</h2>'
+      + '<p>Spike weeks build resentment. Rhythm builds trust — with you, with your team, with your customers. The boring 90 minutes a day beats the heroic 14-hour Friday.</p>'
+      + '<h2 id="daily">The daily 90</h2>'
+      + '<p>Three blocks of 30: <strong>look</strong> (numbers + inbox), <strong>move</strong> (the one thing that matters today), <strong>close</strong> (loose ends, prep tomorrow). Same time daily. No exceptions.</p>'
+      + '<h2 id="week">The Monday + Friday rituals</h2>'
+      + '<p>Monday: re-read the one-page plan; pick the week\'s 3 priorities; tell one person what they are. Friday: review the week against those 3; honest grade A-F; one paragraph captured.</p>'
+      + '<h2 id="month">Monthly: the leak audit</h2>'
+      + '<p>One Sunday afternoon a month: walk every leak from the HC. What moved? What didn\'t? Re-rank. Pick a fresh top-3 for next month.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> tomorrow, do the daily 90 in 3 blocks. Same time. Don\'t skip closing. See how week feels by Friday.</div></div>'
+  },
+
+  /* ─── 4.3 — SOPs library (R025) ─────── */
+  'sops-library': {
+    id: 'sops-library', track: 'Operations', step: '4.3', icon: '📚',
+    title: 'SOPs library.',
+    lead: "Templates for every recurring process. Your business in writing.",
+    progress: { current: 3, total: 5, pct: 60 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'why',    title: 'SOPs vs muscle memory' },
+      { id: 'shape',  title: 'The 5-line SOP' },
+      { id: 'index',  title: 'Indexing: the SOP shelf' },
+      { id: 'review', title: 'Quarterly review' }
+    ],
+    next: { href: 'module.html?id=ops-sustainability', label: 'Step 4.4 — Operations & Sustainability →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> 12 starter SOP templates ship in Pro Mastery.</div></div>'
+      + '<h2 id="why">SOPs vs muscle memory</h2>'
+      + '<p>Every recurring task lives in one of two places: written down, or in someone\'s head. The first survives staff turnover and your holidays. The second survives until the first crisis.</p>'
+      + '<h2 id="shape">The 5-line SOP</h2>'
+      + '<p>Most SOPs are too long to read and too short to follow. The right shape: <em>Trigger</em> → <em>Owner</em> → <em>Steps (numbered)</em> → <em>Tools</em> → <em>Definition of done</em>. One page. Every word load-bearing.</p>'
+      + '<h2 id="index">Indexing: the SOP shelf</h2>'
+      + '<p>Six tags get you 80% of the index: <strong>Sales</strong> · <strong>Delivery</strong> · <strong>Onboarding</strong> · <strong>Finance</strong> · <strong>People</strong> · <strong>Standards</strong>. Anything that doesn\'t fit, you don\'t need a procedure for yet.</p>'
+      + '<h2 id="review">Quarterly review</h2>'
+      + '<p>Same as sales SOPs (3.6): every quarter, walk each procedure. Did anyone not follow it? Why? Edits surface from real friction.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> write SOP #1 this week — the one process you\'d miss if you got hit by a bus tomorrow. One page. Use it. Edit Friday.</div></div>'
+  },
+
+  /* ─── 5.1 — The Business OS tutorial (R025) ─────── */
+  'bos-tutorial': {
+    id: 'bos-tutorial', track: 'Mastery', step: '5.1', icon: '🧭',
+    title: 'The Business OS tutorial.',
+    lead: "How to actually use this system so it becomes second nature, not another tab.",
+    progress: { current: 1, total: 4, pct: 25 },
+    phases: ['blueprint'],
+    outline: [
+      { id: 'sidebar', title: 'The sidebar' },
+      { id: 'hc',      title: 'The Health Check' },
+      { id: 'lessons', title: 'Lessons + modules' },
+      { id: 'rhythm',  title: 'Daily rhythm — what to open first' }
+    ],
+    next: { href: 'module.html?id=founders-fortune', label: 'Step 5.3 — The Founder\'s Fortune →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Self-paced walkthrough; live-call walkthrough is the Pro Mastery version.</div></div>'
+      + '<h2 id="sidebar">The sidebar</h2>'
+      + '<p>Sidebar reflects your tier. Free shows 6 functional links + an alt-axis "Request a feature". Customer adds the unlock shelf. Don\'t install add-ons before you need them.</p>'
+      + '<h2 id="hc">The Health Check</h2>'
+      + '<p>The whole portal personalises off your HC. Re-take it any time — most owners run it monthly to track movement. Honesty contract: only topics you answer surface; nothing fabricated.</p>'
+      + '<h2 id="lessons">Lessons + modules</h2>'
+      + '<p>22 lessons across 6 tracks. Pick the one that targets your weakest HC topic. Mark each done — phase-advance reads it.</p>'
+      + '<h2 id="rhythm">Daily rhythm — what to open first</h2>'
+      + '<p>Day 1: the HC. Week 1: Core Principles + Super Sales. Week 2: pick the lesson tied to your worst leak. Week 4: review HC. The portal works when the rhythm does.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> if you haven\'t run the HC, run it now. If you have, open the lesson tied to your weakest topic. The portal\'s only useful when used.</div></div>'
+  },
+
+  /* ─── 5.3 — The Founder's Fortune (R025) ─────── */
+  'founders-fortune': {
+    id: 'founders-fortune', track: 'Mastery', step: '5.3', icon: '🌊',
+    title: "The Founder's Fortune.",
+    lead: "Where time is no longer tied to income. The leverage layer.",
+    progress: { current: 3, total: 4, pct: 75 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'trade',   title: 'Trading time vs trading systems' },
+      { id: 'three',   title: 'Three forms of leverage' },
+      { id: 'sequence',title: 'The leverage sequence' },
+      { id: 'risk',    title: 'When leverage breaks' }
+    ],
+    next: { href: 'module.html?id=referral-alchemy', label: 'Step 5.2 — Referral Alchemy →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> The mythos register — for the operator who wants to outgrow time-for-money. Pro Mastery deepens with case studies.</div></div>'
+      + '<h2 id="trade">Trading time vs trading systems</h2>'
+      + '<p>Most businesses sell hours. The hours scale linearly — and they cap at 24 a day per person. The fortune is in trading systems, not time. Code, content, customers, capital. Each compounds.</p>'
+      + '<h2 id="three">Three forms of leverage</h2>'
+      + '<ul>'
+      + '  <li><strong>People</strong> — the oldest leverage. Hire, delegate, lead. Caps at the team you can manage.</li>'
+      + '  <li><strong>Capital</strong> — debt, equity, advance. Caps at risk tolerance.</li>'
+      + '  <li><strong>Code + content</strong> — the new permissionless leverage. Build once, distribute forever. The cap is your imagination.</li>'
+      + '</ul>'
+      + '<h2 id="sequence">The leverage sequence</h2>'
+      + '<p>Most operators get this backwards: hire too early, raise too early, build too late. Right order: <em>content</em> (audience) → <em>code</em> (systems) → <em>people</em> (team) → <em>capital</em> (acceleration). Each layer compounds the next.</p>'
+      + '<h2 id="risk">When leverage breaks</h2>'
+      + '<p>Leverage amplifies decisions — including bad ones. Every form fails the same way: the operator stops doing the work. The system runs without judgement; judgement was the value.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> for each of your offers, ask: "what would 10× this look like — without me being there 10× more?" The answer is your leverage roadmap.</div></div>'
+  },
+
+  /* ─── L.1 — Founder psychology (R025) ─────── */
+  'founder-psychology': {
+    id: 'founder-psychology', track: 'Leadership', step: 'L.1', icon: '🧠',
+    title: 'Founder psychology.',
+    lead: "The mental work nobody talks about. Standards, mood, attention.",
+    progress: { current: 1, total: 4, pct: 25 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'standards', title: 'Standards = ceiling' },
+      { id: 'mood',      title: 'Mood is contagious' },
+      { id: 'attention', title: 'Attention is the asset' },
+      { id: 'doubt',     title: 'Doubt is information' }
+    ],
+    next: { href: 'module.html?id=leadership-scale', label: 'Step L.2 — Leadership at small-team scale →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Mental hygiene basics; quarterly facilitator sessions in Pro Mastery.</div></div>'
+      + '<h2 id="standards">Standards = ceiling</h2>'
+      + '<p>What you tolerate becomes the team\'s ceiling. The day you let a sloppy ship out the door, the next ship is sloppier. Standards aren\'t pep talks — they\'re what you actually accept.</p>'
+      + '<h2 id="mood">Mood is contagious</h2>'
+      + '<p>Your team mirrors your mood within 48 hours. If you arrive anxious every Monday, the standup will too. The fix isn\'t fake cheer — it\'s actually managing your inputs (sleep, exercise, friction).</p>'
+      + '<h2 id="attention">Attention is the asset</h2>'
+      + '<p>Money compounds. Time compounds. Attention compounds harder than both — and it\'s the one resource you can\'t buy back. Protect it like the asset it is. No notifications. No "quick checks". One thing at a time.</p>'
+      + '<h2 id="doubt">Doubt is information</h2>'
+      + '<p>Doubt isn\'t weakness — it\'s data. The thing you keep avoiding is usually the thing that needs facing. Run toward the thing.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> name the one thing you\'ve been quietly avoiding. Schedule 30 minutes this week to face it.</div></div>'
+  },
+
+  /* ─── L.2 — Leadership at small-team scale (R025) ─────── */
+  'leadership-scale': {
+    id: 'leadership-scale', track: 'Leadership', step: 'L.2', icon: '👥',
+    title: 'Leadership at small-team scale.',
+    lead: "How to lead 1–10 people without becoming a bottleneck.",
+    progress: { current: 2, total: 4, pct: 50 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'why',     title: 'Why small teams fail' },
+      { id: 'context', title: 'Context, not control' },
+      { id: 'cadence', title: 'Three meetings, no more' },
+      { id: 'feedback',title: 'Feedback that holds' }
+    ],
+    next: { href: 'module.html?id=building-team', label: 'Step L.3 — Building your team →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> 1–10-person playbook; bigger-team patterns deferred to a future bonus track.</div></div>'
+      + '<h2 id="why">Why small teams fail</h2>'
+      + '<p>The first 10 hires are the highest-leverage decision a founder makes. The most common failure mode is a founder who keeps doing the work they hired someone to do — out of perfectionism or distrust. Both bottlenecks; both fixable.</p>'
+      + '<h2 id="context">Context, not control</h2>'
+      + '<p>Send the team into every meeting with the same context you have. The 1-page plan, the HC, the 3 priorities. Don\'t direct the work; surface the constraints. Good people figure it out faster than you can micromanage.</p>'
+      + '<h2 id="cadence">Three meetings, no more</h2>'
+      + '<ol>'
+      + '  <li><strong>Monday standup</strong> — 15 min, last week / this week / blockers.</li>'
+      + '  <li><strong>Friday retro</strong> — 30 min, one thing that worked, one that didn\'t, one to try.</li>'
+      + '  <li><strong>Monthly 1:1</strong> — 45 min per person, no agenda from you, every agenda from them.</li>'
+      + '</ol>'
+      + '<h2 id="feedback">Feedback that holds</h2>'
+      + '<p>Specific. Soon. Solo. Most "feedback" is a vague drive-by; useful feedback is on the work, within the week, in private. Praise in public, correct in private — universal because it actually works.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> if you haven\'t run a Friday retro this week, run one tomorrow. 30 min. Write it down. The team feels it within two cycles.</div></div>'
+  },
+
+  /* ─── L.3 — Building your team (R025) ─────── */
+  'building-team': {
+    id: 'building-team', track: 'Leadership', step: 'L.3', icon: '🤝',
+    title: 'Building your team.',
+    lead: "When to hire, who, what to pay, how to brief them.",
+    progress: { current: 3, total: 4, pct: 75 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'when',  title: 'When to hire (not yet)' },
+      { id: 'who',   title: 'Who to hire (not who you think)' },
+      { id: 'pay',   title: 'What to pay' },
+      { id: 'brief', title: 'The 30-day brief' }
+    ],
+    next: { href: 'database.html', label: '← Back to the library' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> First-3-hires playbook; UK-leaning specifics. Pro Mastery deepens w/ recruiter scripts + comp benchmarks per niche.</div></div>'
+      + '<h2 id="when">When to hire (not yet)</h2>'
+      + '<p>Most founders hire too early — to escape work they should systemise instead. The right trigger: you\'ve had the same task on your list for 4 weeks running and it\'s clearly not strategic. Document it. Hire to execute the SOP, not to invent it.</p>'
+      + '<h2 id="who">Who to hire (not who you think)</h2>'
+      + '<p>The first hire isn\'t a junior version of you — it\'s someone who covers your weakest function. If you\'re a salesperson founder, your first hire is operations. If you\'re a builder founder, it\'s sales. Hiring strengths feels safer; it doesn\'t actually help.</p>'
+      + '<h2 id="pay">What to pay</h2>'
+      + '<p>Top quartile of role-equivalent in your city, not bottom of "founder pay". Cheap hires are expensive — they cost you twice (low output + high churn). Top hires pay for themselves in 90 days.</p>'
+      + '<h2 id="brief">The 30-day brief</h2>'
+      + '<p>One page. Three sections: <em>What you\'ll own</em> · <em>What good looks like at day 30</em> · <em>Who you\'ll work with</em>. Send before day one. Re-read together at day 30. Adjust.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> draft your next-hire 30-day brief now, even if you\'re 6 months from hiring. The act of writing it surfaces what you\'re actually solving for.</div></div>'
   }
 
 };

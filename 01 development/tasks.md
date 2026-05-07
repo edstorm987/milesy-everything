@@ -178,6 +178,29 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R025 — Lessons content gap final close (final 7)** — DONE.
+      Closes chapter #71 lessons gap entirely. R015 shipped 10 + R025
+      ships final 7 = **22/22 lessons live**, no locked rows. Final 7
+      added to lessons.js (each ~50L w/ phases:[…] tag): `daily-
+      rhythm` 3.7 (Sales — daily 90 + weekly/monthly cadence) ·
+      `sops-library` 4.3 (Operations — 5-line SOP shape + 6-tag
+      index) · `bos-tutorial` 5.1 (Mastery — how-to-use-portal
+      walkthrough) · `founders-fortune` 5.3 (Mastery — 3 forms of
+      leverage + leverage sequence) · `founder-psychology` L.1
+      (Leadership — standards/mood/attention/doubt) ·
+      `leadership-scale` L.2 (Leadership — context-not-control +
+      3-meeting cadence + specific-soon-solo feedback) ·
+      `building-team` L.3 (Leadership — when/who/pay/30-day-brief).
+      Each opens w/ v1-draft callout naming what Pro Mastery layers
+      add. `database.html`: 7 row-changes lock→live + 5.3 Founder's
+      Fortune normalised + intro rewritten "22 fully-written lessons
+      — the entire library, no locked rows". Smoke: 7 URLs 200;
+      lessons.js has 22 records; database.html 0 lock patterns left.
+      Q-ASSUMED: R006 phase-advance hardcoded map swap to derived
+      view from `phases:[…]` field becomes trivial R+1 now lesson
+      set is closed; per-niche variants R+1 (niche packs layer
+      through R007/R013); video/audio out per prompt. NEW chapter
+      `04-lessons-gap-final.md` + MASTER #101.
 - [x] **T4 R024 — BOS settings + preferences page** — DONE.
       NEW `business-os app/settings.html` (~300L) — 5-tab settings:
       **Profile** (bos.brand companyName/niche/logoUrl/primary/
