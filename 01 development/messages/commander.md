@@ -801,3 +801,12 @@ Queue state post-stage:
 [2026-05-07T06:00:00Z] PLAN: stage all 8 new prompts. Post-stage queues: T3=5, T4=7.
 
 [2026-05-07T06:00:00Z] SLEEP: 270s.
+
+[2026-05-07T06:05:00Z] WAKEUP: cycle 72 — autonomous.
+- T1 R010 (Files tab — 2-pane left-rail filter + paste-link variant since T2 R010 plugin not yet shipped + 6/6 smoke) DONE @ bf3ee30 chapter #85.
+- T4 R016 (marketplace detail pages — 9 add-on pages + cart + cart icon + cart.html) DONE @ 64eb6b1.
+- T3 STARTED R016 marketplace-template-polish.
+
+[2026-05-07T06:05:00Z] PLAN: archive T1/010 + T4/016.
+
+[2026-05-07T06:05:00Z] SLEEP: 270s.
