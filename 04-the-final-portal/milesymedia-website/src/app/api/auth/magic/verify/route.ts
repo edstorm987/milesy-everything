@@ -14,7 +14,7 @@ import { issueSession, sessionCookie } from "@/lib/server/auth";
 import { getClient } from "@/server/tenants";
 import { createUser, getUser } from "@/server/users";
 import { logActivity } from "@/server/activity";
-import { verifyMagicToken, isUsed, markUsed } from "@/lib/server/magicLink";
+import { verifyMagicToken, consumeMagicNonce } from "@/lib/server/magicLink";
 import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
 
 function err(req: NextRequest, code: string) {
@@ -34,8 +34,11 @@ export async function GET(req: NextRequest) {
   if (!v.ok) return err(req, v.error);
   const { email, clientId, agencyId, exp, nonce } = v.payload;
 
-  if (isUsed(nonce)) return err(req, "already_used");
-  markUsed(nonce, exp);
+  // R028: atomic single-use check. Closes the check-then-mark race
+  // window present in the prior in-memory shape — the durable store
+  // does INSERT … ON CONFLICT DO NOTHING in one statement.
+  const consumed = await consumeMagicNonce(nonce, exp);
+  if (!consumed) return err(req, "already_used");
 
   const client = getClient(clientId);
   if (!client || client.status !== "active" || client.agencyId !== agencyId) {

@@ -73,30 +73,44 @@ export function verifyMagicToken(
   return { ok: true, payload };
 }
 
-// ─── Single-use nonce store (in-memory; v1) ───────────────────────────────
+// ─── Single-use nonce store ───────────────────────────────────────────────
+// R028: durable nonces via shared store (memory in dev, Postgres in
+// prod). The legacy `isUsed`/`markUsed` pair is now a thin wrapper:
+// a single `consumeNonce` call replaces the check-then-mark race
+// the previous shape implicitly tolerated (small window between
+// check + mark on a hot magic-link). Atomic INSERT-or-fail at the
+// store layer closes the gap.
 
-const used = new Map<string, number>(); // nonce → expiry epoch seconds
+import { getNonceStore } from "./nonceStore";
 
-function gcUsedSet(): void {
-  const now = Math.floor(Date.now() / 1000);
-  for (const [k, v] of used) {
-    if (v < now) used.delete(k);
-  }
+// Legacy callers expected `isUsed(nonce)` to return whether the nonce
+// was already consumed without itself consuming. The verify route now
+// calls `consumeNonceOrReject(nonce, exp)` which does both in one
+// atomic step — wrappers below preserve the API surface so the smoke +
+// existing route keep compiling, but the route handler is updated to
+// the atomic helper.
+export async function consumeMagicNonce(nonce: string, expSec: number): Promise<boolean> {
+  const ttlMs = Math.max(0, expSec * 1000 - Date.now());
+  return getNonceStore().consumeNonce(nonce, "magic-link", ttlMs);
 }
 
+// Back-compat shims — prefer `consumeMagicNonce` going forward. These
+// preserve a check/mark API for callers that haven't migrated yet,
+// but they are NOT atomic: prefer the single-call variant.
+const _legacyUsed = new Map<string, number>();
 export function isUsed(nonce: string): boolean {
-  gcUsedSet();
-  return used.has(nonce);
+  const now = Math.floor(Date.now() / 1000);
+  for (const [k, v] of _legacyUsed) if (v < now) _legacyUsed.delete(k);
+  return _legacyUsed.has(nonce);
 }
-
 export function markUsed(nonce: string, exp: number): void {
-  used.set(nonce, exp);
+  _legacyUsed.set(nonce, exp);
 }
 
-// Test-only: clear the used set so smoke can run replay scenarios in
-// isolation. NOT exported via barrel.
+// Test-only: clear the local back-compat set so smoke can run replay
+// scenarios in isolation. NOT exported via barrel.
 export function _clearUsedForTests(): void {
-  used.clear();
+  _legacyUsed.clear();
 }
 
 // ─── Email delivery hook ──────────────────────────────────────────────────

@@ -16,8 +16,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { ensureHydrated } from "@/server/storage";
 import {
   verifyVerifyEmailToken,
-  isVerifyNonceUsed,
-  markVerifyNonceUsed,
+  consumeVerifyNonce,
 } from "@/lib/server/emailVerification";
 import { getUserById, markEmailVerified } from "@/server/users";
 import { logActivity } from "@/server/activity";
@@ -35,7 +34,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: false, error: result.error }, { status: 400 });
   }
 
-  if (isVerifyNonceUsed(result.payload.nonce)) {
+  // R028: atomic single-use consume. Closes the check-then-mark race
+  // (multi-instance + concurrent same-token verify).
+  const consumed = await consumeVerifyNonce(result.payload.nonce, result.payload.exp);
+  if (!consumed) {
     return NextResponse.json({ ok: false, error: "already_used" }, { status: 400 });
   }
 
@@ -50,7 +52,6 @@ export async function GET(req: NextRequest) {
   }
 
   markEmailVerified(user.id);
-  markVerifyNonceUsed(result.payload.nonce, result.payload.exp);
 
   logActivity({
     agencyId: user.agencyId,

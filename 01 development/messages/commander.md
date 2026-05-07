@@ -1356,3 +1356,14 @@ Archived T2/022. Queue depths: T1=3 · T2=4 (R023 rank-my-website + R024-R026) �
 **Ship gate progress: 7/9** — WS-A ✅ · WS-B 2/3 (rank-my-website still pending) · WS-C ✅ · founder-pw ✅ · WS-E 1/4 (postgres). Sprint 1 essentially closed; Sprint 2 in motion.
 
 SLEEP: 270s.
+
+[2026-05-07T15:25:00Z] WAKEUP: cycle 156 — autonomous. **Triple progress**:
+- T3 R042 page-templates lib (6 templates + applyTemplate id-restamp + 20/20) DONE @ 0af0937 (chapter pending number).
+- T4 R002 resource-subpages-real (3 dedicated routes seo-audit/site-speed/accessibility-audit, A-F bands, no email capture) DONE @ recent T4 commit. Catalog flipped live.
+- T1 STARTED R028 durable-nonce-store (Postgres adapter w/ INSERT…ON CONFLICT consumeNonce, gcExpiredNonces, sweep extension).
+
+Archived T3/042 + T4/002. Staged 2 new T3 rounds — R044 sitemap+robots host routes (wires R036 helpers) + R045 JSON-LD injection (wires R037 helpers). Both turn library helpers into actual functioning behaviour — high-value for ship-readiness.
+
+Queue depths: T1=3 · T2=4 · T3=3 (R043 webhook-block + R044 + R045) · T4=3.
+
+SLEEP: 270s.

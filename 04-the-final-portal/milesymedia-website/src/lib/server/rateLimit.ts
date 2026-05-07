@@ -104,10 +104,13 @@ export function recordLoginSuccess(input: { ip: string; email: string }): void {
 export interface SweepStats {
   rateLimitBuckets: { before: number; after: number };
   loginFails: { before: number; after: number };
+  // R028: durable nonce GC. `deleted` is the count `gcExpiredNonces`
+  // pruned from the active adapter (memory or Postgres).
+  nonces: { deleted: number };
   ranAt: number;
 }
 
-export function sweepExpired(): SweepStats {
+export async function sweepExpired(): Promise<SweepStats> {
   const now = Date.now();
   const rlBefore = buckets.size;
   for (const [k, b] of buckets) {
@@ -117,9 +120,23 @@ export function sweepExpired(): SweepStats {
   for (const [k, r] of loginFails) {
     if (r.lockedUntil < now && r.windowResetAt < now) loginFails.delete(k);
   }
+  // R028: nonce GC via the durable store. Lazy-imported so rateLimit
+  // stays small + tsx --test smokes that don't touch nonces aren't
+  // forced to load the adapter.
+  let nonceDeleted = 0;
+  try {
+    const { getNonceStore } = await import("./nonceStore");
+    nonceDeleted = await getNonceStore().gcExpiredNonces(now);
+  } catch (e) {
+    // GC is best-effort — surface failures via the warn channel.
+    if (process.env.NODE_ENV !== "test") {
+      console.warn("[sweep] nonce GC failed:", e instanceof Error ? e.message : e);
+    }
+  }
   return {
     rateLimitBuckets: { before: rlBefore, after: buckets.size },
     loginFails: { before: lfBefore, after: loginFails.size },
+    nonces: { deleted: nonceDeleted },
     ranAt: now,
   };
 }

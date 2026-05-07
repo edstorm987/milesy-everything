@@ -18,6 +18,6 @@ export async function GET() {
   } catch (err) {
     return authErrorResponse(err);
   }
-  const stats = sweepExpired();
+  const stats = await sweepExpired();
   return NextResponse.json({ ok: true, stats });
 }

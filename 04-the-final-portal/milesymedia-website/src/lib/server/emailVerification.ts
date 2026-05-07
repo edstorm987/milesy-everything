@@ -79,6 +79,15 @@ function gcUsedSet(): void {
   }
 }
 
+// R028: atomic single-use consume via the durable store. Replaces the
+// check-then-mark race window — same pattern as magicLink.
+export async function consumeVerifyNonce(nonce: string, expSec: number): Promise<boolean> {
+  const { getNonceStore } = await import("./nonceStore");
+  const ttlMs = Math.max(0, expSec * 1000 - Date.now());
+  return getNonceStore().consumeNonce(nonce, "email-verify", ttlMs);
+}
+
+// Back-compat shims — prefer `consumeVerifyNonce`. NOT atomic.
 export function isVerifyNonceUsed(nonce: string): boolean {
   gcUsedSet();
   return used.has(nonce);
