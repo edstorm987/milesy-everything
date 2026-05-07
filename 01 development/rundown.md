@@ -16,12 +16,13 @@ status; chapters are source of truth.
 
 ## Phase
 
-**Sprint 2 ✅ closed · Sprint 2.5 (Ed UX batch) mostly done · Sprint 3
+**Sprint 2 ✅ closed · Sprint 2.5 ✅ effectively complete · Sprint 3
 (Felicia + production) parked pending Ed greenlight.**
 
-The current **active** work is **T1 R037 leads-pipeline foundation
-glue** — closes the 5 hooks T2 R027 left so the leads pipeline is
-fully alive end-to-end. After that we wait for Ed's next direction.
+All four chapter #161 gaps closed (cycle 173→23:05Z): public-funnel
+registry · leads-pipeline manifest id · email-sender registration ·
+funnelMePort.hcSlot hydration. Build green. Sprint 2.5 only leaves
+the perf pass (operator action — `PORTAL_BACKEND=postgres`).
 
 ## Workflow
 
@@ -35,10 +36,13 @@ that made Ed adopt the pattern.
 
 | Terminal | Lane | Queue depth |
 |----------|------|-------------|
-| **T1** | Foundation | 1 (R037 leads-pipeline foundation glue) |
+| **T1** | Foundation | 0 (R037+R038+R039+R040 all shipped via subagents) |
 | **T2** | Plugins | 0 |
 | **T3** | Website-editor | 0 |
 | **T4** | Marketing + ecosystem | 0 |
+
+All 4 active queues empty. The autonomous side has nothing left
+that can be done without operator input or a new direction from Ed.
 
 **Parked terminals** (queues preserved):
 - **T5** — Felicia / WS-F. Ready at `queues/T5/001-003`.

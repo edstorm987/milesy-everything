@@ -195,11 +195,24 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
       12/12; pairs w/ existing helper-level smoke (10/10) → 22
       cases full stack. `tsc --noEmit` clean.
 
-### Open Sprint-2.5 items (no queue file yet)
+### Done — small fixes batch (2026-05-07T22:45→23:05Z)
 
-- [ ] "Sign in as employee" persona on `/dev/pov` — code was added
-      twice and reverted by linter. Stage as small T1 follow-up
-      round if Ed wants it explicit.
+- [x] **Sign in as employee persona on `/dev/pov`.** Commit `2b77312`.
+      `DEMO_STAFF_*` constants in `demoSeed.ts` + idempotent
+      `agency-staff` createUser in seed flow + 5th persona card on
+      `/dev/pov`.
+- [x] **Chapter #161 Gap #1 — public-funnel registry registration.**
+      Commit `2b77312`. NEW `publicFunnelFoundation.ts` side-effect
+      import + workspace dep + transpilePackages.
+      `/api/portal/public-funnel/hc-complete` now reachable in prod.
+- [x] **Chapter #161 Gap #4 — `funnelMePort.hcSlot` hydration.**
+      Commit `35132a0`. `getMeContextByUserId` walks every agency's
+      public-funnel install + invokes `funnel.meContext(userId)` to
+      hydrate hcSlot + capturedAt. Falls through to skeleton on any
+      failure — BOS `/me` always renders.
+
+### Open Sprint-2.5 items
+
 - [ ] Performance pass beyond dev-bypass memoize — biggest lever
       remaining is `PORTAL_BACKEND=postgres` (T1 R027 wired) on a
       real Postgres URL. Operator action.
