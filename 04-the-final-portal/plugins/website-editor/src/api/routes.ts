@@ -63,6 +63,7 @@ import { handleListAssets, handleUploadAsset, handleDeleteAsset } from "./handle
 import { handleListTemplates, handleSaveTemplate, handleDeleteTemplate } from "./handlers/templates";
 import { handleGetForcePassword, handleSetForcePassword } from "./handlers/forcePassword";
 import { handleGetBrandKitExtended, handleSaveBrandKitExtended } from "./handlers/brandKit";
+import { handleGetEmbedAllowList, handleSetEmbedAllowList } from "./handlers/embedAllow";
 import {
   handleListBlogPosts,
   handleGetBlogPost,
@@ -158,4 +159,10 @@ export const apiRoutes: PluginApiRoute[] = [
   // secondary / accent / fonts.
   { path: "/brand-kit/extended", methods: ["GET"], handler: handleGetBrandKitExtended },
   { path: "/brand-kit/extended", methods: ["POST"], handler: handleSaveBrandKitExtended },
+
+  // Embed allow-list (R013) — per-client list of origins permitted
+  // to iframe the customer surface. Foundation middleware reads this
+  // to emit `frame-ancestors` CSP on `/embed/[clientSlug]/[variant]`.
+  { path: "/embed/allowed-origins", methods: ["GET"], handler: handleGetEmbedAllowList },
+  { path: "/embed/allowed-origins", methods: ["POST"], handler: handleSetEmbedAllowList },
 ];

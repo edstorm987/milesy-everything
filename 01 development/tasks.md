@@ -432,6 +432,37 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R013 — Iframe-embed customer surface** — DONE.
+      Editor-side primitives shipped; foundation route
+      `/embed/[clientSlug]/[variant]` is T1 Q-FOLLOWUP.
+      Goal C: NEW `lib/embedBridge.ts` postMessage protocol —
+      `EmbedEvent` union (aqua:ready/auth-ok/height-changed/
+      navigate/error), `dispatchToParent`, `subscribeToBridge`
+      with allow-list filtering, `measureContentHeight`,
+      `buildFrameAncestorsHeader` for CSP. Goal B: NEW
+      `server/embedAllow.ts` per-client allow-list registry
+      (de-dup + trim + invalid-strip; `isValidOrigin` regex
+      rejects paths/trailing-slash); 2 endpoints
+      `GET/POST /embed/allowed-origins` with set-and-tell
+      pattern (invalid surfaced separately, not 400-batch).
+      Goal D: NEW `EmbedSnippetBuilder.tsx` paste-ready
+      HTML+JS generator with auto-resize listener (exact-origin
+      checked) + clipboard copy. Goal A: foundation route
+      Q-FOLLOWUP — contract documented in chapter §5 (T1
+      middleware reads `getEmbedAllowList` + emits
+      `frame-ancestors` CSP). Goal E: NEW
+      `__smoke__/r013-iframe-embed-surface.test.ts` 37/37
+      (event guards + frame-ancestors + SSR-safety + origin
+      validation + registry round-trip + HTTP shape).
+      package.json test chain extended. tsc-clean. Chapter
+      `04-iframe-embed-surface.md` + MASTER row #94.
+      Q-ASSUMED: foundation route deferred (T1); set-and-tell
+      POST pattern; auto-resize exact-origin; isValidOrigin
+      rejects paths; child suggests redirect, host enforces
+      allow-list. Deferred: foundation `/embed/<slug>/<variant>`
+      route + middleware (T1), `EmbedAutoResize.tsx` React
+      component, custom-domain (T6 out of scope), per-variant
+      allow-list, auth-ok telemetry, locale-changed event.
 - [x] **T3 R012 — Portal-variant editor** — DONE.
       Server CRUD + singleton enforcement live since R002. R012
       adds the flat-across-all-roles read + 2 UI components.
