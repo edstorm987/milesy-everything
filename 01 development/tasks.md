@@ -9,6 +9,23 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T4 R002 — Per-phase Incubator sub-pages** — DONE.
+      Added `phase-1-epic-intro.html` 🌅 / `phase-2-blueprint.html` 📐 /
+      `phase-3-diagnostics.html` 🔬 / `phase-4-brand-builder.html` 🎨
+      under `incubator app/` per §15a anatomy. Each ships phase-specific
+      toggles + a `[data-inc-phase-checks]` checklist (3/4/5/5 steps)
+      saved into new `incubator.phaseProgress[phaseId]` localStorage
+      key. Extended `incubator.js` (+~110L) with `mountPhaseChecks()` +
+      auto-advance: when every step on a phase is ticked, writes next
+      phase id to `incubator.phase` + emits a toast (forward-only;
+      capped at user's current phase). Extended `incubator.css` (+~50L)
+      with `.inc-checks*` (gold-accent checkboxes, line-through on
+      completed). Extended root `index.html` with new 4-card "Phase
+      Path" cardGrid above existing nav; `applyPhasePathLocks()` adds
+      🔒 lock badges (future phases), ✓ Complete (past), ◐ In progress
+      (current). Honesty contract preserved. Smoke verified — 4 new
+      pages 200; lock/complete badges flip with `?phase=` override.
+      Chapter `04-incubator-phase-portal.md` "R002" section + MASTER #78.
 - [x] **T4 R001 — Incubator-phase client portal + BOS bridge** — DONE.
       Scaffolded `04-the-final-portal/milesymedia website/incubator app/`
       (sibling of business-os/lead-magnet, served from `:3033`). 5 static

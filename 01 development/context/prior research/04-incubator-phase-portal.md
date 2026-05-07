@@ -125,6 +125,88 @@ other Incubator surface needs updating.
   mode while `incubator.active==='1'`, add one line to
   `mountIncubatorStrip()`. Left out this round per honesty contract.
 
+## R002 — Per-phase Incubator sub-pages (2026-05-07)
+
+Added 4 phase-specific pages alongside the R001 generic sub-pages, each
+following §15a anatomy:
+
+| File                              | Phase                       |
+| --------------------------------- | --------------------------- |
+| `phase-1-epic-intro.html`         | 🌅 Epic Intro               |
+| `phase-2-blueprint.html`          | 📐 Blueprint Setup          |
+| `phase-3-diagnostics.html`        | 🔬 Diagnostics & Foundations|
+| `phase-4-brand-builder.html`      | 🎨 Brand Builder            |
+
+Each page ships:
+
+- §15a anatomy (toprail · cover variant · icon · pageTitle/caption ·
+  propertyStrip with phase chip + Started · phase-specific toggles).
+- A **`<section class="inc-checks" data-inc-phase-checks="<phaseId>">`**
+  checklist of 3–5 items — each `<label data-step="…">` ticks save into
+  `incubator.phaseProgress[phaseId][stepId] = true`. The header chip
+  `[data-inc-phase-progress-chip]` shows live `done / total`.
+- Phase-specific cardGrid links into BOS / Health Check / Database
+  where relevant (e.g. Blueprint → BOS company + docs; Diagnostics →
+  HC + reading list).
+- A "What happens next" toggle that names the next phase explicitly.
+
+### New `incubator.*` storage
+
+| Key                          | Type                                       |
+| ---------------------------- | ------------------------------------------ |
+| `incubator.phaseProgress`    | `{ [phaseId]: { [stepId]: true } }` JSON   |
+
+### Auto-advance contract
+
+`incubator.js` adds `mountPhaseChecks()` (called at DOMContentLoaded).
+Whenever a check toggles, if **every** `[data-step]` for the phase is
+ticked, `maybeAdvancePhase(phaseId)` writes the next phase id to
+`incubator.phase` and shows a toast (`Phase advanced → <next>`). Guards:
+
+- Only advances forward.
+- Will not advance past the user's existing phase (so reviewing earlier
+  phases doesn't bump them backwards or jump them forward unexpectedly).
+
+### Root "Phase Path" cardGrid
+
+`index.html` gains a second cardGrid above "Incubator Navigation" with
+4 cards — one per phase, ordered. JS pass `applyPhasePathLocks()` adds:
+
+- 🔒 lock badge for cards whose `data-phase-index` > current phase.
+- ✓ Complete badge for cards whose phase is below current.
+- ◐ In progress badge for the current phase if any step is ticked.
+
+The honesty contract still holds: locked cards aren't hidden, they show
+the path with the unlock label.
+
+### Public API additions
+
+```js
+window.Incubator.getPhaseProgress();   // returns full map
+window.Incubator.resetPhaseProgress(); // dev / debug only
+```
+
+### Files added/changed in R002
+
+- NEW `phase-1-epic-intro.html` · `phase-2-blueprint.html` ·
+  `phase-3-diagnostics.html` · `phase-4-brand-builder.html`.
+- `incubator.js` — `+~110 lines`: `phaseProgress` getters/setters,
+  `mountPhaseChecks`, `renderPhaseProgressChip`, `maybeAdvancePhase`,
+  `showToast`, `applyPhasePathLocks`. Public surface extended.
+- `incubator.css` — `+~50 lines`: `.inc-checks*` styling (gold-accent
+  checkboxes, line-through on completed items).
+- `index.html` — added "Phase Path" cardGrid block.
+
+### R002 smoke (verified 2026-05-07)
+
+- All 4 new pages return 200 from `:3033`.
+- Root page renders Phase Path grid with phase-2/3/4 lock badges when
+  `incubator.phase=epic-intro`.
+- `?phase=brand-builder` removes lock badges; cards show ✓ Complete
+  for phases 1-3 and ◐ In progress for phase 4.
+- Ticking all checks on a phase advances `incubator.phase` once and
+  emits a toast.
+
 ## Cross-refs
 
 - §15 visual spec — `04-aqua-internals-reference.md` §15a–§15g.
