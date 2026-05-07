@@ -9,6 +9,26 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 003 — Live phase custom portal builder gateway** — DONE.
+      Goal A: Live detection (`aqua-mastery` ∪ legacy `live`) +
+      `node:fs.existsSync` check on `clients/<slug>/`; header gains
+      amber Live badge + CTA that flips between **Build custom portal**
+      and **Open custom portal ↗**. Goal B: NEW `_BuildPortalWizard.tsx`
+      modal — plugin checklist (pre-checked = installed, recommended
+      chips for the §5a set), base-template radio (blank / luv-and-ker
+      / compass + lazily-fetched portal-export presets), slug confirm;
+      submit POSTs `/api/portal/portal-export/clients/export`
+      (Q-ASSUMED: prompt's `/materialize` alias = plugin's actual
+      `clients/export` route); `router.refresh()` flips CTA on success.
+      Goal C: ToolsPicker grew `isLive` + `liveRecommended` optional
+      props; Live amber callout names recommended set + missing subset
+      + one-click bulk install loop over `marketplace/install`.
+      Recommended set: website-editor · client-crm · forms · ecommerce
+      · memberships · affiliates · agency-marketing. Goal D: smoke
+      `§ Live phase gateway` block (Live badge + Build CTA + callout
+      visible on aqua-mastery client; CTA absent on aqua-blueprint
+      client). Chapter `04-agency-shell-live-phase.md`; MASTER row #75.
+      HARD BOUNDARY honoured. tsc clean.
 - [x] **T1 002 — Employee HQ + Role Builder** — DONE.
       Goal A: Staff domain extended additively with `agencyEmployee?`,
       `customRoleId?`, `assignments?: ClientAssignment[]`, `metadata?`;

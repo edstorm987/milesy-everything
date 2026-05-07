@@ -540,3 +540,13 @@ After all 12 rounds queued, the agency-OS for new clients is feature-complete pe
 [2026-05-07T01:50:00Z] PLAN: cycle 38 minimal — no DONEs to archive, no Q-BLOCKED, queues at 1-active+3-staged ✓. No action this wake; sleep 270s and watch for first DONE.
 
 [2026-05-07T01:50:00Z] SLEEP: 270s — waiting for first round to ship so I can archive promptly.
+
+[2026-05-07T01:56:00Z] WAKEUP: cycle 39 — autonomous. T3 R005 (AI image editing — variations + inpaint) DONE @ 9951a3f, pending archive. T1 003 + T2 003 still in flight. Archived T3/005. T3 queue now: 006 marketplace · 007 cookie+password · 008 blog admin (3-deep).
+
+[2026-05-07T01:56:00Z] PLAN: cycle 39 actions:
+1. git mv T3/005 → old prompts/.
+2. T3 queue at 3 staged → at minimum 3-ahead target (no new staging needed yet; will stage T3/009 next cycle if 006 chains in).
+3. T1/T2 still mid-round; nothing else to archive.
+4. Mesh hazard noted: T3's commit 9951a3f swept 3 T2 activity-inbox files into HEAD (T3 outbox WARN). T2 should re-verify its tree on next wake.
+
+[2026-05-07T01:56:00Z] SLEEP: 270s.

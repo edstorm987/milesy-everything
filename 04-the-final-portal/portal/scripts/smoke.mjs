@@ -226,6 +226,48 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Live phase gateway");
+  // Create a fresh aqua-mastery (Live) client and verify the per-client
+  // header surfaces the Live badge + the "Build custom portal" CTA.
+  const liveCreate = await go("POST", "/api/portal/fulfillment/clients", {
+    body: JSON.stringify({
+      name: `Smoke Live ${Date.now()}`,
+      stage: "aqua-mastery",
+      brand: { primaryColor: "#f59e0b" },
+    }),
+  });
+  record("live add-client POST 200/201", liveCreate.status === 200 || liveCreate.status === 201, `status=${liveCreate.status}`);
+  const liveJson = liveCreate.status < 300 ? await liveCreate.json().catch(() => null) : null;
+  const liveId = liveJson?.client?.id ?? liveJson?.clientId;
+  if (liveId) {
+    const ovr = await go("GET", `/portal/clients/${liveId}`);
+    record("live client overview 200", ovr.status === 200);
+    const body = ovr.status === 200 ? await ovr.text() : "";
+    record("overview shows 'Live' badge", body.includes(">Live<"));
+    record("overview shows Build custom portal CTA", body.includes("Build custom portal"));
+    // Tools tab carries the Recommended-for-Live callout.
+    const toolsR = await go("GET", `/portal/clients/${liveId}?tab=tools`);
+    record("live tools tab 200", toolsR.status === 200);
+    const toolsBody = toolsR.status === 200 ? await toolsR.text() : "";
+    record("tools tab shows 'Recommended for Live'", toolsBody.includes("Recommended for Live"));
+    record("tools tab shows 'Install Live recommended'", toolsBody.includes("Install Live recommended"));
+  }
+  // Non-Live clients shouldn't carry the Live badge / CTA.
+  const nonLiveCreate = await go("POST", "/api/portal/fulfillment/clients", {
+    body: JSON.stringify({
+      name: `Smoke Non-Live ${Date.now()}`,
+      stage: "aqua-blueprint",
+      brand: { primaryColor: "#9333EA" },
+    }),
+  });
+  const nonLiveJson = nonLiveCreate.status < 300 ? await nonLiveCreate.json().catch(() => null) : null;
+  const nonLiveId = nonLiveJson?.client?.id ?? nonLiveJson?.clientId;
+  if (nonLiveId) {
+    const ovr = await go("GET", `/portal/clients/${nonLiveId}`);
+    const body = ovr.status === 200 ? await ovr.text() : "";
+    record("non-live overview omits Build custom portal CTA", !body.includes("Build custom portal"));
+  }
+
   console.log("\n§ Employee HQ");
   // List default seeded roles via the agency-hr API.
   const rolesRes = await go("GET", "/api/portal/agency-hr/roles");
