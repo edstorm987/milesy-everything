@@ -43,12 +43,45 @@ Iframe-embed-style login + portal for each client's end customers, branded
 to the client. Same portal-variant + brand-kit machinery as the client portal,
 nested one level.
 
-## Phase 7+ — Feature plugins (one per phase)
-agency-hr / agency-finance / agency-marketing / client-resources / freelancer-portal /
-memberships / affiliates / etc. — each slots in as a new plugin.
+## Phase 7 — Feature plugins ✅ (largely shipped)
+agency-hr / agency-finance / agency-marketing / agency-ops / agency-domains /
+agency-resources / agency-payroll / aqua-resources / client-crm / client-tasks /
+client-files / pre-sales-hq / activity-inbox / credentials-vault / notifications /
+bookings / integrations / support-desk / website-editor (28 rounds of maturity) /
+ecommerce / memberships / affiliates / forms / sops / kanban / email-sender /
+portal-export — all shipped as plugins per Ed's "every feature is a plugin" rule.
+
+## Phase 8 — Unification (in progress, 2026-05-07)
+**Single Next.js host at `04-the-final-portal/milesymedia-website/`.**
+Marketing site, HC funnel, BOS, Incubator portal, AND the agency portal +
+auth all live under one project. One cookie domain, one origin. T4
+executes manually with Ed in 5 staged steps (move portal source → drop
+HC/BOS/Incubator into public/ → seed default founder user → wire
+marketing Sign-in CTAs → cleanup + chapter). Step 1 landed
+2026-05-07T12:10Z — `portal/` directory removed, all source under
+`milesymedia-website/`.
+
+## Phase 9 — Lead role + BOS auth
+Add `role: "lead"` to the role enum. Login routes leads to
+`/business-os/...`. HC completion auto-creates a lead user and signs
+them in. BOS reads user data from foundation storage instead of pure
+localStorage. Unblocks the public funnel on a real auth surface.
+
+## Phase 10 — Resources nav + tools
+Public tools (rank-my-website, rank-my-xyz, future bespoke ones) live
+under `public/tools/`. Each one captures email → creates lead user →
+drops into BOS. Same pattern as HC. Each tool is a small static app
+that shares the unified-host cookie.
+
+## Phase 11 — Production gate (T6)
+Real API wiring (Stripe, GMB, GA4, Search Console, SMTP), custom
+domains per client, observability, CI/CD. Currently parked. Activates
+after Phases 8–10 settle.
 
 ## Operating mode (chief commander pattern)
-Ed runs 3 additional Claude terminals on Opus 4.7 max effort (each can deploy
-its own subagents). I (this session) act as chief commander — carve up the
-work, write self-contained prompts for each terminal, and integrate their
-output back into the dev folder.
+Ed runs 4 active Claude terminals on Opus 4.7 (T1 foundation, T2
+plugins, T3 website-editor, T4 ecosystem/manual) plus a chief commander
+session. Commander coordinates via append-only logs at
+`01 development/messages/`. T4 currently in manual pair-programming
+mode with Ed for the unification phase; T1/T2/T3 paused via HOLD
+notice during the move.

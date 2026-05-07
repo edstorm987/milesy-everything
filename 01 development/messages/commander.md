@@ -1195,3 +1195,5 @@ Queue depths post-archive: T1=4 (paused) · T2=3 (paused) · T3=2 (paused) · T4
 [2026-05-07T12:10:00Z] WAKEUP: cycle 133 — autonomous. T4 unify Step 1 LANDED — `portal/` directory no longer exists; everything now under `milesymedia website/` (package.json, next.config.ts, middleware.ts, src/, public/ all moved + marketing HTML pages coexist). Move was mesh-absorbed across multiple commander commits but tree is consistent. T1/T2/T3 still long-sleep (HOLD pending). PLAN: minimal. SLEEP: 270s.
 
 [2026-05-07T12:15:00Z] WAKEUP: cycle 134 — autonomous. Quiet. No new commits since 975546e. T4 not yet logged unify-N NOTE (manual mode skips ceremony). Tree state confirmed: portal/ gone, milesymedia website/ holds Next.js project. SLEEP: 270s.
+
+[2026-05-07T12:20:00Z] DOC ALIGNMENT — Ed-explicit override: updated `eds requirments.md` (appended Unified vision update section), `phases.md` (added Phase 7 ✅ summary + Phase 8 unification + Phase 9 lead role + Phase 10 Resources + Phase 11 prod gate), and added new chapter #121 `04-unified-vision.md` to context tree + MASTER row. All three docs now reflect single-host milesymedia-website/ model + lead-role roadmap.

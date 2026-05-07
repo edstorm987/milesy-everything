@@ -102,3 +102,70 @@ machinery powers every level. New features ship as plugins.
   — should be **a plugin**, not a refactor.
 
 — Ed (synthesised by Claude on 2026-05-04 — edit freely)
+
+---
+
+## Unified vision update — 2026-05-07
+
+After the autonomous build sprint shipped 90+ rounds, Ed clarified the
+end-state shape. milesymedia.com is **the website that stitches it all
+together** — one origin, one cookie, one login. Folder is now
+`04-the-final-portal/milesymedia-website/` (no spaces) and the Next.js
+project lives at that root.
+
+### Single-host architecture
+
+```
+milesymedia-website/                ← Next.js root, single :3030 (single prod origin later)
+├── src/app/
+│   ├── page.tsx, (marketing)/...   marketing pages
+│   ├── login, signup               single auth gate for ALL audiences
+│   ├── portal/agency/...           agency-team surface (T1)
+│   ├── portal/customer/...         end-customer surface (T1)
+│   └── api/...                     auth + tenant + plugin endpoints
+└── public/
+    ├── health-check/               HC funnel (lead magnet)
+    ├── business-os/                free-tier BOS for leads
+    ├── incubator/                  client-facing Incubator-phase portal
+    └── tools/                      future Resources nav (rank-my-site, etc.)
+```
+
+### One login → role-routed landing
+
+| User type | Role | Lands on |
+|-----------|------|----------|
+| Founder / agency staff | `agency-owner` / `agency-team` | `/portal/agency` |
+| Felicia-type clients | `client-owner` / `client-staff` | their custom portal (`/embed/[clientSlug]/...` or `/portal/customer/...`) |
+| Felicia's customers | `end-customer` | iframe-embedded or `/portal/customer/...`, branded as the client's |
+| Free-tier leads (HC graduates, tool users) | `lead` ← **new role to add** | `/business-os/...` |
+
+The `lead` role is the one piece not yet built. Natural next round:
+- HC completion auto-creates `lead` user and signs them in.
+- BOS gates on auth and reads user data from foundation storage instead
+  of pure localStorage.
+
+### Resources nav (future, additive)
+
+Public lead-generation tools (rank-my-website, rank-my-xyz, etc.) live
+in `public/tools/` as static apps. Each one captures email → creates
+`lead` user → drops them into the BOS funnel. Same pattern as HC.
+Bespoke client tools build on top of this scaffolding later.
+
+### Why this shape matters
+
+- **One cookie domain** → no auth iframe seams in production.
+- **One origin** → CSP / CORS / postMessage all simpler.
+- **One Next.js project** → one build, one deploy, one observability surface.
+- **Plugins still per-client** — the unification is just the host shell.
+  Per-client brand kits, plugin sets, and portal variants are unchanged.
+
+### Standing constraints carry over
+
+- Brand-kit CSS-vars only (no hardcoded brand colours).
+- Honesty contract (chapter #68) for any number / metric surface.
+- No real API wiring on the public-funnel side until T6 prod gate.
+- The website is the funnel; the portal is the product. Both live under
+  the same `milesymedia-website/` tree from now on.
+
+— synthesised by Claude on 2026-05-07 with Ed's explicit override of
+the "commander must not edit eds requirments.md" rule. Ed: amend freely.
