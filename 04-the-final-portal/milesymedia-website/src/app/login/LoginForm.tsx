@@ -120,49 +120,47 @@ export function LoginForm({
   const isMagic = mode === "magic";
 
   return (
-    <form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col gap-3">
+    <form onSubmit={onSubmit} className="mm-auth-form">
       {googleEnabled && (
         <a
           href={`/api/auth/oauth/google/start?return=${encodeURIComponent(success)}`}
-          className="flex items-center justify-center gap-2 rounded-md border border-black/15 bg-white px-4 py-2 text-sm font-medium text-black/80 hover:bg-black/[0.03]"
+          className="mm-btn-google"
         >
           <span aria-hidden="true">🔐</span>
           Continue with Google
         </a>
       )}
       {googleEnabled && (
-        <div className="my-1 flex items-center gap-2 text-[11px] uppercase tracking-wider text-black/35">
-          <span className="h-px flex-1 bg-black/10" />
+        <div className="mm-or-divider">
           <span>or</span>
-          <span className="h-px flex-1 bg-black/10" />
         </div>
       )}
       {mode === "signup" && (
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-black/70">Name <span className="text-black/40">(optional)</span></span>
+        <label className="mm-input-label">
+          <span>Name <span className="mm-input-label-aside">(optional)</span></span>
           <input
             type="text"
             autoComplete="name"
             value={name}
             onChange={e => setName(e.target.value)}
-            className="rounded-md border border-black/15 bg-white px-3 py-2 outline-none focus:border-[var(--brand-primary)]"
+            className="mm-input"
           />
         </label>
       )}
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="text-black/70">Email</span>
+      <label className="mm-input-label">
+        <span>Email</span>
         <input
           type="email"
-          autoComplete={mode === "signup" ? "email" : "email"}
+          autoComplete="email"
           required
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className="rounded-md border border-black/15 bg-white px-3 py-2 outline-none focus:border-[var(--brand-primary)]"
+          className="mm-input"
         />
       </label>
       {!isMagic && (
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-black/70">Password</span>
+        <label className="mm-input-label">
+          <span>Password</span>
           <input
             type="password"
             autoComplete={mode === "signup" ? "new-password" : "current-password"}
@@ -170,23 +168,23 @@ export function LoginForm({
             minLength={mode === "signup" ? 8 : undefined}
             value={password}
             onChange={e => setPassword(e.target.value)}
-            className="rounded-md border border-black/15 bg-white px-3 py-2 outline-none focus:border-[var(--brand-primary)]"
+            className="mm-input"
           />
         </label>
       )}
-      {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
+      {error && <p role="alert" className="mm-form-error">{error}</p>}
       {magicSent && (
-        <p role="status" className="rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+        <p role="status" className="mm-form-success">
           Check your inbox — a magic sign-in link is on its way.
           {magicSent.devUrl && (
-            <> <a className="underline" href={magicSent.devUrl}>Open it now</a> (dev only).</>
+            <> <a href={magicSent.devUrl}>Open it now</a> (dev only).</>
           )}
         </p>
       )}
       <button
         type="submit"
         disabled={busy}
-        className="mt-2 rounded-md bg-[var(--brand-primary)] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+        className="mm-btn-primary"
       >
         {isMagic ? (busy ? "Sending…" : "Email me a magic link") : submitLabel}
       </button>
@@ -194,32 +192,27 @@ export function LoginForm({
         <button
           type="button"
           onClick={() => { setMode(isMagic ? "signin" : "magic"); setError(null); setMagicSent(null); }}
-          className="text-center text-xs text-black/55 underline underline-offset-2 hover:text-black/80"
+          className="mm-form-toggle"
         >
           {isMagic ? "Use a password instead" : "Email me a magic link instead"}
         </button>
       )}
       {!embedded && (
-        <p className="mt-2 text-center text-xs text-black/60">
+        <p className="mm-form-link">
           New here?{" "}
-          <a
-            href="/signup"
-            className="underline underline-offset-2 hover:text-black/80"
-            data-testid="login-signup-link"
-          >
+          <a href="/signup" data-testid="login-signup-link">
             Create your agency →
           </a>
         </p>
       )}
       {clientId && allowSignup && (
-        <p className="mt-2 text-center text-xs text-black/60">
+        <p className="mm-form-link">
           {mode === "signin" ? (
             <>
               Don&apos;t have an account?{" "}
               <button
                 type="button"
                 onClick={() => { setMode("signup"); setError(null); }}
-                className="underline underline-offset-2 hover:text-black/80"
               >
                 Create one
               </button>
@@ -230,7 +223,6 @@ export function LoginForm({
               <button
                 type="button"
                 onClick={() => { setMode("signin"); setError(null); }}
-                className="underline underline-offset-2 hover:text-black/80"
               >
                 Sign in
               </button>
