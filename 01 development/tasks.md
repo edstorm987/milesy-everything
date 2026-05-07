@@ -2914,3 +2914,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       ResourceCollection + ResourceItem + 5 default seeded built-in
       collections w/ delete-protection + per-phase filter + T4
       Incubator-consumed read endpoint).
+- [x] T2 R014 — `@aqua/plugin-agency-resources` shipped (chapter
+      #114, smoke 12/12, NEW agency-scope internal-team library
+      distinct from aqua-resources/sops; markdown body + visibleToRoles
+      ACL + view-tick counter + recent-activity feed + JSON export).
