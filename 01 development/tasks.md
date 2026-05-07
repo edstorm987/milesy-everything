@@ -1041,6 +1041,50 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R033 — Static site export (download as ZIP)** — DONE.
+      Operator clicks Export and gets a single ZIP containing every
+      published page as static HTML, plus `assets/brand.css`,
+      `sitemap.xml`, `robots.txt`, and a `README.txt` that spells out
+      which dynamic surfaces won't survive the snapshot. NEW
+      `src/server/staticExport.ts` — `exportSiteToZip` server fn,
+      `renderBlockToHtml` switch (heading/text/button/image/spacer/
+      divider/section/container/row/column/grid/html; unknown →
+      `<div data-block-type>` shell), `renderPageHtml` doctype shell
+      w/ brand.css link + per-page meta, `buildBrandCss` CSS-var
+      palette + minimal reset, `buildExportReadme` honesty caveat
+      (forms/members/commerce/booking/A-B/personalisation), pure
+      store-only `buildZip` (table-driven CRC32, local + central +
+      EOCD, ~80 lines, dep-free). Filters published-only /
+      non-portal-variant / no-underscore-slug. Homepage→`index.html`,
+      others→`<slug>/index.html` w/ `../assets/brand.css`. Reuses
+      R014 `buildSitemapXml` + `buildRobotsTxt`. `escapeHtml` on
+      every user-supplied string. NEW `src/api/handlers/staticExport
+      .ts` — `handleExportSite` GET `/export?siteId=…&baseUrl=…` →
+      `application/zip` w/ `content-disposition: attachment;
+      filename="<siteId>-export-<date>.zip"` +
+      `x-aqua-export-pages` + `x-aqua-export-files`; 400 without
+      siteId. Smoke 34/34: ZIP magic (`PK\x03\x04`) + EOCD signature,
+      e2e walk locating entries by name, exclusions (draft / login-
+      portal / `_internal` absent), non-home relative brand.css href,
+      raw HTML escaped, sitemap excludes portal-variant, README
+      warns forms+commerce, brand.css carries primary+accent,
+      handler content-type + headers + 400 + valid-ZIP body.
+      package.json chain extended. tsc clean.
+      NOT in scope: continuous static deployment (T6); inline image
+      bundling (CDN URLs pass through); per-block third-party render
+      hook (R+1).
+      Q-ASSUMED: "variant" in prompt = "site" (sitemap/robots only
+      make sense site-wide); admin button surface deferred —
+      SitesPage 3264 lines, separate surgical round next; BrandKit
+      from ctx.brand else aqua/orange default; renderer narrower
+      than live React BlockRenderer (snapshot doesn't need cross-
+      plugin runtime registry); store-only ZIP over DEFLATE for
+      dep-free + verifiable bytes.
+      Files: `04-the-final-portal/plugins/website-editor/src/server/
+      staticExport.ts` (NEW) · `src/api/handlers/staticExport.ts`
+      (NEW) · `__smoke__/r033-static-export.test.ts` (NEW) ·
+      `package.json` test chain · `01 development/context/prior
+      research/04-static-export.md` (NEW chapter) · MASTER row #115.
 - [x] **T3 R032 — i18n / multi-language per page** — DONE.
       Pure helper lib `lib/i18n.ts` ships per-page localization layer.
       Schema extension `EditorPage.locales?: LocalePageMap = {
