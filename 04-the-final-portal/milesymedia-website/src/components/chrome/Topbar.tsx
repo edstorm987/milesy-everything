@@ -32,6 +32,7 @@ const ROLE_LABEL: Record<Role, string> = {
   "client-staff":   "Client staff",
   "freelancer":     "Freelancer",
   "end-customer":   "Customer",
+  "lead":           "Lead",
 };
 
 export function Topbar({ title, subtitle, role, email, panels, tenantLabel, currentPath }: Props) {

@@ -21,6 +21,7 @@
     "smoke:signup-flow": "tsx --test scripts/smoke-signup-flow.test.ts",
     "smoke:session-security": "tsx --test scripts/smoke-session-security.test.ts",
     "smoke:post-login-redirect": "tsx --test scripts/smoke-post-login-redirect.test.ts",
+    "smoke:lead-role": "tsx --test scripts/smoke-lead-role.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

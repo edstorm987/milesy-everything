@@ -64,6 +64,11 @@ export function effectiveRole(session: SessionPayload | null | undefined): Effec
     case "client-staff":
     case "freelancer":
     case "end-customer":
+    case "lead":
+      // R023: lead role has no agency-scoped permissions (reads only its
+      // own user record via `account.read` / `account.update.email-name`,
+      // which live outside the permission grid in /portal/account).
+      return EMPTY;
     default:
       return EMPTY;
   }

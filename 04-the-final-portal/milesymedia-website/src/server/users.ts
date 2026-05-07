@@ -16,6 +16,7 @@ import crypto from "crypto";
 import { getState, mutate } from "./storage";
 import { emit } from "./eventBus";
 import type { Role, ServerUser } from "./types";
+import { LEAD_AGENCY_ID } from "./types";
 
 const SCRYPT_N = 16384;
 const SCRYPT_R = 8;
@@ -107,7 +108,9 @@ export interface CreateUserInput {
   password: string;
   name?: string;
   role: Role;
-  agencyId: string;
+  // R023: optional for `lead` role (global tenant — defaults to
+  // LEAD_AGENCY_ID sentinel). Required for every other role.
+  agencyId?: string;
   clientId?: string;
   mustChangePassword?: boolean;
 }
@@ -118,13 +121,23 @@ export function createUser(input: CreateUserInput): ServerUser {
   const email = normEmail(input.email);
   const key = userKey(email, input.role, input.clientId);
   const now = Date.now();
+  // R023: leads are global; bootstrap-agency NOT called for them. Stamp
+  // the sentinel so the schema's required-string contract survives —
+  // `requireAgencyScope` rejects this value at the route boundary.
+  let agencyId = input.agencyId;
+  if (input.role === "lead") {
+    agencyId = agencyId ?? LEAD_AGENCY_ID;
+  }
+  if (!agencyId) {
+    throw new Error(`createUser: agencyId required for role "${input.role}"`);
+  }
   const user: ServerUser = {
     id: makeId(),
     email,
     name: input.name ?? email.split("@")[0],
     passwordHash: hashPassword(input.password),
     role: input.role,
-    agencyId: input.agencyId,
+    agencyId,
     clientId: input.clientId,
     mustChangePassword: input.mustChangePassword,
     createdAt: now,

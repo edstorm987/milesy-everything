@@ -112,7 +112,8 @@ export type Role =
   | "client-owner"
   | "client-staff"
   | "freelancer"
-  | "end-customer";
+  | "end-customer"
+  | "lead";
 
 export const AGENCY_ROLES: readonly Role[] = [
   "agency-owner",
@@ -130,7 +131,16 @@ export const ALL_ROLES: readonly Role[] = [
   ...AGENCY_ROLES,
   ...CLIENT_ROLES,
   "end-customer",
+  "lead",
 ] as const;
+
+// R023 — `lead` role is a global tenant: HC graduates / Resources tool
+// users sit here pre-agency-signup. Not bound to an agency. We stamp
+// the user record + session payload with a sentinel agencyId so the
+// existing required-string contract survives without a 56-callsite
+// refactor; `requireAgencyScope` rejects leads at the boundary so no
+// real agency-scoped reads ever see this value.
+export const LEAD_AGENCY_ID = "agency_lead_global";
 
 export function isAgencyRole(role: Role): boolean {
   return (AGENCY_ROLES as readonly string[]).includes(role);
@@ -138,6 +148,10 @@ export function isAgencyRole(role: Role): boolean {
 
 export function isClientRole(role: Role): boolean {
   return (CLIENT_ROLES as readonly string[]).includes(role);
+}
+
+export function isLeadRole(role: Role): boolean {
+  return role === "lead";
 }
 
 // ─── Server-side users ────────────────────────────────────────────────────
