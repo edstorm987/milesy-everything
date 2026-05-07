@@ -382,3 +382,5 @@ None of this undoes #122 or #123. See chapter for fit + staging detail.
   8. @plugins/* TS path alias declared in tsconfig.json is unused — Turbopack rejects aliases that resolve outside project root. Plugin imports stayed relative (../../../../plugins/...).
 
 [2026-05-07T17:34:00Z] NOTE: Manual session ended. Local :3030 dev server is/was running for Ed's testing. Final commit on origin/main: 61a1d80 (T4 unify-fix-7). All 13 unify commits (5 + 8) self-contained, none in flight. T4 ready for next round when Ed signals — could be multi-agency R1, niche-page nav patch, role-aware redirect, or a fresh task entirely. Recommend reading chapter #123 first if commander picks this thread back up.
+
+[2026-05-07T13:58:11Z] NOTE: manual session — fix shipped: dark text on cream-bg marketing sections (.mm-audiences + .mm-founding h2/h3/p). Global --text is near-white #f2f2f5; cream-bg sections were inheriting it → invisible headings. Scoped overrides at styles.css:795. Mesh-absorb: my edit was swept into T3's commit 48c39d5 (`git add -A` from another terminal) — fix is on origin/main intact.
