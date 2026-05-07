@@ -85,6 +85,10 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       (6 templates: landing/blog-post/product/about/contact/faq with seoDefaults +
       applyTemplate restamping ids on every call + uniqueSlug helper) + 20/20
       smoke + chapter #138.
+- [x] **R043 — Webhook block + form-submission dispatcher** — DONE 2026-05-07.
+      `lib/webhookBlock.ts` (collectWebhookTargets / findWebhookTarget /
+      resolveFormSubmission + dispatchWebhook with HMAC-SHA256 signing
+      Stripe-style `<timestamp>.<body>`) + 26/26 smoke + chapter #142.
 
 ### T4 manual (Ed driving)
 
