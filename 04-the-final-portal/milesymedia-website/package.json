@@ -50,6 +50,7 @@
     "@aqua/plugin-fulfillment": "file:../plugins/fulfillment",
     "@aqua/plugin-leads-pipeline": "file:../plugins/leads-pipeline",
     "@aqua/plugin-memberships": "file:../plugins/memberships",
+    "@aqua/plugin-public-funnel": "file:../plugins/public-funnel",
     "@aqua/plugin-website-editor": "file:../plugins/website-editor",
     "next": "16.2.4",
     "pg": "^8.13.1",

@@ -30,6 +30,11 @@ export const DEMO_AGENCY_SLUG = "demo-agency";
 export const DEMO_AGENCY_NAME = "Demo · Aqua";
 export const DEMO_OWNER_EMAIL = "demo@aqua.dev";
 export const DEMO_OWNER_PASSWORD = "demo-aqua-2026";
+// Sprint 2.5 — agency-staff persona for /dev/pov so Ed can see what
+// a non-owner team member sees (no admin levers, fewer plugin admins).
+export const DEMO_STAFF_EMAIL = "staff@aqua.dev";
+export const DEMO_STAFF_PASSWORD = "staff-demo-2026";
+export const DEMO_STAFF_NAME = "Demo Employee";
 export const DEMO_CLIENT_SLUG = "luv-and-ker-demo";
 export const DEMO_CLIENT_NAME = "Luv & Ker · Demo";
 export const DEMO_CLIENT_EMAIL = "felicia@luvandker.demo";
@@ -135,6 +140,16 @@ async function seedDemoAgencyImpl(actor?: string): Promise<SeedDemoResult> {
       password: DEMO_OWNER_PASSWORD,
       name: "Demo Owner",
       role: "agency-owner",
+      agencyId: agency.id,
+    });
+  }
+  // Sprint 2.5 — demo employee (agency-staff scope). Idempotent.
+  if (!getUser(DEMO_STAFF_EMAIL)) {
+    createUser({
+      email: DEMO_STAFF_EMAIL,
+      password: DEMO_STAFF_PASSWORD,
+      name: DEMO_STAFF_NAME,
+      role: "agency-staff",
       agencyId: agency.id,
     });
   }

@@ -108,6 +108,7 @@ const nextConfig: NextConfig = {
     "@aqua/plugin-fulfillment",
     "@aqua/plugin-leads-pipeline",
     "@aqua/plugin-memberships",
+    "@aqua/plugin-public-funnel",
     "@aqua/plugin-website-editor",
   ],
   async headers() {

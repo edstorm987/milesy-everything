@@ -1616,3 +1616,16 @@ Issues found in cycle prod-build pass:
 Final route table prints clean. Static + dynamic routes both render. tsc clean. Stale build-time warnings about "@aqua/plugin-leads-pipeline" still appear in some logs but are inert — they reference the npm package name in error-prefix strings, not manifest id rejections.
 
 Ed switching to web mode (Mode B per CLAUDE.md). All work pushed; rundown refreshed; build verified green.
+
+[2026-05-07T22:45:00Z] **Small things batch — all 3 done**:
+1. ✅ HC → leads-pipeline integration verified — chapter #161 (subagent), commit 2e609ce, smoke 12/12. Surfaced 4 honest gaps.
+2. ✅ Gap #1 closed — public-funnel registered in _registry.ts. NEW `publicFunnelFoundation.ts` side-effect import (mirrors leadsPipelineFoundation shape — registers ports + manifest). package.json + next.config.ts transpilePackages extended. `npm install --cache /tmp/npm-cache` (Ed's ~/.npm symlink points at offline external drive — workaround). `/api/portal/public-funnel/hc-complete` now reachable in prod.
+3. ✅ Demo-employee persona on /dev/pov — DEMO_STAFF_EMAIL/PASSWORD/NAME constants in demoSeed.ts + idempotent agency-staff createUser in seed flow + 5th persona card in /dev/pov ("Demo employee (agency-staff)"). Build green.
+
+Build: `npm run build` exit 0, full route table clean. tsc clean.
+
+Remaining Sprint-2.5 items:
+- Gap #3 (email-sender registration) + Gap #4 (funnelMePort.hcSlot skeleton) — non-blocking, can address in follow-up rounds.
+- Performance pass beyond dev-bypass memoize — biggest lever still `PORTAL_BACKEND=postgres` (operator action).
+
+Operator-side items unchanged: env vars · vercel link · operator dry-run · T5/T6 reactivation for Felicia + production deploy.

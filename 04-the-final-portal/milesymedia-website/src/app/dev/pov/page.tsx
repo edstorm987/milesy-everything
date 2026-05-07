@@ -14,6 +14,7 @@ import { seedFounder, FOUNDER_EMAIL } from "@/lib/server/founderSeed";
 import {
   seedDemoAgency,
   DEMO_OWNER_EMAIL,
+  DEMO_STAFF_EMAIL,
   DEMO_CLIENT_EMAIL,
   DEMO_CUSTOMER_EMAIL,
 } from "@/lib/server/demoSeed";
@@ -30,7 +31,7 @@ import { cookies } from "next/headers";
 // /login simplifies prerender behaviour.
 export const dynamic = "force-dynamic";
 
-type Persona = "founder" | "demo-owner" | "demo-client" | "demo-customer";
+type Persona = "founder" | "demo-owner" | "demo-employee" | "demo-client" | "demo-customer";
 
 async function signInAs(persona: Persona) {
   "use server";
@@ -49,6 +50,8 @@ async function signInAs(persona: Persona) {
     isDemo = true;
     if (persona === "demo-owner") {
       email = DEMO_OWNER_EMAIL;
+    } else if (persona === "demo-employee") {
+      email = DEMO_STAFF_EMAIL;
     } else if (persona === "demo-client") {
       email = DEMO_CLIENT_EMAIL;
     } else {
@@ -91,6 +94,13 @@ const POVS: Array<{ id: Persona; title: string; sub: string; sees: string; landi
     title: "Demo agency-owner",
     sub: "demo@aqua.dev · Demo · Aqua",
     sees: "One agency dashboard, the demo client roster, plugin admins for that agency only.",
+    landing: "/portal/agency",
+  },
+  {
+    id: "demo-employee",
+    title: "Demo employee (agency-staff)",
+    sub: "staff@aqua.dev · Demo · Aqua",
+    sees: "Same agency surface as the owner but with the staff permission grid — no admin levers.",
     landing: "/portal/agency",
   },
   {
