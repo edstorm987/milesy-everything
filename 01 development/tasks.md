@@ -197,6 +197,30 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R029 — Aqua AI conversation memory across sessions** — DONE.
+      R007's per-tab `aqua.ai.session.incubator` history promoted to
+      per-business persistent NEW `bos.aiHistory[]` (cap 40 entries =
+      20 user+bot pairs) mirrored via R012 BOSStorage. **R007 router
+      unchanged** — answers each turn fresh; R029 adds visible thread
+      persistence only (not contextual recall). One-time migration
+      block reads legacy session key, writes through to bos.aiHistory,
+      removes legacy. NEW `bos.aiHistory.lastWriteISO` stamped on
+      every message persist drives "↩︎ Continuing conversation from
+      <date>" blue-tinted banner above message list (60s recency guard
+      so opening mid-conversation doesn't fire). Format: within 24h
+      → "earlier today, HH:MM"; otherwise → "Mon, May 5". Disclaimer
+      panel head gained NEW italic-muted second line "I don't
+      actually remember beyond text on this device — script runs
+      fresh each time" — honest about text-only persistence. R012
+      NAMESPACED_KEYS got `bos.aiHistory` so business switch mirrors
+      threads. clearHistory wipes BOSStorage mirror too. CSS
+      `.inc-ai-resume` (~12L) matching R012 resume-card colour
+      family (#4a6e8e/#9ec5e8). Smoke: 3 URLs 200; full persist +
+      continuing-header + switch-business-mirror + clear-wipe
+      verified end-to-end. Q-ASSUMED: real conversational memory
+      out per prompt; per-message timestamps + Markdown export +
+      cross-tab sync all R+1. NEW chapter `04-aqua-ai-conversation-
+      memory.md` + MASTER #105.
 - [x] **T4 R028 — Founder weekly digest mockup** — DONE.
       NEW "This week" panel inserted above R009 admin Overview KPIs +
       copy-able Markdown digest modal + Monday auto-arm + history.

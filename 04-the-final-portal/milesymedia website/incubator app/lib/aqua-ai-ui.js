@@ -8,17 +8,51 @@
 (function () {
   if (!window.AquaAI) return; // aqua-ai.js must load first
 
-  var SESSION_KEY = 'aqua.ai.session.incubator';
+  /* R029 — per-business persistent history (was per-tab session in R007).
+     Stored at `bos.aiHistory[]` (capped 40 entries = 20 user+bot pairs);
+     mirrored via R012 BOSStorage so each business has its own thread. */
+  var HISTORY_KEY = 'bos.aiHistory';
+  var LEGACY_SESSION_KEY = 'aqua.ai.session.incubator'; // R007 — still read once for migration
 
   function readHistory() {
-    try { return JSON.parse(localStorage.getItem(SESSION_KEY) || '[]') || []; }
-    catch (e) { return []; }
+    try {
+      var raw = localStorage.getItem(HISTORY_KEY);
+      if (raw) return JSON.parse(raw) || [];
+      /* Migration: pull legacy session-tab history once, write through to new key. */
+      var legacy = localStorage.getItem(LEGACY_SESSION_KEY);
+      if (legacy) {
+        var arr = JSON.parse(legacy) || [];
+        writeHistory(arr);
+        try { localStorage.removeItem(LEGACY_SESSION_KEY); } catch (e) {}
+        return arr;
+      }
+      return [];
+    } catch (e) { return []; }
   }
   function writeHistory(arr) {
-    try { localStorage.setItem(SESSION_KEY, JSON.stringify(arr.slice(-40))); } catch (e) {}
+    /* Cap 40 entries (20 user+bot pairs). */
+    var clipped = arr.slice(-40);
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(clipped)); } catch (e) {}
+    /* Mirror via BOSStorage (R012) when available — keeps per-business inboxes. */
+    if (window.BOSStorage && typeof window.BOSStorage.set === 'function') {
+      try { window.BOSStorage.set(HISTORY_KEY, JSON.stringify(clipped)); } catch (e) {}
+    }
   }
   function clearHistory() {
-    try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+    try { localStorage.removeItem(HISTORY_KEY); } catch (e) {}
+    if (window.BOSStorage && typeof window.BOSStorage.set === 'function') {
+      try { window.BOSStorage.set(HISTORY_KEY, null); } catch (e) {}
+    }
+  }
+  function lastTs() {
+    var hist = readHistory();
+    if (!hist.length) return null;
+    /* History entries don't carry per-message ts in R007 shape; use file
+       mtime via lastWriteISO key for the "Continuing from" header. */
+    try { return localStorage.getItem('bos.aiHistory.lastWriteISO'); } catch (e) { return null; }
+  }
+  function stampWrite() {
+    try { localStorage.setItem('bos.aiHistory.lastWriteISO', new Date().toISOString()); } catch (e) {}
   }
 
   function escape(s) {
@@ -120,7 +154,25 @@
   function paint(panel) {
     var body = panel.querySelector('[data-ai-body]');
     if (!body) return;
-    body.innerHTML = renderHistory(readHistory());
+    var hist = readHistory();
+    /* R029 — "Continuing conversation from <date>" header when there's
+       prior history AND it wasn't written in the last 60s (so opening
+       mid-conversation doesn't add this banner). */
+    var continuingHeader = '';
+    if (hist.length) {
+      var ts = lastTs();
+      if (ts) {
+        var ageS = Math.round((Date.now() - +new Date(ts)) / 1000);
+        if (ageS > 60) {
+          var d = new Date(ts);
+          var when = (Date.now() - +new Date(ts)) < 86400000
+            ? 'earlier today, ' + d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' })
+            : d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+          continuingHeader = '<div class="inc-ai-resume">↩︎ Continuing conversation from <strong>' + when + '</strong></div>';
+        }
+      }
+    }
+    body.innerHTML = continuingHeader + renderHistory(hist);
     body.scrollTop = body.scrollHeight;
   }
 
@@ -129,12 +181,14 @@
     var hist = readHistory();
     hist.push({ role: 'user', text: message });
     writeHistory(hist);
+    stampWrite();
     paint(panel);
     setTimeout(function () {
       var res = window.AquaAI.respondTo(message);
       var hist2 = readHistory();
       hist2.push({ role: 'bot', text: res.reply, actions: res.suggestedActions });
       writeHistory(hist2);
+      stampWrite();
       paint(panel);
       /* Arm the idle timer — 30s of no further interaction surfaces a
          "Try one of these" chip strip below the last bot bubble. */
@@ -160,6 +214,8 @@
         '<div>' +
           '<div class="inc-ai-title">Aqua AI</div>' +
           '<div class="inc-ai-sub">' + escape(window.AquaAI.disclaimer) + '</div>' +
+          /* R029 — explicit no-real-memory line. */
+          '<div class="inc-ai-sub" style="margin-top:2px;font-style:italic">I don\'t actually remember beyond text on this device — script runs fresh each time.</div>' +
         '</div>' +
         '<button type="button" class="inc-ai-close" aria-label="Close">✕</button>' +
       '</header>' +

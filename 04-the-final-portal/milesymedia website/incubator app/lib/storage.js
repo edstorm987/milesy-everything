@@ -40,7 +40,8 @@
     'incubator.phase',
     'incubator.phaseProgress',
     'incubator.phaseAdvanced',
-    'incubator.lastVisitedPhasePage'
+    'incubator.lastVisitedPhasePage',
+    'bos.aiHistory'                  // R029 — per-business AI conversation memory
   ];
 
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }

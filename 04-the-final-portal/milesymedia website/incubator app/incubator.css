@@ -658,6 +658,19 @@ a:hover { color: var(--inc-gold); }
   gap: 10px;
 }
 .inc-ai-empty p { margin: 0 0 12px; color: var(--inc-text); font-size: 14px; line-height: 1.55; }
+
+/* R029 — Continuing-conversation header */
+.inc-ai-resume {
+  background: rgba(80, 130, 180, 0.12);
+  border: 1px solid #4a6e8e;
+  color: #9ec5e8;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.inc-ai-resume strong { color: #c4e0fa; }
 .inc-ai-starters {
   display: flex;
   flex-direction: column;
