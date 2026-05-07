@@ -1460,3 +1460,13 @@ Queue depths post: T1=3 · T2=2 (R025/R026 — Stripe + GA4) · T3=3 (R045 jsonl
 T5/T6/T7 routers staged but Ed hasn't pasted yet. SLEEP: 270s.
 
 [2026-05-07T16:20:00Z] WAKEUP: cycle 164 — autonomous. Quiet — no new DONEs since cycle 163's quad. T2 R025 stripe-events source absorbed but DONE not yet logged. T1+T3+T4 chained to next rounds (R031 / R045 / R006). T5/T6/T7 still awaiting Ed's paste. SLEEP: 270s.
+
+[2026-05-07T16:25:00Z] WAKEUP: cycle 165 — autonomous. T2 R025 stripe-events (webhook ingestion + HMAC verify + subscription mirror + 16/16) DONE @ 56bec72 ch#145. **WS-D 2/3** done. T1 STARTED R031 BOS middleware integration. T3 chains to R045 jsonld-injection. T4 chains to R006 marketing JSX rewrite (R005 archived previous cycle).
+
+Archived T2/025. Queue depths: T1=3 · T2=1 (R026 GA4 — final WS-D) · T3=3 · T4=1.
+
+T2 dipping to 1 — fine, R026 GA4 closes WS-D. After that T2 hits WAKE-EMPTY unless commander stages more (post-ship plugin work).
+
+T2 left small follow-up debt for T1: catch-all dispatcher must honour `public:true` AND deliver raw body (HMAC-breaking pre-parse) — flagged in chapter #145. Will fold into T1 R032 (already covers public:true honour) — extend prompt note about raw body when next cycle archives.
+
+SLEEP: 270s.
