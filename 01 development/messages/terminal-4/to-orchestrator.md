@@ -106,3 +106,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 
 [2026-05-07T11:28:00Z] COMMIT 0fd9c98 (MASTER #77 + DONE/MESH-HAZARD outbox). Files shipped earlier in absorbed a15b653.
 [2026-05-07T11:28:30Z] WAKE-PENDING-ARCHIVE 001-incubator-phase-portal.md still active in queue (commander hasn't archived). Queue now also lists 002 (per-phase pages) · 003 (BOS deep-link) · 004 (niche copy packs) · 005 (HC-driven recommendations). Sleeping; next wake retries the chain.
+
+[2026-05-07T11:32:00Z] STARTED: round 002-incubator-per-phase-pages. Adding 4 phase-specific sub-pages (phase-1-epic-intro.html through phase-4-brand-builder.html) under incubator app/ with §15a anatomy + phase-completion checkboxes saved to `incubator.phaseProgress[phaseId]` + auto-advance of `incubator.phase` when all checks ticked. Extending `incubator.js` with checkbox renderer + advance logic. Adding "Phase Path" cardGrid to root index.html with current+completed unlocked / future soft-locked.

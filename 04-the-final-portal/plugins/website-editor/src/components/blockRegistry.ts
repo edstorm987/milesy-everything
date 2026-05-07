@@ -26,6 +26,7 @@ import AccordionBlock from "./blocks/AccordionBlock";
 import AppShowcaseBlock from "./blocks/AppShowcaseBlock";
 import AuthorBioBlock from "./blocks/AuthorBioBlock";
 import BannerBlock from "./blocks/BannerBlock";
+import CookieConsentBlock from "./blocks/CookieConsentBlock";
 import BeforeAfterBlock from "./blocks/BeforeAfterBlock";
 import BookingWidgetBlock from "./blocks/BookingWidgetBlock";
 import ButtonBlock from "./blocks/ButtonBlock";
@@ -295,6 +296,27 @@ export const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
       ] },
       { key: "dismissible", label: "Dismissible", type: "boolean", default: true },
       { key: "sticky", label: "Stick to top", type: "boolean", default: false },
+    ],
+  },
+  "cookie-consent": {
+    type: "cookie-consent", label: "Cookie consent", icon: "🍪", category: "content", isContainer: false,
+    Component: CookieConsentBlock,
+    defaultProps: {
+      message: "We use cookies to improve your experience. Read our policy or choose below.",
+      acceptLabel: "Accept",
+      declineLabel: "Decline",
+      position: "bottom-bar",
+    },
+    fields: [
+      { key: "message", label: "Message", type: "textarea" },
+      { key: "acceptLabel", label: "Accept label", type: "text" },
+      { key: "declineLabel", label: "Decline label", type: "text" },
+      { key: "policyUrl", label: "Policy URL", type: "url" },
+      { key: "position", label: "Position", type: "select", default: "bottom-bar", options: [
+        { value: "bottom-bar", label: "Bottom bar" },
+        { value: "corner", label: "Corner card" },
+        { value: "modal", label: "Modal" },
+      ] },
     ],
   },
   "author-bio": {

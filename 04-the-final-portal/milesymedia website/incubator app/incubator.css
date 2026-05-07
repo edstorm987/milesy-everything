@@ -347,6 +347,60 @@ a:hover { color: var(--inc-gold); }
 .inc-phase-3 { background: rgba(120, 160, 90, 0.18); border-color: #5a7a3a; color: #b3d28a; }
 .inc-phase-4 { background: rgba(170, 90, 130, 0.18); border-color: #7a3a5a; color: #e08abf; }
 
+/* ─── Phase-completion checklist (R002) ─── */
+.inc-checks {
+  background: var(--inc-card);
+  border: 1px solid var(--inc-line);
+  border-radius: var(--inc-radius);
+  padding: 18px 20px;
+  margin: 18px 0;
+}
+.inc-checks-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.inc-checks-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+  color: var(--inc-accent);
+  letter-spacing: 0.02em;
+}
+.inc-checks ul {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+}
+.inc-checks li { margin: 0; padding: 0; }
+.inc-checks label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 6px;
+  border-top: 1px solid var(--inc-line);
+  cursor: pointer;
+  color: var(--inc-text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.inc-checks li:first-child label { border-top: 0; }
+.inc-checks input[type=checkbox] {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--inc-gold);
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.inc-checks input[type=checkbox]:checked + span,
+.inc-checks label:has(input:checked) span.inc-step-text {
+  color: var(--inc-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--inc-gold-soft);
+}
+
 /* ─── Tiny header strip ─── */
 .inc-toprail {
   display: flex;
