@@ -1,0 +1,372 @@
+/* THE OPULENCE INCUBATOR 3.0 — client-facing onboarding portal.
+   Notion-style page anatomy, dark theme baseline, gold-marble accents.
+   Spec: chapter 04-aqua-internals-reference §15. */
+
+:root {
+  --inc-bg:        #000000;
+  --inc-card:      #0F0F0F;
+  --inc-card-2:    #161616;
+  --inc-line:      #2A2A2A;
+  --inc-text:      #E9E5DA;
+  --inc-muted:     #8A8377;
+  --inc-gold:      #C9A76A;
+  --inc-gold-soft: #8E7340;
+  --inc-accent:    #D4B888;
+  --inc-radius:    14px;
+  --inc-radius-sm: 8px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--inc-bg);
+  color: var(--inc-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--inc-accent); text-decoration: none; }
+a:hover { color: var(--inc-gold); }
+
+.inc-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 24px 96px;
+}
+
+/* ─── Block: cover (full-bleed banner) ─── */
+.inc-cover {
+  position: relative;
+  height: 260px;
+  margin: 0 -24px;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.55)),
+    radial-gradient(circle at 30% 40%, #3a2a14 0%, #1a1208 45%, #050402 100%);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+.inc-cover[data-variant="forest"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.7)),
+    radial-gradient(circle at 50% 60%, #1f3324 0%, #0c1a11 60%, #02060a 100%);
+}
+.inc-cover[data-variant="marble"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+    repeating-linear-gradient(45deg, #2a1f0e 0 8px, #3a2a14 8px 16px, #5a4322 16px 24px);
+}
+
+/* ─── Block: icon (chip overlapping cover) ─── */
+.inc-icon {
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 0;
+  background: var(--inc-card);
+  border: 1px solid var(--inc-line);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* ─── Block: pageTitle ─── */
+.inc-title {
+  margin: 24px 0 6px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--inc-text);
+  line-height: 1.1;
+}
+.inc-caption {
+  margin: 0 0 18px;
+  color: var(--inc-muted);
+  font-size: 15px;
+}
+
+/* ─── Block: propertyStrip ─── */
+.inc-props {
+  margin: 16px 0 28px;
+  border-top: 1px solid var(--inc-line);
+  border-bottom: 1px solid var(--inc-line);
+  padding: 4px 0;
+}
+.inc-props summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 4px;
+  color: var(--inc-muted);
+  font-size: 13px;
+  user-select: none;
+}
+.inc-props summary::-webkit-details-marker { display: none; }
+.inc-props summary::before {
+  content: "▸ ";
+  color: var(--inc-gold-soft);
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+.inc-props[open] summary::before { content: "▾ "; }
+.inc-props .inc-props-rows {
+  padding: 6px 4px 12px;
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 6px 14px;
+  font-size: 14px;
+}
+.inc-props .inc-prop-key {
+  color: var(--inc-muted);
+}
+.inc-props .inc-prop-val {
+  color: var(--inc-text);
+}
+.inc-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(201, 167, 106, 0.12);
+  border: 1px solid var(--inc-gold-soft);
+  color: var(--inc-accent);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ─── Block: videoEmbed ─── */
+.inc-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  background: var(--inc-card);
+  border: 1px solid var(--inc-line);
+  border-radius: var(--inc-radius);
+  overflow: hidden;
+  margin: 12px 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.inc-video iframe {
+  width: 100%; height: 100%; border: 0; display: block;
+}
+.inc-video-placeholder {
+  color: var(--inc-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 24px;
+}
+.inc-video-placeholder strong {
+  display: block;
+  color: var(--inc-accent);
+  font-style: normal;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+/* ─── Block: toggle (vanilla details) ─── */
+.inc-toggle {
+  background: var(--inc-card);
+  border: 1px solid var(--inc-line);
+  border-radius: var(--inc-radius);
+  margin: 14px 0;
+  padding: 0;
+}
+.inc-toggle > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 16px 20px;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--inc-text);
+  user-select: none;
+}
+.inc-toggle > summary::-webkit-details-marker { display: none; }
+.inc-toggle > summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 10px;
+  color: var(--inc-gold);
+  transition: transform 0.15s ease;
+}
+.inc-toggle[open] > summary::before { transform: rotate(90deg); }
+.inc-toggle-body {
+  padding: 0 20px 18px;
+  color: var(--inc-text);
+}
+.inc-toggle-body p { margin: 6px 0 12px; }
+
+/* ─── Block: cardGrid ─── */
+.inc-grid-label {
+  margin: 36px 0 14px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  color: var(--inc-accent);
+  letter-spacing: 0.03em;
+}
+.inc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+@media (max-width: 640px) {
+  .inc-grid { grid-template-columns: 1fr; }
+  .inc-title { font-size: 32px; }
+}
+.inc-card {
+  position: relative;
+  background: var(--inc-card);
+  border: 1px solid var(--inc-line);
+  border-radius: var(--inc-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--inc-text);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
+}
+.inc-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--inc-gold-soft);
+  color: var(--inc-text);
+}
+.inc-card-cover {
+  height: 110px;
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    repeating-linear-gradient(45deg, #2a1f0e 0 6px, #3a2a14 6px 12px, #5a4322 12px 18px);
+}
+.inc-card-cover[data-variant="forest"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    radial-gradient(circle at 50% 60%, #1f3324, #0c1a11);
+}
+.inc-card-cover[data-variant="water"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    radial-gradient(circle at 30% 40%, #1a3a4d, #0a1a25);
+}
+.inc-card-cover[data-variant="marble"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.5)),
+    repeating-linear-gradient(0deg, #2a1f0e 0 4px, #3a2a14 4px 10px, #5a4322 10px 14px);
+}
+.inc-card-body {
+  padding: 16px 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.inc-card-emoji {
+  font-size: 24px;
+}
+.inc-card-label {
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+}
+
+/* Soft lock overlay — honesty contract: show the path, don't fake completion. */
+.inc-card.is-locked { opacity: 0.55; pointer-events: none; }
+.inc-card .inc-lock-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid var(--inc-gold-soft);
+  color: var(--inc-accent);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* ─── Block: button ─── */
+.inc-btn {
+  display: inline-block;
+  background: var(--inc-gold);
+  color: #1a1208;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 26px;
+  border-radius: 10px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.inc-btn:hover {
+  background: var(--inc-accent);
+  color: #1a1208;
+  transform: translateY(-1px);
+}
+.inc-btn--big {
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  padding: 18px 26px;
+  margin: 24px auto;
+  max-width: 480px;
+}
+
+/* ─── Block: divider ─── */
+.inc-divider {
+  border: 0;
+  border-top: 1px solid var(--inc-line);
+  margin: 36px 0;
+}
+
+/* ─── Blocks: helpRow / feedbackRow ─── */
+.inc-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--inc-card-2);
+  border: 1px solid var(--inc-line);
+  border-radius: var(--inc-radius-sm);
+  margin: 10px 0;
+  color: var(--inc-text);
+  text-decoration: none;
+  font-size: 14px;
+}
+.inc-row:hover { border-color: var(--inc-gold-soft); }
+.inc-row .inc-row-icon { font-size: 18px; }
+
+/* ─── Phase chip helper ─── */
+.inc-phase-1 { background: rgba(201, 167, 106, 0.12); }
+.inc-phase-2 { background: rgba(80, 130, 180, 0.18); border-color: #4a6e8e; color: #9ec5e8; }
+.inc-phase-3 { background: rgba(120, 160, 90, 0.18); border-color: #5a7a3a; color: #b3d28a; }
+.inc-phase-4 { background: rgba(170, 90, 130, 0.18); border-color: #7a3a5a; color: #e08abf; }
+
+/* ─── Tiny header strip ─── */
+.inc-toprail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 24px;
+  background: #0a0a0a;
+  border-bottom: 1px solid var(--inc-line);
+  font-size: 13px;
+  color: var(--inc-muted);
+}
+.inc-toprail a { color: var(--inc-accent); }
+.inc-toprail .inc-brand-mark {
+  display: inline-block;
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: var(--inc-gold);
+  color: #1a1208;
+  text-align: center;
+  line-height: 22px;
+  font-weight: 800;
+  margin-right: 8px;
+}

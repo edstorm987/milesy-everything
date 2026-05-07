@@ -9,6 +9,23 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T4 R001 — Incubator-phase client portal + BOS bridge** — DONE.
+      Scaffolded `04-the-final-portal/milesymedia website/incubator app/`
+      (sibling of business-os/lead-magnet, served from `:3033`). 5 static
+      pages per §15e recipe (root + onboarding + portal-bridge + resources
+      + discover) using the 11 Notion-style blocks via shared
+      `incubator.css` (372 lines) + `incubator.js` (108 lines). New
+      `incubator.*` localStorage namespace (active/phase/completed/
+      watched/startedAt) with `?phase=` dev override + soft-lock cards
+      via `data-unlock-phase`. BOS bridge: tiny `mountIncubatorStrip()`
+      added to `bos.js` — renders "← Back to The Opulence Incubator"
+      strip when `incubator.active==='1'`. §15f portal seam stand-in:
+      `portal-bridge.html` button → `business-os app/app.html` until Live
+      portal exists. Smoke verified — all 7 URLs return 200; phase chip
+      + locks + back-strip render. Chapter `04-incubator-phase-portal.md`
+      + MASTER row #77. NOT in scope (deferred): block extraction into
+      `@aqua/plugin-website-editor` (§15g future T3 round), real videos,
+      real APIs, BOS structural rework.
 - [x] **T1 004 — SOPs + Resources surfacing** — DONE.
       Goal A: `AgencyToolsBallpark` fetches `/api/portal/sops/list` on
       mount, renders emerald "{N} new" chip on the "SOPs, Docs &

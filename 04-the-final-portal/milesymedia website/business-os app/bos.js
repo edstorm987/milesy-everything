@@ -696,7 +696,23 @@
   }
 
   /* ─── Boot ───────────────────────────────── */
+  /* ─── Incubator bridge — render a back-to-Incubator strip when the
+     user came in via the Incubator surface (incubator.active === '1').
+     Same-origin link; no structural BOS changes. ─── */
+  function mountIncubatorStrip() {
+    try {
+      if (localStorage.getItem('incubator.active') !== '1') return;
+    } catch (e) { return; }
+    if (document.querySelector('[data-incubator-strip]')) return;
+    var strip = document.createElement('div');
+    strip.setAttribute('data-incubator-strip', '');
+    strip.style.cssText = 'background:#0a0a0a;color:#C9A76A;border-bottom:1px solid #2A2A2A;padding:8px 16px;font-size:13px;text-align:center;letter-spacing:0.02em;';
+    strip.innerHTML = '<a href="../incubator app/index.html" style="color:#D4B888;text-decoration:none;">← Back to The Opulence Incubator</a>';
+    document.body.insertBefore(strip, document.body.firstChild);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    mountIncubatorStrip();
     mountAutoSidebar();
     hydrateUser();
     applyBranding();

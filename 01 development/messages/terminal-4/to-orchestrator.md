@@ -95,3 +95,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 
 [2026-05-07T10:10:30Z] COMMIT pending (3 chapters + 3 MASTER rows + outbox).
 [2026-05-07T10:30:00Z] WAKE-EMPTY: no new inbox + Ed last shipped at f1495c4 (detailed handoff complete; 9 T4 chapters #66-74 + DELIVERY-PLAN + ed-dropbox indexed in MASTER). Idling (1/3).
+
+[2026-05-07T11:00:00Z] STARTED: round 001-incubator-phase-portal. Scaffolding `incubator app/` with 5 static pages (root + onboarding + portal-bridge + resources + discover), shared `incubator.css` + `incubator.js`, the 4 new Notion-style blocks (icon/propertyStrip/toggle/cardGrid via vanilla details + grid), `incubator.*` localStorage namespace (phase, active, completedSteps, watched), `?phase=` dev override, soft-locked card overlay, BOS bridge via tiny bos.js back-to-Incubator strip when `incubator.active=1`.
