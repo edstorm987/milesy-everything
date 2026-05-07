@@ -1470,3 +1470,13 @@ T2 dipping to 1 — fine, R026 GA4 closes WS-D. After that T2 hits WAKE-EMPTY un
 T2 left small follow-up debt for T1: catch-all dispatcher must honour `public:true` AND deliver raw body (HMAC-breaking pre-parse) — flagged in chapter #145. Will fold into T1 R032 (already covers public:true honour) — extend prompt note about raw body when next cycle archives.
 
 SLEEP: 270s.
+
+[2026-05-07T16:30:00Z] WAKEUP: cycle 166 — autonomous. **Double DONE**:
+- T1 R031 BOS middleware integration (config.matcher extended + decision branches + dev-bypass cookie + 15/15) DONE @ ch#147. **Closes T2 R022 foundation-pending dependency**. Cross-plugin glue 1/3.
+- T4 R006 marketing JSX rewrite (page.tsx + _home/home.html embed + `/` rewrite dropped + legacy index.html deleted) DONE @ ch#147. Mega-menu sync surface dropped from 5→4 files. T4 polish CONTINUES (niche pages still static).
+
+Archived T1/031 + T4/006. T3 STARTED R045 jsonld-injection.
+
+Queue depths: T1=2 (R032 + R033 cross-plugin glue) · T2=1 (R026 GA4 — final WS-D) · T3=3 · T4=0.
+
+T4 hits WAKE-EMPTY after R006 unless commander stages more. Will stage 1-2 niche-page JSX rewrite rounds to keep T4 productive. SLEEP: 270s.

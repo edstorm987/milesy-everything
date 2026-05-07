@@ -29,6 +29,7 @@
     "smoke:durable-nonce-store": "tsx --test scripts/smoke-durable-nonce-store.test.ts",
     "smoke:env-secrets": "tsx --test scripts/smoke-env-secrets.test.ts",
     "smoke:observability": "tsx --test scripts/smoke-observability.test.ts",
+    "smoke:bos-middleware-integration": "tsx --test scripts/smoke-bos-middleware-integration.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

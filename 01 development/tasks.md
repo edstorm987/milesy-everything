@@ -94,6 +94,12 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       to /sitemap.xml + /sitemap-<locale>.xml + /robots.txt; routes.ts
       mounts swapped from R014 narrow → R036 advanced; cache header
       max-age=300/s-maxage=600. 18/18 smoke + chapter #145.
+- [x] **R045 — JSON-LD injection into page `<head>`** — DONE 2026-05-07.
+      `lib/jsonLdInjection.ts` (deriveOrganization + buildPageJsonLd +
+      buildJsonLdScriptBodies + describeJsonLdEmission for diagnostics);
+      SiteHead.tsx renders `<script type="application/ld+json">` per
+      schema with CSP-safe escape inherited from R037. 23/23 smoke +
+      chapter #149.
 
 ### T4 manual (Ed driving)
 
