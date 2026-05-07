@@ -827,6 +827,38 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R023 — Site-wide find-and-replace** — DONE.
+      NEW `lib/findReplace.ts` pure search: `findInTree`,
+      `replaceInTree`, `findAcrossPages`, `totalMatches`. Walks
+      only TEXT_PROP_KEYS allowlist (text/html/label/heading/
+      etc) — image src/alt + button href excluded per prompt's
+      "text content only" gate. Substring default + `caseSensitive`
+      + `wholeWord` (\b regex with query-escape). Matches surface
+      `{ blockId, blockType, path, prop, index, snippet,
+      matchLength }` with JSON-pointer path + centred snippet.
+      `replaceInTree` splices right-to-left, deep-clones (input
+      untouched). NEW `FindReplaceModal.tsx` Find/Replace inputs
+      + case + whole-word toggles + 3 scope chips (page/variant/
+      all) + grouped-by-page live results (jump on click) +
+      "Replace all (N)" with confirm modal that warns ⚠ when
+      total > 50. Host commits per-page bundles via existing
+      page PATCH in parallel. NEW
+      `__smoke__/r023-find-replace.test.ts` 22/22 (matchers,
+      allowlist gate, case + whole-word, replace count + input
+      untouched, multi-page summaries, modal dialog + chips +
+      brand-kit var). package.json test chain extended.
+      tsc-clean. Chapter `04-find-and-replace.md` + MASTER row
+      #104.
+      Q-ASSUMED: TEXT_PROP_KEYS allowlist is prompt's gate
+      (extending requires explicit set update); atomic across-
+      pages transaction is host's parallel-PATCH responsibility
+      (R+1 foundation transaction endpoint); jump-to-result via
+      host's block-selection + page-nav; whole-word ASCII \b
+      (Unicode R+1); Cmd-Shift-F binding host-wired today (not
+      in R018 DEFAULT_BINDINGS); regex out of scope. Deferred:
+      `find:open` in R018, foundation transaction, regex search,
+      "Include attributes" checkbox, per-page diff preview using
+      R020 compareTrees, iframe highlight on row hover.
 - [x] **T3 R022 — Auto-save + persisted version history** — DONE.
       NEW `server/pageVersions.ts`: `PageVersion`,
       `saveVersion`/`listVersions`/`getVersion`/`deleteVersion`/
