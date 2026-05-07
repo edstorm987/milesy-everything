@@ -86,6 +86,10 @@ import {
   handleResolveRedirect,
 } from "./handlers/redirects";
 import {
+  handleSetPagePrivacy,
+  handleUnlockPage,
+} from "./handlers/pagePrivacy";
+import {
   handleListBlogPosts,
   handleGetBlogPost,
   handleGetBlogPostBySlug,
@@ -208,4 +212,8 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/redirects", methods: ["POST"], handler: handleAddRedirect },
   { path: "/redirects", methods: ["DELETE"], handler: handleRemoveRedirect },
   { path: "/redirects/resolve", methods: ["GET"], handler: handleResolveRedirect },
+
+  // Page privacy (R026) — public/unlisted/password/members-only.
+  { path: "/pages/privacy", methods: ["POST"], handler: handleSetPagePrivacy },
+  { path: "/pages/privacy/unlock", methods: ["POST"], handler: handleUnlockPage },
 ];

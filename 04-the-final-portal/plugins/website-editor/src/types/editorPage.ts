@@ -15,6 +15,10 @@ import type { Block } from "./block";
 
 export type EditorPageStatus = "draft" | "published";
 
+// R026 — Per-page privacy. Storefront enforces; editor surfaces
+// toggle + password input.
+export type EditorPagePrivacy = "public" | "unlisted" | "password" | "members-only";
+
 // Per-page SEO meta — JSON-LD + Open Graph fragments injected at render.
 export interface EditorPageSeo {
   metaTitle?: string;
@@ -42,6 +46,14 @@ export interface EditorPage {
 
   status: EditorPageStatus;
   isHomepage?: boolean;
+
+  // R026 — Privacy gate. Defaults to "public" when absent.
+  // `passwordHash` only set when privacy === "password"; computed
+  // server-side when operator sets a fresh password (the editor
+  // never persists raw passwords).
+  privacy?: EditorPagePrivacy;
+  passwordHash?: string;
+
 
   // Portal-variant identity. When set, the page is one of (potentially many)
   // candidates for the customer-facing route at this role. Exactly zero or
@@ -106,4 +118,8 @@ export interface UpdatePagePatch {
   isActivePortal?: boolean;
   isHomepage?: boolean;
   seo?: EditorPageSeo;
+  // R026 — Privacy patches (raw passwords never accepted here; the
+  // pagePrivacy handler hashes server-side before threading through).
+  privacy?: EditorPagePrivacy;
+  passwordHash?: string;
 }

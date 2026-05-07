@@ -221,3 +221,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T14:31:00Z] COMMIT: b2d0a89 "T3 R025: page routing — redirect registry with chain shortening + 28/28 smoke". 9 files clean. Pushed.
 [2026-05-07T14:31:00Z] DONE: queue file `025-page-routing-rename-redirect.md` — round shipped. website-editor smoke 28/28 + tsc-clean. Chapter `04-page-routing.md` + MASTER row #106 + tasks.md row added. Cross-team: storefront middleware wires `/redirects/resolve` on 404 → 301 to target if non-null; editor host wires rename PATCH+POST atomically. Q-ASSUMED: rename/delete UI is host concern; foundation atomic transaction R+1; wildcard/regex/410 out of scope. Commander may archive 025; queue still has 026-029.
 [2026-05-07T14:32:00Z] WAKE-PENDING-ARCHIVE: 025 still lowest. Sleeping 600s.
+[2026-05-07T14:50:00Z] STARTED: queue file `026-private-pages-password.md` — privacy enum on EditorPage, password-hash + verify, cookie-based gate cookie name + signature, storefront access check helper, smoke + chapter.
+[2026-05-07T15:08:00Z] COMMIT: pending — staging R026 explicit-path bundle.

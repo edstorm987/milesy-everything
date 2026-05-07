@@ -968,6 +968,39 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R026 — Private / password-protected pages** — DONE.
+      `EditorPage` schema gains `privacy?` enum + `passwordHash?`
+      (defaults public). NEW `lib/pagePrivacy.ts` (Web Crypto):
+      `hashPagePassword` (sha256:<hex> with pageId salt),
+      `verifyPagePassword` constant-time equal,
+      `makeUnlockToken/verifyUnlockToken` (token includes pageId
+      so stolen cookies can't unlock siblings),
+      `evaluatePageAccess` (public→allow, unlisted→allow+
+      hideFromSitemap, members-only→deny-without-role/allow-with,
+      password→token-match-or-challenge, default-deny when hash
+      missing), `pagesVisibleInSitemap`. NEW
+      `api/handlers/pagePrivacy.ts` + 2 routes: `POST /pages/
+      privacy` (set privacy + hash server-side, 400 paths +
+      404, masks hash in response), `POST /pages/privacy/
+      unlock` (verify + return token, 401/400/404). Storefront
+      foundation middleware composes evaluatePageAccess with
+      cookie. NEW `__smoke__/r026-page-privacy.test.ts` 33/33
+      (hash format + salt; token shape + verify; access modes
+      including default-public/default-deny; sitemap filter;
+      HTTP 400×3/200/persist/mask/401). package.json test
+      chain extended. tsc-clean. Chapter `04-private-pages.md`
+      + MASTER row #107.
+      Q-ASSUMED: sha256+pageId-salt (R+1 scrypt/argon2);
+      cookie name+signing host concern (`aqua_unlock_<pageId>`
+      HttpOnly+SameSite=Lax recommended); members-only is
+      `Boolean(memberRole)` v1; R014 buildSitemapXml doesn't
+      yet drop non-public (R+1 sitemap-consumer wire-up);
+      editor privacy chip UI host-composition; multi-password
+      + per-block privacy out of scope per prompt. Deferred:
+      scrypt/argon2 KDF, editor page-settings privacy UI,
+      sitemap drops non-public, share-link tokens, per-block
+      privacy, rate-limit unlock attempts, session-cookie
+      revocation admin button.
 - [x] **T3 R025 — Page routing — rename + redirect** — DONE.
       NEW `server/redirects.ts` per-site registry capped at 100,
       `addRedirect` with self-loop rejection (RedirectLoopError),
