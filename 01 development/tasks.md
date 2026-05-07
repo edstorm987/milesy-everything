@@ -947,6 +947,35 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R025 — Page routing — rename + redirect** — DONE.
+      NEW `server/redirects.ts` per-site registry capped at 100,
+      `addRedirect` with self-loop rejection (RedirectLoopError),
+      chain shortening (rewrite existing entries whose `to` was
+      this rename's `from` to the new target), same-from
+      collapse, capacity trim. `resolveRedirect` walks chain
+      max 5 hops. Slug normalisation tolerates leading-slash
+      either way. NEW `api/handlers/redirects.ts` + 4 routes
+      (GET list, POST add 201/400/409, DELETE 200/404, GET
+      resolve `{ target: <slug>|null }`). Storefront wires
+      middleware to call resolve on 404 → 301 if non-null.
+      Editor wires rename (PATCH page + POST redirect) + delete
+      (DELETE page + POST redirect with operator-picked
+      fallback target). NEW `__smoke__/r025-redirects.test.ts`
+      28/28 (CAP, normalisation, list newest-first, self-loop,
+      chain shortening, same-from collapse, resolveRedirect
+      walks chain, capacity 105→100, removeRedirect hit/miss,
+      HTTP 201/400/409/200/404). package.json test chain
+      extended. tsc-clean. Chapter `04-page-routing.md` +
+      MASTER row #106.
+      Q-ASSUMED: rename/delete UI is host concern (R025 ships
+      registry+endpoints, host wires PATCH+POST atomically);
+      foundation atomic transaction R+1; 301 emission lives in
+      foundation routing (R025 ships /resolve, middleware
+      composes); wildcard/regex/410 out of scope; chain hop
+      cap 5. Deferred: rename UI + delete-confirm modal with
+      fallback picker, foundation atomic transaction, wildcard/
+      pattern redirects, 410 Gone, rename history in
+      pageVersions, redirects admin UI.
 - [x] **T3 R024 — Image library + asset manager** — DONE.
       R003's assets handler extended. NEW `lib/assetTags.ts` —
       `deriveAutoTags` (family from mimeType + filename keyword

@@ -80,6 +80,12 @@ import {
   handleRenameVersion,
 } from "./handlers/pageVersions";
 import {
+  handleListRedirects,
+  handleAddRedirect,
+  handleRemoveRedirect,
+  handleResolveRedirect,
+} from "./handlers/redirects";
+import {
   handleListBlogPosts,
   handleGetBlogPost,
   handleGetBlogPostBySlug,
@@ -196,4 +202,10 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/pages/versions", methods: ["POST"], handler: handleSaveVersion },
   { path: "/pages/versions", methods: ["PATCH"], handler: handleRenameVersion },
   { path: "/pages/versions", methods: ["DELETE"], handler: handleDeleteVersion },
+
+  // Redirects (R025) — slug aliases with 301 semantics, capped at 100.
+  { path: "/redirects", methods: ["GET"], handler: handleListRedirects },
+  { path: "/redirects", methods: ["POST"], handler: handleAddRedirect },
+  { path: "/redirects", methods: ["DELETE"], handler: handleRemoveRedirect },
+  { path: "/redirects/resolve", methods: ["GET"], handler: handleResolveRedirect },
 ];
