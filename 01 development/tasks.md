@@ -266,6 +266,16 @@ End of Sprint 3 = ship gate — see chapter #124.
   healthcheck` is POST-only (cron invoker is GET — needs T2 ops wrapper);
   `/api/portal/ops/backup` route does not exist (T2 ops plugin owner).
   Don't enable those two crons until T2 closes the gaps.
+- **Production-readiness smoke** SHIPPED in T6 R005 (chapter #167):
+  full rewrite of `04-the-final-portal/milesymedia-website/scripts/
+  post-deploy-smoke.mjs` (20 static GETs + 5 redirects + `/api/auth/me`
+  shape contract + founder login flow + best-effort HC completion).
+  `npm run smoke:post-deploy -- --url=… --founder-pass=$FOUNDER_PASSWORD`
+  hooked into runbook §5 as the canonical post-deploy command. Founder-
+  pw `"123"` refuse-to-run guard exits 2 BEFORE any HTTP call.
+  Operator dry-run guide (9 steps from script-smoke through end-customer
+  HC flow + sign-off) lives in chapter §C. **T6 queue closed** — Ed's
+  next action is the real DNS flip per `runbooks/deploy.md` §3.
 - **Founder seed env vars** — `FOUNDER_EMAIL` (real address, not
   default) + `FOUNDER_PASSWORD` (≥12 chars) + `FOUNDER_AGENCY_NAME`
   (defaults "Milesy Media"). All other prod env in chapter #142
