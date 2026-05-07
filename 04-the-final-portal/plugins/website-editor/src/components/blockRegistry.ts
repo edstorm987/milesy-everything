@@ -452,6 +452,22 @@ export const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
       { key: "controls", label: "Show controls", type: "boolean", default: true },
     ],
   },
+  "video-embed": {
+    type: "video-embed", label: "Video embed", icon: "▶︎", category: "media", isContainer: false,
+    Component: VideoEmbedBlock,
+    defaultProps: { provider: "raw", url: "", aspectRatio: 16 / 9, autoplay: false, controls: true },
+    fields: [
+      { key: "url", label: "Video URL (Vimeo / YouTube / Loom)", type: "url", default: "", help: "Provider auto-detects from the URL on save." },
+      { key: "provider", label: "Provider", type: "select", default: "raw", options: [
+        { value: "vimeo", label: "Vimeo" }, { value: "youtube", label: "YouTube" },
+        { value: "loom", label: "Loom" },   { value: "raw", label: "Raw iframe" },
+      ] },
+      { key: "aspectRatio", label: "Aspect ratio (W/H)", type: "number", default: 16 / 9 },
+      { key: "autoplay", label: "Autoplay", type: "boolean", default: false },
+      { key: "controls", label: "Show controls", type: "boolean", default: true },
+      { key: "caption", label: "Caption", type: "text", default: "" },
+    ],
+  },
   icon: {
     type: "icon", label: "Icon", icon: "✦", category: "media", isContainer: false,
     Component: IconBlock, defaultProps: { glyph: "✦", size: "32px", color: "#ff6b35" },

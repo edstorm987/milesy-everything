@@ -82,6 +82,10 @@ export class StaffService {
       managerId: input.managerId,
       locationType: input.locationType,
       hourlyRate: input.hourlyRate,
+      agencyEmployee: input.agencyEmployee,
+      customRoleId: input.customRoleId,
+      assignments: input.assignments,
+      metadata: input.metadata,
       createdAt: ts,
       updatedAt: ts,
     };
@@ -132,6 +136,9 @@ export class StaffService {
       ...existing,
       ...patch,
       managerId: patch.managerId === null ? undefined : patch.managerId ?? existing.managerId,
+      customRoleId: patch.customRoleId === null ? undefined : patch.customRoleId ?? existing.customRoleId,
+      // Merge metadata bag rather than clobber so partial patches keep siblings.
+      metadata: patch.metadata ? { ...(existing.metadata ?? {}), ...patch.metadata } : existing.metadata,
       name: patch.name?.trim() ?? existing.name,
       email: patch.email?.trim() ?? existing.email,
       title: patch.title?.trim() ?? existing.title,

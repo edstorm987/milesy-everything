@@ -16,6 +16,91 @@ export type StaffStatus = "active" | "on-leave" | "alumni";
 
 export type StaffLocationType = "remote" | "hybrid" | "onsite";
 
+// ─── Employee HQ — chapter #59 §9 ─────────────────────────────────────────
+
+// PermissionKey is the canonical gate identifier checked by
+// `requirePermission(perm)`. Cluster-prefixed by feature; the
+// `sops.tag.<family>` variants gate the SOP shelf (chapter §9c)
+// per Sales/Service/Standards/Internal/Tools tag families.
+export type PermissionKey =
+  | "clients.view"
+  | "clients.edit"
+  | "clients.create"
+  | "clients.delete"
+  | "plugins.install"
+  | "finance.view"
+  | "finance.edit"
+  | "kanban.view"
+  | "kanban.edit"
+  | "sops.view"
+  | "sops.tag.sales"
+  | "sops.tag.service"
+  | "sops.tag.standards"
+  | "sops.tag.internal"
+  | "sops.tag.tools"
+  | "employees.view"
+  | "employees.edit"
+  | "roles.edit";
+
+export const ALL_PERMISSION_KEYS: readonly PermissionKey[] = [
+  "clients.view",
+  "clients.edit",
+  "clients.create",
+  "clients.delete",
+  "plugins.install",
+  "finance.view",
+  "finance.edit",
+  "kanban.view",
+  "kanban.edit",
+  "sops.view",
+  "sops.tag.sales",
+  "sops.tag.service",
+  "sops.tag.standards",
+  "sops.tag.internal",
+  "sops.tag.tools",
+  "employees.view",
+  "employees.edit",
+  "roles.edit",
+] as const;
+
+// Per-client scoped assignment for an Employee HQ user. `roleId` points
+// at a `Role` whose permissions the user inherits within that client's
+// surface; `scope` is the coarse outer cap (an `admin` assignment can
+// still be narrowed by the role's permission set).
+export interface ClientAssignment {
+  clientId: string;
+  roleId: string;
+  scope: "view" | "edit" | "admin";
+}
+
+export interface CustomRole {
+  id: string;
+  agencyId: AgencyId;
+  label: string;
+  permissions: PermissionKey[];
+  visibleViewIds: string[];
+  requiresAuth: boolean;
+  // Default seed roles are non-editable in the Role Builder UI; users
+  // clone-and-edit instead. `seed: true` flags this lineage.
+  seed: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface CreateRoleInput {
+  label: string;
+  permissions: PermissionKey[];
+  visibleViewIds?: string[];
+  requiresAuth?: boolean;
+}
+
+export interface UpdateRolePatch {
+  label?: string;
+  permissions?: PermissionKey[];
+  visibleViewIds?: string[];
+  requiresAuth?: boolean;
+}
+
 // A `Staff` row is the canonical record for a person who works for the
 // agency. The `userId` link is optional: not every staff member has a
 // portal login (a contracted illustrator might have a directory entry
@@ -36,6 +121,19 @@ export interface Staff {
   managerId?: string;               // FK into Staff (self-reference)
   locationType?: StaffLocationType;
   hourlyRate?: number;              // optional; whole units of agency currency
+
+  // Employee HQ extensions (chapter #59 §9). Defaults preserve back-compat
+  // for existing seeded staff: `agencyEmployee` is opt-in (false unless
+  // explicitly hired through Employee HQ flow), `customRoleId` falls back
+  // to the foundation `role` when unset, `assignments` is empty by default.
+  agencyEmployee?: boolean;
+  customRoleId?: string;
+  assignments?: ClientAssignment[];
+  // Free-form bag for NDA-signed flag, payroll link, etc. — same pattern
+  // as the agency-shell R2 Client.metadata. Profile fields without a
+  // first-class home land here.
+  metadata?: Record<string, unknown>;
+
   createdAt: number;
   updatedAt: number;
 }
@@ -90,6 +188,10 @@ export interface CreateStaffInput {
   locationType?: StaffLocationType;
   hourlyRate?: number;
   userId?: UserId;
+  agencyEmployee?: boolean;
+  customRoleId?: string;
+  assignments?: ClientAssignment[];
+  metadata?: Record<string, unknown>;
 }
 
 export interface UpdateStaffPatch {
@@ -104,6 +206,10 @@ export interface UpdateStaffPatch {
   managerId?: string | null;        // explicit null clears the manager
   locationType?: StaffLocationType;
   hourlyRate?: number;
+  agencyEmployee?: boolean;
+  customRoleId?: string | null;
+  assignments?: ClientAssignment[];
+  metadata?: Record<string, unknown>;
 }
 
 export interface CreateDepartmentInput {

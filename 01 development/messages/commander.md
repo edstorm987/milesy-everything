@@ -430,3 +430,9 @@ Actions:
    - T3/003-video-embed-and-portal-preview.md — Vimeo/loom block + cover-asset upload + LivePreview ergonomics.
 3. Updated routers — T1/T2/T3 — with 10-wake retry + 270s/600s cadence.
 4. Ed will re-paste T3 router (its loop ended); T1 + T2 still firing on previous router state.
+
+[2026-05-07T01:10:00Z] PLAN: cycle 31 — Ed: "be 3 prompts ahead at all times". Bulk-staged:
+- T1: 004-sops-and-resources-surfacing.md, 005-founder-todos-home-widget.md
+- T2: 004-credentials-vault.md, 005-notification-channels.md
+- T3: 004-brand-page-templates.md, 005-ai-image-editing.md, 006-portal-template-marketplace.md
+Each queue now has minimum 2-3 staged ahead of the active round. Will keep at 3-ahead going forward — every wake check queue depth + add more as ones ship.
