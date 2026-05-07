@@ -48,6 +48,23 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R004 — Niche-specific Incubator copy packs** — DONE.
+      Closed chapter #71 niche-pack follow-up. NEW
+      `incubator app/copy-packs/` with 4 packs (agency default,
+      skincare, coaching, fitness), loader (`window.IncubatorCopy.{getNiche,
+      getPack,apply,listNiches}` reading `bos.brand.niche` w/ legacy
+      `bos.user.niche` fallback), and `all.js` single-script bundle
+      entry. Pack shape: `{label, heroTagline, aquaResourceCallout,
+      phasePromise[4], moduleHighlight[{icon,label,href}], faqs[{q,a}]}`.
+      Swap hooks: `[data-niche-tagline]`, `[data-niche-callout]`,
+      `[data-niche-promise=N]`, `[data-niche-modules]` (renders cards),
+      `[data-niche-faqs]` (renders toggles). Wired hero on index.html,
+      "What we're doing" promise on 4 phase pages, callout + 2 NEW
+      grid sections (Recommended next + Niche FAQs) on resources.html.
+      BOS admin.html Overview pane gained niche `<select>` writing
+      `bos.brand.niche` via JSON merge. Honesty contract preserved
+      (copy-only). Smoke: 6 Incubator pages + 6 pack files + BOS admin
+      all 200. Chapter R004 section + MASTER #80.
 - [x] **T4 R003 — Phase-aware BOS deep-linking from Incubator** — DONE.
       `bos.deepLink` (consumed-once JSON `{section,lessonId,ts}` w/ 30s
       TTL) + `bos.returnFromPhase` + `bos.returnFromPhasePage` storage

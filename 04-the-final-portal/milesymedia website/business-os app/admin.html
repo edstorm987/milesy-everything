@@ -48,6 +48,25 @@
           <p class="muted">This admin reads from <code>localStorage</code> on this device — exactly what your free-tier user state would look like server-side. Once we wire the portal plugin, this same UI reads from <code>business_os_*</code> Postgres tables instead. Same shapes; same screen.</p>
         </div>
       </div>
+
+      <div class="bos-notion-slot" style="margin-top:16px">
+        <div class="bos-notion-slot-icon">🎯</div>
+        <div style="flex:1">
+          <h3>Incubator niche pack</h3>
+          <p class="muted">Switches the copy + recommended modules in the Incubator surface. Saved to <code>bos.brand.niche</code>; takes effect on next Incubator page load. Honesty contract: copy-only.</p>
+          <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <label for="bos-admin-niche" class="muted">Active pack:</label>
+            <select id="bos-admin-niche" style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;min-width:200px">
+              <option value="agency">Agency (default)</option>
+              <option value="skincare">Skincare brand</option>
+              <option value="coaching">Coach / consultant</option>
+              <option value="fitness">Fitness studio / coach</option>
+            </select>
+            <button type="button" id="bos-admin-niche-save" class="btn btn-primary">Save</button>
+            <span id="bos-admin-niche-status" class="muted" style="margin-left:6px"></span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Leads -->
@@ -373,6 +392,36 @@
       else setTimeout(bootEditor, 80);
     }
     bootEditor();
+
+    /* ─── Incubator niche pack selector (R004) ───
+       Reads/writes `bos.brand.niche`. Falls back to `bos.user.niche` for
+       legacy users. Reload not forced — Incubator pages re-read on load. */
+    (function () {
+      var sel = document.getElementById('bos-admin-niche');
+      var btn = document.getElementById('bos-admin-niche-save');
+      var status = document.getElementById('bos-admin-niche-status');
+      if (!sel || !btn) return;
+      function readNiche() {
+        try {
+          var b = JSON.parse(localStorage.getItem('bos.brand') || 'null');
+          if (b && b.niche) return b.niche;
+          var u = JSON.parse(localStorage.getItem('bos.user') || 'null');
+          if (u && u.niche) return u.niche;
+        } catch (e) {}
+        return 'agency';
+      }
+      sel.value = readNiche();
+      btn.addEventListener('click', function () {
+        var n = sel.value;
+        try {
+          var b = JSON.parse(localStorage.getItem('bos.brand') || '{}') || {};
+          b.niche = n;
+          localStorage.setItem('bos.brand', JSON.stringify(b));
+        } catch (e) {}
+        status.textContent = 'Saved · ' + n + ' pack active in Incubator';
+        setTimeout(function () { status.textContent = ''; }, 4000);
+      });
+    })();
   </script>
 
 </body>

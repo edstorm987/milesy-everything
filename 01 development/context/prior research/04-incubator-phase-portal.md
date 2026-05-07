@@ -308,6 +308,120 @@ back to the explicit `returnFromPhasePage` that incubator.js wrote.
 - `lessonId` slot is in the deepLink JSON for R006 (`lessons-to-phase-
   advance`) but no card writes it yet.
 
+## R004 — Niche-specific copy packs (2026-05-07)
+
+Per chapter #71 follow-up: niches were labels-only. R004 ships 4 actual
+content packs that swap Incubator copy + module recommendations
+without touching the page templates.
+
+### Storage contract
+
+`bos.brand.niche` ∈ `{ agency | skincare | coaching | fitness }` —
+defaults to `agency`. Falls back to legacy `bos.user.niche` for
+back-compat. Loader picks `agency` when the active value isn't a known
+pack.
+
+### Pack shape
+
+```js
+window.IncubatorCopyPacks[<niche>] = {
+  label,                  // human label (admin selector)
+  heroTagline,            // index.html caption
+  aquaResourceCallout,    // resources.html callout line
+  phasePromise: [4],      // one promise string per phase 1-4
+  moduleHighlight: [{ icon, label, href }, …],  // recommended-next grid
+  faqs: [{ q, a }, …]     // niche-aware FAQ
+}
+```
+
+Honesty contract: copy-only swaps. No numbers, no claims, no
+fabricated outcomes — packs change words, not promises.
+
+### Files
+
+```
+incubator app/copy-packs/
+├── agency.js     — DEFAULT pack (full English copy)
+├── skincare.js
+├── coaching.js
+├── fitness.js
+├── index.js      — IncubatorCopy loader: getNiche / getPack / apply / listNiches
+└── all.js        — single-script bundle entry; document.writes the 5 above in order
+```
+
+Each Incubator page now loads `copy-packs/all.js` *before* `incubator.js`
+— one extra script tag per page (5 pages: index + 4 phase pages +
+resources).
+
+### Swap mechanism
+
+Loader runs at DOMContentLoaded (`IncubatorCopy.apply(document)`).
+Hooks:
+
+| Selector                                | Source field             |
+| --------------------------------------- | ------------------------ |
+| `[data-niche-tagline]`                  | `pack.heroTagline`       |
+| `[data-niche-callout]`                  | `pack.aquaResourceCallout` |
+| `[data-niche-promise="N"]` (1-4)        | `pack.phasePromise[N-1]` |
+| `[data-niche-modules]`                  | `pack.moduleHighlight[]` rendered as `.inc-card`s |
+| `[data-niche-faqs]`                     | `pack.faqs[]` rendered as `<details class="inc-toggle">` |
+| `[data-niche="<topLevelKey>"]`          | string-typed `pack[key]` (generic) |
+
+Body gets `data-incubator-niche="<niche>"` for future CSS hooks.
+
+### Page wiring
+
+| Page                        | Hooks added                                          |
+| --------------------------- | ---------------------------------------------------- |
+| `index.html`                | hero `[data-niche-tagline]`                          |
+| `phase-1-epic-intro.html`   | promise `[data-niche-promise="1"]` in "What happens" |
+| `phase-2-blueprint.html`    | promise `[data-niche-promise="2"]`                   |
+| `phase-3-diagnostics.html`  | promise `[data-niche-promise="3"]`                   |
+| `phase-4-brand-builder.html`| promise `[data-niche-promise="4"]`                   |
+| `resources.html`            | `[data-niche-callout]` + `[data-niche-modules]` grid + `[data-niche-faqs]` block |
+
+### BOS admin selector
+
+`business-os app/admin.html` Overview pane gains a "Incubator niche
+pack" slot — `<select>` of the 4 packs + Save button. Writes
+`bos.brand.niche` directly (preserves any other `bos.brand.*` fields
+via JSON merge). Status message confirms save; user reloads any
+Incubator page to see the new pack apply. Hot-reload not forced —
+Incubator pages are pull-based on load.
+
+Public surface:
+```js
+window.IncubatorCopy.getNiche();    // string
+window.IncubatorCopy.getPack(?);    // current or named pack
+window.IncubatorCopy.apply(?root);  // re-render swaps
+window.IncubatorCopy.listNiches();  // ['agency','skincare',…]
+```
+
+### R004 smoke (verified 2026-05-07)
+
+- All 6 Incubator pages 200; all 6 copy-pack files (4 packs + index +
+  all bundle) 200; BOS admin 200.
+- Default load with no `bos.brand` shows agency pack (verified by
+  inspecting `document.body.dataset.incubatorNiche` after DOMContentLoaded).
+- Setting `bos.brand={"niche":"skincare"}` then reloading the
+  Incubator hero shows the skincare tagline; resources.html shows the
+  skincare modules + FAQ.
+- BOS admin niche selector: change → Save → status confirms; reload
+  Incubator → new pack applied.
+
+### Q-ASSUMED + R004 follow-ups
+
+- Storage key per prompt is `bos.brand.niche`; existing BOS code uses
+  `bos.user.niche`. Loader supports both with `bos.brand.niche` taking
+  precedence. **R+1**: BOS sign-up flow could write both keys to keep
+  the two surfaces in sync without legacy fallback.
+- Per-niche imagery is explicitly out of scope (placeholder gold-marble
+  for all). Future round can swap cover variants per pack.
+- Module hrefs all point at the existing 5 written modules
+  (`module.html?id=core-principles | super-sales | ops-sustainability |
+  referral-alchemy`). Locked module ids could ship later when those
+  lessons exist (chapter #71 follow-up).
+
 ## Cross-refs
 
 - §15 visual spec — `04-aqua-internals-reference.md` §15a–§15g.
