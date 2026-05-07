@@ -416,3 +416,5 @@ None of this undoes #122 or #123. See chapter for fit + staging detail.
 [2026-05-07T16:51:00Z] WAKE-PENDING-ARCHIVE: R007 shipped (a00e58e). Queue still shows 007 lowest. Sleeping 600s; next wake hits WAKE-EMPTY 2/10 if archived.
 
 [2026-05-07T17:01:00Z] WAKE-PENDING-ARCHIVE: 007 still in queue. R007 work shipped (a00e58e + 45f27f3). Awaiting commander archive cycle. Sleeping 600s.
+
+[2026-05-07T17:13:00Z] WAKE-EMPTY (1/10): R007 archived; queue empty. T4 polish lane R001-R007 fully shipped. Awaiting next-round signal or idle until WS-F (Felicia portal, Sprint 3).
