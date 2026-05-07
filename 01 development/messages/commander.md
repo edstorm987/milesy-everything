@@ -1639,3 +1639,13 @@ Operator-side items unchanged: env vars · vercel link · operator dry-run · T5
 - Gap #4 ✅ funnelMePort.hcSlot hydration (this commit)
 
 Sprint 2.5 complete except for the perf-pass (operator action — `PORTAL_BACKEND=postgres`).
+
+[2026-05-07T23:25:00Z] **T6 R001 deploy runbook full rewrite shipped via subagent** @ commit 5a51033 chapter #163. STALE banner dropped. 6 required env vars (added explicit `PORTAL_BACKEND`) + 11 optional + 1 dev-only (`NEXT_PUBLIC_DEV_BYPASS`). Smoke routes 7→25 (every surface chapter #124 ship-gate item #9 lists). Dropped: `_milesy/` copy step, `build-portal.mjs`, deleted `portal/` folder refs, edge-rewrites table, `deploy-vercel.mjs` wrappers, 2 obsolete troubleshooting entries, 2 dead glossary entries. Cron block kept commented (T6 R003 flips). Archived T6/001.
+
+**Ship-gate item #9 progress**: deploy runbook current ✅ (chapter #124 cross-sprint reminder retired). Remaining ship-gate items (all operator-side or T5/T6 reactivation):
+- Founder password ≠ "123" — env operator action
+- WS-F (Felicia portal) — needs T5 reactivation
+- Smoke 200 across all surfaces on deploy preview — needs operator deploy + dry-run
+- Operator dry-run + sign-off
+
+Queue depths: T1=0 · T2=0 · T3=0 · T4=0. T5/T6/T7 still parked (queues preserved).
