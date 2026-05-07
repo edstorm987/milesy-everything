@@ -354,3 +354,31 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 
 [2026-05-07T11:34:40Z] NOTE: unify-step-5 DONE — public/_milesy + public/aqua-incubator + scripts/prepare-milesy.mjs deleted; chapter 122 (04-website-portal-unification.md) authored + MASTER row added. Commit 33e214f.
 [2026-05-07T11:34:40Z] NOTE: unify session ended — :3030 single host fully operational. Marketing /, /for-* niche pages, /health-check, /business-os, /incubator, /login, /signup, /portal/agency, /healthz all 200. Founder seed lets edwardhallam07@gmail.com / 123 sign in immediately. Run `npm run dev` from milesymedia-website/.
+
+[2026-05-07T17:30:00Z] NOTE: T4 manual session full offload — chapter #123 authored, MASTER row added. Full session arc captured in 04-website-portal-unification-followups.md. Eight follow-up commits after #122 staged unification (ec0b514 thru 61a1d80). Net result: single :3030 host, marketing chrome unified via new <SiteShell> component, /login + /signup + /demo + /dev/pov + /resources all live and SiteShell-wrapped, /health-check + /incubator iframe-wrapped inside SiteShell with their internal duplicate chrome stripped, BOS gets back-to-website link in own chrome (kept separate per Ed call), portal Topbar promoted Marketing link to a real "← Back to website" pill on every portal layout, Resource Finder shipped at /resources w/ unified catalog at src/lib/resources/catalog.ts (18 entries seeded — 8 tools 3 live 5 soon, 3 blog stubs, 2 video stubs, 5 FAQs live), founder seed (edwardhallam07@gmail.com / 123) wired into /login + login API.
+
+[2026-05-07T17:31:00Z] NOTE: Multi-agency vision captured in chapter #123 §"Multi-agency master/satellite vision". Ed wants Milesy Media as MASTER, niche-targeted agencies (e.g. AquaOasis-web for therapists) as TENANTS of same backend. Existing model already supports most of it (agencies first-class, plugins per-agency, brand kit per-agency, end-customer/client/staff scoping at session-cookie layer). Gaps to close in 3 rounds:
+  R1 = multi-agency users (ServerUser.agencyId → agencyIds[]) + Topbar agency switcher (reuses demo POV-toggle pattern). ~1.5 rounds total.
+  R2 = host-aware marketing render: aquaoasis-web.com → server reads agency by domain → renders same app/page.tsx with that agency's brand kit + tagline + lead magnet. ~1 round.
+  R3 = per-agency lead-magnet pack (public/agencies/<slug>/health-check/) + prompt-driven agency spawner (CLI/admin button to scaffold brand pack + lead-magnet folder + starting copy). ~1 round.
+None of this undoes #122 or #123. See chapter for fit + staging detail.
+
+[2026-05-07T17:32:00Z] NOTE: Open follow-ups for next commander to pick from (priority order):
+  (a) for-*.html niche pages still use OLD static nav — Resources mega-menu only got injected into /_marketing/index.html. Either replicate the inject across 4 niche pages OR convert all marketing static HTML to JSX via SiteShell (cleaner long-term).
+  (b) Role-aware post-login redirect — /login currently always lands on /portal/agency. Wire client-owner → /portal/clients/<slug>, end-customer → /portal/customer, future lead → /business-os.
+  (c) The "lead" role doesn't exist in src/server/types.ts yet — needed for the lead → BOS funnel hinted at in chapter #121 (Unified vision). Adds Role union member + signup path that creates with role:lead.
+  (d) Resource sub-pages at /resources/<slug> (seo-audit, site-speed, accessibility-audit, ux-orchestration, copy-clinic, playbooks, case-studies) are all stubs rendering through app/resources/[slug]/page.tsx. Replace each with real implementations as built — they'll auto-flip "soon" → "live" once the catalog status updates.
+  (e) HC + Incubator iframes are pragmatic — same-origin iframe inside SiteShell. Replace with React rewrites that share brand-kit tokens directly when there's time.
+  (f) app/page.tsx (Aqua landing) orphaned by the `/` rewrite to /_marketing/index.html. Decide its fate when marketing → JSX conversion happens.
+
+[2026-05-07T17:33:00Z] NOTE: Gotchas to preserve across rounds (already in chapter §"Gotchas to preserve" — repeating here for breadcrumb visibility):
+  1. No spaces in project root — folder is milesymedia-website (not "milesymedia website") because Turbopack chokes on spaces resolving relative imports.
+  2. turbopack.root + outputFileTracingRoot point at 04-the-final-portal/ (one level up) so sibling plugins/ is in traced workspace.
+  3. Asset paths in public/<app>/*.html must be absolute — Next.js rewrites mean the browser URL doesn't match the file path; relative href/src 404s.
+  4. HC_SCHEMA_VERSION = 3 in public/health-check/index.html — bump on default question-shape changes; ?fresh=1 forces clean slate.
+  5. Founder seed bypasses validatePassword for `123`. Change FOUNDER_PASSWORD + reintroduce validation before any public deploy.
+  6. Marketing static index has Resources mega-menu inline — until JSX rewrite, edits to SiteShell.tsx mega-menu must be mirrored in public/_marketing/index.html.
+  7. Iframe-wrapped static apps need their internal nav/footer stripped (HC: was lines 16-27 + 356-364; Incubator: .inc-toprail) to avoid duplicate chrome.
+  8. @plugins/* TS path alias declared in tsconfig.json is unused — Turbopack rejects aliases that resolve outside project root. Plugin imports stayed relative (../../../../plugins/...).
+
+[2026-05-07T17:34:00Z] NOTE: Manual session ended. Local :3030 dev server is/was running for Ed's testing. Final commit on origin/main: 61a1d80 (T4 unify-fix-7). All 13 unify commits (5 + 8) self-contained, none in flight. T4 ready for next round when Ed signals — could be multi-agency R1, niche-page nav patch, role-aware redirect, or a fresh task entirely. Recommend reading chapter #123 first if commander picks this thread back up.
