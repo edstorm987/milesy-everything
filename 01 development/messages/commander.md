@@ -1030,3 +1030,9 @@ Queue state post-stage:
 [2026-05-07T09:00:00Z] WAKEUP: cycle 107 — autonomous. No new DONEs. T2 mid-R012, T3 STARTED R028 block-group reuse. T1 still long sleep.
 
 [2026-05-07T09:00:00Z] PLAN: minimal. SLEEP: 270s.
+
+[2026-05-07T09:05:00Z] WAKEUP: cycle 108 — autonomous. T2 R012 (pre-sales-hq plugin — DiscoveryCall/Proposal/NurtureTouch + Re-Nurturing cadence + cross-plugin subscriber + 12/12 smoke) DONE @ 2c509d6 chapter #109. T4 WAKE-EMPTY 3/10.
+
+[2026-05-07T09:05:00Z] PLAN: archive T2/012.
+
+[2026-05-07T09:05:00Z] SLEEP: 270s.
