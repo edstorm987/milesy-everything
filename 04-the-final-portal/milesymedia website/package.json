@@ -4,10 +4,8 @@
   "private": true,
   "description": "Aqua portal — Milesy Media's agency platform. Three nested tenants (Agency → Client → End-customer), plugin-driven, server-rendered chrome.",
   "scripts": {
-    "predev": "node scripts/prepare-milesy.mjs --quiet",
     "dev": "next dev -p 3030",
     "dev:all": "npm run dev",
-    "prebuild": "node scripts/prepare-milesy.mjs --quiet",
     "build": "next build",
     "start": "next start -p 3030",
     "typecheck": "tsc --noEmit",
