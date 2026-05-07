@@ -42,6 +42,19 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       runner wired into `ensureHydrated`; createUser writes both
       shapes; NEW `assertTenantScope` + 3 active-agency helpers in
       auth.ts. Smoke 10/10. Chapter #131.
+- [x] **R035 — Sidebar minimise/maximise toggle** — DONE 2026-05-07.
+      Audit found no auto-collapse code in `Sidebar.tsx` (server
+      component, no route hook); Ed's perceived issue was absence of
+      persisted user intent. Ships `<SidebarCollapseToggle>` (chevron
+      top of sidebar) + `<SidebarCollapseHydrationScript>` (synchronous
+      `<head>` script reads `localStorage["mm-sidebar-collapsed"]`,
+      stamps `data-collapsed` on `<aside>` before paint — no flash).
+      Collapsed = 56px icon-rail (labels/headings/badges/extra hide,
+      first-letter pill + `title=` tooltip on each row); expanded =
+      full sidebar today; mobile slide-over excluded. Nav `<Link>`
+      clicks NEVER mutate the attribute — only the toggle does
+      (smoke-asserted source-marker). 10/10 smoke via
+      `npm run smoke:sidebar-collapse-toggle`. Chapter #153.
 
 ### To do — T2 (plugins)
 

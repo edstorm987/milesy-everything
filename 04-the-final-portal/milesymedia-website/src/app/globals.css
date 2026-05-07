@@ -369,3 +369,36 @@ h1, h2, h3, h4, h5, h6 {
   list-style: none;
   padding: 0;
 }
+
+/* T1 R035 — Sidebar collapse toggle. The desktop <aside> carries
+   data-collapsed="true|false"; collapsed mode shrinks to ~56px and
+   hides text labels in favour of first-letter pills + native title=
+   tooltips. Mobile slide-over is excluded via data-sidebar-mobile. */
+.mm-sidebar-collapsible {
+  width: 15rem; /* 240px — matches prior w-60 */
+  transition: width 140ms ease;
+}
+aside[aria-label="Primary navigation"][data-collapsed="true"]:not([data-sidebar-mobile="true"]) {
+  width: 3.5rem; /* 56px */
+}
+aside[aria-label="Primary navigation"][data-collapsed="true"]:not([data-sidebar-mobile="true"]) .mm-sidebar-tenant,
+aside[aria-label="Primary navigation"][data-collapsed="true"]:not([data-sidebar-mobile="true"]) .mm-sidebar-heading,
+aside[aria-label="Primary navigation"][data-collapsed="true"]:not([data-sidebar-mobile="true"]) .mm-sidebar-link-label,
+aside[aria-label="Primary navigation"][data-collapsed="true"]:not([data-sidebar-mobile="true"]) .mm-sidebar-link-badge,
+aside[aria-label="Primary navigation"][data-collapsed="true"]:not([data-sidebar-mobile="true"]) .mm-sidebar-extra {
+  display: none;
+}
+aside[aria-label="Primary navigation"][data-collapsed="true"]:not([data-sidebar-mobile="true"]) .mm-sidebar-link-initial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+aside[aria-label="Primary navigation"][data-collapsed="true"]:not([data-sidebar-mobile="true"]) .mm-sidebar-link {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
