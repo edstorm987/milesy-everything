@@ -42,6 +42,13 @@ const websiteEditorPlugin: AquaPlugin = {
       component: () => import("./src/pages/EditorPage"),
     },
     {
+      // Deep-link surface used by T1's agency-shell "Edit website" CTA.
+      // Same EditorPage mounts here; reads ?page= and ?variant=.
+      path: "/portal/clients/[clientId]/edit-website",
+      title: "Editor",
+      component: () => import("./src/pages/EditorPage"),
+    },
+    {
       path: "/portal/clients/[clientId]/pages",
       title: "Pages",
       component: () => import("./src/pages/PagesPage"),
