@@ -84,6 +84,7 @@ function makeCtx(storage: PluginStorage): PluginCtx {
     actor: "u1" as never,
     storage,
     services: {} as never,
+    install: {} as never,
   };
 }
 
