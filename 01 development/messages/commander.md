@@ -655,3 +655,7 @@ Queue state post-stage:
 [2026-05-07T04:10:00Z] PLAN: archive T4/005. T4 chains to R006 next.
 
 [2026-05-07T04:10:00Z] SLEEP: 270s.
+
+[2026-05-07T04:15:00Z] WAKEUP: cycle 50 — autonomous. No new DONEs. T4 mid-R006 (lessons→phase-advance). T1/T3 still on long-cadence sleep (1500s/600s waits set at 04:15Z/04:17Z); should wake within next ~10min and chain into R007/R009. T2 still silent.
+
+[2026-05-07T04:15:00Z] PLAN: minimal cycle. SLEEP: 270s.
