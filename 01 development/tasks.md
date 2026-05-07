@@ -984,6 +984,33 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R027 — In-editor block catalog** — DONE.
+      NEW `BlockCatalog.tsx` reads `listBlockDefinitions()` from
+      existing registry (no registry change), groups by category
+      (`<details>` with auto-expand on search), each block card
+      shows icon+label+monospace-type+heuristic-description (from
+      def shape since registry lacks description field — R+1 to
+      add) + Insert button (primary-tinted, calls `onInsert(type)`)
+      + "▸ View source" expander toggling `<pre>` JSON snippet
+      `{ id: "<type>_<id>", type, props: defaultProps,
+      children?: defaultChildren }` (placeholder `<id>` triggers
+      R020 Code-mode validation failure on copy-paste, prompting
+      id swap). Search filters label+type substring;
+      "No blocks match." empty state. NEW
+      `__smoke__/r027-block-catalog.test.ts` 23/23 (header,
+      search, N-blocks caption, every category data-category,
+      every block data-block-type spot-check, Insert button
+      count matches, brand-kit var, View source per block,
+      container description). package.json test chain extended.
+      tsc-clean. Chapter `04-block-catalog.md` + MASTER row #108.
+      Q-ASSUMED: registry no description field (R+1 extends);
+      live previews + per-block changelog out of scope; preview
+      tile is icon glyph (real render needs host
+      `__aquaRenderBlocks`); search excludes derived description;
+      host wires onInsert to existing insertBlock(type). Deferred:
+      BlockDefinition.description, live thumbnails, changelog,
+      drag-to-insert, "Open in Code mode" CTA, host topbar tab
+      mount.
 - [x] **T3 R026 — Private / password-protected pages** — DONE.
       `EditorPage` schema gains `privacy?` enum + `passwordHash?`
       (defaults public). NEW `lib/pagePrivacy.ts` (Web Crypto):
