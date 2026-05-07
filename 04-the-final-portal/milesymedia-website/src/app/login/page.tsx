@@ -1,9 +1,14 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import { LoginForm } from "./LoginForm";
+import dynamic from "next/dynamic";
 import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
 import { seedFounder } from "@/lib/server/founderSeed";
 import { SiteShell } from "@/components/SiteShell";
+
+// Code-split: form bundle only ships when /login renders, and the
+// nav + card chrome paint without waiting for it.
+const LoginForm = dynamic(() => import("./LoginForm").then(m => m.LoginForm), {
+  loading: () => <div className="h-40" aria-hidden />,
+});
 
 export const metadata = {
   title: "Sign in · Milesy Media",
@@ -21,9 +26,7 @@ export default async function LoginPage() {
             <h1>Welcome back</h1>
             <p>Sign in to your agency, Business OS or client portal.</p>
           </div>
-          <Suspense fallback={<div className="h-40" aria-hidden />}>
-            <LoginForm googleEnabled={isGoogleOAuthConfigured()} />
-          </Suspense>
+          <LoginForm googleEnabled={isGoogleOAuthConfigured()} />
           <div className="mm-auth-foot">
             <span>
               New here? <Link href="/signup">Get started →</Link>

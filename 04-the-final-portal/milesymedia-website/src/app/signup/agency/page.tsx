@@ -1,8 +1,12 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import { SignupForm } from "./SignupForm";
+import dynamic from "next/dynamic";
 import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
 import { SiteShell } from "@/components/SiteShell";
+
+const SignupForm = dynamic(
+  () => import("./SignupForm").then(m => m.SignupForm),
+  { loading: () => <div className="h-40" aria-hidden /> },
+);
 
 export const metadata = {
   title: "Start an agency · Milesy Media",
@@ -23,9 +27,7 @@ export default function SignupAgencyPage() {
               owner; clients and end-customers join via invitation.
             </p>
           </div>
-          <Suspense fallback={<div className="h-40" aria-hidden />}>
-            <SignupForm googleEnabled={isGoogleOAuthConfigured()} />
-          </Suspense>
+          <SignupForm googleEnabled={isGoogleOAuthConfigured()} />
           <div className="mm-auth-foot">
             <span>
               Already have one? <Link href="/login">Sign in →</Link>

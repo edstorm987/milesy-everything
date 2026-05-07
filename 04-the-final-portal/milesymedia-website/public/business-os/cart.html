@@ -54,9 +54,9 @@
     </main>
   </div>
 
-  <script src="/incubator/lib/storage.js"></script>
-  <script src="/incubator/lib/activity.js"></script>
-  <script src="/business-os/bos.js"></script>
+  <script defer src="/incubator/lib/storage.js"></script>
+  <script defer src="/incubator/lib/activity.js"></script>
+  <script defer src="/business-os/bos.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       function escape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }

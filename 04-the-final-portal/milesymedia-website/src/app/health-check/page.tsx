@@ -24,6 +24,7 @@ export default function HealthCheckPage() {
           src="/health-check/index.html"
           title="Milesy Media Health Check"
           className="mm-hc-frame"
+          loading="lazy"
         />
       </main>
     </SiteShell>
