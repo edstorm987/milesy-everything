@@ -20,7 +20,12 @@ import type { AgencyId, ClientId, BrandKit } from "./../lib/tenancy";
 import type { Block } from "../types/block";
 import type { EditorPage } from "../types/editorPage";
 import { listPages } from "./pages";
-import { buildSitemapXml, buildRobotsTxt, type SitemapPage } from "./sitemap";
+import {
+  buildSitemap as buildAdvancedSitemap,
+  buildRobotsTxt as buildAdvancedRobotsTxt,
+  selectSitemapPages,
+  type SitemapPageInput,
+} from "../lib/sitemap";
 
 export interface ExportSiteInput {
   storage: PluginStorage;

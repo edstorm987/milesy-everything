@@ -33,7 +33,9 @@ when to bring them back.
 
 ## Ship gate (chapter #124) — current score
 
-**8 of 9 hard exit criteria green.**
+**9 of 9 autonomous-terminal exit criteria green.** Only operator-side
+items left: Felicia (WS-F), full deploy-runbook rewrite, and Ed's
+manual dry-run.
 
 | # | Criterion | Status |
 |---|-----------|--------|
@@ -42,7 +44,7 @@ when to bring them back.
 | 3 | WS-C complete (multi-agency users + Topbar agency switcher) | ✅ |
 | 4 | WS-D R024 (SMTP) live with real provider | ✅ (driver shipped; Postmark dep injection at boot is operator step) |
 | 5 | WS-D R025 (Stripe basic) shipped | ✅ |
-| 6 | WS-D R026 (GA4 read-only) | 🟡 in flight (T2 mid-R026) |
+| 6 | WS-D R026 (GA4 read-only) | ✅ shipped @ ch#149 |
 | 7 | WS-E complete (Postgres + nonces + secrets + observability) | ✅ |
 | 8 | WS-F (Felicia portal viewable + end-customer flow) | 🔴 not started — needs T5 reactivation |
 | 9 | Founder password ≠ "123" + deploy runbook current + smoke 200 across surfaces + Ed dry-run | 🟡 founder-pw ✅ · runbook env-table ✅ · full runbook rewrite pending T6 · operator dry-run pending |
