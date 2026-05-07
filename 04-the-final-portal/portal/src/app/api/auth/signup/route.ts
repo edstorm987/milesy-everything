@@ -116,6 +116,7 @@ export async function POST(req: NextRequest) {
   // Auto-login (Goal B).
   const sessionToken = issueSession({
     userId: user.id, email: user.email, role: user.role, agencyId: user.agencyId,
+    sessionRev: user.sessionRev ?? 0,
   });
   const cookie = sessionCookie(sessionToken);
   const isDev = process.env.NODE_ENV !== "production";

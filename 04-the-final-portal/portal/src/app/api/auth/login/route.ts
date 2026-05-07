@@ -10,7 +10,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ensureHydrated } from "@/server/storage";
 import { issueSession, sessionCookie } from "@/lib/server/auth";
-import { clientIpFromHeaders, rateLimit } from "@/lib/server/rateLimit";
+import { clientIpFromHeaders, rateLimit, isLoginLocked, recordLoginFailure, recordLoginSuccess } from "@/lib/server/rateLimit";
 import { listAgencies, getAgency } from "@/server/tenants";
 import { bootstrapAgency } from "@/server/agencyBootstrap";
 import { createUser, listUsersForAgency, verifyPassword } from "@/server/users";
@@ -49,6 +49,15 @@ export async function POST(req: NextRequest) {
     : undefined;
   if (!email || !password) {
     return NextResponse.json({ ok: false, error: "Email and password are required." }, { status: 400 });
+  }
+
+  // R021: per-{ip,email} lockout. 10 failures within 5min → 5min lockout.
+  const lock = isLoginLocked({ ip, email });
+  if (lock.locked) {
+    return NextResponse.json(
+      { ok: false, error: "Too many failed attempts. Account temporarily locked." },
+      { status: 429, headers: { "retry-after": String(lock.retryAfterSec) } },
+    );
   }
 
   const agencies = listAgencies();
@@ -112,8 +121,10 @@ export async function POST(req: NextRequest) {
     user = verifyPassword(email, password);
   }
   if (!user) {
+    recordLoginFailure({ ip, email });
     return NextResponse.json({ ok: false, error: "Email or password is incorrect." }, { status: 401 });
   }
+  recordLoginSuccess({ ip, email });
 
   // Defense-in-depth: refuse if the user's referenced agency was deleted.
   if (!getAgency(user.agencyId)) {
@@ -135,6 +146,7 @@ export async function POST(req: NextRequest) {
     role: user.role,
     agencyId: user.agencyId,
     clientId: user.clientId,
+    sessionRev: user.sessionRev ?? 0,
   });
   const cookie = sessionCookie(token);
   logActivity({
