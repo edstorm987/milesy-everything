@@ -143,6 +143,14 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       legacy `_marketing/for-*.html` deleted; mega-menu sync rule
       (chapter #123 gotcha #6) FULLY RETIRED — surface 5 → 1 file
       (SiteShell only).
+- [x] HC React rewrite + portal tracking. **DONE T4 R008 —
+      chapter #152.** `src/lib/healthCheck/{types,defaultPack}.ts`
+      + `src/app/health-check/{page,_HCQuiz,_HCResults}.tsx` +
+      `public/_marketing/health-check.css`. Iframe retired; stacked-
+      scrollbar bug gone; HC completion POSTs `/api/portal/public-
+      funnel/hc-complete` (T2 R021) → lead → activity → founder
+      dashboard tile. `skipIf` lifted to a serialisable DSL so future
+      agency packs (Phase 12 R3) plug in unchanged.
 
 ### Blocked
 
