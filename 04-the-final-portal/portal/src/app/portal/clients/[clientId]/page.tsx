@@ -24,6 +24,7 @@ import { ToolsPicker, type PickerPlugin } from "./_ToolsPicker";
 import { BuildPortalWizard, type WizardPlugin } from "./_BuildPortalWizard";
 import { ClientSopsTab } from "./_ClientSopsTab";
 import { assertSopsAccess, familiesForStage, SopsAccessError } from "@/lib/server/sopsAccess";
+import { RequirePermission } from "@/lib/server/RequirePermission";
 import { OnboardingDashboardPanel, type OnboardingPhase } from "./_OnboardingDashboardPanel";
 import {
   AQUA_PHASE_ORDER,
@@ -353,6 +354,7 @@ export default async function ClientHome({
       )}
 
       {tab === "finance" && (
+        <RequirePermission session={session} requires={["finance.view"]}>
         <section className="rounded-xl border border-black/10 bg-white p-6">
           <h2 className="text-lg font-medium text-black/90">Finance</h2>
           <p className="mt-1 text-sm text-black/60">
@@ -364,6 +366,7 @@ export default async function ClientHome({
             </Link>
           </div>
         </section>
+        </RequirePermission>
       )}
 
       {tab === "assets" && (
@@ -403,6 +406,7 @@ export default async function ClientHome({
       })()}
 
       {tab === "tools" && (
+        <RequirePermission session={session} requires={["plugins.install"]}>
         <section className="flex flex-col gap-4">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
@@ -432,6 +436,7 @@ export default async function ClientHome({
             })}
           />
         </section>
+        </RequirePermission>
       )}
     </div>
   );

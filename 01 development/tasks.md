@@ -9,6 +9,27 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 007 — Effective-role resolver in chrome** — DONE.
+      Goal A: NEW `lib/server/effectiveRole.ts` — `effectiveRole(session)`
+      maps session.role enum → agency-hr DEFAULT_ROLES seed
+      (agency-owner→Founder · agency-manager→Admin ·
+      agency-staff→Designer · client-*/end-customer→[]);
+      `hasAllPermissions` Founder bypass + empty-requires=no-gate.
+      Goal B: `NavItem.requires?: string[]` added; `BuildSidebarInput`
+      gains permissions+isFounder; `buildSidebar` filters by
+      requires-intersection; agency + per-client layouts pass through.
+      Goal C: NEW `<RequirePermission>` server component with inline
+      403 panel; per-client Tools tab gated on `plugins.install`,
+      Finance tab on `finance.view`. Other migrations (agency-finance
+      / agency-hr roles / fulfillment phase-advance) one-line follow-on
+      pending foundation page-mount adapter — documented in chapter.
+      Q-ASSUMED: default-role mapping over customRoleId DB lookup
+      (foundation has no plugin-storage resolver — R+1); relative-path
+      import of agency-hr internals since node_modules snapshot
+      pre-dates R7 exports. Goal D: smoke `§ Effective role` (3 checks
+      — Founder POV sees Tools + Finance content w/o 403 panel).
+      Chapter `04-effective-role-resolver.md`; MASTER row #82; tsc
+      clean. HARD BOUNDARY honoured.
 - [x] **T1 006 — Onboarding Dashboard** — DONE.
       Goal A: NEW `_OnboardingDashboardPanel.tsx` client component
       on per-client Overview tab (above 2-col grid) — six-chip

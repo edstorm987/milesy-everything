@@ -226,6 +226,19 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Effective role");
+  // Smoke runs as agency-owner via /demo bootstrap → Founder POV.
+  // Agency home renders for Founder; Tools + Finance tabs allowed.
+  if (clientId) {
+    const finance = await go("GET", `/portal/clients/${clientId}?tab=finance`);
+    record("founder finance tab 200", finance.status === 200);
+    const fbody = finance.status === 200 ? await finance.text() : "";
+    record("founder sees finance content (no 403 panel)", !fbody.includes("Permission denied"));
+    const tools = await go("GET", `/portal/clients/${clientId}?tab=tools`);
+    const tbody = tools.status === 200 ? await tools.text() : "";
+    record("founder sees tools content", !tbody.includes("Permission denied"));
+  }
+
   console.log("\n§ Onboarding dashboard");
   // Aqua-stage client → overview shows the dashboard panel.
   const aquaClient = await go("POST", "/api/portal/fulfillment/clients", {

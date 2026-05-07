@@ -309,6 +309,10 @@ export interface NavItem {
   // accepted as a synonym for back-compat.
   visibleToRoles?: Role[];
   roles?: Role[];
+  // Permission keys (T1 R7) — when present, the chrome additionally
+  // intersects against the user's effective-role permission grid.
+  // Founder bypasses regardless. Empty/omitted = no gate.
+  requires?: string[];
 }
 
 // ─── Admin pages ──────────────────────────────────────────────────────────

@@ -59,6 +59,12 @@ export interface BuildSidebarInput {
   scope: "agency" | "client" | "customer";
   currentClient?: Client;
   installedPlugins: PluginInstall[];
+  // Effective-role permission grid (T1 R7). When provided, the
+  // sidebar additionally filters items declaring `requires:
+  // PermissionKey[]` against this set. `isFounder: true` short-
+  // circuits the filter so Founders never get gated.
+  permissions?: readonly string[];
+  isFounder?: boolean;
 }
 
 // Default top-of-list nav items contributed by the foundation, role-aware.
@@ -102,6 +108,12 @@ export function buildSidebar(input: BuildSidebarInput): NavPanel[] {
       // `roles` (T1 R1 alias).
       const allowedRoles = navItemAllowedRoles(navItem);
       if (allowedRoles && !allowedRoles.includes(input.role)) continue;
+      // Permission gate (T1 R7) — Founder bypass; otherwise require
+      // every declared permission to be present in the effective grid.
+      if (navItem.requires && navItem.requires.length > 0 && !input.isFounder) {
+        const grid = new Set(input.permissions ?? []);
+        if (!navItem.requires.every(p => grid.has(p))) continue;
+      }
       // Scope gate — items targeting agency paths only render in agency
       // scope; items targeting `/portal/clients/[clientId]` only render
       // in client scope; the customer scope is panelId-driven (a plugin

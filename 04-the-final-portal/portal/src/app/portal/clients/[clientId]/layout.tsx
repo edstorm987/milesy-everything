@@ -13,6 +13,7 @@ import { ALL_ROLES } from "@/server/types";
 import { getClientForAgency } from "@/server/tenants";
 import { listInstalledFor } from "@/server/pluginInstalls";
 import { buildSidebar } from "@/lib/chrome/sidebarLayout";
+import { effectiveRole } from "@/lib/server/effectiveRole";
 import { ThemeInjector } from "@/components/chrome/ThemeInjector";
 import { Sidebar } from "@/components/chrome/Sidebar";
 import { Topbar } from "@/components/chrome/Topbar";
@@ -41,11 +42,14 @@ export default async function ClientLayout({
   if (!client) notFound();
 
   const installs = listInstalledFor({ agencyId: client.agencyId, clientId: client.id });
+  const eff = effectiveRole(session);
   const panels = buildSidebar({
     role: session.role,
     scope: "client",
     currentClient: client,
     installedPlugins: installs,
+    permissions: eff.permissions,
+    isFounder: eff.isFounder,
   });
 
   const h = await headers();

@@ -10,6 +10,7 @@ import { AGENCY_ROLES } from "@/server/types";
 import { getAgency } from "@/server/tenants";
 import { listInstalledFor } from "@/server/pluginInstalls";
 import { buildSidebar } from "@/lib/chrome/sidebarLayout";
+import { effectiveRole } from "@/lib/server/effectiveRole";
 import { ThemeInjector } from "@/components/chrome/ThemeInjector";
 import { Sidebar } from "@/components/chrome/Sidebar";
 import { Topbar } from "@/components/chrome/Topbar";
@@ -30,10 +31,13 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
   if (!agency) redirect("/login");
 
   const installs = listInstalledFor({ agencyId: agency.id });
+  const eff = effectiveRole(session);
   const panels = buildSidebar({
     role: session.role,
     scope: "agency",
     installedPlugins: installs,
+    permissions: eff.permissions,
+    isFounder: eff.isFounder,
   });
 
   // Best-effort current path for "active" highlighting. Falls back to ""

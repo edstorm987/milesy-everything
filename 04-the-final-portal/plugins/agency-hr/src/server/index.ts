@@ -6,6 +6,8 @@ export { StaffService } from "./staff";
 export { DepartmentService, DEFAULT_DEPARTMENTS } from "./departments";
 export { LeaveService } from "./leave";
 export { RoleService, DEFAULT_ROLES, roleHasPermission, permissionGuard } from "./roles";
+export { ALL_PERMISSION_KEYS } from "../lib/domain";
+export type { PermissionKey, CustomRole } from "../lib/domain";
 
 export type {
   ActivityLogPort,
