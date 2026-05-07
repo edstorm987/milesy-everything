@@ -31,6 +31,13 @@
         '--inc-pack-deep':   '#2c4a36'
       },
       emojis: { card: ['🌿','🌱','🌸','💧','🍃','🪴'] }
+    },
+    /* R030 — 2 curated suggestions + 2 "Curate your own" placeholders. */
+    videos: {
+      'epic-intro':    { url: null, title: 'From product to ritual', description: 'Why skincare wins on ritual, not on ingredients alone.', suggestion: 'Search YouTube: "Tata Harper founder story" / "Drunk Elephant Tiffany Masterson"' },
+      'blueprint':     { url: null, title: 'Curate your own', description: 'No suggestion yet — pick a 12-minute brand-building talk that frames your blueprint.', suggestion: 'Operator: search for a Shopify Masters / Glossy Beauty episode you trust' },
+      'diagnostics':   { url: null, title: 'Reading your skincare brand HC honestly', description: 'How to interpret discovery + repeat-purchase scores without flattering yourself.', suggestion: 'Search YouTube: "Bonnie Bahl beauty brand teardown" / "Indie Beauty Media Group founder talks"' },
+      'brand-builder': { url: null, title: 'Curate your own', description: 'No suggestion yet — pick a packaging-or-positioning talk that fits your phase.', suggestion: 'Operator: search Pottery, design + brand talks; Marty Neumeier or April Dunford work too' }
     }
   };
 })();

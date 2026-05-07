@@ -31,6 +31,13 @@
         '--inc-pack-deep':   '#5a2a14'
       },
       emojis: { card: ['💪','🔥','🏃','🎟','🔁','🏋'] }
+    },
+    /* R030 — 2 curated suggestions + 2 "Curate your own" placeholders. */
+    videos: {
+      'epic-intro':    { url: null, title: 'From sessions to a practice', description: 'The mindset shift from selling hours to building a programme.', suggestion: 'Search YouTube: "Pat Rigsby fitness business" / "Mark Fisher Fitness culture talks"' },
+      'blueprint':     { url: null, title: 'Curate your own', description: 'No suggestion yet — pick a programme-architecture talk for studio owners.', suggestion: 'Operator: try Peloton/Equinox founder talks or NSCA business sessions' },
+      'diagnostics':   { url: null, title: 'Reading your fitness HC', description: 'Where studios over-rate trial conversion and under-rate week-2 retention.', suggestion: 'Search YouTube: "Chris Cooper Two-Brain Business" / "Mike Boyle business of training"' },
+      'brand-builder': { url: null, title: 'Curate your own', description: 'No suggestion yet — pick a fitness-brand storytelling talk.', suggestion: 'Operator: try CorePower / SoulCycle brand talks; or pick from your favourite trainer educators' }
     }
   };
 })();

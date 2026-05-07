@@ -31,6 +31,13 @@
         '--inc-pack-deep':   '#3b2c52'
       },
       emojis: { card: ['🏔','🌅','✍️','🧭','🗝','🌒'] }
+    },
+    /* R030 — 2 curated suggestions + 2 "Curate your own" placeholders. */
+    videos: {
+      'epic-intro':    { url: null, title: 'Niche down without shrinking', description: 'How specificity attracts the right buyer instead of repelling everyone.', suggestion: 'Search YouTube: "April Dunford positioning" / "Ramit Sethi finding your niche"' },
+      'blueprint':     { url: null, title: 'Curate your own', description: 'No suggestion yet — pick a coaching-business or consultancy framework talk.', suggestion: 'Operator: try Alan Weiss "Million Dollar Consulting" / David C Baker talks' },
+      'diagnostics':   { url: null, title: 'Reading your coaching HC', description: 'Where coaches typically over-rate retention and under-rate visibility.', suggestion: 'Search YouTube: "Justin Welsh solopreneur teardown" / "Sahil Bloom positioning"' },
+      'brand-builder': { url: null, title: 'Curate your own', description: 'No suggestion yet — pick a brand-distinctness talk for solo practitioners.', suggestion: 'Operator: try Marie Forleo / Jenna Kutcher brand talks if they fit your voice' }
     }
   };
 })();

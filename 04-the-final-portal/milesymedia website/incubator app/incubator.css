@@ -163,6 +163,40 @@ a:hover { color: var(--inc-gold); }
   text-align: center;
   padding: 24px;
 }
+/* R030 — niche-video curate placeholder card (no URL on file) */
+.inc-video-curate {
+  display: flex;
+  gap: 16px;
+  padding: 22px 24px;
+  background: linear-gradient(180deg, var(--inc-card), var(--inc-card-2));
+  border: 1px dashed var(--inc-gold-soft);
+  border-radius: var(--inc-radius);
+  width: 100%;
+  align-items: flex-start;
+}
+.inc-video-curate-icon { font-size: 32px; line-height: 1; flex: 0 0 auto; }
+.inc-video-curate-body { flex: 1; }
+.inc-video-curate-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+  color: var(--inc-accent);
+  margin-bottom: 4px;
+}
+.inc-video-curate-tip {
+  background: rgba(201,167,106,0.08);
+  border-left: 3px solid var(--inc-gold-soft);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--inc-text);
+  margin: 8px 0 4px;
+}
+.inc-video-meta {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.inc-video-meta strong { color: var(--inc-accent); display: block; }
+
 .inc-video-placeholder strong {
   display: block;
   color: var(--inc-accent);

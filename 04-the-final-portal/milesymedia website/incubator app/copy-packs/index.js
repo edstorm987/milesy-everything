@@ -86,6 +86,40 @@
     renderModules(root.querySelector('[data-niche-modules]'), pack.moduleHighlight);
     renderFaqs(root.querySelector('[data-niche-faqs]'), pack.faqs);
 
+    /* R030 — niche video placeholder. The hosting page declares
+       `<div data-niche-video-slot data-phase="<phase-id>"></div>` and
+       this loader fills it from pack.videos[phase]. When url is null
+       we render a branded placeholder card with title + description +
+       suggestion + "Recommend a video →" mailto CTA. */
+    var videoHost = root.querySelector('[data-niche-video-slot]');
+    if (videoHost && pack.videos) {
+      var phaseId = videoHost.getAttribute('data-phase') || 'epic-intro';
+      var v = pack.videos[phaseId];
+      if (v) {
+        if (v.url) {
+          videoHost.innerHTML =
+            '<iframe src="' + (v.url || '').replace(/[<>"']/g, '') + '" allowfullscreen ' +
+              'style="width:100%;aspect-ratio:16/9;border:0;border-radius:14px"></iframe>' +
+            '<div class="inc-video-meta">' +
+              '<strong>' + (v.title || '') + '</strong>' +
+              '<p class="muted">' + (v.description || '') + '</p>' +
+            '</div>';
+        } else {
+          var subj = encodeURIComponent('Video curation suggestion — ' + (v.title || phaseId));
+          videoHost.innerHTML =
+            '<div class="inc-video-curate">' +
+              '<div class="inc-video-curate-icon">🎬</div>' +
+              '<div class="inc-video-curate-body">' +
+                '<div class="inc-video-curate-title">' + (v.title || 'Coming soon') + '</div>' +
+                '<p class="muted">' + (v.description || '') + '</p>' +
+                (v.suggestion ? '<p class="inc-video-curate-tip"><strong>Tip:</strong> ' + v.suggestion + '</p>' : '') +
+                '<a class="inc-btn" style="margin-top:6px;font-size:13px;padding:8px 14px" href="mailto:hello@milesymedia.co?subject=' + subj + '">Recommend a video →</a>' +
+              '</div>' +
+            '</div>';
+        }
+      }
+    }
+
     // Tag <body> with the active niche so CSS can hook later if needed.
     if (document.body) document.body.setAttribute('data-incubator-niche', getNiche());
 

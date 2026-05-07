@@ -30,6 +30,15 @@
     assets: {
       tokens: {},
       emojis: { card: ['💼','🎯','📞','🛠','📋','🤝'] }
+    },
+    /* R030 — per-niche video curation. URLs intentionally null —
+       operator fills via real curation; suggestion text is the
+       search-prompt that surfaces in the placeholder card. */
+    videos: {
+      'epic-intro':    { url: null, title: 'Why your agency exists', description: 'A 12-min framing video on agency positioning that orients new clients.', suggestion: 'Search YouTube: "Robert Cialdini influence" / "Seth Godin tribes" — pick one short talk' },
+      'blueprint':     { url: null, title: 'The Blueprint method', description: 'Walkthrough of the 2-week foundation pass — fill the bones before you build features.', suggestion: 'Search YouTube: "Verne Harnish Rockefeller Habits" / "Patrick Lencioni one-page strategy"' },
+      'diagnostics':   { url: null, title: 'Honest diagnostics for agency owners', description: 'How to read the Health Check without flattering yourself.', suggestion: 'Search YouTube: "April Dunford positioning" / "Justin Welsh agency teardown"' },
+      'brand-builder': { url: null, title: 'Building a brand at agency scale', description: 'From "service shop" to "practice with a point of view".', suggestion: 'Search YouTube: "Marty Neumeier brand gap" / "Blair Enns positioning"' }
     }
   };
 })();

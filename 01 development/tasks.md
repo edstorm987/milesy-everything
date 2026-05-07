@@ -197,6 +197,27 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R030 — Per-niche Incubator video placeholders** — DONE.
+      NEW `videos:{[phase]:{url, title, description, suggestion}}`
+      field added to all 4 niche packs. Honesty-respecting URL
+      strategy: every entry ships w/ `url:null` + curated suggestion
+      text — operator/Ed fills real URLs from real curation rather
+      than fab links that may not resolve. agency=4 curated
+      suggestions; skincare/coaching/fitness=2 curated + 2 "Curate
+      your own" placeholders. Loader extension in copy-packs/index.js
+      apply() reads pack.videos[phase] from `[data-niche-video-slot]`
+      host's data-phase attr → null url renders branded
+      `.inc-video-curate` placeholder card (dashed gold border + 32px
+      🎬 + Playfair title + gold-tip box w/ suggestion + mailto CTA
+      pre-filled subject); valid url renders 16:9 iframe + meta.
+      4 honest fallback paths preserve no-broken-behaviour. Phase-1
+      existing inc-video gained attr; phases 2/3/4 got NEW slot
+      blocks via Python loop. CSS `.inc-video-curate*` +
+      `.inc-video-meta` (~30L). Smoke: 4 phase pages 200; full
+      placeholder + iframe-when-url-set flow verified. **Operator
+      task R+1**: curate real public Vimeo/YouTube URLs into the
+      pack files (or via R+1 `bos.brand.videoOverrides`). NEW
+      chapter `04-incubator-video-placeholders.md` + MASTER #106.
 - [x] **T4 R029 — Aqua AI conversation memory across sessions** — DONE.
       R007's per-tab `aqua.ai.session.incubator` history promoted to
       per-business persistent NEW `bos.aiHistory[]` (cap 40 entries =
