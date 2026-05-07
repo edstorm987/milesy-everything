@@ -23,6 +23,7 @@
     "smoke:post-login-redirect": "tsx --test scripts/smoke-post-login-redirect.test.ts",
     "smoke:lead-role": "tsx --test scripts/smoke-lead-role.test.ts",
     "smoke:founder-seed": "tsx --test scripts/smoke-founder-seed.test.ts",
+    "smoke:multi-agency-users": "tsx --test scripts/smoke-multi-agency-users.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

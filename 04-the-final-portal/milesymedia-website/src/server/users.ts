@@ -131,12 +131,16 @@ export function createUser(input: CreateUserInput): ServerUser {
   if (!agencyId) {
     throw new Error(`createUser: agencyId required for role "${input.role}"`);
   }
+  // R025: write both shapes. Lead = empty agencyIds (global tenant);
+  // every other role gets a single-element list mirroring agencyId.
+  const agencyIds = input.role === "lead" ? [] : [agencyId];
   const user: ServerUser = {
     id: makeId(),
     email,
     name: input.name ?? email.split("@")[0],
     passwordHash: hashPassword(input.password),
     role: input.role,
+    agencyIds,
     agencyId,
     clientId: input.clientId,
     mustChangePassword: input.mustChangePassword,

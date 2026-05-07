@@ -139,6 +139,12 @@ export async function ensureHydrated(): Promise<void> {
       try {
         const raw = await backend.loadBlob();
         cache = raw ? parseBlob(raw) : empty();
+        // R025: migrate legacy single-agency user rows in place. Pure +
+        // idempotent — re-running on already-migrated rows is a no-op.
+        // Lazy-import to avoid pulling the migration helper into every
+        // storage consumer's bundle.
+        const { migrateUsersSchema } = await import("./userSchemaMigration");
+        migrateUsersSchema(cache.users);
       } catch (e) {
         if (process.env.NODE_ENV !== "test") {
           console.warn(

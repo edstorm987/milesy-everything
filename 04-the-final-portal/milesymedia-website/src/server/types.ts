@@ -192,7 +192,18 @@ export interface SessionPayload {
   userId: string;
   email: string;
   role: Role;
+  // R025: legacy field kept for back-compat (mirrors `activeAgencyId`).
+  // 56+ callsites read `session.agencyId`; rather than refactor every
+  // one, we mirror the active agency here.
   agencyId: string;
+  // R025: full membership list. Master users (chapter #123) carry
+  // multiple entries; the Topbar agency switcher (R026) flips
+  // `activeAgencyId` between them.
+  agencyIds?: string[];
+  // R025: which agency the session is currently scoped to. Reads
+  // default to this when scoping. `activeAgencyId === agencyId`
+  // unless the user explicitly switched in the Topbar.
+  activeAgencyId?: string;
   clientId?: string;
   // Sandboxed demo session. Set when the cookie was issued by `/demo`
   // (not by `/api/auth/login`). Surfaces a banner + POV toggle in the

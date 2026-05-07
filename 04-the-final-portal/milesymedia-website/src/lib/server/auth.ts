@@ -43,6 +43,12 @@ interface IssueSessionInput {
   email: string;
   role: Role;
   agencyId: string;
+  // R025: full membership list (defaults to `[agencyId]`). Master users
+  // (chapter #123) carry multiple entries.
+  agencyIds?: string[];
+  // R025: which agency the session is currently scoped to
+  // (defaults to `agencyId`).
+  activeAgencyId?: string;
   clientId?: string;
   // Mark the session as a sandboxed demo. The chrome layer reads this to
   // render the demo banner + POV toggle; the seed/reset endpoints use it
@@ -56,11 +62,20 @@ interface IssueSessionInput {
 
 export function issueSession(input: IssueSessionInput): string {
   const now = Math.floor(Date.now() / 1000);
+  // R025: derive multi-agency fields. activeAgencyId defaults to the
+  // legacy agencyId; agencyIds defaults to `[agencyId]` (or [] for
+  // leads carrying the global sentinel).
+  const agencyIds = input.agencyIds && input.agencyIds.length > 0
+    ? input.agencyIds
+    : input.role === "lead" ? [] : [input.agencyId];
+  const activeAgencyId = input.activeAgencyId ?? input.agencyId;
   const payload: SessionPayload = {
     userId: input.userId,
     email: input.email.trim().toLowerCase(),
     role: input.role,
-    agencyId: input.agencyId,
+    agencyId: activeAgencyId,
+    agencyIds,
+    activeAgencyId,
     clientId: input.clientId,
     isDemo: input.isDemo === true ? true : undefined,
     sessionRev: input.sessionRev ?? 0,
@@ -204,6 +219,41 @@ export function sessionCookie(token: string) {
       maxAge: COOKIE_MAX_AGE,
     },
   };
+}
+
+// ─── R025 multi-agency helpers ────────────────────────────────────────────
+
+// Membership list for the session. Falls back to `[agencyId]` when the
+// session predates R025 (legacy cookies stay valid until rotation).
+export function getSessionAgencyIds(session: SessionPayload): string[] {
+  if (session.agencyIds && session.agencyIds.length > 0) return session.agencyIds;
+  if (session.agencyId) return [session.agencyId];
+  return [];
+}
+
+// The agency this session is currently viewing. Defaults to legacy
+// `agencyId` for back-compat; the Topbar agency switcher (R026) will
+// flip `activeAgencyId` between membership entries.
+export function getActiveAgencyId(session: SessionPayload): string {
+  return session.activeAgencyId ?? session.agencyId;
+}
+
+// Convenience for "all my agencies" UI surfaces. Today returns
+// membership; reserved for the R026 switcher to expand once
+// activeAgencyId can differ from agencyIds[0].
+export function getActiveAgencyIds(session: SessionPayload): string[] {
+  return getSessionAgencyIds(session);
+}
+
+// Tenant scope check. Master users (multi-agency) pass for ANY of
+// their agencies; legacy single-agency users only pass for the one
+// they own. Throws AuthError(403) when the requested agencyId is
+// outside the session's membership.
+export function assertTenantScope(session: SessionPayload, agencyId: string): void {
+  const ids = getSessionAgencyIds(session);
+  if (!ids.includes(agencyId)) {
+    throw new AuthError(403, "tenant_scope_mismatch");
+  }
 }
 
 export function clearSessionCookie() {
