@@ -452,6 +452,37 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       plugins on Felicia. Smoke green: 14 pages 200 + multi-plugin API
       dispatch. See `context/prior research/04-foundation-round3.md`.
 
+## Done — SOPs (T2)
+- [x] **T2 R002 — `@aqua/plugin-sops`** — DONE.
+      Lightweight SOP shelf for Aqua HQ's `SOPs, Docs & Templates`
+      sidebar slot (chapter #59 §2 + §9c). `scopePolicy: "agency"`,
+      `core: false`, no required deps. Domain: `Sop {id, agencyId,
+      title, slug, body (markdown), tags: TagFamily[], status:
+      draft|published|archived, createdAt/By, updatedAt/By}`. Five tag
+      families per chapter §9c — sales / service / leads / standards /
+      mastery. SopService: list (tag/status/case-insensitive title-query
+      filters) + get + getBySlug + create (slug uniqueness w/ `-2`/`-3`
+      suffix, invalid + duplicate tags filtered) + update (partial,
+      emits `sops.sop.published` when status flips) + setStatus +
+      archive + restore + tagCounts (non-archived) + seedDefaults
+      (idempotent — only seeds empty index, 9 chapter §9c titles).
+      Tiny zero-dep markdown renderer (heading / fenced code / list /
+      inline code / bold / italic). 8 API routes at `/api/portal/sops/`
+      (list / get / tags / create / update / archive / restore / seed).
+      3 admin pages: SopListPage (left filter pane w/ 5 tag-family
+      counts + status presets + search + `+ New SOP` CTA; right list)
+      + SopDetailPage (split-view textarea + rendered preview) +
+      SopReadPage (read-only). `onInstall` seeds defaults when answer
+      truthy. Smoke 13/13 pass via tsx --test; tsc clean. Chapter
+      `04-plugin-sops.md` + MASTER row #63. Foundation pending: 5-step
+      registration (workspace dep + transpilePackages + side-effect
+      import + `_registry.ts` + ActivityCategory `+= "sops"`).
+      Cross-team: T1 sidebar `/portal/agency/sops` placeholder maps
+      live once registered; Employee HQ later swaps `visibleToRoles`
+      for `requires: ["sops.view"]` / `requires:
+      ["sops.tag.<family>"]`. HARD BOUNDARY honoured — zero touches to
+      milesymedia website/ or business-os/.
+
 ## Done — Kanban (T2)
 - [x] **T2 — Kanban R2 — Aqua-real templates + founder-todos** — DONE.
       Swapped placeholder template columns for Ed's actual Aqua
