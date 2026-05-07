@@ -10,7 +10,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SiteShell } from "@/components/SiteShell";
-import { seedFounder, FOUNDER_EMAIL } from "@/lib/server/founderSeed";
+import { seedFounder, seedFounderForDevBypass, FOUNDER_EMAIL } from "@/lib/server/founderSeed";
 import {
   seedDemoAgency,
   DEMO_OWNER_EMAIL,
@@ -43,7 +43,15 @@ async function signInAs(persona: Persona) {
   let isDemo = false;
 
   if (persona === "founder") {
-    await seedFounder();
+    // Use the dev-bypass seed (hardcoded dev password, no env req).
+    // Regular `seedFounder()` skips when FOUNDER_PASSWORD is unset
+    // (R024 fail-closed policy in dev = warn+skip), which used to
+    // throw "POV user not seeded" downstream. seedFounderForDevBypass
+    // hard-throws in production, so this stays dev-only.
+    await seedFounderForDevBypass();
+    // Fallback: also try the env-driven seed (idempotent) so an
+    // operator who DID set FOUNDER_PASSWORD doesn't double-seed.
+    await seedFounder().catch(() => {});
     email = FOUNDER_EMAIL;
   } else {
     await seedDemoAgency("dev-pov");

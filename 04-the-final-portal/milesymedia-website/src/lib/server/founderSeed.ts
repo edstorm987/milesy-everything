@@ -69,6 +69,51 @@ export function seedFounder(): Promise<void> {
   return seedPromise;
 }
 
+// Dev-bypass-only seed for /dev/pov "Founder Ed" persona. The
+// regular `seedFounder()` skips when `FOUNDER_PASSWORD` env is unset
+// (R024 fail-closed policy), but the dev-bypass surface exists to
+// let Ed sign in without setting env. So this helper creates the
+// founder user with a hardcoded dev password — file-backed storage
+// IS the dev DB. **Production guard**: hard-throws when
+// `NODE_ENV === "production"` to prevent accidental use; the regular
+// seedFounder is the prod path. Idempotent on email lookup.
+const DEV_FOUNDER_PASSWORD = "dev-founder-2026";
+let devSeedPromise: Promise<void> | null = null;
+
+export function seedFounderForDevBypass(): Promise<void> {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "[founderSeed] seedFounderForDevBypass is dev-only — use FOUNDER_PASSWORD env in production.",
+    );
+  }
+  if (!devSeedPromise) devSeedPromise = devRun();
+  return devSeedPromise;
+}
+
+async function devRun(): Promise<void> {
+  await ensureHydrated();
+  if (getUser(FOUNDER_EMAIL)) return;
+
+  const agencyName = readFounderAgencyName();
+  let agency = getAgencyBySlug(FOUNDER_AGENCY_SLUG);
+  if (!agency) {
+    const result = await bootstrapAgency({
+      name: agencyName,
+      slug: FOUNDER_AGENCY_SLUG,
+      ownerEmail: FOUNDER_EMAIL,
+    });
+    agency = result.agency;
+  }
+
+  createUser({
+    email: FOUNDER_EMAIL,
+    password: DEV_FOUNDER_PASSWORD,
+    role: "agency-owner",
+    agencyId: agency.id,
+    name: FOUNDER_NAME,
+  });
+}
+
 async function run(): Promise<void> {
   await ensureHydrated();
 
