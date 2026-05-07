@@ -78,3 +78,48 @@ don't reach across.
   queue mode.
 
 Begin now: do steps 1-6 above, then wait for Ed.
+
+---
+
+## Sprint 1 polish backlog (chapter #124 + chapter #123 carry-forwards)
+
+When Ed asks "what's next" or hands you free time, work this list top-
+down. Don't start any item without confirming with Ed first; some are
+small, some are larger.
+
+1. **Niche pages mega-menu mirror.** `for-skincare.html`,
+   `for-coaching.html`, `for-fitness.html`, `for-agencies.html` still
+   render the OLD static nav. Inject the same Resources mega-menu
+   that `/_marketing/index.html` got in unify-fix-7. Or, better,
+   convert all four to JSX routes using `<SiteShell>` (same as
+   `/login` already does).
+2. **`app/page.tsx` orphan resolution.** It's currently shadowed by
+   the `/` rewrite to `/_marketing/index.html`. Decide WITH ED:
+   convert marketing home to JSX (delete the rewrite), OR delete
+   `app/page.tsx` and accept the static-only home.
+3. **Resource sub-page real implementations.** Today
+   `/resources/[slug]` renders 7 stub pages. Pick 3 to do this sprint
+   — start with `seo-audit`, `site-speed`, `accessibility-audit`
+   (highest-traffic likely). Each is a self-contained tool that
+   should hit the public-funnel plugin (T2 R023, Sprint 2) when
+   that lands.
+4. **Copy polish.** Anything Ed flags as "needs rewording" across
+   marketing, login, signup, demo chooser, dev/POV. Small word edits;
+   ship as you go.
+5. **AquaOasis demo brand pack.** When T1 R026 ships the agency
+   switcher (Sprint 2), seed an "AquaOasis demo" agency with its own
+   brand kit (cool teal, therapist niche). Ed-as-master will flip
+   between MM and AquaOasis from the Topbar.
+6. **iframe→React rewrites.** Optional, post-Sprint-2: rebuild HC
+   and Incubator as proper React components sharing brand-kit tokens
+   directly. Today they're iframe-wrapped (chapter #123 §2).
+
+## What you're NOT doing
+
+- **Don't build T1/T2/T3 plugin code.** They have queues; let them
+  ship Sprint 1 rounds without you stepping into their lanes.
+- **Don't touch portal route handlers** (`src/app/api/auth/...`,
+  `src/app/portal/...`) — that's T1's auth/role/multi-agency Sprint 1
+  work.
+- **Don't add new env vars** without a NOTE entry — anything Ed needs
+  to know about for the deploy runbook.

@@ -6,13 +6,16 @@ appending to log files in this folder. The chief commander runs on a
 self-paced `/loop` that wakes periodically, pulls the repo, reads the
 logs, responds, and re-schedules.
 
-Terminal split (current):
-- **T1** — foundation (auth / chrome / plugin runtime / Postgres / stitch)
-- **T2** — plugins (fulfillment / ecommerce / agency-* / memberships / affiliates / forms / email-sender / portal-export / ...)
-- **T3** — website-editor (blocks / editor admin / cross-plugin renderers)
-- **T4** — UX + accessibility polish across all admin pages + storefront (added 2026-05-05)
-- **T5** — first real per-client portal (Felicia / Luv & Ker) at `clients/luv-and-ker/` (added 2026-05-05)
-- **T6** — production deployment + custom domains + observability (added 2026-05-05)
+Terminal split (current — refreshed 2026-05-07 for Ship Plan v1):
+- **T1** — foundation (auth / chrome / plugin runtime / DB / scope helpers). Sprint 1 owner of WS-A (auth completion) + WS-C (multi-agency core).
+- **T2** — plugins (every new plugin lands here — agency-* / client-* / public-funnel / etc). Sprint 1 owner of WS-B (public funnel).
+- **T3** — website-editor (blocks / editor admin / cross-plugin renderers).
+- **T4** — Milesy Media ecosystem + currently in **manual mode** with Ed driving website polish + unification follow-ups (chapter #123 carry-forwards). NOT autonomous.
+- **T5** — first real per-client portal (Felicia / Luv & Ker) at `clients/luv-and-ker/`. **Reactivates Sprint 3** for WS-F.
+- **T6** — production deployment + custom domains + observability. **Reactivates Sprint 3** for production preview.
+
+Read **chapter #124 `04-ship-plan-v1.md`** for the full plan; this
+file is just the protocol.
 
 ## Layout
 

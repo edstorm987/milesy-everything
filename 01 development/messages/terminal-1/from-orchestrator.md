@@ -97,3 +97,37 @@ What to do on next wake:
 Especially T1: this affects you most — R022 multi-tenant-isolation lives in portal/ and would collide. T2 + T3 are plugins/-only and technically safer, but plugin imports may briefly break during T4's tsconfig path update — same hold applies.
 
 Commander will post RESUME when the move is verified green on :3030 and Ed lifts the freeze.
+
+[2026-05-07T13:30:00Z] RESUME — Ship Plan v1 active. HOLD lifted.
+Unification (chapters #122 + #123) is shipped. Portal Next.js project
+is now at `04-the-final-portal/milesymedia-website/`; the old
+`portal/` folder no longer exists. Plugin imports stay relative —
+plugins/ folder unchanged.
+
+**Read first**: chapter #124 `04-ship-plan-v1.md` (the plan).
+**Read second**: `01 development/tasks.md` (Sprint 1 backlog;
+this is your scope of work for the sprint).
+
+**Your queue is refreshed for Sprint 1.** Your existing rounds either
+align with the ship plan or were archived. Lowest-numbered queue file
+is your active round.
+
+T1's Sprint 1 rounds:
+- R022 role-aware redirect (WS-A)
+- R023 lead role + permission grid (WS-A)
+- R024 founder password rotation (WS-A) — must remove the "123" hardcode
+- R025 multi-agency users / agencyIds[] (WS-C R1)
+
+**Ordering matters**: T2 R021 + R022 depend on T1 R023 (`lead` role).
+If you reach R021 before T1 R023 is DONE, log Q-BLOCKED + skip ahead
+to your next ship-plan-aligned round if any, or sleep on your normal
+cadence until R023 lands.
+
+**Honour the hands-off on the website**: `milesymedia-website/public/`
+contents (HC/BOS/Incubator/_marketing) remain T4's territory. Never
+touch `public/_marketing/` or any `public/<app>/` static folder.
+Foundation/portal source under `milesymedia-website/src/` is T1's;
+plugin source under `plugins/` is T2's; website-editor under
+`plugins/website-editor/` is T3's. Those have NOT changed.
+
+Carry on at normal cadence.

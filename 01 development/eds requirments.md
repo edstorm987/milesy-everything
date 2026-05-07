@@ -169,3 +169,39 @@ Bespoke client tools build on top of this scaffolding later.
 
 — synthesised by Claude on 2026-05-07 with Ed's explicit override of
 the "commander must not edit eds requirments.md" rule. Ed: amend freely.
+
+---
+
+## Ship Plan v1 — locked 2026-05-07
+
+The full plan lives in chapter **#124 `04-ship-plan-v1.md`** (the
+single source of truth for what ships when). Highlights for Ed's
+recall, in 60 seconds:
+
+**What "shipped" means:** Ed signs in as founder (real password) →
+creates Felicia → Felicia signs in to her custom-branded portal →
+Felicia's customer signs in via embedded login → a milesymedia.com
+visitor hits HC → completes → auto-signed-in as `lead` → lands in
+BOS. All on a hardened production deploy.
+
+**Six workstreams, three sprints:**
+
+| WS | What | Owner | Sprint |
+|----|------|-------|--------|
+| A | Auth completion (role-aware redirect, `lead` role, founder password rotation) | T1 | 1 |
+| B | Public funnel (HC→lead plugin, BOS auth gate, rank-my-website tool) | T2 | 1–2 |
+| C | Multi-agency core (`agencyIds[]`, Topbar agency switcher) | T1 | 1–2 |
+| D | Real-data wiring v1 (SMTP, basic Stripe, GA4 read-only) | T2 | 2–3 |
+| E | Production hardening (Postgres, durable nonces, env secrets, Sentry) | T1 | 2–3 |
+| F | First real client (Felicia / Luv & Ker portal end-to-end) | T5 | 3 |
+
+**Ship gate:** every workstream complete + founder password ≠ `"123"` +
+deploy runbook current + smoke 200 across every surface on the deploy
+preview + Ed performs a manual operator dry-run and signs off.
+
+**What's NOT in v1:** Phase 12 R3+ (domain-aware marketing satellites),
+real Stripe money flow, Resources tools beyond rank-my-website,
+iframe→React rewrites of HC/Incubator, AI features. All post-ship.
+
+T4 stays manual through all three sprints for UI/copy polish + the
+chapter-#123 carry-forwards. T1/T2/T3 work the autonomous queues.

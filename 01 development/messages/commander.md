@@ -1224,3 +1224,20 @@ PLAN: minimal. SLEEP: 1200s.
 Updated phases.md to add **Phase 12 — multi-agency master/satellite** (chapter §"Multi-agency vision"): MM as master, niche agencies as tenants. 5 gap-rounds queued: multi-agency users → Topbar switcher → domain-aware marketing → per-agency packs → spawner.
 
 Open carry-forward follow-ups (will surface as queue rounds when T1-T3 resume): role-aware post-login redirect, `lead` role + BOS auth, niche pages mega-menu mirror, app/page.tsx orphan resolution, resource sub-page real implementations.
+
+[2026-05-07T13:35:00Z] **SHIP PLAN v1 LANDED — Ed's max-effort directive executed.** Chapter #124 `04-ship-plan-v1.md` (282 lines) is the canonical plan: 6 workstreams · 3 sprints · hard ship gate. Six workstreams = WS-A auth completion (T1) · WS-B public funnel (T2) · WS-C multi-agency core (T1) · WS-D real-data wiring (T2) · WS-E production hardening (T1) · WS-F first real client (T5). Ship gate = WS-A/B/C complete + WS-D SMTP + WS-E hardened + WS-F (Felicia) viewable + founder pw ≠ "123" + deploy runbook current + smoke 200 across all surfaces.
+
+**Doc alignment**: MASTER row #124 added · phases.md restructured to flag sprints as canonical (Phase 9-11 collapsed into post-ship roadmap) · eds requirments.md gets a Ship Plan v1 section · tasks.md RESET to a clean Sprint 1 backlog (3163-line history archived to `old files/tasks-pre-ship-plan-2026-05-07.md`) · messages/README.md refreshed (T4=manual, T5/T6 reactivate Sprint 3) · runbooks/deploy.md flagged STALE post-unification (full rewrite landing in WS-E).
+
+**Sprint 1 rounds staged**:
+- T1 (4 new): R022 role-aware-redirect (WS-A), R023 lead-role (WS-A), R024 founder-password-rotation (WS-A — kills "123"), R025 multi-agency-users (WS-C R1). Pre-ship T1/022-025 (multi-tenant-iso, agency-settings-hub, team-invites, audit-log) archived to `old prompts/pre-ship-T1-*.md` for later restage.
+- T2 (2 new): R021 public-funnel plugin (WS-B R021), R022 bos-auth-gate (WS-B R022). T2's existing 018-020 (onboarding-checklist, client-reports, feedback-loops) keep their slot.
+- T3 (1 new): R039 block-schema-migration. T3's existing 037-038 (structured-data, image-srcset) keep their slot.
+
+**T4 polish backlog appended to T4-manual.md**: niche-pages mega-menu mirror, app/page.tsx orphan, 3 Resource sub-page implementations, copy polish, AquaOasis demo seed (Sprint 2), iframe→React rewrites (post-Sprint-2).
+
+**Dependency**: T2 R021/R022 wait on T1 R023 (lead role); workers know to Q-BLOCKED if they get there first.
+
+**RESUME notices posted** to T1/T2/T3 inboxes — HOLD lifted. They'll boot to the new queue on next wake. Queue depths post: T1=4 · T2=5 · T3=3 · T4=manual.
+
+PLAN: monitor; archive DONEs; coordinate. SLEEP: 1200s (idle until terminals start firing).

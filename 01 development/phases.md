@@ -51,32 +51,41 @@ bookings / integrations / support-desk / website-editor (28 rounds of maturity) 
 ecommerce / memberships / affiliates / forms / sops / kanban / email-sender /
 portal-export — all shipped as plugins per Ed's "every feature is a plugin" rule.
 
-## Phase 8 — Unification (in progress, 2026-05-07)
+## Phase 8 — Unification ✅ (2026-05-07)
 **Single Next.js host at `04-the-final-portal/milesymedia-website/`.**
-Marketing site, HC funnel, BOS, Incubator portal, AND the agency portal +
-auth all live under one project. One cookie domain, one origin. T4
-executes manually with Ed in 5 staged steps (move portal source → drop
-HC/BOS/Incubator into public/ → seed default founder user → wire
-marketing Sign-in CTAs → cleanup + chapter). Step 1 landed
-2026-05-07T12:10Z — `portal/` directory removed, all source under
-`milesymedia-website/`.
+All 5 staged steps shipped + 8 follow-up polish commits (chapters #122
++ #123). SiteShell canonical chrome, persona-chooser pattern across
+/signup /demo /dev/pov, Resources mega-menu + Resource Finder.
+Founder seed wired, single :3030 origin, all surfaces live.
 
-## Phase 9 — Lead role + BOS auth
-Add `role: "lead"` to the role enum. Login routes leads to
-`/business-os/...`. HC completion auto-creates a lead user and signs
-them in. BOS reads user data from foundation storage instead of pure
-localStorage. Unblocks the public funnel on a real auth surface.
+## ▶ SHIP — Sprint 1, 2, 3 (chapter #124 is canonical)
 
-## Phase 10 — Resources nav + tools
-Public tools (rank-my-website, rank-my-xyz, future bespoke ones) live
-under `public/tools/`. Each one captures email → creates lead user →
-drops into BOS. Same pattern as HC. Each tool is a small static app
-that shares the unified-host cookie.
+After Phase 8 unification, planning shifted from open-ended phases to
+**three week-long sprints with a hard ship gate**. Read chapter #124
+`04-ship-plan-v1.md` for the full breakdown — six workstreams
+(WS-A auth completion · WS-B public funnel · WS-C multi-agency core ·
+WS-D real-data wiring · WS-E production hardening · WS-F first real
+client) sequenced across the sprints.
 
-## Phase 11 — Production gate (T6)
-Real API wiring (Stripe, GMB, GA4, Search Console, SMTP), custom
-domains per client, observability, CI/CD. Currently parked. Activates
-after Phases 8–10 settle.
+The phases below survive as **post-ship roadmap** — work that lights
+up after v1 is live and serving Felicia.
+
+## Phase 9+ — Post-ship roadmap
+
+These were originally planned as Phases 9-11 but are now post-ship
+work — listed here for continuity, not active sprint planning.
+
+### Resources nav + tools (was Phase 10)
+Public tools (rank-my-xyz, future bespoke ones) under `public/tools/`
+or via `@aqua/plugin-resource-tools-base`. Same lead-capture pattern
+as HC. WS-B R023 in chapter #124 lands the first one
+(rank-my-website); the rest are post-ship.
+
+### Production hardening — full T6 (was Phase 11)
+Real money flow (Stripe charges + tax + payouts), custom-domain
+provisioning per client (`@aqua/plugin-domains` activated), full
+observability (logs / metrics / alerts), CI/CD pipeline. WS-E in
+chapter #124 lands the v1 hardening; the rest unlocks at scale.
 
 ## Phase 12 — Multi-agency master/satellite (chapter #123)
 Milesy Media as **master**; niche agencies (AquaOasis-web for

@@ -1,5 +1,20 @@
 # Deploy runbook — Aqua portal + per-client portals
 
+> ⚠️ **STALE post-unification (2026-05-07).** This runbook references
+> the deleted `04-the-final-portal/portal/` folder and the obsolete
+> `_milesy/` static-copy step. Refresh during WS-E (chapter #124
+> Sprint 2 / 3) before any production deploy. Current architecture:
+> single Next.js root at `04-the-final-portal/milesymedia-website/`;
+> marketing under `public/_marketing/`; HC + BOS + Incubator under
+> `public/health-check/`, `public/business-os/`, `public/incubator/`.
+> The `prepare-milesy.mjs` copy script no longer exists — Vercel
+> just builds `milesymedia-website/` directly. Per-client portals
+> at `04-the-final-portal/clients/<slug>/` are unchanged. Until this
+> is rewritten, treat the §3-§5 sections as historical reference.
+
+---
+
+
 > Operator-facing runbook for shipping `04-the-final-portal/` to Vercel.
 > Authored by T6 in R2 on top of T6 R1's monorepo wiring (commits
 > `359b476` / `ef2e82f` / `6045568`) and T1 R8's stitch
