@@ -91,7 +91,8 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
 - [x] Niche pages mega-menu mirror — sweep `for-skincare/coaching/
       fitness/agencies` to match `/`'s Resources dropdown (chapter
       #123 carry-forward). **DONE T4 R001 — chapter #136.**
-- [ ] `app/page.tsx` orphan resolution — decide JSX rewrite vs delete.
+- [x] `app/page.tsx` orphan resolution — decide JSX rewrite vs delete.
+      **DONE T4 R003 — Option A (delete) — chapter #140.**
 - [x] Resource sub-page real implementations — replace 3 of 7 stubs
       this sprint (start with `seo-audit`, `site-speed`,
       `accessibility-audit`). **DONE T4 R002 — chapter #137.**
