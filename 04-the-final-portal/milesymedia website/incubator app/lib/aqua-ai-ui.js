@@ -37,12 +37,36 @@
   }
 
   function renderEmpty() {
+    /* R023 — preset prompt library replaces the static starter list
+       when AquaAIPrompts is loaded; falls back to AquaAI.starters
+       when not (back-compat). */
+    if (window.AquaAIPrompts && window.AquaAIPrompts.CATEGORIES) {
+      var cats = window.AquaAIPrompts.CATEGORIES;
+      return '<div class="inc-ai-empty">' +
+        '<p><strong>Hi — I\'m Aqua.</strong> ' + escape(window.AquaAI.disclaimer) + '</p>' +
+        '<p class="inc-ai-empty-lead">Pick a category — or just type your question.</p>' +
+        '<div class="inc-ai-cats" data-ai-cats>' +
+        cats.map(function (c) {
+          return '<button type="button" class="inc-ai-cat" data-ai-cat="' + escape(c.id) + '"><span>' + escape(c.icon) + '</span> ' + escape(c.label) + '</button>';
+        }).join('') +
+        '</div>' +
+        '<div class="inc-ai-cat-prompts" data-ai-cat-prompts hidden></div>' +
+      '</div>';
+    }
     var s = window.AquaAI.starters || [];
     return '<div class="inc-ai-empty">' +
       '<p><strong>Hi — I\'m Aqua.</strong> ' + escape(window.AquaAI.disclaimer) + '</p>' +
       '<div class="inc-ai-starters">' +
       s.map(function (q) { return '<button type="button" class="inc-ai-starter" data-ai-starter="' + escape(q) + '">' + escape(q) + '</button>'; }).join('') +
       '</div></div>';
+  }
+  function renderCategoryPrompts(catId) {
+    var prompts = (window.AquaAIPrompts && window.AquaAIPrompts.byCategory(catId)) || [];
+    if (!prompts.length) return '';
+    return '<p class="inc-ai-cat-head">Pick a question — or type your own:</p>' +
+      prompts.map(function (p) {
+        return '<button type="button" class="inc-ai-starter" data-ai-prompt="' + escape(p.text) + '" data-ai-prompt-kind="' + escape(p.kind) + '" data-ai-prompt-cat="' + escape(catId) + '">' + escape(p.text) + '</button>';
+      }).join('');
   }
 
   function renderHistory(hist) {
@@ -58,6 +82,41 @@
     }).join('');
   }
 
+  /* R023 idle-30s tracker — after each bot reply, schedule a "Try one
+     of these" chip strip injection. Cleared on user input or on each
+     subsequent reply. */
+  var __idleTimer = null;
+  function clearIdleTimer() { if (__idleTimer) { clearTimeout(__idleTimer); __idleTimer = null; } }
+  function pickIdleSuggestions() {
+    var all = (window.AquaAIPrompts && window.AquaAIPrompts.all && window.AquaAIPrompts.all()) || [];
+    if (!all.length) return [];
+    /* Shuffle + take 3. */
+    var pool = all.slice();
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    return pool.slice(0, 3);
+  }
+  function injectIdleChips(panel) {
+    var body = panel.querySelector('[data-ai-body]');
+    if (!body) return;
+    /* Only inject when last entry is a bot reply + no idle chips already there. */
+    var existing = body.querySelector('[data-ai-idle-strip]');
+    if (existing) existing.remove();
+    var picks = pickIdleSuggestions();
+    if (!picks.length) return;
+    var strip = document.createElement('div');
+    strip.setAttribute('data-ai-idle-strip', '');
+    strip.className = 'inc-ai-idle';
+    strip.innerHTML = '<p class="inc-ai-idle-head">Try one of these:</p>' +
+      picks.map(function (p) {
+        return '<button type="button" class="inc-ai-starter" data-ai-idle-prompt="' + escape(p.text) + '" data-ai-prompt-kind="' + escape(p.kind) + '">' + escape(p.text) + '</button>';
+      }).join('');
+    body.appendChild(strip);
+    body.scrollTop = body.scrollHeight;
+  }
+
   function paint(panel) {
     var body = panel.querySelector('[data-ai-body]');
     if (!body) return;
@@ -66,6 +125,7 @@
   }
 
   function ask(panel, message) {
+    clearIdleTimer();
     var hist = readHistory();
     hist.push({ role: 'user', text: message });
     writeHistory(hist);
@@ -76,6 +136,10 @@
       hist2.push({ role: 'bot', text: res.reply, actions: res.suggestedActions });
       writeHistory(hist2);
       paint(panel);
+      /* Arm the idle timer — 30s of no further interaction surfaces a
+         "Try one of these" chip strip below the last bot bubble. */
+      clearIdleTimer();
+      __idleTimer = setTimeout(function () { injectIdleChips(panel); }, 30000);
     }, 350);
   }
 
@@ -120,7 +184,34 @@
 
     panel.addEventListener('click', function (ev) {
       var s = ev.target.closest('[data-ai-starter]');
-      if (s) { ask(panel, s.getAttribute('data-ai-starter')); return; }
+      if (s) {
+        var promptText = s.getAttribute('data-ai-prompt') || s.getAttribute('data-ai-starter');
+        var promptKind = s.getAttribute('data-ai-prompt-kind');
+        var promptCat = s.getAttribute('data-ai-prompt-cat');
+        if (promptKind && window.Activity && typeof window.Activity.log === 'function') {
+          window.Activity.log('prompt.clicked', { kind: promptKind, category: promptCat, text: promptText });
+        }
+        ask(panel, promptText);
+        return;
+      }
+      var cat = ev.target.closest('[data-ai-cat]');
+      if (cat) {
+        ev.preventDefault();
+        var catId = cat.getAttribute('data-ai-cat');
+        var host = panel.querySelector('[data-ai-cat-prompts]');
+        if (!host) return;
+        /* Toggle: click again to collapse. */
+        if (host.getAttribute('data-current-cat') === catId && !host.hidden) {
+          host.hidden = true; host.removeAttribute('data-current-cat');
+          panel.querySelectorAll('[data-ai-cat]').forEach(function (b) { b.classList.remove('is-on'); });
+          return;
+        }
+        host.innerHTML = renderCategoryPrompts(catId);
+        host.setAttribute('data-current-cat', catId);
+        host.hidden = false;
+        panel.querySelectorAll('[data-ai-cat]').forEach(function (b) { b.classList.toggle('is-on', b === cat); });
+        return;
+      }
       var c = ev.target.closest('[data-ai-chip]');
       if (c) {
         var href = c.getAttribute('href');
@@ -129,6 +220,13 @@
           ask(panel, href.slice(4));
         }
         // else default navigation proceeds
+        return;
+      }
+      var idleChip = ev.target.closest('[data-ai-idle-prompt]');
+      if (idleChip) {
+        var t = idleChip.getAttribute('data-ai-idle-prompt');
+        if (window.Activity) window.Activity.log('prompt.clicked', { kind: 'idle.' + (idleChip.getAttribute('data-ai-prompt-kind') || 'suggestion'), text: t });
+        ask(panel, t);
         return;
       }
       var clr = ev.target.closest('[data-ai-clear]');
@@ -143,6 +241,9 @@
       input.value = '';
       ask(panel, v);
     });
+    /* R023 — typing cancels the idle-suggestion timer so we don't
+       interrupt the user mid-message. */
+    panel.querySelector('[data-ai-input]').addEventListener('input', clearIdleTimer);
 
     paint(panel);
   }

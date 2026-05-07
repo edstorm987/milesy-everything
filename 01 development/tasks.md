@@ -159,6 +159,28 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R023 — Aqua AI prompt library (preset prompts)** — DONE.
+      NEW `incubator app/lib/aqua-ai-prompts.js` (~80L) exposes
+      `window.AquaAIPrompts.{CATEGORIES, all, byCategory}` — 28
+      presets across 6 categories (Phase 🏛 · Strategy 🎯 · Lessons
+      📚 · Marketing 📣 · Operations ⚙️ · Stuck 🆘) each w/ `{text,
+      kind}` for analytics. `aqua-ai-ui.js` empty-state rewritten —
+      2-col category-chip grid → click expands category → 5 prompt
+      rows → click prompt asks(); fallback to R007 static-5
+      starters when prompts.js absent. NEW idle-30s tracker: after
+      each bot reply ask() arms `setTimeout(injectIdleChips,30000)`
+      → fires gold-tinted "Try one of these:" strip w/ 3 random
+      prompts (Fisher-Yates shuffle); typing event listener clears
+      timer; ask() re-arms. R013 Activity.log fires `prompt.clicked`
+      w/ `{kind, category, text}` on direct + idle clicks; NEW
+      KINDS entry 💬. CSS `.inc-ai-cats` + `.inc-ai-cat-head` +
+      `.inc-ai-idle` (~40L). 9 Incubator pages patched via Python
+      loop to insert script tag. BOS panel still uses R007 legacy
+      starters (R+1 lift). Smoke: prompts.js/ai-ui.js/incubator
+      all 200; full flow + idle-30s + Activity logging verified.
+      Q-ASSUMED: niche-aware prompts deferred; admin top-5 prompts
+      KPI deferred; mobile 1-col media query R+1. NEW chapter
+      `04-ai-prompt-library.md` + MASTER #99.
 - [x] **T4 R022 — BOS notifications inbox** — DONE.
       NEW `incubator app/lib/notify.js` (~85L) exposes
       `window.Notify.{KINDS, push, list, markRead, markAllRead,

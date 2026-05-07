@@ -22,7 +22,8 @@
     'pro-confirmed-demo':      { icon: '🟢', label: 'Pro confirmed (demo)' },
     'pro.trial-expired':       { icon: '⏳', label: 'Pro trial expired' },
     'event.created':           { icon: '📅', label: 'Calendar event created' },
-    'event.completed':         { icon: '✅', label: 'Calendar event completed' }
+    'event.completed':         { icon: '✅', label: 'Calendar event completed' },
+    'prompt.clicked':          { icon: '💬', label: 'Aqua AI prompt clicked' }
   };
 
   function read() { try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (e) { return []; } }

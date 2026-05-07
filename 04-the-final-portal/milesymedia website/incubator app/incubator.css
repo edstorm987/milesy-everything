@@ -675,6 +675,47 @@ a:hover { color: var(--inc-gold); }
 }
 .inc-ai-starter:hover { border-color: var(--inc-gold-soft); color: var(--inc-accent); }
 
+/* R023 — preset-prompt category chips + drill-down + idle suggestions */
+.inc-ai-empty-lead { color: var(--inc-muted); font-size: 13px; margin: 6px 0 14px; }
+.inc-ai-cats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.inc-ai-cat {
+  background: var(--inc-card-2);
+  color: var(--inc-text);
+  border: 1px solid var(--inc-line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+.inc-ai-cat:hover { border-color: var(--inc-gold-soft); color: var(--inc-accent); }
+.inc-ai-cat.is-on { background: rgba(201,167,106,0.15); border-color: var(--inc-gold); color: var(--inc-accent); }
+.inc-ai-cat span { font-size: 16px; }
+.inc-ai-cat-prompts { display: flex; flex-direction: column; gap: 6px; }
+.inc-ai-cat-head { color: var(--inc-muted); font-size: 12px; margin: 8px 0 4px; }
+.inc-ai-idle {
+  margin-top: 14px;
+  padding: 12px 12px 10px;
+  background: rgba(201,167,106,0.06);
+  border: 1px solid var(--inc-gold-soft);
+  border-radius: 10px;
+  align-self: flex-start;
+  max-width: 95%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.inc-ai-idle-head { color: var(--inc-accent); font-size: 12px; margin: 0 0 4px; }
+
 .inc-ai-msg {
   padding: 10px 12px;
   border-radius: 10px;
