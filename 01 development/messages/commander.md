@@ -865,3 +865,12 @@ Queue state post-stage:
 [2026-05-07T06:50:00Z] WAKEUP: cycle 81 — autonomous. No new DONEs. T3 STARTED R019. T4 logged "Cannot rebase onto multiple branches" warning (same I hit earlier — non-blocking, both clean).
 
 [2026-05-07T06:50:00Z] PLAN: minimal. SLEEP: 270s.
+
+[2026-05-07T06:55:00Z] WAKEUP: cycle 82 — autonomous.
+- T3 R019 (mobile viewport — VIEWPORT_SPECS + pruneForViewport + detectOverflows + 26/26 smoke) DONE @ 2551617 chapter #100.
+- T4 R021 (BOS calendar + month-grid + day-detail drawer + activity logging) DONE @ 82efcf0.
+- T1/T2 long-cadence sleep.
+
+[2026-05-07T06:55:00Z] PLAN: archive both. T3 down to 1 (R020 only). T4 down to 1 (R022 only). Will need to stage more next cycle if needed.
+
+[2026-05-07T06:55:00Z] SLEEP: 270s.
