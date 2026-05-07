@@ -110,7 +110,7 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       agency campaigns; Q-ASSUMED T1 wires the runner from
       `aquaOasisSeed.ts`). **DONE T4 R004 — chapter #143.**
 - [x] Copy polish across marketing surfaces (Ed's flagged items).
-      **DONE T4 R005 — chapter #145.** index Services H2 marketing-ese
+      **DONE T4 R005 — chapter #146.** index Services H2 marketing-ese
       fix; dev/pov persona `sees:` line; footer parity across all pages;
       NEW /privacy + /terms stubs (next.config.ts rewrites); deploy
       date refresh.
@@ -134,9 +134,10 @@ Goal: WS-B/C complete; WS-D started; WS-E half. Ship-gate 7/9.
   ~~WS-E R028 durable HMAC nonces~~ #138 +
   ~~WS-E R029 env secrets policy~~ #142 +
   ~~WS-E R030 observability~~ #144 — Sprint 2 T1 complete 2026-05-07.
-- T2: ~~WS-B R023 rank-my-website plugin~~ chapter #141 — DONE
-  2026-05-07 (pulled from Sprint 2 by queue order). WS-D R024 SMTP
-  outbound up next.
+- T2: ~~WS-B R023 rank-my-website plugin~~ #141 +
+  ~~WS-D R024 SMTP outbound~~ #144 — both DONE 2026-05-07
+  (pulled from Sprint 2 by queue order). R025 (Stripe basic) +
+  R026 (GA4 readonly) up next.
 - T3: R040 editor live-preview iframe + R041 published-only redirect
   helper.
 - T4: AquaOasis demo brand pack; iframe→React rewrites if time.
