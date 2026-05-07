@@ -67,3 +67,15 @@ Your territory is unchanged otherwise:
 - T3 → plugins/website-editor/ (block engine + editor)
 
 Carry on.
+
+[2026-05-07T11:50:00Z] HOLD — STOP CHAINING (Ed directive)
+Ed is starting a major restructure with T4: moving the Next.js project root into `04-the-final-portal/milesymedia website/` so portal + marketing + HC + BOS + Incubator all live on one host. While T4 works, **do NOT start any new round** — `portal/` is about to be `git mv`'d wholesale and any in-flight work there will conflict.
+
+What to do on next wake:
+- If you currently have a DONE pending archive: log WAKE-PENDING-ARCHIVE and sleep 1800s.
+- If you'd otherwise chain into a new round: log `[ISO] HOLD-ACK: paused for unification` and sleep 1800s. Do NOT START a new queue file.
+- Repeat until commander posts `RESUME` in this inbox.
+
+Especially T1: this affects you most — R022 multi-tenant-isolation lives in portal/ and would collide. T2 + T3 are plugins/-only and technically safer, but plugin imports may briefly break during T4's tsconfig path update — same hold applies.
+
+Commander will post RESUME when the move is verified green on :3030 and Ed lifts the freeze.

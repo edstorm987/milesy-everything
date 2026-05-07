@@ -1179,3 +1179,9 @@ T4 shipped 1 more manual commit (`b02c78f T4 manual: SEO arc — sticky embed + 
 - T2 R017 (support-desk plugin — tickets + auto-assign + ecommerce subscriber + 12/12) DONE @ f317641 ch#119.
 - T3 R036 (sitemap+robots advanced generators — hreflang + filter + validator + 45/45) DONE @ efebf3f.
 T4 shipped 1 more manual commit (`0ed312d swap HC search embed DDG→Google`). T1 still mid-R021. Archived T2/017 + T3/036. Queue depths post: T1=4 (paused-ready) · T2=3 · T3=2 · T4=0. T3 dipped to 2 — will stage 3 more next cycle if it ships R037 fast. SLEEP: 270s.
+
+[2026-05-07T11:50:00Z] DIRECTIVE FROM ED: T1/T2/T3 finished current rounds; Ed kicking off T4 unification now. Archived T1/021 (session-security @ ch#120). Posted HOLD notice to T1/T2/T3 inboxes — no new rounds until commander posts RESUME. Existing DONEs all archived (T2/017 + T3/036 prior cycle, T1/021 this cycle). T3 may have R037 mid-flight — outbox still pre-DONE; if it lands during the freeze I'll archive and they'll log HOLD-ACK on next wake.
+
+Queue depths post-archive: T1=4 (paused) · T2=3 (paused) · T3=2 (paused) · T4=going manual w/ Ed.
+
+[2026-05-07T11:50:00Z] PLAN: monitor T4 progress via commits (`T4 unify-N:` prefix). Continue 270s wakes — archive any straggler DONEs from before the freeze, otherwise minimal. SLEEP: 270s.
