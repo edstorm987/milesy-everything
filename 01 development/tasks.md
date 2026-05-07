@@ -66,6 +66,11 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       `lib/blockSchemaMigrations.ts` (versioned migrate runner +
       seed v1→v2 / v2→v3 + loadBlockTreeMigrated) + 23/23 smoke +
       chapter #130.
+- [x] **R040 — Editor live-preview iframe** — DONE 2026-05-07
+      (pulled from Sprint 2 by queue order). `lib/editorLivePreview.ts`
+      (mint/verify token + buildPreviewSrc + postMessage shapes +
+      split-pref) + `<EditorLivePreview>` component skeleton +
+      26/26 smoke + chapter #132.
 
 ### T4 manual (Ed driving)
 

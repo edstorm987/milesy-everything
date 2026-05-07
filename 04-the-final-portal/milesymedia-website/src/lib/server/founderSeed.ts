@@ -107,13 +107,29 @@ async function run(): Promise<void> {
 
   // No more direct-mutate bypass. createUser runs validatePassword,
   // hashes, and emits user.signed_up — same path signup uses.
-  createUser({
+  const founder = createUser({
     email: FOUNDER_EMAIL,
     password: password!,
     role: "agency-owner",
     agencyId: agency.id,
     name: FOUNDER_NAME,
   });
+
+  // R026: seed AquaOasis Demo + make Ed a master. Idempotent — second
+  // run short-circuits on the slug check. Wrapped so a seed failure
+  // doesn't tank the founder-seed (the demo agency is nice-to-have,
+  // not load-bearing).
+  try {
+    const { seedAquaOasisDemo, addUserAgencyMembership } = await import("./aquaOasisSeed");
+    const { agency: aquaAgency } = await seedAquaOasisDemo(founder.id);
+    addUserAgencyMembership(founder.id, aquaAgency.id);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      "[founderSeed] AquaOasis Demo seed failed — switcher will only show Milesy Media:",
+      e instanceof Error ? e.message : e,
+    );
+  }
 }
 
 // Test helper — purely for the smoke to reset the module-level cache
