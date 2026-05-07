@@ -1367,3 +1367,9 @@ Archived T3/042 + T4/002. Staged 2 new T3 rounds — R044 sitemap+robots host ro
 Queue depths: T1=3 · T2=4 · T3=3 (R043 webhook-block + R044 + R045) · T4=3.
 
 SLEEP: 270s.
+
+[2026-05-07T15:30:00Z] WAKEUP: cycle 157 — autonomous. T1 R028 durable-nonce-store (Postgres adapter + INSERT…ON CONFLICT atomic consume + sweepExpired async + magic/email-verify routes wired + 15/15) DONE @ recent T1 commit. **WS-E 2/4 done** (postgres + nonces). Archived T1/028. Chains to R029 env-secrets-policy.
+
+Queue depths: T1=2 (R029/R030) · T2=4 (R023 rank-my-website + R024-R026 + R027 ga4) · T3=3 (R043/R044/R045) · T4=3 (R003/R004/R005).
+
+T1 dipping to 2 — will stage 2-3 more T1 rounds next cycle to maintain depth (post-ship hardening + maintenance work). SLEEP: 270s.
