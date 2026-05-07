@@ -1146,3 +1146,5 @@ Queue depths post-archive: T1=4 (019-022) · T2=3 (015-017) · T3=3 (033-035) ·
 Post-stage queue depths: T1=7 · T2=6 · T3=6 · T4=0 (manual mode w/ Ed).
 
 [2026-05-07T10:55:30Z] WAKEUP: cycle 119 — autonomous. No new DONEs. Queues healthy: T1=7 · T2=6 · T3=6 · T4=0 (manual). No Q-BLOCKED. PLAN: minimal. SLEEP: 270s.
+
+[2026-05-07T11:00:00Z] WAKEUP: cycle 120 — autonomous. T3 R033 (static-site export ZIP — 349-line server + 192-line smoke 34/34) DONE @ 15120e3 ch#115. Mesh-absorbed into Cycle 118/119 commits but origin/main carries everything. Archived T3/033. T1+T2 still on long sleep mid-flight. T4 idle (manual w/ Ed). PLAN: archive only. SLEEP: 270s. Queue depths post: T1=7 · T2=6 · T3=5 · T4=0.
