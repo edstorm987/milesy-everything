@@ -100,8 +100,9 @@ _(populated as rounds ship)_
 
 Goal: WS-B/C complete; WS-D started; WS-E half. Ship-gate 7/9.
 
-- T1: ~~WS-C R026 Topbar agency switcher~~ DONE 2026-05-07 chapter #133.
-  WS-E R027 (Postgres backend) + R028 (durable HMAC nonces).
+- T1: ~~WS-C R026 Topbar agency switcher~~ chapter #133 +
+  ~~WS-E R027 Postgres backend~~ chapter #134 — both DONE 2026-05-07.
+  R028 (durable HMAC nonces) up next.
 - T2: WS-B R023 (rank-my-website plugin) + WS-D R024 SMTP outbound.
 - T3: R040 editor live-preview iframe + R041 published-only redirect
   helper.
