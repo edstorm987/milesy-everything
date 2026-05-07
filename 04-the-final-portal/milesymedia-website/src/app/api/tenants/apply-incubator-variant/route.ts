@@ -7,14 +7,14 @@ import { getInstall } from "@/server/pluginInstalls";
 import { makeCtx } from "@/plugins/_runtime";
 import {
   applyStarterVariant,
-} from "@plugins/website-editor/src/server/portalVariants";
+} from "../../../../../../plugins/website-editor/src/server/portalVariants";
 import {
   applyIncubatorClientMetadata,
-} from "@plugins/website-editor/src/server/incubatorTemplate";
+} from "../../../../../../plugins/website-editor/src/server/incubatorTemplate";
 import {
   getPage,
   updatePage,
-} from "@plugins/website-editor/src/server/pages";
+} from "../../../../../../plugins/website-editor/src/server/pages";
 
 // T1 R14 — wire-up of T3 R010's Aqua Incubator preset.
 //

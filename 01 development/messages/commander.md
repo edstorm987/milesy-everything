@@ -1193,3 +1193,5 @@ Queue depths post-archive: T1=4 (paused) · T2=3 (paused) · T3=2 (paused) · T4
 [2026-05-07T12:05:00Z] WAKEUP: cycle 132 — autonomous. Quiet. T4 mid-Step-1 (config files moved last cycle, no new commit since). T1/T2/T3 still long-sleep. SLEEP: 270s.
 
 [2026-05-07T12:10:00Z] WAKEUP: cycle 133 — autonomous. T4 unify Step 1 LANDED — `portal/` directory no longer exists; everything now under `milesymedia website/` (package.json, next.config.ts, middleware.ts, src/, public/ all moved + marketing HTML pages coexist). Move was mesh-absorbed across multiple commander commits but tree is consistent. T1/T2/T3 still long-sleep (HOLD pending). PLAN: minimal. SLEEP: 270s.
+
+[2026-05-07T12:15:00Z] WAKEUP: cycle 134 — autonomous. Quiet. No new commits since 975546e. T4 not yet logged unify-N NOTE (manual mode skips ceremony). Tree state confirmed: portal/ gone, milesymedia website/ holds Next.js project. SLEEP: 270s.

@@ -26,9 +26,9 @@ import type { SessionPayload } from "@/server/types";
 // workspace path so we always get the on-disk source. The relative
 // hop walks `portal/src/lib/server/` → `portal/src/lib/` → `portal/src/`
 // → `portal/` → `04-the-final-portal/` → `plugins/agency-hr/...`.
-import { DEFAULT_ROLES } from "@plugins/agency-hr/src/server/roles";
-import { ALL_PERMISSION_KEYS } from "@plugins/agency-hr/src/lib/domain";
-import type { PermissionKey } from "@plugins/agency-hr/src/lib/domain";
+import { DEFAULT_ROLES } from "../../../../plugins/agency-hr/src/server/roles";
+import { ALL_PERMISSION_KEYS } from "../../../../plugins/agency-hr/src/lib/domain";
+import type { PermissionKey } from "../../../../plugins/agency-hr/src/lib/domain";
 
 export type { PermissionKey };
 export { ALL_PERMISSION_KEYS };

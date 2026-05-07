@@ -12,7 +12,7 @@ import { getInstall } from "@/server/pluginInstalls";
 import { makeCtx } from "@/plugins/_runtime";
 import {
   getEmbedAllowList,
-} from "@plugins/website-editor/src/server/embedAllow";
+} from "../../../../plugins/website-editor/src/server/embedAllow";
 
 export interface EmbedAllowResult {
   found: boolean;

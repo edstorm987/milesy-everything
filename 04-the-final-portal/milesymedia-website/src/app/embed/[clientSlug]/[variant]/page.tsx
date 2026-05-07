@@ -27,7 +27,7 @@ import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
 import {
   getActivePortalVariant,
   getOrCreateDefaultSite,
-} from "@plugins/website-editor/src/server";
+} from "../../../../../../plugins/website-editor/src/server";
 
 export const dynamic = "force-dynamic";
 

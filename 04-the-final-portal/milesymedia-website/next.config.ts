@@ -38,14 +38,15 @@ const SECURITY_HEADERS = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Pin the Turbopack root so a parent-folder lockfile doesn't get
-  // auto-detected. Workspace plugins (`@aqua/plugin-fulfillment`,
-  // `@aqua/plugin-website-editor`) install through `npm install
-  // --install-links` (configured in `.npmrc`) so they materialise as
-  // real copies inside `node_modules` rather than symlinks — Turbopack
-  // resolves those happily.
+  // T4 unify-1 — anchor Turbopack + output-file tracing one level up
+  // (at `04-the-final-portal/`) so the sibling `../plugins/*` source
+  // files are inside the traced workspace. Plugins install via
+  // `--install-links` (configured in `.npmrc`) as real copies in
+  // node_modules, but several Next.js source files import directly
+  // from the plugin source paths and need filesystem reachability.
+  outputFileTracingRoot: new URL("..", import.meta.url).pathname,
   turbopack: {
-    root: import.meta.dirname,
+    root: new URL("..", import.meta.url).pathname,
   },
   // Local workspace plugin packages ship TypeScript source (no build
   // step). transpilePackages tells Next/Turbopack to compile them rather
