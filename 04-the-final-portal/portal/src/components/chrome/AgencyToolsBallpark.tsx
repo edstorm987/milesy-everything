@@ -12,25 +12,44 @@ import { useEffect, useState } from "react";
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-const AQUA_HQ: { id: string; label: string; href: string; hint: string }[] = [
-  { id: "leads",      label: "Leads & Clients HQ",       href: "/portal/agency",                    hint: "Pipeline + per-client CRM cards." },
-  { id: "billing",    label: "Client Billing & Finance", href: "/portal/agency/agency-finance",     hint: "Income · Expenses Recurring · Expenses Other." },
-  { id: "tasks",      label: "Tasks & To-Do's",          href: "/portal/agency/kanban",             hint: "Cross-cutting boards — agency + per-client." },
-  { id: "sops",       label: "SOPs, Docs & Templates",   href: "/portal/agency/sops",               hint: "Sales · Service · Standards · Internal." },
-  { id: "social",     label: "Social Media Planner",     href: "/portal/agency/agency-marketing",   hint: "Content · Calendar · Library · Ads." },
-  { id: "passwords",  label: "Passwords & Access",       href: "/portal/agency/passwords",          hint: "Owner access + per-client credential vault." },
+// Aqua HQ canonical six (T1 R17 — chapter §1). Each row is a Link
+// with an inline `requires` permission key (gated client-side; the
+// sidebar layout's effective-role filter — R007 — also enforces).
+// Founder bypasses every gate.
+const AQUA_HQ: { id: string; label: string; href: string; hint: string; requires: string[] }[] = [
+  { id: "dashboard", label: "Dashboard", href: "/portal/agency",                  hint: "Welcome + overview.",       requires: ["clients.view"] },
+  { id: "clients",   label: "Clients",   href: "/portal/agency#clients",          hint: "All therapist clients.",     requires: ["clients.view"] },
+  { id: "inbox",     label: "Inbox",     href: "/portal/agency/activity-inbox",   hint: "Activity feed + comms.",     requires: ["clients.view"] },
+  { id: "sops",      label: "SOPs",      href: "/portal/agency/sops",             hint: "Aqua System SOP shelf.",     requires: ["sops.view"] },
+  { id: "finance",   label: "Finance",   href: "/portal/agency/agency-finance",   hint: "Invoices, expenses, MRR.",   requires: ["finance.view"] },
+  { id: "settings",  label: "Settings",  href: "/portal/agency/settings",         hint: "Brand, billing, team.",      requires: ["clients.edit"] },
 ];
 
 const MORE_TOOLS: { id: string; label: string; href: string }[] = [
-  { id: "hr",         label: "HR",          href: "/portal/agency/agency-hr" },
-  { id: "forms",      label: "Forms",       href: "/portal/agency/forms" },
-  { id: "email",      label: "Email",       href: "/portal/agency/email-sender" },
-  { id: "ops",        label: "Ops",         href: "/portal/agency/ops" },
-  { id: "domains",    label: "Domains",     href: "/portal/agency/domains" },
-  { id: "affiliates", label: "Affiliates",  href: "/portal/agency/affiliates" },
+  { id: "kanban",     label: "Tasks & Kanban",   href: "/portal/agency/kanban" },
+  { id: "marketing",  label: "Social Media",     href: "/portal/agency/agency-marketing" },
+  { id: "hr",         label: "HR",               href: "/portal/agency/agency-hr" },
+  { id: "forms",      label: "Forms",            href: "/portal/agency/forms" },
+  { id: "email",      label: "Email",            href: "/portal/agency/email-sender" },
+  { id: "ops",        label: "Ops",              href: "/portal/agency/ops" },
+  { id: "domains",    label: "Domains",          href: "/portal/agency/domains" },
+  { id: "affiliates", label: "Affiliates",       href: "/portal/agency/affiliates" },
 ];
 
-export function AgencyToolsBallpark() {
+export function AgencyToolsBallpark({
+  permissions = [],
+  isFounder = false,
+}: {
+  // T1 R17 — effective-role grid passed from the agency layout (R007
+  // resolver). Founder bypasses; otherwise each Aqua HQ row is hidden
+  // when its `requires` keys aren't all in the grid.
+  permissions?: readonly string[];
+  isFounder?: boolean;
+}) {
+  const grid = new Set<string>(permissions);
+  const visibleAquaHq = isFounder
+    ? AQUA_HQ
+    : AQUA_HQ.filter(r => r.requires.every(p => grid.has(p)));
   const [moreOpen, setMoreOpen] = useState(false);
   const [recentSops, setRecentSops] = useState<number | null>(null);
 
@@ -57,7 +76,7 @@ export function AgencyToolsBallpark() {
           Aqua HQ
         </h2>
         <ul className="flex flex-col">
-          {AQUA_HQ.map(s => (
+          {visibleAquaHq.map(s => (
             <li key={s.id}>
               <Link
                 href={s.href}

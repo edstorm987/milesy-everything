@@ -72,7 +72,7 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
           extra={
             <>
               <NotificationBell agencyId={agency.id} actor={session.userId} />
-              <AgencyToolsBallpark />
+              <AgencyToolsBallpark permissions={eff.permissions} isFounder={eff.isFounder} />
             </>
           }
         />

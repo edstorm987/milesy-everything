@@ -9,6 +9,26 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 017 — Default favicons + Aqua HQ sidebar polish** — DONE.
+      Goal A: 4 NEW favicon assets in `portal/public/` —
+      favicon-default-{32,180,192}.png + favicon-default.ico
+      (hand-rolled PNG encoder, aqua-blue circular fill, brand-
+      neutral placeholder). Goal B: `AgencyToolsBallpark.tsx`
+      AQUA_HQ rewritten as canonical 6 per chapter §1 — Dashboard
+      / Clients / Inbox / SOPs / Finance / Settings; each row
+      `requires: PermissionKey[]`. Existing "More tools" collapsible
+      preserved (tasks/marketing demoted since Inbox/SOPs/Finance
+      now in canonical six). Goal C: component accepts
+      `permissions` + `isFounder` props; agency layout threads them
+      from R007 effectiveRole resolver; visibleAquaHq filter via
+      Founder-bypass + grid-intersection. Q-ASSUMED:
+      AgencyToolsBallpark is canonical Aqua-HQ surface (not
+      Sidebar.tsx); Inbox path = `/portal/agency/activity-inbox`;
+      hand-rolled PNG encoder over image lib for bundle cleanliness.
+      Goal D: smoke `§ Aqua HQ sidebar polish` (10 — 6 labels
+      visible + 4 favicon-default-* 200). Chapter
+      `04-aqua-hq-sidebar-polish.md`; MASTER row #92; tsc clean.
+      HARD BOUNDARY honoured.
 - [x] **T1 016 — `/embed/[clientSlug]/[variant]` foundation route** — DONE.
       Goal A: NEW `app/embed/[clientSlug]/[variant]/page.tsx` server
       component — slug→client scan, isPortalRole validation, brand

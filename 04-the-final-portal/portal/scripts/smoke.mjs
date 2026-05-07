@@ -284,6 +284,19 @@ async function main() {
   // Reset embed cookie for downstream blocks.
   await go("GET", "/demo?source=stitch-smoke");
 
+  console.log("\n§ Aqua HQ sidebar polish");
+  // Sidebar 6-section restructure: Dashboard / Clients / Inbox / SOPs / Finance / Settings.
+  const aquaHome = await go("GET", "/portal/agency");
+  const aquaBody = aquaHome.status === 200 ? await aquaHome.text() : "";
+  for (const item of ["Dashboard", "Clients", "Inbox", "SOPs", "Finance", "Settings"]) {
+    record(`sidebar shows ${item}`, aquaBody.includes(`>${item}<`));
+  }
+  // Default favicon assets reachable.
+  for (const f of ["favicon-default-32.png", "favicon-default-180.png", "favicon-default-192.png", "favicon-default.ico"]) {
+    const r = await go("GET", `/${f}`);
+    record(`/${f} 200`, r.status === 200, `status=${r.status}`);
+  }
+
   console.log("\n§ Embed route");
   // Embed surface scoped by client slug + portal variant. Demo seed
   // ships `luv-and-ker-demo` as Felicia's mirror — use it as the slug.
