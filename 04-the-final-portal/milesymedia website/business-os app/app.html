@@ -48,7 +48,15 @@
         </div>
       </section>
 
-      <!-- Three friendly help cards — that's it -->
+      <!-- HC-derived recommendation strip (only shows if HC done) -->
+      <section class="bos-home-leak" data-bos-home-leak hidden>
+        <span class="eyebrow">Based on your Health Check</span>
+        <h3 data-bos-leak-title>Your biggest leak right now is <strong data-bos-leak-topic>Visibility</strong>.</h3>
+        <p class="muted" data-bos-leak-body>Start with the lesson that targets it directly.</p>
+        <a class="btn btn-primary" data-bos-leak-cta href="database.html">Open the lesson →</a>
+      </section>
+
+      <!-- Three friendly help cards -->
       <section class="bos-home-cards">
         <a href="database.html" class="bos-home-card">
           <div class="bos-home-card-icon">📚</div>
@@ -60,10 +68,10 @@
           <h3>Ask the AI</h3>
           <p class="muted">It knows what's in your portal. Ask anything — "what's my biggest leak?" or "which lesson should I do first?"</p>
         </a>
-        <a href="tel:+441234567890" class="bos-home-card">
-          <div class="bos-home-card-icon">📞</div>
-          <h3>Talk to a human</h3>
-          <p class="muted">If you're stuck, book a free 30-minute call. We'll work it out together. No sales pitch.</p>
+        <a href="request.html" class="bos-home-card">
+          <div class="bos-home-card-icon">✨</div>
+          <h3>Need something else?</h3>
+          <p class="muted">Tell us what would help. Half the time we already have it and we'll switch it on for you.</p>
         </a>
       </section>
 
@@ -141,6 +149,27 @@
       /* Show progress strip if any XP earned */
       if ((progress.xp || 0) > 0) {
         document.querySelector('[data-bos-home-progress]').removeAttribute('hidden');
+      }
+
+      /* HC-derived recommendation: pick the lowest-scoring topic and
+         link to the most relevant module. */
+      if (hc && hc.topics && hc.topics.length) {
+        var sorted = hc.topics.slice().sort(function (a, b) { return a.score - b.score; });
+        var leak = sorted[0];
+        var topicMap = {
+          'Visibility & Search':       { id: 'core-principles',    label: 'Visibility' },
+          'Your Website':              { id: 'core-principles',    label: 'Your website' },
+          'Where Customers Come From': { id: 'super-sales',        label: 'Customer flow' },
+          'My Business':               { id: 'core-principles',    label: 'Your offer' },
+          'Keeping Them':              { id: 'referral-alchemy',   label: 'Retention' }
+        };
+        var rec = topicMap[leak.name] || { id: 'core-principles', label: leak.name };
+        var leakBox = document.querySelector('[data-bos-home-leak]');
+        leakBox.removeAttribute('hidden');
+        document.querySelector('[data-bos-leak-topic]').textContent = rec.label;
+        document.querySelector('[data-bos-leak-body]').textContent =
+          'Your ' + rec.label.toLowerCase() + ' score was ' + leak.score + '/100. We\'d start with the lesson that fixes it directly.';
+        document.querySelector('[data-bos-leak-cta]').setAttribute('href', 'module.html?id=' + rec.id);
       }
     });
   </script>

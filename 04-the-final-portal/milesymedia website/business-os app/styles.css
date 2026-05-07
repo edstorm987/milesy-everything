@@ -2391,3 +2391,67 @@ body.bos-cp-editing .bos-cp-fields textarea {
 
 /* Hide the previous loud upgrade band if it ever renders */
 .bos-upgrade-band { display: none; }
+
+/* ─── Pro lockup (free user hits a Pro page) ── */
+.bos-pro-lock {
+  max-width: 560px; margin: 60px auto;
+  padding: 40px 32px; text-align: center;
+  background: linear-gradient(135deg, rgba(124,92,255,0.10), rgba(255,107,53,0.08));
+  border: 1px solid rgba(124,92,255,0.25);
+  border-radius: 22px;
+}
+.bos-pro-lock-icon {
+  width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 16px;
+  background: linear-gradient(135deg, var(--accent-3), var(--accent));
+  display: grid; place-items: center; font-size: 32px;
+  box-shadow: 0 12px 30px rgba(124,92,255,0.4);
+}
+.bos-pro-lock h1 {
+  font-size: clamp(28px, 4vw, 38px); font-weight: 800;
+  letter-spacing: -0.02em; margin: 8px 0 14px;
+}
+.bos-pro-lock p { color: var(--text-dim); font-size: 15px; line-height: 1.6; margin-bottom: 12px; }
+
+/* ─── HC leak recommendation strip on home ──── */
+.bos-home-leak {
+  background: linear-gradient(135deg, rgba(255,184,0,0.10), rgba(255,107,53,0.08));
+  border: 1px solid rgba(255,184,0,0.30);
+  border-radius: 14px; padding: 22px 24px;
+  margin: -8px 0 28px;
+}
+.bos-home-leak h3 {
+  font-size: 18px; font-weight: 700; letter-spacing: -0.01em;
+  margin: 8px 0 6px;
+}
+.bos-home-leak h3 strong {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  font-weight: 800;
+}
+.bos-home-leak p { font-size: 14px; line-height: 1.6; margin-bottom: 14px; }
+
+/* ─── Request a feature form ─────────────────── */
+.bos-request-form { display: grid; gap: 14px; }
+.bos-request-form label {
+  font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-mute); margin-top: 6px;
+}
+.bos-request-form textarea, .bos-request-form select {
+  width: 100%; background: var(--bg-soft); border: 1px solid var(--border-2);
+  color: var(--text); padding: 14px 16px; border-radius: 12px;
+  font-size: 15px; font-family: inherit; transition: border-color .15s;
+}
+.bos-request-form textarea:focus, .bos-request-form select:focus { outline: none; border-color: var(--accent); }
+.bos-request-form textarea { resize: vertical; min-height: 120px; }
+
+.bos-request-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.bos-request-tag {
+  padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--border-2); background: rgba(255,255,255,0.02);
+  color: var(--text); font-size: 13px; cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.bos-request-tag:hover { border-color: var(--accent); }
+.bos-request-tag.is-on {
+  border-color: var(--accent); background: rgba(255,107,53,0.14); color: var(--text);
+}

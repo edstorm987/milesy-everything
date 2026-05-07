@@ -202,30 +202,44 @@
       return '<a href="' + href + '"' + act + '><span class="ico">' + icon + '</span> ' + label + (extra || '') + '</a>';
     }
     var html = '';
+    var mode = getMode();
+    var isPro = mode === 'customer';
+
     html += '<div class="bos-side-section">'
          +    '<div class="bos-side-label">My business</div>'
          +    link('app.html',      '🏠', 'Home')
-         +    link('company.html',  '👤', 'About my business')
-         +    link('leads.html',    '👥', 'My customers')
-         +    link('trackers.html', '📈', 'My numbers')
-         +    link('tasks.html',    '✓', 'My to-dos')
-         +    link('docs.html',     '📁', 'My files')
-         + '</div>';
+         +    link('company.html',  '👤', 'About my business');
+    if (isPro) {
+      html += link('leads.html',    '👥', 'My customers')
+            + link('trackers.html', '📈', 'My numbers')
+            + link('tasks.html',    '✓',  'My to-dos')
+            + link('docs.html',     '📁', 'My files');
+    }
+    html += '</div>';
+
     html += '<div class="bos-side-section">'
          +    '<div class="bos-side-label">Learn</div>'
          +    link('database.html', '📚', 'Lessons')
          +    link('../lead magnet app/index.html?from=bos', '🔍', 'Health check')
          + '</div>';
+
     html += '<div class="bos-side-section" data-bos-tools-slot></div>';
+
     html += '<div class="bos-side-section">'
          +    '<div class="bos-side-label">Get help</div>'
-         +    link('help.html', '👋', 'Need help?')
+         +    link('help.html',    '👋', 'Need help?')
          +    '<a href="#" data-bos-open-ai><span class="ico">🤖</span> Ask Aqua AI</a>'
          +    '<a href="tel:+441234567890"><span class="ico">📞</span> Book a free call</a>'
+         +    link('request.html', '✨', 'Request a feature')
          + '</div>';
+
     html += '<div class="bos-side-section bos-side-tiny">'
-         +    '<a href="roadmap.html" class="bos-side-tiny-link' + ('roadmap.html' === page ? ' active' : '') + '"><span class="ico">🗺</span> Custom roadmap <span class="bos-locked-tag bos-roadmap-tag">Pro</span></a>'
-         +    '<a href="#" class="bos-side-tiny-link bos-locked" data-bos-aqua-link><span class="ico">🔒</span> Aqua agency portal</a>'
+         +    '<a href="roadmap.html" class="bos-side-tiny-link' + ('roadmap.html' === page ? ' active' : '') + '"><span class="ico">🗺</span> Custom roadmap'
+         +      (isPro ? '' : ' <span class="bos-locked-tag bos-roadmap-tag">Pro</span>')
+         +    '</a>'
+         +    (isPro
+              ? '<a href="#" class="bos-side-tiny-link"><span class="ico">▣</span> Aqua agency portal</a>'
+              : '<a href="#" class="bos-side-tiny-link bos-locked"><span class="ico">🔒</span> Aqua agency portal</a>')
          + '</div>';
     return html;
   }
@@ -508,6 +522,37 @@
     drawer.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', close); });
   }
 
+  /* ─── Pro-only page guard ────────────────── */
+  /* Pages listed here render a clean "this is a Pro feature" lockup
+     when the user is on the free tier, hiding the real content. */
+  var PRO_ONLY = ['leads.html', 'trackers.html', 'tasks.html', 'docs.html'];
+  function maybeProLock() {
+    if (getMode() === 'customer') return;
+    var page = (location.pathname.split('/').pop() || '').toLowerCase();
+    if (PRO_ONLY.indexOf(page) === -1) return;
+    var main = document.querySelector('.bos-main');
+    if (!main) return;
+    var titles = {
+      'leads.html':    { icon: '👥', name: 'My customers',  blurb: 'A full sales pipeline — every lead, every stage, every quid in flight.' },
+      'trackers.html': { icon: '📈', name: 'My numbers',    blurb: 'Live KPI tracking, time tracker, and connectors to QuickBooks / Stripe / Sheets.' },
+      'tasks.html':    { icon: '✓',  name: 'My to-dos',     blurb: 'Kanban tasks with assignees, due dates, recurring rules and automation triggers.' },
+      'docs.html':     { icon: '📁', name: 'My files',      blurb: 'Searchable SOPs, contracts, brand assets and the full SOP Hub library.' }
+    };
+    var t = titles[page];
+    main.innerHTML = ''
+      + '<div class="bos-pro-lock">'
+      +   '<div class="bos-pro-lock-icon">' + t.icon + '</div>'
+      +   '<span class="eyebrow">Pro feature</span>'
+      +   '<h1>' + t.name + '</h1>'
+      +   '<p>' + t.blurb + '</p>'
+      +   '<p class="muted">This isn\'t in your free tier yet — but if you\'d find it useful, we can switch it on for you. Most requests we already have built.</p>'
+      +   '<div class="hc-actions" style="justify-content:center">'
+      +     '<a href="request.html" class="btn btn-primary">Request access →</a>'
+      +     '<a href="marketplace.html" class="btn btn-secondary">See all add-ons</a>'
+      +   '</div>'
+      + '</div>';
+  }
+
   /* ─── Free-tier badge + upgrade footer ───── */
   function mountTierUI() {
     var mode = getMode();
@@ -536,6 +581,7 @@
     mountAutoSidebar();
     hydrateUser();
     applyMode();
+    maybeProLock();
     tickStreak();
     paintProgress();
     paintHealthCheck();
