@@ -12,7 +12,7 @@ spin them up. One file per terminal role.
 | `T1-router.md` | Ed → fresh terminal | Autonomous T1 (foundation) | Reads queue at `queues/T1/`, ships rounds, logs DONE. Sprint 1 owner of WS-A + WS-C. |
 | `T2-router.md` | Ed → fresh terminal | Autonomous T2 (plugins) | Reads queue at `queues/T2/`. Sprint 1 owner of WS-B. |
 | `T3-router.md` | Ed → fresh terminal | Autonomous T3 (website-editor) | Reads queue at `queues/T3/`. |
-| `T4-manual.md` | Ed → fresh terminal | **Manual** T4 (Ed pair-programs) | NOT a /loop. T4 reads context, then waits for Ed. Active mode for the website work + Sprint 1 polish backlog (chapter #124 + #123 carry-forwards). |
+| `T4-router.md` | Ed → fresh terminal | Autonomous T4 (Sprint 2 polish lane) | Reactivated 2026-05-07. Reads queue at `queues/T4/`, ships polish rounds (niche-pages mega-menu mirror · Resource sub-page real impls · `app/page.tsx` orphan · AquaOasis Demo content · final copy pass). Replaces the prior `T4-manual.md` mode. |
 
 That's the live set. Five files. If you're not sure what to paste, paste
 `orchestrator-init.md` for the commander or `T<N>-router.md` for an
@@ -33,9 +33,8 @@ terminal-prompts/
 │   ├── T1/                       ← lowest-numbered .md = current round
 │   ├── T2/
 │   ├── T3/
-│   └── T4/                       ← intentionally empty (T4 is manual)
+│   └── T4/                       ← Sprint 2 polish queue (5 rounds staged)
 ├── _dormant/                     ← prompts NOT to paste right now
-│   ├── T4-router.md              ← T4's autonomous router (reactivate if T4 returns to autonomous)
 │   └── T6-production-gate.md     ← T6 prod-deploy prompt (reactivates Sprint 3)
 └── old prompts/                  ← shipped queue files + retired prompts (archive only)
 ```

@@ -10,7 +10,7 @@ Terminal split (current — refreshed 2026-05-07 for Ship Plan v1):
 - **T1** — foundation (auth / chrome / plugin runtime / DB / scope helpers). Sprint 1 owner of WS-A (auth completion) + WS-C (multi-agency core).
 - **T2** — plugins (every new plugin lands here — agency-* / client-* / public-funnel / etc). Sprint 1 owner of WS-B (public funnel).
 - **T3** — website-editor (blocks / editor admin / cross-plugin renderers).
-- **T4** — Milesy Media ecosystem + currently in **manual mode** with Ed driving website polish + unification follow-ups (chapter #123 carry-forwards). NOT autonomous.
+- **T4** — Milesy Media ecosystem + marketing surface. Reactivated to autonomous 2026-05-07 for Sprint 2 polish (queue: niche-pages mega-menu · Resource sub-pages real · `app/page.tsx` orphan · AquaOasis Demo content · final copy pass).
 - **T5** — first real per-client portal (Felicia / Luv & Ker) at `clients/luv-and-ker/`. **Reactivates Sprint 3** for WS-F.
 - **T6** — production deployment + custom domains + observability. **Reactivates Sprint 3** for production preview.
 
