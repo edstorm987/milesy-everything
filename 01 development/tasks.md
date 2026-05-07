@@ -2979,6 +2979,17 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       #114, smoke 12/12, NEW agency-scope internal-team library
       distinct from aqua-resources/sops; markdown body + visibleToRoles
       ACL + view-tick counter + recent-activity feed + JSON export).
+- [x] T2 R015 — `@aqua/plugin-agency-payroll` shipped (chapter
+      #117, smoke 12/12, NEW agency-scope internal-team payroll
+      surface; PayPeriod (idempotent open keyed YYYY-MM) + Payslip
+      (operator-paste minor-units gross/net + payeeName snapshot +
+      closed-period guard) + Contractor (optional agency-hr staffId
+      soft-link); idempotent markPaid emits `payroll.payslip.paid`
+      ONCE for agency-finance reconciliation hint; honesty-contract
+      Reports (`hasData = paidCount>0`) renders empty-state instead
+      of fabricated zeroes; activity rides on category "hr" until
+      foundation `ActivityCategory` adds "payroll" (R+1); no real
+      bank/Stripe — T6 prod gate).
 - [x] T1 R19 — End-customer portal (chapter #116, smoke 16/16,
       closes third-audience loop from requirements §3+§6: 5 NEW
       foundation sub-route stubs at /portal/customer/{orders,account,
