@@ -178,6 +178,38 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R028 — Founder weekly digest mockup** — DONE.
+      NEW "This week" panel inserted above R009 admin Overview KPIs +
+      copy-able Markdown digest modal + Monday auto-arm + history.
+      Real send is T6 territory. NEW `bos.reports.weekly[]={ts,md}`
+      cap 12 + `bos.reports.weekly.lastArmedISO` (suppresses Monday
+      auto-arm if already-this-week). **Counts grid** (6→3→2col
+      responsive): HC done · Phase advances · Lessons done · Leads
+      week · Unread inbox · Activity events (red "n<7 indicative"
+      pill on Activity cell when total<7). **3 highlights** w/ gold-
+      left-border: 🏆 Most engaged biz (iterates BOSStorage.list per-
+      namespace 7d activity, honest "No business activity in window
+      — indicative" fallback) · ⚠ Stuck pattern single-user proxy
+      (HC done+0 advances → "could use a nudge"; no HC → "send the
+      lead-magnet link"; else "no obvious") · 📈 Marketplace top
+      click ("no clicks yet — indicative" fallback). **Send-digest
+      modal** triggered by 📧 send / Monday auto-arm Open / History
+      open-most-recent: DEMO banner + readonly Markdown textarea +
+      📋 Copy-to-clipboard (legacy + navigator.clipboard) w/ status
+      auto-clear 4s + Close (✕ + click-outside-card). Each open
+      appends to bos.reports.weekly[] + stamps lastArmedISO + fires
+      R013 settings.changed `tab:'reports', action:'weekly-digest'`.
+      Markdown body HTML-stripped to mail-client-ready plain text.
+      **Auto-arm**: `getDay()===1 && getHours()<12 && !lastArmed||>6d`.
+      **History UX**: alert() w/ numbered timestamps opens most
+      recent (R+1 proper Reports-tab panel). CSS `.bos-week-*`
+      (~50L). Honesty: red small-n pill, muted-italic fallbacks,
+      Demo banner. Smoke: admin 200; full flow verified end-to-end.
+      Q-ASSUMED: cross-business count granularity only on Most-
+      Engaged today (R+1 sum across all biz for count cells); HTML-
+      style email + real send out per prompt; auto-arm wall-clock
+      only no cron. NEW chapter `04-founder-weekly-digest-mock.md`
+      + MASTER #104.
 - [x] **T4 R027 — Per-business analytics dashboard** — DONE.
       NEW `business-os app/analytics.html` (~220L) — in-BOS analytics
       surface (own data only, no cross-business). Period chip nav

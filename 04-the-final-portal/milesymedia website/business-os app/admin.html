@@ -36,6 +36,41 @@
 
     <!-- Overview -->
     <section class="bos-admin-pane" data-admin-pane="overview">
+
+      <!-- R028 — This-week founder digest panel (above existing KPIs) -->
+      <div class="bos-week-panel" data-bos-week-panel>
+        <div class="bos-week-head">
+          <div>
+            <span class="eyebrow">This week</span>
+            <h2 style="margin:4px 0 4px;font-family:'Playfair Display',Georgia,serif">Founder digest <span class="muted" style="font-size:13px;font-family:inherit;font-weight:400" data-bos-week-range></span></h2>
+            <p class="muted" style="margin:0">Synthesis across every business on this device. <strong>Demo</strong> — real send via T6.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-secondary" data-bos-week-history>History</button>
+            <button type="button" class="btn btn-primary" data-bos-week-send>📧 Send digest</button>
+          </div>
+        </div>
+        <div class="bos-week-armbanner" data-bos-week-arm hidden></div>
+        <div class="bos-week-counts" data-bos-week-counts></div>
+        <div class="bos-week-highlights" data-bos-week-highlights></div>
+      </div>
+
+      <!-- Send-digest modal -->
+      <div class="bos-week-modal" data-bos-week-modal hidden>
+        <div class="bos-week-modal-card">
+          <header class="bos-week-modal-head">
+            <h3 style="margin:0">📧 Founder digest — copyable Markdown</h3>
+            <button type="button" class="btn btn-secondary" data-bos-week-modal-close>✕</button>
+          </header>
+          <p class="muted" style="margin:8px 0 12px"><strong>🎬 Demo mode</strong> — real send via T6 once email-sender ships. For now, copy the body below and paste into your mail client.</p>
+          <textarea data-bos-week-md readonly style="width:100%;min-height:280px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;padding:12px;font:13px ui-monospace,monospace;line-height:1.5"></textarea>
+          <div class="hc-actions" style="margin-top:10px">
+            <button type="button" class="btn btn-primary" data-bos-week-copy>📋 Copy to clipboard</button>
+            <span class="muted" data-bos-week-copy-status></span>
+          </div>
+        </div>
+      </div>
+
       <div class="kpi-row">
         <div class="kpi"><div class="lbl">Health checks completed</div><div class="num" data-admin-stat="hc-count">0</div></div>
         <div class="kpi"><div class="lbl">Leads captured</div><div class="num" data-admin-stat="lead-count">0</div></div>
@@ -751,6 +786,190 @@
         var rep = document.querySelector('[data-admin-tab="reports"]');
         if (rep) rep.click();
         setTimeout(function () { paintMeta(); window.print(); }, 60);
+      });
+    })();
+
+    /* R028 — Founder weekly digest. Counts + 3 highlights + send modal +
+       Monday auto-arm + history. Honesty: sample-size caveats baked in. */
+    (function () {
+      function escape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+      function weekStart() {
+        var d = new Date(); var dow = (d.getDay() + 6) % 7; // Mon=0
+        d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - dow);
+        return d;
+      }
+      function weekEnd(s) { var e = new Date(s); e.setDate(e.getDate() + 6); e.setHours(23, 59, 59, 999); return e; }
+      function fmtDate(d) { return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
+
+      function gatherCounts(sinceMs, businesses) {
+        var out = { hc: 0, advances: 0, lessons: 0, leads: 0, unread: 0, activity: 0 };
+        var cutoff = Date.now() - sinceMs;
+        // HC done = hc.contact captured-at; if no precise window, use bos.healthCheck presence (single-snapshot).
+        var contact = getJson('hc.contact', null);
+        if (contact && contact.capturedAt) {
+          // best-effort — capturedAt is usually 'progress-save' / 'completion' (label not date), so we conservatively count "1 if present" then flag in subline
+          out.hc = 1;
+        } else if (getJson('bos.healthCheck', null)) {
+          out.hc = 1;
+        }
+        var advancedAll = getJson('incubator.phaseAdvanced', {}) || {};
+        out.advances = Object.keys(advancedAll).filter(function (k) { return advancedAll[k]; }).length;
+        var lp = getJson('bos.lessonProgress', {}) || {};
+        out.lessons = Object.keys(lp).filter(function (k) { return lp[k]; }).length;
+        var leads = getJson('bos.leads', []) || [];
+        out.leads = leads.filter(function (l) { return !l.capturedAt || +new Date(l.capturedAt) >= cutoff; }).length;
+        var notifs = getJson('bos.notifications', []) || [];
+        out.unread = notifs.filter(function (n) { return !n.read && +new Date(n.ts) >= cutoff; }).length;
+        var act = (window.Activity && window.Activity.list({ sinceMs: sinceMs })) || [];
+        out.activity = act.length;
+        return out;
+      }
+
+      function gatherHighlights(sinceMs) {
+        /* Highlight #1 — most-engaged business (per-namespace activity count). */
+        var bizList = (window.BOSStorage && window.BOSStorage.list && window.BOSStorage.list()) || [];
+        var perBiz = {};
+        bizList.forEach(function (b) {
+          try {
+            var raw = localStorage.getItem('businesses.' + b.id + '.bos.activity');
+            var arr = raw ? JSON.parse(raw) : [];
+            var cutoff = Date.now() - sinceMs;
+            perBiz[b.id] = (arr || []).filter(function (e) { return +new Date(e.ts) >= cutoff; }).length;
+          } catch (e) { perBiz[b.id] = 0; }
+        });
+        var top = bizList.map(function (b) { return [b, perBiz[b.id] || 0]; }).sort(function (a, b) { return b[1] - a[1]; })[0];
+        var mostEngaged = top && top[1] > 0
+          ? '🏆 <strong>Most engaged:</strong> ' + escape(top[0].name) + ' (' + top[1] + ' events)'
+          : '🏆 <strong>Most engaged:</strong> <em class="muted">No business activity in window — indicative only.</em>';
+
+        /* Highlight #2 — stuck users (single-user proxy). */
+        var hc = getJson('bos.healthCheck', null);
+        var advanced = getJson('incubator.phaseAdvanced', {}) || {};
+        var advN = Object.keys(advanced).filter(function (k) { return advanced[k]; }).length;
+        var contact = getJson('hc.contact', null);
+        var capturedAt = contact && contact.resumedAt ? contact.resumedAt : null;
+        var stuckMsg;
+        if (hc && advN === 0) {
+          stuckMsg = '⚠ <strong>Stuck pattern:</strong> HC done, no phase advance yet — this user could use a nudge.';
+        } else if (!hc) {
+          stuckMsg = '⚠ <strong>Stuck pattern:</strong> No HC on file. Send the lead-magnet link.';
+        } else {
+          stuckMsg = '✓ <strong>Stuck pattern:</strong> No obvious stuck pattern this week.';
+        }
+
+        /* Highlight #3 — marketplace interest spike. */
+        var clicks = getJson('bos.marketplaceClicks', {}) || {};
+        var entries = Object.keys(clicks).map(function (k) { return [k, clicks[k]]; }).sort(function (a, b) { return b[1] - a[1] });
+        var spike = entries.length
+          ? '📈 <strong>Marketplace interest:</strong> top add-on this period is <strong>' + escape(entries[0][0]) + '</strong> (' + entries[0][1] + ' clicks).'
+          : '📈 <strong>Marketplace interest:</strong> <em class="muted">No clicks yet — indicative only.</em>';
+
+        return [mostEngaged, stuckMsg, spike];
+      }
+
+      function paintWeek() {
+        var ws = weekStart(), we = weekEnd(ws);
+        document.querySelector('[data-bos-week-range]').textContent = fmtDate(ws) + ' – ' + fmtDate(we);
+        var c = gatherCounts(7 * 86400000);
+        var smallN = c.activity < 7 ? '<span class="bos-an-pill bos-an-pill-warn">n<7 indicative</span>' : '';
+        document.querySelector('[data-bos-week-counts]').innerHTML =
+          '<div class="bos-week-grid">' +
+            '<div><div class="muted">HC done</div><strong>' + c.hc + '</strong></div>' +
+            '<div><div class="muted">Phase advances</div><strong>' + c.advances + '</strong></div>' +
+            '<div><div class="muted">Lessons done</div><strong>' + c.lessons + '</strong></div>' +
+            '<div><div class="muted">Leads (week)</div><strong>' + c.leads + '</strong></div>' +
+            '<div><div class="muted">Unread inbox</div><strong>' + c.unread + '</strong></div>' +
+            '<div><div class="muted">Activity events</div><strong>' + c.activity + '</strong> ' + smallN + '</div>' +
+          '</div>';
+        var hi = gatherHighlights(7 * 86400000);
+        document.querySelector('[data-bos-week-highlights]').innerHTML =
+          '<ul class="bos-week-hl">' + hi.map(function (h) { return '<li>' + h + '</li>'; }).join('') + '</ul>';
+
+        /* Auto-arm Monday banner. */
+        var arm = document.querySelector('[data-bos-week-arm]');
+        var ml = getJson('bos.reports.weekly.lastArmedISO', null);
+        var now = new Date();
+        var isMonMorning = now.getDay() === 1 && now.getHours() < 12;
+        var armed = ml ? (Date.now() - +new Date(ml) < 6 * 86400000) : false;
+        if (isMonMorning && !armed) {
+          arm.hidden = false;
+          arm.innerHTML = '🌅 <strong>Monday digest ready</strong> — last week\'s wrap-up is queued up. <a href="#" data-bos-week-arm-open style="color:#C9A76A">Open it →</a>';
+        } else {
+          arm.hidden = true;
+        }
+      }
+      paintWeek();
+
+      function buildMarkdown() {
+        var ws = weekStart(), we = weekEnd(ws);
+        var c = gatherCounts(7 * 86400000);
+        var hi = gatherHighlights(7 * 86400000).map(function (h) { return '- ' + h.replace(/<[^>]+>/g, ''); }).join('\n');
+        var lines = [
+          '# Founder digest · ' + fmtDate(ws) + ' – ' + fmtDate(we),
+          '',
+          '_Demo mock — real send via T6 once email-sender ships._',
+          '',
+          '## Counts',
+          '- HC done: ' + c.hc,
+          '- Phase advances: ' + c.advances,
+          '- Lessons done: ' + c.lessons,
+          '- Leads (week): ' + c.leads,
+          '- Unread inbox: ' + c.unread,
+          '- Activity events: ' + c.activity + (c.activity < 7 ? ' (n<7 — indicative only)' : ''),
+          '',
+          '## Highlights',
+          hi,
+          '',
+          '— Sent from Business OS admin · ' + new Date().toISOString()
+        ];
+        return lines.join('\n');
+      }
+
+      function openModal() {
+        var md = buildMarkdown();
+        document.querySelector('[data-bos-week-md]').value = md;
+        document.querySelector('[data-bos-week-modal]').hidden = false;
+        /* Persist to history. */
+        var hist = getJson('bos.reports.weekly', []) || [];
+        hist.push({ ts: new Date().toISOString(), md: md });
+        setJson('bos.reports.weekly', hist.slice(-12));
+        setJson('bos.reports.weekly.lastArmedISO', new Date().toISOString());
+        if (window.Activity) window.Activity.log('settings.changed', { tab: 'reports', action: 'weekly-digest' });
+      }
+      function closeModal() { document.querySelector('[data-bos-week-modal]').hidden = true; }
+
+      document.querySelector('[data-bos-week-send]').addEventListener('click', openModal);
+      document.querySelector('[data-bos-week-modal-close]').addEventListener('click', closeModal);
+      document.querySelector('[data-bos-week-modal]').addEventListener('click', function (ev) {
+        if (ev.target === ev.currentTarget) closeModal();
+      });
+      document.querySelector('[data-bos-week-copy]').addEventListener('click', function () {
+        var ta = document.querySelector('[data-bos-week-md]');
+        var status = document.querySelector('[data-bos-week-copy-status]');
+        try {
+          ta.select(); document.execCommand('copy');
+          if (navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(function () {});
+          status.textContent = '✓ Copied. Paste into your mail client.';
+          setTimeout(function () { status.textContent = ''; }, 4000);
+        } catch (e) {
+          status.textContent = 'Couldn\'t copy automatically — select the text and copy manually.';
+        }
+      });
+      document.addEventListener('click', function (ev) {
+        var op = ev.target.closest('[data-bos-week-arm-open]');
+        if (op) { ev.preventDefault(); openModal(); return; }
+        var hb = ev.target.closest('[data-bos-week-history]');
+        if (hb) {
+          var hist = getJson('bos.reports.weekly', []) || [];
+          if (!hist.length) { alert('No saved digests yet.'); return; }
+          var lines = hist.slice().reverse().map(function (h, i) {
+            return (i + 1) + '. ' + new Date(h.ts).toLocaleString();
+          }).join('\n');
+          alert('Digest history (' + hist.length + ' saved):\n\n' + lines + '\n\nOpen the most recent below in the modal.');
+          var md = hist[hist.length - 1].md;
+          document.querySelector('[data-bos-week-md]').value = md;
+          document.querySelector('[data-bos-week-modal]').hidden = false;
+        }
       });
     })();
 
