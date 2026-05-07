@@ -78,6 +78,33 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R002 — Aqua Incubator template (Notion-style)** — DONE.
+      Goal A: 4 Notion blocks — `icon` extended with image-mode props
+      (image/offsetY/label, back-compat with glyph); NEW `property-strip`
+      (Notion key-value disclosure with phase/select pill chips); NEW
+      `toggle` (`▸ Header` native `<details>`, `isContainer:true`);
+      `card-grid` extended with Notion `items[]` mode alongside back-compat
+      `cards` shape. Registry 58→60. Goal B: `aqua-incubator` page-template
+      preset (§15e tree) + 4 sub-pages (onboarding/client-portal/resources/
+      discover) seeded as siblings via `applyStarterVariant("aqua-incubator")`.
+      `AQUA_INCUBATOR_TEMPLATE_IDS` exported readonly; `selectStarterForPhase
+      ("Epic Intro") === "aqua-incubator"`. Goal C: foundation hook ready —
+      T1 calls `selectStarterForPhase(phase)` from "+ New client" modal.
+      Goal D: bridge button on portal sub-page — label "Click Me To Enter
+      Your Portal!" → `/portal/customer` (same-origin). Goal E: NEW
+      `__smoke__/incubator-template.test.ts` 39 cases (registry/template/
+      sub-pages/bridge/selectStarterForPhase/graceful-degrade/loader). Plugin
+      smoke **167/167** (52 + 25 + 25 + 26 + 39). tsc clean. Chapter
+      `04-incubator-template.md` + MASTER row #63 + R2 chapter pointer.
+      Cover-asset placeholder dir + README at
+      `04-the-final-portal/portal/public/aqua-incubator/`. Q-ASSUMED:
+      starter role="account" (PortalRole has no "customer" yet);
+      operator-supplied final cover imagery.
+      Cross-team: T1 wires `selectStarterForPhase` into the agency-shell
+      modal; foundation widens `PortalRole` when ready. Deferred: cover
+      upload pipeline; Vimeo embed; marketplace browsing; dedicated
+      `customer`/`incubator` PortalRole; generalised `siblingPages?:`
+      starter field.
 - [x] **T3 R10 — Editor deep-link + page picker** — DONE.
       Goal A: deep-link contract `/portal/clients/[clientId]/edit-website?page=&variant=`
       with pure helpers in `lib/editorDeepLink.ts` (parse/build/pagesForVariant/

@@ -18,6 +18,7 @@ export type BlockType =
   | "heading" | "text" | "button" | "hero" | "cta" | "testimonials"
   | "pricing-table" | "faq" | "quote" | "banner" | "author-bio" | "stats-bar"
   | "logo-grid" | "feature-grid" | "tabs" | "accordion" | "card-grid"
+  | "property-strip" | "toggle"
   | "footer" | "navbar" | "timeline" | "form" | "contact-form"
   // media
   | "image" | "video" | "icon" | "gallery" | "map" | "before-after" | "marquee"

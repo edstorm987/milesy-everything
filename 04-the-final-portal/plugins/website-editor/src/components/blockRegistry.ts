@@ -60,6 +60,8 @@ import MemberGateBlock from "./blocks/MemberGateBlock";
 import NavbarBlock from "./blocks/NavbarBlock";
 import NewsletterSignupBlock from "./blocks/NewsletterSignupBlock";
 import OrderSuccessBlock from "./blocks/OrderSuccessBlock";
+import PropertyStripBlock from "./blocks/PropertyStripBlock";
+import ToggleBlock from "./blocks/ToggleBlock";
 import PaymentButtonBlock from "./blocks/PaymentButtonBlock";
 import PricingTableBlock from "./blocks/PricingTableBlock";
 import ProductCardBlock from "./blocks/ProductCardBlock";
@@ -339,6 +341,21 @@ export const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
       { key: "columns", label: "Columns", type: "number", default: 3 },
     ],
   },
+  "property-strip": {
+    type: "property-strip", label: "Property strip", icon: "≡", category: "content", isContainer: false,
+    Component: PropertyStripBlock, defaultProps: { rows: [] },
+    fields: [
+      { key: "collapsedLabel", label: "Collapsed label", type: "text", default: "" },
+    ],
+  },
+  toggle: {
+    type: "toggle", label: "Toggle", icon: "▸", category: "content", isContainer: true,
+    Component: ToggleBlock, defaultProps: { label: "Toggle", defaultOpen: false },
+    fields: [
+      { key: "label", label: "Label", type: "text", default: "Toggle" },
+      { key: "defaultOpen", label: "Open by default", type: "boolean", default: false },
+    ],
+  },
   footer: {
     type: "footer", label: "Footer", icon: "⌐", category: "content", isContainer: false,
     Component: FooterBlock,
@@ -441,6 +458,9 @@ export const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
       { key: "glyph", label: "Icon character", type: "text", default: "✦" },
       { key: "size", label: "Size", type: "text", default: "32px" },
       { key: "color", label: "Colour", type: "color", default: "#ff6b35" },
+      { key: "image", label: "Image URL (image mode)", type: "image", default: "", help: "When set, renders a 64×64 image chip with offsetY for cover overlap (Notion-style)" },
+      { key: "offsetY", label: "Vertical offset (image mode)", type: "number", default: -32 },
+      { key: "label", label: "Caption (image mode)", type: "text", default: "" },
     ],
   },
   gallery: {

@@ -84,6 +84,30 @@ export async function applyStarterVariant(
       return { ok: false, error: `failed to set active variant for ${input.role}` };
     }
 
+    // Aqua Incubator template (chapter §15e) seeds 4 sibling sub-pages
+    // alongside the root so cardGrid relative hrefs resolve. Done here
+    // (rather than in the caller) so any future `siblingPages` starter
+    // shape can plug in the same place.
+    if (input.variantId === "aqua-incubator") {
+      const { AQUA_INCUBATOR_TEMPLATE_IDS, getTemplate } = await import("../components/pageTemplates");
+      for (const id of AQUA_INCUBATOR_TEMPLATE_IDS) {
+        if (id === "aqua-incubator") continue;
+        const tpl = getTemplate(id);
+        if (!tpl) continue;
+        await createPage(storage, {
+          siteId: site.id,
+          agencyId: input.agencyId,
+          clientId: input.clientId,
+          title: tpl.defaultTitle,
+          slug: tpl.defaultSlug,
+          blocks: tpl.build(),
+          portalRole: input.role,
+          isActivePortal: false,
+          variantId: id,
+        });
+      }
+    }
+
     return { ok: true, variantId: input.variantId, pageId: page.id, siteId: site.id };
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);

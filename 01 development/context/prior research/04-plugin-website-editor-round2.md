@@ -398,3 +398,17 @@ required) across:
   brand-kit defaults).
 - Confirm-dialog visual polish — `confirm()` shim still ultimately
   falls through to `window.confirm` until T1 ships the styled host.
+
+## Round 002 — Notion-style blocks added
+
+See chapter [`04-incubator-template.md`](04-incubator-template.md) for
+the Aqua Incubator template work. Touches the R2 surface in three
+ways: (a) extended `icon` block with image-mode props (`image` /
+`offsetY` / `label`); back-compat with glyph mode. (b) extended
+`card-grid` with Notion-card mode via `items: [{coverImg, icon, label,
+href}]` alongside the existing `cards` shape. (c) two new block types
+in the registry — `property-strip` (Notion-style key-value
+disclosure) and `toggle` (`▸ Header` disclosure with nested children;
+`isContainer: true`). BLOCK_REGISTRY 58→60; RENDERER_REGISTRATIONS
+auto-derives via `NATIVE_RENDERERS` so cross-plugin renderer count
+unchanged. Smoke `blocks.test.ts` 50→52 (assertions bumped 58→60).

@@ -67,14 +67,14 @@ async function main(): Promise<void> {
   );
   expect("storefront.blocks present", Boolean(manifest.storefront?.blocks));
   expect(
-    "storefront.blocks has 58 entries",
-    (manifest.storefront?.blocks?.length ?? 0) === 58,
+    "storefront.blocks has 60 entries",
+    (manifest.storefront?.blocks?.length ?? 0) === 60,
     `actual: ${manifest.storefront?.blocks?.length}`,
   );
   expect("features has 8 entries", manifest.features.length === 8, `actual: ${manifest.features.length}`);
 
   console.log("\nblock registry");
-  expect("BLOCK_REGISTRY has 58 entries", Object.keys(BLOCK_REGISTRY).length === 58);
+  expect("BLOCK_REGISTRY has 60 entries", Object.keys(BLOCK_REGISTRY).length === 60);
   expect(
     "BLOCK_DESCRIPTORS matches BLOCK_REGISTRY size",
     BLOCK_DESCRIPTORS.length === Object.keys(BLOCK_REGISTRY).length,
@@ -84,11 +84,11 @@ async function main(): Promise<void> {
   for (const [type, def] of Object.entries(BLOCK_REGISTRY)) {
     if (typeof def.Component === "function" && def.type === type) evaluated++;
   }
-  expect("every block component is callable", evaluated === 58, `actual: ${evaluated}`);
+  expect("every block component is callable", evaluated === 60, `actual: ${evaluated}`);
 
   console.log("\nrenderer registrations (cross-plugin)");
   expect(
-    "RENDERER_REGISTRATIONS covers all 58 native blocks",
+    "RENDERER_REGISTRATIONS covers all 60 native blocks",
     Object.keys(BLOCK_REGISTRY).every(type => typeof RENDERER_REGISTRATIONS[type] === "function"),
   );
   // 8 ecommerce + 3 memberships should be in the map even though they
@@ -138,7 +138,7 @@ async function main(): Promise<void> {
 
   console.log("\nstarter trees");
   const ids = listStarterIds();
-  expect("6 starter trees indexed", ids.length === 6, `actual: ${ids.length}`);
+  expect("11 starter trees indexed (R002 +5 aqua-incubator)", ids.length === 11, `actual: ${ids.length}`);
   for (const id of ids) {
     const t = await loadStarterTree(id);
     expect(`load ${id}`, t !== null && t.variantId === id, `got ${JSON.stringify(t?.variantId)}`);

@@ -360,8 +360,199 @@ export const PAGE_TEMPLATES: PageTemplate[] = [
       ]),
     ],
   },
+  // ── Aqua Incubator ────────────────────────────────────────────────────
+  // Notion-style client-onboarding portal — chapter §15e. Auto-applied
+  // when phase = "Epic Intro" via selectStarterForPhase().
+  ...buildAquaIncubatorTemplates(),
+];
+
+const AQUA_INCUBATOR_COVER = "/aqua-incubator/cover-roots.jpg";
+const AQUA_INCUBATOR_ICON = "/aqua-incubator/icon-incubator.png";
+const AQUA_INCUBATOR_CARD_COVER = "/aqua-incubator/card-cover.jpg";
+
+function aquaIncubatorRootBody(): Block[] {
+  return [
+    blk("hero", {
+      eyebrow: "",
+      headline: "Welcome to the Aqua Incubator",
+      subhead: "Your Onboarding Control Panel — Please Follow Each Step in Order.",
+      ctaLabel: "",
+      ctaHref: "",
+      backgroundImage: AQUA_INCUBATOR_COVER,
+    }),
+    blk("icon", { image: AQUA_INCUBATOR_ICON, offsetY: -32, label: "" }),
+    blk("heading", { text: "THE OPULENCE INCUBATOR 3.0", level: 1 }),
+    blk("text", { text: "Your Onboarding Control Panel — Please Follow Each Step in Order." }),
+    blk("property-strip", {
+      rows: [
+        { key: "Phase", type: "phase", value: "Epic Intro" },
+        { key: "Plan", type: "select", value: "Standard" },
+        { key: "Started", type: "date", value: "" },
+      ],
+      collapsedLabel: "3 properties",
+    }),
+    blk("toggle", { label: "Your First Action Step - Please Open Me!", defaultOpen: false }, [
+      blk("text", { text: "Watch the introduction video, then click into 'Aqua Onboarding - Start Here!' below." }),
+    ]),
+    blk("toggle", { label: "Need Some Help? Get In Touch Here.", defaultOpen: false }, [
+      blk("text", { text: "Send a WhatsApp message — operator overrides this with the real link." }),
+    ]),
+    blk("toggle", { label: "Have an Idea? Your Feedback Drives Our System Evolution.", defaultOpen: false }, [
+      blk("text", { text: "Drop your idea in the feedback form — operator wires the form id." }),
+    ]),
+    blk("divider", {}),
+    blk("card-grid", {
+      heading: "Incubator Navigation",
+      columns: 2,
+      items: [
+        { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "💎", label: "Aqua Onboarding - Start Here!", href: "./onboarding" },
+        { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "🏛", label: "My Client Portal - Access",     href: "./client-portal" },
+        { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "✨", label: "Aqua Resources Lite - Bonus!",  href: "./resources" },
+        { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "🌊", label: "Discover AquaOasis-Web",         href: "./discover" },
+      ],
+    }),
+    blk("divider", {}),
+  ];
+}
+
+function aquaSubPage(title: string, caption: string, body: Block[]): Block[] {
+  return [
+    blk("hero", { headline: title, subhead: caption, backgroundImage: AQUA_INCUBATOR_COVER, ctaLabel: "", ctaHref: "" }),
+    blk("icon", { image: AQUA_INCUBATOR_ICON, offsetY: -32 }),
+    blk("heading", { text: title, level: 1 }),
+    ...body,
+  ];
+}
+
+function buildAquaIncubatorTemplates(): PageTemplate[] {
+  return [
+    {
+      id: "aqua-incubator",
+      label: "Aqua Incubator",
+      description: "Notion-style client-onboarding portal (Epic Intro phase).",
+      icon: "💎",
+      defaultSlug: "/",
+      defaultTitle: "Welcome to the Aqua Incubator",
+      build: aquaIncubatorRootBody,
+    },
+    {
+      id: "aqua-incubator-onboarding",
+      label: "Aqua Onboarding",
+      description: "Sub-page: onboarding video + first-action toggles.",
+      icon: "💎",
+      defaultSlug: "/onboarding",
+      defaultTitle: "Aqua Onboarding - Start Here!",
+      build: () => aquaSubPage(
+        "Aqua Onboarding - Start Here!",
+        "Watch the intro and complete each form below.",
+        [
+          blk("video", { src: "" }),
+          blk("toggle", { label: "Introduction", defaultOpen: true }, [
+            blk("text", { text: "Welcome — operator replaces this with the introduction copy." }),
+          ]),
+          blk("button", { label: "System Production Form", href: "#", variant: "primary" }),
+          blk("button", { label: "My Minimum Viable Business Checklist", href: "#", variant: "secondary" }),
+        ],
+      ),
+    },
+    {
+      id: "aqua-incubator-portal",
+      label: "My Client Portal",
+      description: "Sub-page: bridge button into the client's Aqua portal.",
+      icon: "🏛",
+      defaultSlug: "/client-portal",
+      defaultTitle: "My Client Portal - Access",
+      build: () => aquaSubPage(
+        "My Client Portal - Access",
+        "Your gateway into the live Aqua portal.",
+        [
+          blk("toggle", { label: "Introduction", defaultOpen: true }, [
+            blk("text", { text: "Click the button below to enter your portal." }),
+          ]),
+          blk("button", {
+            label: "Click Me To Enter Your Portal!",
+            href: "/portal/customer",
+            variant: "primary",
+            hoverAnim: "lift",
+          }),
+        ],
+      ),
+    },
+    {
+      id: "aqua-incubator-resources",
+      label: "Aqua Resources Lite",
+      description: "Sub-page: modules + AI assistants + tutorial toggles.",
+      icon: "✨",
+      defaultSlug: "/resources",
+      defaultTitle: "Aqua Resources Lite - Bonus!",
+      build: () => aquaSubPage(
+        "Aqua Resources Lite - Bonus!",
+        "All Things Aqua — modules, assistants, tutorials.",
+        [
+          blk("card-grid", {
+            heading: "Aqua Resources",
+            columns: 2,
+            items: [
+              { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "📚", label: "Incubator Modules", href: "#" },
+              { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "🤖", label: "Personal AI Assistants", href: "#" },
+            ],
+          }),
+          blk("toggle", { label: "AquaSuite GHL Tutorial" }, [blk("text", { text: "Tutorial coming soon." })]),
+          blk("toggle", { label: "My Business OS Tutorial" }, [blk("text", { text: "Tutorial coming soon." })]),
+          blk("toggle", { label: "Where time is no longer tied to income" }, [blk("text", { text: "Mythos copy — operator override." })]),
+        ],
+      ),
+    },
+    {
+      id: "aqua-incubator-discover",
+      label: "Discover AquaOasis-Web",
+      description: "Sub-page: brand discovery cards.",
+      icon: "🌊",
+      defaultSlug: "/discover",
+      defaultTitle: "Discover AquaOasis-Web",
+      build: () => aquaSubPage(
+        "Discover AquaOasis-Web",
+        "All Things Aqua — community, philosophy, charity, affiliates.",
+        [
+          blk("card-grid", {
+            heading: "All Things Aqua",
+            columns: 2,
+            items: [
+              { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "📜", label: "Aqua Philosophy",     href: "#" },
+              { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "👥", label: "Meet the Team",        href: "#" },
+              { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "💬", label: "Aqua Community",       href: "#" },
+              { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "❤️", label: "Charity & Impact",      href: "#" },
+              { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "📣", label: "Follow the Movement",  href: "#" },
+              { coverImg: AQUA_INCUBATOR_CARD_COVER, icon: "🤝", label: "Become an Affiliate",  href: "#" },
+            ],
+          }),
+        ],
+      ),
+    },
+  ];
+}
+
+// IDs of every Aqua Incubator template (root + 4 sub-pages). Used by
+// applyStarterVariant to seed all 5 pages when "aqua-incubator" is
+// applied as a starter (chapter §15e: each card destination is itself
+// a page using the same anatomy).
+export const AQUA_INCUBATOR_TEMPLATE_IDS: readonly string[] = [
+  "aqua-incubator",
+  "aqua-incubator-onboarding",
+  "aqua-incubator-portal",
+  "aqua-incubator-resources",
+  "aqua-incubator-discover",
 ];
 
 export function getTemplate(id: string): PageTemplate | undefined {
   return PAGE_TEMPLATES.find(t => t.id === id);
+}
+
+// Phase-driven starter selection. T2 fulfillment calls this when phase
+// transitions; "Epic Intro" → "aqua-incubator". Foundation hook only;
+// T1's "+ New client" modal exposes it as a toggleable default.
+export function selectStarterForPhase(phase: string | null | undefined): string | null {
+  if (!phase) return null;
+  if (phase === "Epic Intro") return "aqua-incubator";
+  return null;
 }
