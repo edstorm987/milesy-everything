@@ -38,6 +38,17 @@ const SECURITY_HEADERS = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // T4 unify-2 — let static apps in `public/` (health-check, business-os,
+  // incubator) be reached at `/health-check`, `/business-os`,
+  // `/incubator` and serve their index.html. Next.js doesn't auto-resolve
+  // directory paths to index.html in `public/`; rewrites do.
+  async rewrites() {
+    return [
+      { source: "/health-check", destination: "/health-check/index.html" },
+      { source: "/business-os",  destination: "/business-os/index.html" },
+      { source: "/incubator",    destination: "/incubator/index.html" },
+    ];
+  },
   // T4 unify-1 — anchor Turbopack + output-file tracing one level up
   // (at `04-the-final-portal/`) so the sibling `../plugins/*` source
   // files are inside the traced workspace. Plugins install via

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body" data-mobile-checked="2026-05-07">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="app.html"></nav>
+      <div class="bos-side-user">
+        <div class="av" data-bos-initial>JL</div>
+        <div>
+          <div class="bos-side-user-name" data-bos-name>Jordan Lee</div>
+          <div class="bos-side-user-biz muted" data-bos-business>Northbeam Apparel</div>
+        </div>
+      </div>
+    </aside>
+
+    <main id="bos-home" class="bos-main bos-home">
+
+      <header class="bos-home-greet">
+        <h1 data-bos-greet>Welcome.</h1>
+        <p class="muted bos-home-tagline" data-bos-niche-tagline>A solid generic operating system.</p>
+        <button class="bos-home-customise" data-bos-brand-open>✎ Customise — make it yours</button>
+      </header>
+
+      <!-- Single big "next move" card -->
+      <section class="bos-home-next" data-bos-home-next>
+        <span class="eyebrow">Your next move</span>
+        <h2 data-bos-next-title>Take the free Health Check.</h2>
+        <p data-bos-next-body>It takes 12 minutes and unlocks a personalised picture of your business — what's leaking customers, where the quick wins are, what to do this week.</p>
+        <div class="hc-actions">
+          <a class="btn btn-primary btn-lg" data-bos-next-cta href="../health-check/index.html?from=bos">Start the Health Check →</a>
+          <button class="btn btn-secondary btn-lg" data-bos-next-skip hidden>Mark as done</button>
+        </div>
+      </section>
+
+      <!-- HC-derived recommendation strip (only shows if HC done) -->
+      <section class="bos-home-leak" data-bos-home-leak hidden>
+        <span class="eyebrow">Based on your Health Check</span>
+        <h3 data-bos-leak-title>Your biggest leak right now is <strong data-bos-leak-topic>Visibility</strong>.</h3>
+        <p class="muted" data-bos-leak-body>Start with the lesson that targets it directly.</p>
+        <a class="btn btn-primary" data-bos-leak-cta href="database.html">Open the lesson →</a>
+      </section>
+
+      <!-- Three friendly help cards -->
+      <section class="bos-home-cards">
+        <a href="database.html" class="bos-home-card">
+          <div class="bos-home-card-icon">📚</div>
+          <h3>Read a quick lesson</h3>
+          <p class="muted">Five short lessons. 10–15 minutes each. Pick whichever bit of your business you want to fix first.</p>
+        </a>
+        <a href="#" data-bos-open-ai class="bos-home-card">
+          <div class="bos-home-card-icon">🤖</div>
+          <h3>Ask the AI</h3>
+          <p class="muted">It knows what's in your portal. Ask anything — "what's my biggest leak?" or "which lesson should I do first?"</p>
+        </a>
+        <a href="request.html" class="bos-home-card">
+          <div class="bos-home-card-icon">✨</div>
+          <h3>Need something else?</h3>
+          <p class="muted">Tell us what would help. Half the time we already have it and we'll switch it on for you.</p>
+        </a>
+      </section>
+
+      <!-- Tiny admin entry (dev-visible) -->
+      <div class="bos-home-admin-row">
+        <a href="admin.html" class="bos-home-admin-link">⚙ Admin (lead-magnet traffic)</a>
+      </div>
+
+      <!-- Slim progress strip — only shows after they've earned something -->
+      <section class="bos-home-progress" data-bos-home-progress hidden>
+        <div class="bos-home-progress-line">
+          <span class="muted bos-home-progress-label">Level <span data-bos-level-num>1</span> · <span data-bos-level-name>Apprentice</span></span>
+          <span class="muted">·</span>
+          <span class="muted"><span data-bos-streak>0</span>-day streak 🔥</span>
+          <span class="muted">·</span>
+          <span class="muted"><span data-bos-time-saved>0h</span> saved</span>
+        </div>
+        <div class="bos-home-progress-bar">
+          <span data-bos-level-bar style="width:0%"></span>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="bos.js"></script>
+  <script>
+    /* Adapt the "next move" card to where the user actually is.
+       Free-tier journey:
+         1. New user → Take Health Check
+         2. HC done → Add your business name (Company Profile)
+         3. Company filled → Open your first lesson
+         4. Lesson opened → Add your first to-do
+         5. Done → "You're set. Keep going at your own pace."  */
+    document.addEventListener('DOMContentLoaded', function () {
+      var hc = null, company = null, progress = null, tasks = null;
+      try {
+        hc       = JSON.parse(localStorage.getItem('bos.healthCheck') || 'null');
+        company  = JSON.parse(localStorage.getItem('bos.company') || 'null');
+        progress = JSON.parse(localStorage.getItem('bos.progress') || '{}');
+        tasks    = JSON.parse(localStorage.getItem('bos.tasks') || '{}');
+      } catch (e) {}
+
+      var hasHc      = !!hc;
+      var hasCompany = company && (company.oneliner || company['founder-name']);
+      var hasLesson  = (progress.completed && Object.keys(progress.completed).length > 1) || (progress.xp || 0) >= 200;
+      var hasTask    = tasks && ((tasks.today || []).length + (tasks.week || []).length + (tasks.done || []).length) > 0;
+
+      var t = document.querySelector('[data-bos-next-title]');
+      var b = document.querySelector('[data-bos-next-body]');
+      var c = document.querySelector('[data-bos-next-cta]');
+
+      if (!hasHc) {
+        t.textContent = 'Take the free Health Check.';
+        b.textContent = 'It takes 12 minutes and unlocks a personalised picture of your business — what\'s leaking customers, where the quick wins are, what to do this week.';
+        c.textContent = 'Start the Health Check →';
+        c.setAttribute('href', '../health-check/index.html?from=bos');
+      } else if (!hasCompany) {
+        t.textContent = 'Tell us about your business.';
+        b.textContent = 'Two minutes. Just the basics — what you sell, who you serve. We use it to tailor everything else.';
+        c.textContent = 'Open my Company Profile →';
+        c.setAttribute('href', 'company.html');
+      } else if (!hasLesson) {
+        t.textContent = 'Read your first quick-win lesson.';
+        b.textContent = 'Five lessons, 10–15 minutes each. Start with Core Principles — it\'s the one that holds everything else up.';
+        c.textContent = 'Open Core Principles →';
+        c.setAttribute('href', 'module.html?id=core-principles');
+      } else if (!hasTask) {
+        t.textContent = 'Add your first to-do.';
+        b.textContent = 'Pick one thing the lesson made you want to do this week. Write it down. Move it forward.';
+        c.textContent = 'Open my To-dos →';
+        c.setAttribute('href', 'tasks.html');
+      } else {
+        t.textContent = 'You\'re set. Keep going at your own pace.';
+        b.textContent = 'Pick whatever\'s next — another lesson, your numbers, a call with us. The OS is yours.';
+        c.textContent = 'Browse lessons →';
+        c.setAttribute('href', 'database.html');
+      }
+
+      /* Show progress strip if any XP earned */
+      if ((progress.xp || 0) > 0) {
+        document.querySelector('[data-bos-home-progress]').removeAttribute('hidden');
+      }
+
+      /* HC-derived recommendation: pick the lowest-scoring topic and
+         link to the most relevant module. */
+      if (hc && hc.topics && hc.topics.length) {
+        var sorted = hc.topics.slice().sort(function (a, b) { return a.score - b.score; });
+        var leak = sorted[0];
+        var topicMap = {
+          'Visibility & Search':       { id: 'core-principles',    label: 'Visibility' },
+          'Your Website':              { id: 'core-principles',    label: 'Your website' },
+          'Where Customers Come From': { id: 'super-sales',        label: 'Customer flow' },
+          'My Business':               { id: 'core-principles',    label: 'Your offer' },
+          'Keeping Them':              { id: 'referral-alchemy',   label: 'Retention' }
+        };
+        var rec = topicMap[leak.name] || { id: 'core-principles', label: leak.name };
+        var leakBox = document.querySelector('[data-bos-home-leak]');
+        leakBox.removeAttribute('hidden');
+        document.querySelector('[data-bos-leak-topic]').textContent = rec.label;
+        document.querySelector('[data-bos-leak-body]').textContent =
+          'Your ' + rec.label.toLowerCase() + ' score was ' + leak.score + '/100. We\'d start with the lesson that fixes it directly.';
+        document.querySelector('[data-bos-leak-cta]').setAttribute('href', 'module.html?id=' + rec.id);
+      }
+    });
+  </script>
+
+</body>
+</html>

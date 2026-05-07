@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="../incubator/print.css" media="print" />
+</head>
+<body class="bos-body" data-mobile-checked="2026-05-07">
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <main class="bos-main bos-admin">
+
+    <header class="bos-topbar">
+      <div>
+        <div class="muted bos-topbar-eyebrow">Admin · Lead-magnet traffic</div>
+        <h1>BusinessOS Admin.</h1>
+        <p class="muted bos-topbar-sub">Everyone who's started, captured leads, completed health checks, and the questions editor. Will wire into the Aqua portal under "Lead magnet traffic" later — for now this is your local view.</p>
+      </div>
+      <div class="bos-topbar-actions">
+        <a href="app.html" class="btn btn-ghost">← Back to app</a>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="bos-admin-tabs">
+      <button class="bos-admin-tab is-on" data-admin-tab="overview">Overview</button>
+      <button class="bos-admin-tab" data-admin-tab="leads">Leads</button>
+      <button class="bos-admin-tab" data-admin-tab="reports">Health-check reports</button>
+      <button class="bos-admin-tab" data-admin-tab="editor">Questions editor</button>
+    </div>
+
+    <!-- Overview -->
+    <section class="bos-admin-pane" data-admin-pane="overview">
+
+      <!-- R028 — This-week founder digest panel (above existing KPIs) -->
+      <div class="bos-week-panel" data-bos-week-panel>
+        <div class="bos-week-head">
+          <div>
+            <span class="eyebrow">This week</span>
+            <h2 style="margin:4px 0 4px;font-family:'Playfair Display',Georgia,serif">Founder digest <span class="muted" style="font-size:13px;font-family:inherit;font-weight:400" data-bos-week-range></span></h2>
+            <p class="muted" style="margin:0">Synthesis across every business on this device. <strong>Demo</strong> — real send via T6.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-secondary" data-bos-week-history>History</button>
+            <button type="button" class="btn btn-primary" data-bos-week-send>📧 Send digest</button>
+          </div>
+        </div>
+        <div class="bos-week-armbanner" data-bos-week-arm hidden></div>
+        <div class="bos-week-counts" data-bos-week-counts></div>
+        <div class="bos-week-highlights" data-bos-week-highlights></div>
+      </div>
+
+      <!-- Send-digest modal -->
+      <div class="bos-week-modal" data-bos-week-modal hidden>
+        <div class="bos-week-modal-card">
+          <header class="bos-week-modal-head">
+            <h3 style="margin:0">📧 Founder digest — copyable Markdown</h3>
+            <button type="button" class="btn btn-secondary" data-bos-week-modal-close>✕</button>
+          </header>
+          <p class="muted" style="margin:8px 0 12px"><strong>🎬 Demo mode</strong> — real send via T6 once email-sender ships. For now, copy the body below and paste into your mail client.</p>
+          <textarea data-bos-week-md readonly style="width:100%;min-height:280px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;padding:12px;font:13px ui-monospace,monospace;line-height:1.5"></textarea>
+          <div class="hc-actions" style="margin-top:10px">
+            <button type="button" class="btn btn-primary" data-bos-week-copy>📋 Copy to clipboard</button>
+            <span class="muted" data-bos-week-copy-status></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi"><div class="lbl">Health checks completed</div><div class="num" data-admin-stat="hc-count">0</div></div>
+        <div class="kpi"><div class="lbl">Leads captured</div><div class="num" data-admin-stat="lead-count">0</div></div>
+        <div class="kpi"><div class="lbl">Pipeline value</div><div class="num">£<span data-admin-stat="lead-value">0</span></div></div>
+        <div class="kpi"><div class="lbl">BOS sign-ups</div><div class="num" data-admin-stat="user-count">0</div></div>
+      </div>
+
+      <!-- R009 — expanded KPIs -->
+      <div class="kpi-row" style="margin-top:14px">
+        <div class="kpi"><div class="lbl">Active in Incubator</div><div class="num" data-admin-stat="incubator-active">0</div><div class="muted" style="font-size:12px;margin-top:4px" data-admin-stat="incubator-phase">phase: —</div></div>
+        <div class="kpi"><div class="lbl">Lessons completed</div><div class="num" data-admin-stat="lessons-done">0</div><div class="muted" style="font-size:12px;margin-top:4px" data-admin-stat="lessons-of">of 5 written</div></div>
+        <div class="kpi"><div class="lbl">Phase advances</div><div class="num" data-admin-stat="phase-advances">0</div></div>
+        <div class="kpi"><div class="lbl">Top marketplace clicks</div><div class="num" style="font-size:18px;font-weight:600" data-admin-stat="mp-top">—</div><div class="muted" style="font-size:12px;margin-top:4px" data-admin-stat="mp-total">0 total clicks</div></div>
+        <div class="kpi"><div class="lbl">Activity events · 7d</div><div class="num" data-admin-stat="activity-7d">0</div><div class="muted" style="font-size:12px;margin-top:4px"><a href="activity.html">Open timeline →</a></div></div>
+      </div>
+      <div class="bos-notion-slot" style="margin-top:24px">
+        <div class="bos-notion-slot-icon">ℹ️</div>
+        <div>
+          <h3>Local-storage view</h3>
+          <p class="muted">This admin reads from <code>localStorage</code> on this device — exactly what your free-tier user state would look like server-side. Once we wire the portal plugin, this same UI reads from <code>business_os_*</code> Postgres tables instead. Same shapes; same screen.</p>
+        </div>
+      </div>
+
+      <div class="bos-notion-slot" style="margin-top:16px">
+        <div class="bos-notion-slot-icon">📣</div>
+        <div style="flex:1">
+          <h3>Founder broadcast</h3>
+          <p class="muted">Push a message into every BOS user's inbox (this device — once email-sender plugs in, R+1 replicates server-side).</p>
+          <form data-admin-broadcast style="margin-top:12px;display:grid;gap:10px">
+            <input type="text" name="title" placeholder="Title (e.g. New cohort opens 2026-06-01)" required style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px" />
+            <textarea name="body" placeholder="Body — keep it short, link goes below" rows="3" style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;font:inherit"></textarea>
+            <input type="url" name="ctaHref" placeholder="Optional link (https://…)" style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px" />
+            <div style="display:flex;gap:10px;align-items:center">
+              <button type="submit" class="btn btn-primary">Push to inbox</button>
+              <span class="muted" data-admin-broadcast-status></span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="bos-notion-slot" style="margin-top:16px">
+        <div class="bos-notion-slot-icon">🎯</div>
+        <div style="flex:1">
+          <h3>Incubator niche pack</h3>
+          <p class="muted">Switches the copy + recommended modules in the Incubator surface. Saved to <code>bos.brand.niche</code>; takes effect on next Incubator page load. Honesty contract: copy-only.</p>
+          <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <label for="bos-admin-niche" class="muted">Active pack:</label>
+            <select id="bos-admin-niche" style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;min-width:200px">
+              <option value="agency">Agency (default)</option>
+              <option value="skincare">Skincare brand</option>
+              <option value="coaching">Coach / consultant</option>
+              <option value="fitness">Fitness studio / coach</option>
+            </select>
+            <button type="button" id="bos-admin-niche-save" class="btn btn-primary">Save</button>
+            <span id="bos-admin-niche-status" class="muted" style="margin-left:6px"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leads -->
+    <section class="bos-admin-pane" data-admin-pane="leads" hidden>
+      <div class="bos-section-head">
+        <div>
+          <h2>Leads</h2>
+          <p class="muted">Click a row to drill down. Notes save to <code>bos.leadNotes</code>.</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" data-admin-leads-csv>⬇ Export CSV</button>
+        </div>
+      </div>
+      <div class="bos-table-wrap">
+        <table class="bos-table">
+          <thead>
+            <tr><th>Name</th><th>Source</th><th>Stage</th><th>Value</th><th>Contact</th><th></th></tr>
+          </thead>
+          <tbody data-admin-leads></tbody>
+        </table>
+      </div>
+      <div data-admin-lead-detail hidden style="margin-top:18px"></div>
+    </section>
+
+    <!-- Reports -->
+    <section class="bos-admin-pane" data-admin-pane="reports" hidden>
+      <div class="bos-section-head">
+        <div>
+          <h2>Health-check reports</h2>
+          <p class="muted">All HC submissions captured on this device.</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" data-admin-print>🖨 Print this report</button>
+          <button class="btn btn-primary" data-admin-snapshot>📸 Run weekly snapshot</button>
+        </div>
+      </div>
+      <!-- R018 print-only header -->
+      <div data-print-only class="print-header" style="display:none">
+        <div class="print-header-brand">Milesy<span>Media</span> · Founder admin</div>
+        <div class="print-header-meta" data-print-meta></div>
+      </div>
+      <div class="bos-table-wrap">
+        <table class="bos-table">
+          <thead>
+            <tr><th>Headline</th><th>Leak estimate</th><th>Topics</th><th>Captured at</th></tr>
+          </thead>
+          <tbody data-admin-reports></tbody>
+        </table>
+      </div>
+
+      <!-- Snapshot history -->
+      <div style="margin-top:24px">
+        <h3 style="margin-bottom:8px">Weekly snapshots</h3>
+        <p class="muted" style="font-size:13px;margin-bottom:10px">Each snapshot records counts at the moment you click the button. Δ shows the change vs the snapshot taken closest to 7 days prior. <strong>Small-n flagged</strong> — when a metric is &lt;5 we render an indicative-only badge.</p>
+        <div class="bos-table-wrap">
+          <table class="bos-table">
+            <thead>
+              <tr><th>Captured</th><th>Leads</th><th>HC done</th><th>Lessons done</th><th>Phase advances</th></tr>
+            </thead>
+            <tbody data-admin-snapshots>
+              <tr><td colspan="5" class="bos-cp-empty" style="padding:18px">No snapshots yet — click "Run weekly snapshot" above.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- R018 print-only watermark -->
+      <div data-print-only class="print-watermark" style="display:none">
+        <strong>Founder-admin snapshot</strong> — printed <span data-print-date></span>. Local-storage view; small-n flagged where applicable. <span data-print-url></span>
+      </div>
+    </section>
+
+    <!-- Questions editor -->
+    <section class="bos-admin-pane" data-admin-pane="editor" hidden>
+      <div class="bos-section-head">
+        <div>
+          <h2>Health-check questions editor</h2>
+          <p class="muted">Edits the live question set. Saves to <code>localStorage['bos.hcQuestions']</code> — the lead-magnet picks it up on next load. Restore-defaults clears the override.</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" data-admin-restore>Restore defaults</button>
+          <a href="../health-check/index.html?from=bos" target="_blank" class="btn btn-secondary">Open Health Check ↗</a>
+        </div>
+      </div>
+      <div class="bos-admin-tree" data-admin-tree></div>
+    </section>
+
+  </main>
+
+  <script src="../incubator/lib/storage.js"></script>
+  <script src="../incubator/lib/notify.js"></script>
+  <script src="../health-check/hc-questions.js"></script>
+  <script>
+    /* ─── Admin gate ──────────────────────────── */
+    /* TODO (T6): replace prompt() password with real auth (server-side
+       session check + role gate). Today's gate is a throwaway client-
+       side check — anyone with devtools can bypass. Acceptable while
+       the entire app runs on localStorage; not acceptable once the
+       portal plugin lands and reads from Postgres. */
+    (function () {
+      try {
+        if (localStorage.getItem('bos.adminUnlocked') === '1') return;
+        var pw = prompt('Admin access — enter password:');
+        if (pw === 'milesy' || pw === 'aqua') {
+          localStorage.setItem('bos.adminUnlocked', '1');
+          return;
+        }
+        document.body.innerHTML = '<div style="display:grid;place-items:center;min-height:100vh;color:#fff;font-family:system-ui;text-align:center;padding:24px"><div><h1 style="margin-bottom:14px">🔒 Admin only</h1><p style="opacity:0.7">This page is gated. <a href="app.html" style="color:#FF6B35">Return to the app →</a></p></div></div>';
+        throw new Error('locked');
+      } catch (e) {
+        if (e && e.message === 'locked') throw e;
+      }
+    })();
+
+    /* ─── Helpers ─────────────────────────────── */
+    function getJson(k, d) { try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); } catch (e) { return d; } }
+    function setJson(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+    /* ─── Tabs ────────────────────────────────── */
+    document.querySelectorAll('[data-admin-tab]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-admin-tab]').forEach(function (x) { x.classList.remove('is-on'); });
+        b.classList.add('is-on');
+        var t = b.getAttribute('data-admin-tab');
+        document.querySelectorAll('[data-admin-pane]').forEach(function (p) {
+          p.hidden = p.getAttribute('data-admin-pane') !== t;
+        });
+      });
+    });
+
+    /* ─── Overview KPIs ────────────────────────── */
+    var PHASE_LABEL = { 'epic-intro':'Epic Intro','blueprint':'Blueprint','diagnostics':'Diagnostics','brand-builder':'Brand Builder' };
+    function readMetrics() {
+      return {
+        leads: getJson('bos.leads', []),
+        hc: getJson('bos.healthCheck', null),
+        user: getJson('bos.user', null),
+        incActive: localStorage.getItem('incubator.active') === '1',
+        incPhase: localStorage.getItem('incubator.phase') || 'epic-intro',
+        lessons: getJson('bos.lessonProgress', {}),
+        advances: getJson('bos.', null) /* unused — kept for shape */ || getJson('incubator.phaseAdvanced', {}),
+        mpClicks: getJson('bos.marketplaceClicks', {})
+      };
+    }
+    function paintOverview() {
+      var m = readMetrics();
+      var pipelineValue = m.leads.reduce(function (s, l) { return s + (l.value || 0); }, 0);
+      document.querySelector('[data-admin-stat="hc-count"]').textContent = m.hc ? 1 : 0;
+      document.querySelector('[data-admin-stat="lead-count"]').textContent = m.leads.length;
+      document.querySelector('[data-admin-stat="lead-value"]').textContent = pipelineValue.toLocaleString();
+      document.querySelector('[data-admin-stat="user-count"]').textContent = m.user ? 1 : 0;
+
+      // R009 expanded KPIs
+      document.querySelector('[data-admin-stat="incubator-active"]').textContent = m.incActive ? 1 : 0;
+      document.querySelector('[data-admin-stat="incubator-phase"]').textContent = 'phase: ' + (PHASE_LABEL[m.incPhase] || '—');
+
+      var lessonsDone = Object.keys(m.lessons).filter(function (k) { return m.lessons[k]; }).length;
+      document.querySelector('[data-admin-stat="lessons-done"]').textContent = lessonsDone;
+
+      var advances = Object.keys(m.advances).filter(function (k) { return m.advances[k]; }).length;
+      document.querySelector('[data-admin-stat="phase-advances"]').textContent = advances;
+
+      var sortedClicks = Object.keys(m.mpClicks).map(function (k) { return [k, m.mpClicks[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+      var total = sortedClicks.reduce(function (s, p) { return s + p[1]; }, 0);
+      document.querySelector('[data-admin-stat="mp-top"]').textContent = sortedClicks[0] ? sortedClicks[0][0] + ' (' + sortedClicks[0][1] + ')' : '—';
+      document.querySelector('[data-admin-stat="mp-total"]').textContent = total + ' total clicks';
+
+      /* R013 Activity events / 7d KPI. */
+      var activity = getJson('bos.activity', []);
+      var cutoff = Date.now() - 7 * 86400000;
+      var weekN = activity.filter(function (e) { return +new Date(e.ts) >= cutoff; }).length;
+      var act7Cell = document.querySelector('[data-admin-stat="activity-7d"]');
+      if (act7Cell) act7Cell.textContent = weekN;
+    }
+    paintOverview();
+
+    /* ─── Leads table + drill-down (R009) ─────── */
+    function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+    function leadIdOf(l, i) { return l.id || ('L' + i); }
+    function paintLeads() {
+      var leads = getJson('bos.leads', []);
+      var tbody = document.querySelector('[data-admin-leads]');
+      if (!leads.length) { tbody.innerHTML = '<tr><td colspan="6" class="bos-cp-empty" style="padding:22px">No leads captured yet.</td></tr>'; return; }
+      tbody.innerHTML = leads.map(function (l, i) {
+        return '<tr data-admin-lead-row="' + escapeHtml(leadIdOf(l, i)) + '" data-admin-lead-i="' + i + '" style="cursor:pointer">'
+          + '<td><strong>' + escapeHtml(l.name || '?') + '</strong></td>'
+          + '<td>' + escapeHtml(l.source || '—') + '</td>'
+          + '<td><span class="badge badge-good">' + escapeHtml(l.stage || 'new') + '</span></td>'
+          + '<td>£' + (l.value || 0) + '</td>'
+          + '<td>' + escapeHtml(l.contact || '—') + '</td>'
+          + '<td><span class="bos-row-cta">View ↓</span></td>'
+          + '</tr>';
+      }).join('');
+    }
+
+    function renderLeadDetail(i) {
+      var leads = getJson('bos.leads', []);
+      var l = leads[i];
+      var host = document.querySelector('[data-admin-lead-detail]');
+      if (!l) { host.hidden = true; host.innerHTML = ''; return; }
+      var id = leadIdOf(l, i);
+      var notes = getJson('bos.leadNotes', {});
+      var note = notes[id] || '';
+      var hc = getJson('bos.healthCheck', null);
+      var phaseId = localStorage.getItem('incubator.phase') || 'epic-intro';
+      var lastActivity = (function () {
+        var prog = getJson('bos.progress', null);
+        if (prog && prog.lastActive) return new Date(prog.lastActive).toLocaleString();
+        return '—';
+      })();
+      var topicsHtml = (hc && hc.topics) ? hc.topics.map(function (t) {
+        return '<li>' + escapeHtml(t.name) + ' — ' + (t.score == null ? '<span class="muted">unanswered</span>' : '<strong>' + t.score + '</strong>/100') + '</li>';
+      }).join('') : '<li class="muted">No HC on file</li>';
+
+      host.hidden = false;
+      host.innerHTML =
+        '<div class="bos-notion-slot" style="flex-direction:column;align-items:stretch;gap:14px">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">' +
+            '<div>' +
+              '<h3 style="margin:0">' + escapeHtml(l.name || '?') + '</h3>' +
+              '<div class="muted" style="font-size:13px">' + escapeHtml(l.contact || '—') + ' · ' + escapeHtml(l.source || '—') + ' · ' + escapeHtml(l.stage || 'new') + '</div>' +
+            '</div>' +
+            '<button type="button" class="btn btn-secondary" data-admin-lead-close>✕ Close</button>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">' +
+            '<div>' +
+              '<h4 style="margin:0 0 6px">Health Check</h4>' +
+              '<ul style="margin:0;padding-left:18px;font-size:14px">' + topicsHtml + '</ul>' +
+            '</div>' +
+            '<div>' +
+              '<h4 style="margin:0 0 6px">Incubator</h4>' +
+              '<p class="muted" style="margin:0;font-size:14px">Phase: <strong>' + escapeHtml(PHASE_LABEL[phaseId] || phaseId) + '</strong></p>' +
+              '<p class="muted" style="margin:6px 0 0;font-size:14px">Last activity: ' + escapeHtml(lastActivity) + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<h4 style="margin:0 0 6px">Note</h4>' +
+            '<textarea data-admin-lead-note placeholder="Notes about this lead — saved to bos.leadNotes" style="width:100%;min-height:90px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;padding:10px;font:inherit">' + escapeHtml(note) + '</textarea>' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">' +
+              '<span class="muted" style="font-size:12px" data-admin-lead-note-status></span>' +
+              '<button type="button" class="btn btn-primary" data-admin-lead-save="' + escapeHtml(id) + '">Save note</button>' +
+            '</div>' +
+          '</div>' +
+          /* R020 — Preview as this client */
+          '<div style="border-top:1px solid #2A2A2A;padding-top:14px;margin-top:14px">' +
+            '<h4 style="margin:0 0 6px">👁 Preview as this client</h4>' +
+            '<p class="muted" style="font-size:13px;margin:0 0 8px">Previews BOS + Incubator from a client\'s POV for 60 min. Switches active business + flags every page with a banner you can exit.</p>' +
+            '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
+              '<select data-admin-preview-biz style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;min-width:180px"></select>' +
+              '<button type="button" class="btn btn-secondary" data-admin-preview-as="' + escapeHtml(id) + '" data-admin-preview-name="' + escapeHtml(l.name || l.email || '?') + '">Preview as this client →</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      /* Populate the business select from BOSStorage. */
+      var bizSel = host.querySelector('[data-admin-preview-biz]');
+      var businesses = (window.BOSStorage && window.BOSStorage.list && window.BOSStorage.list()) || [];
+      var activeId = window.BOSStorage && window.BOSStorage.activeId && window.BOSStorage.activeId();
+      bizSel.innerHTML = businesses.length
+        ? businesses.map(function (b) { return '<option value="' + escapeHtml(b.id) + '"' + (b.id === activeId ? ' selected' : '') + '>' + escapeHtml(b.name) + '</option>'; }).join('')
+        : '<option value="">(no businesses — add one in BOS sidebar)</option>';
+    }
+
+    document.addEventListener('click', function (ev) {
+      var row = ev.target.closest('[data-admin-lead-row]');
+      if (row) {
+        renderLeadDetail(parseInt(row.getAttribute('data-admin-lead-i'), 10));
+        return;
+      }
+      var close = ev.target.closest('[data-admin-lead-close]');
+      if (close) {
+        var host = document.querySelector('[data-admin-lead-detail]');
+        host.hidden = true; host.innerHTML = '';
+        return;
+      }
+      var save = ev.target.closest('[data-admin-lead-save]');
+      if (save) {
+        var id = save.getAttribute('data-admin-lead-save');
+        var ta = document.querySelector('[data-admin-lead-note]');
+        var notes = getJson('bos.leadNotes', {});
+        notes[id] = (ta && ta.value) || '';
+        setJson('bos.leadNotes', notes);
+        var st = document.querySelector('[data-admin-lead-note-status]');
+        if (st) { st.textContent = 'Saved.'; setTimeout(function () { st.textContent = ''; }, 2500); }
+      }
+      /* R020 — Preview as this client. Writes bos.previewAs + switches business. */
+      var prev = ev.target.closest('[data-admin-preview-as]');
+      if (prev) {
+        var leadId = prev.getAttribute('data-admin-preview-as');
+        var leadName = prev.getAttribute('data-admin-preview-name') || 'client';
+        var bizSel = document.querySelector('[data-admin-preview-biz]');
+        var bizId = bizSel && bizSel.value;
+        if (!bizId) { alert('No business to preview as. Add one from the BOS sidebar switcher first.'); return; }
+        var origin = (window.BOSStorage && window.BOSStorage.activeId && window.BOSStorage.activeId()) || null;
+        var now = Date.now();
+        setJson('bos.previewAs', {
+          businessId: bizId,
+          originalBusinessId: origin,
+          leadId: leadId, leadName: leadName,
+          startedAt: new Date(now).toISOString(),
+          expiresAt: new Date(now + 60 * 60 * 1000).toISOString()
+        });
+        if (window.BOSStorage && window.BOSStorage.switch && origin !== bizId) {
+          window.BOSStorage.switch(bizId);
+        }
+        window.open('app.html', '_blank', 'noopener');
+      }
+    });
+
+    /* ─── Export CSV (R009) ────────────────────── */
+    document.querySelector('[data-admin-leads-csv]').addEventListener('click', function () {
+      var leads = getJson('bos.leads', []);
+      var notes = getJson('bos.leadNotes', {});
+      var rows = [['id','name','source','stage','value','contact','note']];
+      leads.forEach(function (l, i) {
+        var id = leadIdOf(l, i);
+        rows.push([id, l.name || '', l.source || '', l.stage || '', l.value || 0, l.contact || '', (notes[id] || '').replace(/\r?\n/g, ' ')]);
+      });
+      var csv = rows.map(function (r) { return r.map(function (v) { var s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(','); }).join('\n');
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'leads-' + new Date().toISOString().slice(0, 10) + '.csv';
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    });
+
+    paintLeads();
+
+    /* ─── Weekly snapshots (R009) ──────────────── */
+    function takeSnapshot() {
+      var m = readMetrics();
+      var lessonsDone = Object.keys(m.lessons).filter(function (k) { return m.lessons[k]; }).length;
+      var advances = Object.keys(m.advances).filter(function (k) { return m.advances[k]; }).length;
+      var snap = {
+        ts: new Date().toISOString(),
+        leads: m.leads.length,
+        hcDone: m.hc ? 1 : 0,
+        lessonsDone: lessonsDone,
+        advances: advances
+      };
+      var all = getJson('bos.reports.snapshots', []);
+      all.push(snap); setJson('bos.reports.snapshots', all);
+      paintSnapshots();
+    }
+    function findClosestPriorTo(snaps, targetTs) {
+      // Snapshot taken closest to (target - 7d) — used for delta calc.
+      var target = targetTs - 7 * 24 * 3600 * 1000;
+      var best = null, bestDiff = Infinity;
+      for (var i = 0; i < snaps.length - 1; i++) {
+        var t = +new Date(snaps[i].ts);
+        if (t >= targetTs) continue;
+        var d = Math.abs(t - target);
+        if (d < bestDiff) { bestDiff = d; best = snaps[i]; }
+      }
+      return best;
+    }
+    function deltaCell(now, prior, key) {
+      var n = now[key] || 0;
+      var indicator = n < 5 ? ' <span class="badge" style="background:#3a2a14;color:#C9A76A;font-size:10px;padding:2px 6px;border-radius:999px">n&lt;5 indicative</span>' : '';
+      if (!prior) return n + indicator;
+      var diff = n - (prior[key] || 0);
+      var sign = diff > 0 ? '+' : '';
+      var color = diff > 0 ? '#5a7a3a' : (diff < 0 ? '#d05959' : '#8A8377');
+      return n + ' <span style="color:' + color + ';font-size:12px">(Δ ' + sign + diff + ')</span>' + indicator;
+    }
+    function paintSnapshots() {
+      var snaps = getJson('bos.reports.snapshots', []);
+      var tbody = document.querySelector('[data-admin-snapshots]');
+      if (!snaps.length) { tbody.innerHTML = '<tr><td colspan="5" class="bos-cp-empty" style="padding:18px">No snapshots yet — click "Run weekly snapshot" above.</td></tr>'; return; }
+      tbody.innerHTML = snaps.slice().reverse().map(function (s, idx) {
+        var prior = findClosestPriorTo(snaps, +new Date(s.ts));
+        return '<tr>'
+          + '<td class="muted">' + new Date(s.ts).toLocaleString() + '</td>'
+          + '<td>' + deltaCell(s, prior, 'leads') + '</td>'
+          + '<td>' + deltaCell(s, prior, 'hcDone') + '</td>'
+          + '<td>' + deltaCell(s, prior, 'lessonsDone') + '</td>'
+          + '<td>' + deltaCell(s, prior, 'advances') + '</td>'
+          + '</tr>';
+      }).join('');
+    }
+    document.querySelector('[data-admin-snapshot]').addEventListener('click', takeSnapshot);
+    paintSnapshots();
+
+    /* ─── HC reports ───────────────────────────── */
+    function paintReports() {
+      var hc = getJson('bos.healthCheck', null);
+      var contact = getJson('hc.contact', null);
+      var tbody = document.querySelector('[data-admin-reports]');
+      if (!hc) { tbody.innerHTML = '<tr><td colspan="4" class="bos-cp-empty" style="padding:22px">No health-check reports captured yet on this device.</td></tr>'; return; }
+      var topics = (hc.topics || []).map(function (t) { return t.name + ' ' + t.score; }).join(' · ');
+      tbody.innerHTML = '<tr>'
+        + '<td><strong>' + (hc.headline || '—') + '</strong>' + (contact ? '<div class="bos-row-sub">' + (contact.name || '') + ' · ' + (contact.contact || '') + '</div>' : '') + '</td>'
+        + '<td>£' + (hc.leakEstimate || 0).toLocaleString() + '</td>'
+        + '<td>' + topics + '</td>'
+        + '<td class="muted">' + (contact && contact.capturedAt || 'completion') + '</td>'
+        + '</tr>';
+    }
+    paintReports();
+
+    /* ─── Questions editor (tree: area → tier → steps) ─── */
+    /* Reads the same default AREAS the lead-magnet uses (window.HC_AREAS,
+       loaded below via a script include from the lead-magnet folder).
+       Saves the full AREAS shape to bos.hcQuestions. */
+    function loadAreas() {
+      var ovr = getJson('bos.hcQuestions', null);
+      if (ovr && Array.isArray(ovr) && ovr.length) return ovr;
+      return JSON.parse(JSON.stringify(window.HC_AREAS || []));
+    }
+    function saveAreas(a) { setJson('bos.hcQuestions', a); }
+
+    var TIER_KEYS = ['beginner', 'intermediate', 'professional'];
+    var STEP_TYPES = ['choice', 'multi', 'slider', 'text', 'task', 'reveal', 'url'];
+    /* R009 — Incubator-phase scope tags. `all` = surfaced regardless of
+       phase; specific phase = the lead-magnet can later filter / prioritise
+       by `incubator.phase` (lead-magnet read-side wiring is R+1; admin
+       captures the field today so editors can tag without a code change). */
+    var PHASE_SCOPE = ['all', 'epic-intro', 'blueprint', 'diagnostics', 'brand-builder'];
+    var openArea = null, openTier = 'beginner';
+
+    function renderTree() {
+      var areas = loadAreas();
+      var host = document.querySelector('[data-admin-tree]');
+      if (!areas.length) {
+        host.innerHTML = '<p class="bos-cp-empty" style="padding:22px">No areas loaded — make sure hc-questions.js is reachable.</p>';
+        return;
+      }
+      host.innerHTML = areas.map(function (a, i) {
+        var isOpen = i === openArea;
+        return '<div class="bos-admin-tree-area' + (isOpen ? ' is-open' : '') + '" data-area-i="' + i + '">'
+          + '<button class="bos-admin-tree-area-head" data-area-toggle="' + i + '">'
+          +   '<span class="bos-admin-tree-icon">' + (a.icon || '◆') + '</span>'
+          +   '<span class="bos-admin-tree-name">' + (a.name || 'Untitled area') + '</span>'
+          +   '<span class="bos-admin-tree-meta muted">' + TIER_KEYS.map(function (t) { return ((a.tiers && a.tiers[t] && a.tiers[t].exercise) ? a.tiers[t].exercise.length : 0) + ' ' + t.slice(0,3); }).join(' · ') + '</span>'
+          +   '<span class="bos-admin-tree-chev">' + (isOpen ? '▾' : '▸') + '</span>'
+          + '</button>'
+          + (isOpen ? renderAreaBody(a, i) : '')
+          + '</div>';
+      }).join('')
+      + '<button class="btn btn-secondary" data-admin-add-area style="margin-top:14px">+ New area</button>';
+
+      wireTree();
+    }
+
+    function renderAreaBody(a, i) {
+      var html = '<div class="bos-admin-tree-body">';
+      html += '<div class="bos-admin-tree-fields">'
+        +   '<label>Area name<input type="text" data-area-k="name" value="' + (a.name || '').replace(/"/g, '&quot;') + '" /></label>'
+        +   '<label>Icon<input type="text" data-area-k="icon" value="' + (a.icon || '').replace(/"/g, '&quot;') + '" placeholder="emoji or symbol" /></label>'
+        +   '<label>Blurb<textarea data-area-k="blurb" rows="2">' + (a.blurb || '') + '</textarea></label>'
+        + '</div>';
+      html += '<div class="bos-admin-tier-tabs">'
+        + TIER_KEYS.map(function (t) {
+            return '<button class="bos-admin-tier-tab' + (t === openTier ? ' is-on' : '') + '" data-tier-pick="' + t + '">' + t + '</button>';
+          }).join('')
+        + '<button class="bos-admin-tree-area-del" data-area-del="' + i + '">✕ Delete area</button>'
+        + '</div>';
+      var tier = (a.tiers && a.tiers[openTier]) || {};
+      html += '<div class="bos-admin-tier-meta">'
+        +   '<label>Tier label<input type="text" data-tier-k="label" value="' + (tier.label || '').replace(/"/g, '&quot;') + '" /></label>'
+        +   '<label>Time<input type="text" data-tier-k="time" value="' + (tier.time || '').replace(/"/g, '&quot;') + '" placeholder="~3 min" /></label>'
+        +   '<label>Summary<input type="text" data-tier-k="summary" value="' + (tier.summary || '').replace(/"/g, '&quot;') + '" /></label>'
+        + '</div>';
+      var steps = tier.exercise || [];
+      html += '<div class="bos-admin-steps">';
+      steps.forEach(function (step, si) {
+        html += '<div class="bos-admin-step" data-step-i="' + si + '">'
+          + '<div class="bos-admin-step-head">'
+          +   '<span class="muted">Step ' + (si + 1) + '</span>'
+          +   '<select data-step-k="type">'
+          +     STEP_TYPES.map(function (t) { return '<option' + (t === step.type ? ' selected' : '') + '>' + t + '</option>'; }).join('')
+          +   '</select>'
+          +   '<select data-step-k="phase" title="Incubator phase scope" style="margin-left:6px">'
+          +     PHASE_SCOPE.map(function (p) { return '<option value="' + p + '"' + ((step.phase || 'all') === p ? ' selected' : '') + '>phase: ' + p + '</option>'; }).join('')
+          +   '</select>'
+          +   '<button class="bos-admin-step-del" data-step-del="' + si + '">✕</button>'
+          + '</div>';
+        if ((step.phase || 'all') !== 'all') {
+          html += '<div class="muted" style="font-size:11px;margin:-4px 0 8px;color:#C9A76A">↳ tagged for ' + step.phase + ' phase</div>';
+        }
+        if (step.type === 'choice' || step.type === 'multi') {
+          html += '<label>Prompt<textarea data-step-k="prompt" rows="2">' + (step.prompt || '') + '</textarea></label>'
+            + '<label>Options (one per line · format: "label | score")<textarea data-step-k="options" rows="4">'
+            + (Array.isArray(step.options) ? step.options.map(function (o) { return (o.label || '') + (o.score != null ? ' | ' + o.score : ''); }).join('\n') : '')
+            + '</textarea></label>';
+        } else if (step.type === 'task' || step.type === 'reveal') {
+          html += '<label>Title<input type="text" data-step-k="title" value="' + (step.title || '').replace(/"/g, '&quot;') + '" /></label>'
+            + '<label>Body (HTML allowed)<textarea data-step-k="body" rows="3">' + (step.body || '') + '</textarea></label>'
+            + (step.type === 'task' ? '<label>Done-button label<input type="text" data-step-k="done" value="' + (step.done || '').replace(/"/g, '&quot;') + '" /></label>' : '');
+        } else if (step.type === 'slider') {
+          html += '<label>Prompt<input type="text" data-step-k="prompt" value="' + (step.prompt || '').replace(/"/g, '&quot;') + '" /></label>'
+            + '<label>Min<input type="number" data-step-k="min" value="' + (step.min || 0) + '" /></label>'
+            + '<label>Max<input type="number" data-step-k="max" value="' + (step.max || 100) + '" /></label>'
+            + '<label>Suffix<input type="text" data-step-k="suffix" value="' + (step.suffix || '').replace(/"/g, '&quot;') + '" placeholder="%" /></label>';
+        } else if (step.type === 'url' || step.type === 'text') {
+          html += '<label>Prompt<input type="text" data-step-k="prompt" value="' + (step.prompt || '').replace(/"/g, '&quot;') + '" /></label>'
+            + '<label>Placeholder<input type="text" data-step-k="placeholder" value="' + (step.placeholder || '').replace(/"/g, '&quot;') + '" /></label>';
+        }
+        html += '</div>';
+      });
+      html += '<button class="btn btn-secondary bos-admin-step-add" data-step-add>+ Add step</button>';
+      html += '</div>';
+      html += '</div>';
+      return html;
+    }
+
+    function wireTree() {
+      document.querySelectorAll('[data-area-toggle]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var i = parseInt(b.getAttribute('data-area-toggle'), 10);
+          openArea = (openArea === i) ? null : i;
+          openTier = 'beginner';
+          renderTree();
+        });
+      });
+      document.querySelectorAll('[data-area-k]').forEach(function (inp) {
+        inp.addEventListener('input', function () {
+          var areas = loadAreas();
+          areas[openArea][inp.getAttribute('data-area-k')] = inp.value;
+          saveAreas(areas);
+        });
+      });
+      document.querySelectorAll('[data-tier-pick]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          openTier = b.getAttribute('data-tier-pick');
+          renderTree();
+        });
+      });
+      document.querySelectorAll('[data-tier-k]').forEach(function (inp) {
+        inp.addEventListener('input', function () {
+          var areas = loadAreas();
+          if (!areas[openArea].tiers) areas[openArea].tiers = {};
+          if (!areas[openArea].tiers[openTier]) areas[openArea].tiers[openTier] = { exercise: [] };
+          areas[openArea].tiers[openTier][inp.getAttribute('data-tier-k')] = inp.value;
+          saveAreas(areas);
+        });
+      });
+      document.querySelectorAll('[data-step-i]').forEach(function (row) {
+        var si = parseInt(row.getAttribute('data-step-i'), 10);
+        row.querySelectorAll('[data-step-k]').forEach(function (inp) {
+          inp.addEventListener('input', function () {
+            var areas = loadAreas();
+            var step  = areas[openArea].tiers[openTier].exercise[si];
+            var k = inp.getAttribute('data-step-k');
+            if (k === 'options') {
+              step.options = inp.value.split(/\n+/).map(function (line) {
+                var parts = line.split('|').map(function (s) { return s.trim(); });
+                if (!parts[0]) return null;
+                var o = { label: parts[0] };
+                if (parts[1] != null && parts[1] !== '') o.score = parseInt(parts[1], 10);
+                return o;
+              }).filter(Boolean);
+            } else if (k === 'min' || k === 'max') {
+              step[k] = parseInt(inp.value, 10);
+            } else if (k === 'type') {
+              step.type = inp.value;
+            } else {
+              step[k] = inp.value;
+            }
+            saveAreas(areas);
+          });
+        });
+        row.querySelector('[data-step-del]').addEventListener('click', function () {
+          var areas = loadAreas();
+          areas[openArea].tiers[openTier].exercise.splice(si, 1);
+          saveAreas(areas); renderTree();
+        });
+      });
+      var addStep = document.querySelector('[data-step-add]');
+      if (addStep) addStep.addEventListener('click', function () {
+        var areas = loadAreas();
+        if (!areas[openArea].tiers[openTier]) areas[openArea].tiers[openTier] = { exercise: [] };
+        areas[openArea].tiers[openTier].exercise.push({ type: 'choice', prompt: 'New question?', options: [{ label: 'Option A', score: 50 }, { label: 'Option B', score: 50 }] });
+        saveAreas(areas); renderTree();
+      });
+      document.querySelectorAll('[data-area-del]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (!confirm('Delete this whole area?')) return;
+          var areas = loadAreas();
+          areas.splice(parseInt(b.getAttribute('data-area-del'), 10), 1);
+          openArea = null; saveAreas(areas); renderTree();
+        });
+      });
+      var addArea = document.querySelector('[data-admin-add-area]');
+      if (addArea) addArea.addEventListener('click', function () {
+        var areas = loadAreas();
+        areas.push({
+          id: 'area-' + Date.now(), name: 'New topic', icon: '◆',
+          blurb: 'Describe this topic.',
+          tiers: {
+            beginner:     { label: 'Just show me', time: '~3 min', summary: '', exercise: [] },
+            intermediate: { label: 'I dabble',     time: '~3 min', summary: '', exercise: [] },
+            professional: { label: 'Run the audit',time: '~3 min', summary: '', exercise: [] }
+          }
+        });
+        openArea = areas.length - 1;
+        saveAreas(areas); renderTree();
+      });
+    }
+
+    document.querySelector('[data-admin-restore]').addEventListener('click', function () {
+      if (!confirm('Restore defaults? This clears your edits.')) return;
+      try { localStorage.removeItem('bos.hcQuestions'); } catch (e) {}
+      openArea = null; renderTree();
+    });
+
+    /* HC_AREAS is loaded async via the script tag below; render once it's there. */
+    function bootEditor() {
+      if (window.HC_AREAS) renderTree();
+      else setTimeout(bootEditor, 80);
+    }
+    bootEditor();
+
+    /* ─── Incubator niche pack selector (R004) ───
+       Reads/writes `bos.brand.niche`. Falls back to `bos.user.niche` for
+       legacy users. Reload not forced — Incubator pages re-read on load. */
+    (function () {
+      var sel = document.getElementById('bos-admin-niche');
+      var btn = document.getElementById('bos-admin-niche-save');
+      var status = document.getElementById('bos-admin-niche-status');
+      if (!sel || !btn) return;
+      function readNiche() {
+        try {
+          var b = JSON.parse(localStorage.getItem('bos.brand') || 'null');
+          if (b && b.niche) return b.niche;
+          var u = JSON.parse(localStorage.getItem('bos.user') || 'null');
+          if (u && u.niche) return u.niche;
+        } catch (e) {}
+        return 'agency';
+      }
+      sel.value = readNiche();
+      btn.addEventListener('click', function () {
+        var n = sel.value;
+        try {
+          var b = JSON.parse(localStorage.getItem('bos.brand') || '{}') || {};
+          b.niche = n;
+          localStorage.setItem('bos.brand', JSON.stringify(b));
+        } catch (e) {}
+        status.textContent = 'Saved · ' + n + ' pack active in Incubator';
+        setTimeout(function () { status.textContent = ''; }, 4000);
+      });
+    })();
+
+    /* R018 — print this report (admin Reports tab). */
+    (function () {
+      function paintMeta() {
+        var d = new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+        document.querySelectorAll('[data-print-meta]').forEach(function (el) { el.textContent = 'Printed ' + d; });
+        document.querySelectorAll('[data-print-date]').forEach(function (el) { el.textContent = d; });
+        document.querySelectorAll('[data-print-url]').forEach(function (el) { el.textContent = location.host + location.pathname; });
+      }
+      window.addEventListener('beforeprint', paintMeta);
+      var btn = document.querySelector('[data-admin-print]');
+      if (btn) btn.addEventListener('click', function () {
+        /* Switch to Reports tab first so the printed view shows reports
+           rather than whatever pane the user happens to be on. */
+        var rep = document.querySelector('[data-admin-tab="reports"]');
+        if (rep) rep.click();
+        setTimeout(function () { paintMeta(); window.print(); }, 60);
+      });
+    })();
+
+    /* R028 — Founder weekly digest. Counts + 3 highlights + send modal +
+       Monday auto-arm + history. Honesty: sample-size caveats baked in. */
+    (function () {
+      function escape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+      function weekStart() {
+        var d = new Date(); var dow = (d.getDay() + 6) % 7; // Mon=0
+        d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - dow);
+        return d;
+      }
+      function weekEnd(s) { var e = new Date(s); e.setDate(e.getDate() + 6); e.setHours(23, 59, 59, 999); return e; }
+      function fmtDate(d) { return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
+
+      function gatherCounts(sinceMs, businesses) {
+        var out = { hc: 0, advances: 0, lessons: 0, leads: 0, unread: 0, activity: 0 };
+        var cutoff = Date.now() - sinceMs;
+        // HC done = hc.contact captured-at; if no precise window, use bos.healthCheck presence (single-snapshot).
+        var contact = getJson('hc.contact', null);
+        if (contact && contact.capturedAt) {
+          // best-effort — capturedAt is usually 'progress-save' / 'completion' (label not date), so we conservatively count "1 if present" then flag in subline
+          out.hc = 1;
+        } else if (getJson('bos.healthCheck', null)) {
+          out.hc = 1;
+        }
+        var advancedAll = getJson('incubator.phaseAdvanced', {}) || {};
+        out.advances = Object.keys(advancedAll).filter(function (k) { return advancedAll[k]; }).length;
+        var lp = getJson('bos.lessonProgress', {}) || {};
+        out.lessons = Object.keys(lp).filter(function (k) { return lp[k]; }).length;
+        var leads = getJson('bos.leads', []) || [];
+        out.leads = leads.filter(function (l) { return !l.capturedAt || +new Date(l.capturedAt) >= cutoff; }).length;
+        var notifs = getJson('bos.notifications', []) || [];
+        out.unread = notifs.filter(function (n) { return !n.read && +new Date(n.ts) >= cutoff; }).length;
+        var act = (window.Activity && window.Activity.list({ sinceMs: sinceMs })) || [];
+        out.activity = act.length;
+        return out;
+      }
+
+      function gatherHighlights(sinceMs) {
+        /* Highlight #1 — most-engaged business (per-namespace activity count). */
+        var bizList = (window.BOSStorage && window.BOSStorage.list && window.BOSStorage.list()) || [];
+        var perBiz = {};
+        bizList.forEach(function (b) {
+          try {
+            var raw = localStorage.getItem('businesses.' + b.id + '.bos.activity');
+            var arr = raw ? JSON.parse(raw) : [];
+            var cutoff = Date.now() - sinceMs;
+            perBiz[b.id] = (arr || []).filter(function (e) { return +new Date(e.ts) >= cutoff; }).length;
+          } catch (e) { perBiz[b.id] = 0; }
+        });
+        var top = bizList.map(function (b) { return [b, perBiz[b.id] || 0]; }).sort(function (a, b) { return b[1] - a[1]; })[0];
+        var mostEngaged = top && top[1] > 0
+          ? '🏆 <strong>Most engaged:</strong> ' + escape(top[0].name) + ' (' + top[1] + ' events)'
+          : '🏆 <strong>Most engaged:</strong> <em class="muted">No business activity in window — indicative only.</em>';
+
+        /* Highlight #2 — stuck users (single-user proxy). */
+        var hc = getJson('bos.healthCheck', null);
+        var advanced = getJson('incubator.phaseAdvanced', {}) || {};
+        var advN = Object.keys(advanced).filter(function (k) { return advanced[k]; }).length;
+        var contact = getJson('hc.contact', null);
+        var capturedAt = contact && contact.resumedAt ? contact.resumedAt : null;
+        var stuckMsg;
+        if (hc && advN === 0) {
+          stuckMsg = '⚠ <strong>Stuck pattern:</strong> HC done, no phase advance yet — this user could use a nudge.';
+        } else if (!hc) {
+          stuckMsg = '⚠ <strong>Stuck pattern:</strong> No HC on file. Send the lead-magnet link.';
+        } else {
+          stuckMsg = '✓ <strong>Stuck pattern:</strong> No obvious stuck pattern this week.';
+        }
+
+        /* Highlight #3 — marketplace interest spike. */
+        var clicks = getJson('bos.marketplaceClicks', {}) || {};
+        var entries = Object.keys(clicks).map(function (k) { return [k, clicks[k]]; }).sort(function (a, b) { return b[1] - a[1] });
+        var spike = entries.length
+          ? '📈 <strong>Marketplace interest:</strong> top add-on this period is <strong>' + escape(entries[0][0]) + '</strong> (' + entries[0][1] + ' clicks).'
+          : '📈 <strong>Marketplace interest:</strong> <em class="muted">No clicks yet — indicative only.</em>';
+
+        return [mostEngaged, stuckMsg, spike];
+      }
+
+      function paintWeek() {
+        var ws = weekStart(), we = weekEnd(ws);
+        document.querySelector('[data-bos-week-range]').textContent = fmtDate(ws) + ' – ' + fmtDate(we);
+        var c = gatherCounts(7 * 86400000);
+        var smallN = c.activity < 7 ? '<span class="bos-an-pill bos-an-pill-warn">n<7 indicative</span>' : '';
+        document.querySelector('[data-bos-week-counts]').innerHTML =
+          '<div class="bos-week-grid">' +
+            '<div><div class="muted">HC done</div><strong>' + c.hc + '</strong></div>' +
+            '<div><div class="muted">Phase advances</div><strong>' + c.advances + '</strong></div>' +
+            '<div><div class="muted">Lessons done</div><strong>' + c.lessons + '</strong></div>' +
+            '<div><div class="muted">Leads (week)</div><strong>' + c.leads + '</strong></div>' +
+            '<div><div class="muted">Unread inbox</div><strong>' + c.unread + '</strong></div>' +
+            '<div><div class="muted">Activity events</div><strong>' + c.activity + '</strong> ' + smallN + '</div>' +
+          '</div>';
+        var hi = gatherHighlights(7 * 86400000);
+        document.querySelector('[data-bos-week-highlights]').innerHTML =
+          '<ul class="bos-week-hl">' + hi.map(function (h) { return '<li>' + h + '</li>'; }).join('') + '</ul>';
+
+        /* Auto-arm Monday banner. */
+        var arm = document.querySelector('[data-bos-week-arm]');
+        var ml = getJson('bos.reports.weekly.lastArmedISO', null);
+        var now = new Date();
+        var isMonMorning = now.getDay() === 1 && now.getHours() < 12;
+        var armed = ml ? (Date.now() - +new Date(ml) < 6 * 86400000) : false;
+        if (isMonMorning && !armed) {
+          arm.hidden = false;
+          arm.innerHTML = '🌅 <strong>Monday digest ready</strong> — last week\'s wrap-up is queued up. <a href="#" data-bos-week-arm-open style="color:#C9A76A">Open it →</a>';
+        } else {
+          arm.hidden = true;
+        }
+      }
+      paintWeek();
+
+      function buildMarkdown() {
+        var ws = weekStart(), we = weekEnd(ws);
+        var c = gatherCounts(7 * 86400000);
+        var hi = gatherHighlights(7 * 86400000).map(function (h) { return '- ' + h.replace(/<[^>]+>/g, ''); }).join('\n');
+        var lines = [
+          '# Founder digest · ' + fmtDate(ws) + ' – ' + fmtDate(we),
+          '',
+          '_Demo mock — real send via T6 once email-sender ships._',
+          '',
+          '## Counts',
+          '- HC done: ' + c.hc,
+          '- Phase advances: ' + c.advances,
+          '- Lessons done: ' + c.lessons,
+          '- Leads (week): ' + c.leads,
+          '- Unread inbox: ' + c.unread,
+          '- Activity events: ' + c.activity + (c.activity < 7 ? ' (n<7 — indicative only)' : ''),
+          '',
+          '## Highlights',
+          hi,
+          '',
+          '— Sent from Business OS admin · ' + new Date().toISOString()
+        ];
+        return lines.join('\n');
+      }
+
+      function openModal() {
+        var md = buildMarkdown();
+        document.querySelector('[data-bos-week-md]').value = md;
+        document.querySelector('[data-bos-week-modal]').hidden = false;
+        /* Persist to history. */
+        var hist = getJson('bos.reports.weekly', []) || [];
+        hist.push({ ts: new Date().toISOString(), md: md });
+        setJson('bos.reports.weekly', hist.slice(-12));
+        setJson('bos.reports.weekly.lastArmedISO', new Date().toISOString());
+        if (window.Activity) window.Activity.log('settings.changed', { tab: 'reports', action: 'weekly-digest' });
+      }
+      function closeModal() { document.querySelector('[data-bos-week-modal]').hidden = true; }
+
+      document.querySelector('[data-bos-week-send]').addEventListener('click', openModal);
+      document.querySelector('[data-bos-week-modal-close]').addEventListener('click', closeModal);
+      document.querySelector('[data-bos-week-modal]').addEventListener('click', function (ev) {
+        if (ev.target === ev.currentTarget) closeModal();
+      });
+      document.querySelector('[data-bos-week-copy]').addEventListener('click', function () {
+        var ta = document.querySelector('[data-bos-week-md]');
+        var status = document.querySelector('[data-bos-week-copy-status]');
+        try {
+          ta.select(); document.execCommand('copy');
+          if (navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(function () {});
+          status.textContent = '✓ Copied. Paste into your mail client.';
+          setTimeout(function () { status.textContent = ''; }, 4000);
+        } catch (e) {
+          status.textContent = 'Couldn\'t copy automatically — select the text and copy manually.';
+        }
+      });
+      document.addEventListener('click', function (ev) {
+        var op = ev.target.closest('[data-bos-week-arm-open]');
+        if (op) { ev.preventDefault(); openModal(); return; }
+        var hb = ev.target.closest('[data-bos-week-history]');
+        if (hb) {
+          var hist = getJson('bos.reports.weekly', []) || [];
+          if (!hist.length) { alert('No saved digests yet.'); return; }
+          var lines = hist.slice().reverse().map(function (h, i) {
+            return (i + 1) + '. ' + new Date(h.ts).toLocaleString();
+          }).join('\n');
+          alert('Digest history (' + hist.length + ' saved):\n\n' + lines + '\n\nOpen the most recent below in the modal.');
+          var md = hist[hist.length - 1].md;
+          document.querySelector('[data-bos-week-md]').value = md;
+          document.querySelector('[data-bos-week-modal]').hidden = false;
+        }
+      });
+    })();
+
+    /* R022 — Founder broadcast handler. Pushes a notification of
+       kind=founder into the local bos.notifications[]. R+1: once
+       email-sender plugin lands, this also fans out server-side. */
+    (function () {
+      var form = document.querySelector('[data-admin-broadcast]');
+      if (!form) return;
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var fd = new FormData(ev.target);
+        var title = (fd.get('title') || '').toString().trim();
+        var body = (fd.get('body') || '').toString().trim();
+        var ctaHref = (fd.get('ctaHref') || '').toString().trim() || null;
+        if (!title || !window.Notify) return;
+        window.Notify.push('founder', title, body, { ctaHref: ctaHref, from: 'Founder' });
+        var status = document.querySelector('[data-admin-broadcast-status]');
+        if (status) { status.textContent = '✓ Pushed to inbox.'; setTimeout(function () { status.textContent = ''; }, 3500); }
+        ev.target.reset();
+      });
+    })();
+  </script>
+
+</body>
+</html>
