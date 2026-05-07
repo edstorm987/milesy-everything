@@ -1083,3 +1083,50 @@ Queue state post-stage:
 [2026-05-07T10:15:00Z] WAKEUP: cycle 117 — autonomous. T3 R031 (a11y audit — pure walker + 9 issue codes + contrast helpers + 29/29) DONE chapter #112 (already archived). T3 STARTED R032 i18n (last in batch). Drafted 6 new prompts: T1/020-022 (signup flow · session security · multi-tenant isolation test) + T3/033-035 (static export · version diff · draft/published).
 
 [2026-05-07T10:15:00Z] PLAN: stage. SLEEP: 600s.
+
+[2026-05-07T10:25:00Z] HANDOFF (fresh-init checkpoint) — Ed clearing T3, T4, and commander session. Waiting on T1+T2 to ship their current rounds. State snapshot for next-session boot:
+
+**Shipped to date — 81 of 92 rounds across 4 terminals** (~88%):
+- T1 R002–R017 shipped (16 rounds): Aqua reskin · Live custom-portal builder · Employee HQ · effective-role · client-tasks kanban · comms widget · Files tab · Finance tab · phase transitions · demo+POV · Incubator toggle · PortalRole+BrandKit widening · /embed route · favicon+sidebar polish.
+- T2 R003–R013 shipped (11 rounds): activity-inbox · credentials-vault · notifications · bookings · agency-finance ext · agency-marketing ext · agency-ops · client-files · agency-domains skeleton · pre-sales-hq · aqua-resources.
+- T3 R005–R032 shipped (28 rounds): full website-editor maturity — AI image edit, marketplace, cookie consent, blog admin, Notion blocks, Incubator preset, brand-kit CSS-vars (16), portal-variant editor, iframe-embed, SEO/meta/favicon, forms-as-block, marketplace polish, 5 missing blocks, Cmd-K palette, mobile viewport, Code mode, undo/redo, version history, find-replace, asset manager, page redirects, private pages, block catalog, block-group reuse, custom CSS, animations, a11y audit, **i18n** (R032 just shipped @ 7be2191).
+- T4 R001–R030 shipped (30 rounds): full Milesy ecosystem — Notion-style Incubator portal at :3033/incubator app/ · 5 root + 4 phase pages · BOS deep-link · 4 niche copy packs + landing pages + asset packs · HC-driven recommendations · lessons-to-phase-advance · scripted Aqua AI + 28-prompt library + cross-session memory · marketing site overhaul · founder admin polish · HC→Incubator handoff · Pro upgrade flow · multi-business storage · activity timeline · marketplace detail pages + cart · HC progress email-capture · print/PDF · niche assets · as-client preview · BOS calendar · BOS notifications inbox · BOS settings (5 tabs) · BOS analytics · founder weekly digest · all 22 lessons unlocked (chapter #71 gap CLOSED) · mobile-responsive audit · video placeholders.
+
+**In flight at handoff (must complete before fresh init or carry over)**:
+- T1 R018 STARTED 10:15Z — founder-home-dashboard (5-tile KPI strip + agency activity feed). Ed waiting on this to finish.
+- T2 R014 STARTED 10:15Z — agency-resources plugin (internal team library, distinct from aqua-resources client-facing). Ed waiting.
+
+**Queues at handoff** (ready for next session to pick up):
+- T1: 018 (active) · 019 end-customer-portal · 020 signup-flow · 021 session-security · 022 multi-tenant-isolation-test = 5 files
+- T2: 014 (active) · 015 agency-payroll · 016 integrations · 017 support-desk = 4 files
+- T3: 032 (just shipped — needs archive next cycle) · 033 static-export · 034 version-diff · 035 draft-published = 3 files (T3 worker terminal cleared by Ed; queue carries over)
+- T4: empty (T4 worker cleared; ecosystem feature-complete v1)
+
+**Boot sequence for next commander**:
+1. Ed pastes `01 development/terminal-prompts/orchestrator-init.md` (still current — already updated for 4-terminal queue arch).
+2. Read `01 development/CLAUDE.md` + this commander.md tail.
+3. Pull, archive any DONEs from T1/T2 final rounds (T1 R018 / T2 R014 should land within ~10 min of Ed re-engaging).
+4. T3 to resume — Ed re-pastes `T3-router.md`. Existing queue files (032, 033, 034, 035) pick up where they left off.
+5. T4 stays idle until Ed says otherwise (queue empty; ecosystem v1 done).
+
+**Standing constraints unchanged**:
+- T4 standing: no real APIs (self-report / localStorage / static).
+- Honesty contract (chapter #68) on every numbers surface.
+- Brand-kit CSS-vars only (no hardcoded brand colours).
+- Per-territory boundaries enforced (T1 foundation/portal, T2 plugins/, T3 plugins/website-editor/, T4 milesymedia website/).
+- Mesh hazard ongoing — work always lands on origin even if attribution is wrong.
+
+**Architecture state** (no changes since handoff cycle 37):
+- Queue-based router in `01 development/terminal-prompts/queues/T<N>/`.
+- Per-wake archive cadence; commander cadence currently 600s (matches terminal long-cadence).
+- 4 active terminals + commander.
+
+**Localhost**: portal :3030 + Milesy :3033 — both started cycle 36 in background; verify still running on next session boot via `lsof -iTCP:3030 -iTCP:3033 -sTCP:LISTEN` or restart from script.
+
+**Open follow-ups still tracked**:
+- T2 R014 chapter pending its DONE entry.
+- T1 R018 chapter pending its DONE entry.
+- Chapter #71 partial: lessons gap CLOSED (22/22 live); production rewrites + real-data connectors remain as T6 prod-gate work.
+- ActivityCategory enum extension (R+1) flagged across multiple plugin chapters.
+
+End of handoff.
