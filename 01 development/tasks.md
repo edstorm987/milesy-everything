@@ -125,6 +125,12 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       (fs.readFileSync + dangerouslySetInnerHTML); `/` rewrite dropped;
       legacy `_marketing/index.html` deleted; SiteShell footer R005 parity;
       mega-menu sync rule retires for home page.
+- [x] Niche pages JSX rewrite (4 for-* pages). **DONE T4 R007 —
+      chapter #151.** `src/app/for-{skincare,coaching,fitness,agencies}/
+      page.tsx` + `_niches/<slug>.html`; `for-*` rewrites dropped;
+      legacy `_marketing/for-*.html` deleted; mega-menu sync rule
+      (chapter #123 gotcha #6) FULLY RETIRED — surface 5 → 1 file
+      (SiteShell only).
 
 ### Blocked
 

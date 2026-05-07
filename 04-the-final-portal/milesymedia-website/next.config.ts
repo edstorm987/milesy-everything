@@ -44,15 +44,13 @@ const nextConfig: NextConfig = {
   // directory paths to index.html in `public/`; rewrites do.
   async rewrites() {
     return {
-      // T4 unify-4 — marketing surface mostly lives in public/_marketing/.
-      // T4 R006 retired the `/` rewrite when the home was JSX-ported
-      // through SiteShell (`src/app/page.tsx`). Niche pages stay static
-      // HTML for v1 (separate JSX-rewrite round if/when scheduled).
+      // T4 unify-4 — marketing surface used to live in public/_marketing/.
+      // T4 R006 ported the home to JSX (`src/app/page.tsx`) and retired
+      // the `/` rewrite. T4 R007 ported the 4 niche pages to JSX
+      // (`src/app/for-*/page.tsx`) and retired their rewrites. The
+      // mega-menu sync rule (chapter #123 gotcha #6) is fully retired —
+      // SiteShell is the single source for nav + footer chrome.
       beforeFiles: [
-        { source: "/for-skincare",    destination: "/_marketing/for-skincare.html" },
-        { source: "/for-coaching",    destination: "/_marketing/for-coaching.html" },
-        { source: "/for-fitness",     destination: "/_marketing/for-fitness.html" },
-        { source: "/for-agencies",    destination: "/_marketing/for-agencies.html" },
         // /health-check + /incubator are now owned by app/ routes
         // (SiteShell wrap). Only /business-os keeps the rewrite —
         // it stays a standalone app per Ed's call (separate
