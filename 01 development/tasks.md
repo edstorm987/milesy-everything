@@ -505,6 +505,33 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R015 — Forms-as-block** — DONE.
+      Forms plugin already exposes the public surface this round
+      needs (public/form, public/submit, admin /forms). NEW
+      `FormEmbedBlock.tsx` (block id `form-embed`, 📋, content) —
+      fetches schema on mount, full field-kind coverage
+      (text/email/phone/textarea/select/multiselect/radio/
+      checkbox/number/date/hidden), honoured submitAction.kind
+      (redirect → window.location, thank-you → message,
+      store-only/external-webhook → inlineThankYou prop), honeypot
+      `_h` field with silent-success bot rejection, brand-kit CSS
+      vars throughout. Multiselect → array, checkbox → boolean,
+      others → string serialisation matches forms-plugin
+      submissions validator. NEW `FormPickerModal.tsx` operator-
+      facing picker (free-text search + status filter + status
+      pills + field/submission counts + "+ Create new form ↗"
+      external anchor + fetchImpl override). NEW
+      `__smoke__/r015-forms-as-block.test.ts` 14/14 (registry,
+      SSR rendering, endpoint URL contract, defaults).
+      package.json test chain extended. tsc-clean. Chapter
+      `04-forms-as-block.md` + MASTER row #96.
+      Q-ASSUMED: formId operator-typed today (sidebar picker
+      wire-up R+1); runtime fetch (no SSR pre-render); honeypot
+      is plugin's anti-bot; external-webhook returns inline
+      thank-you. Deferred: properties-sidebar Open-picker button,
+      server-side schema cache, field-level conditional logic,
+      submission analytics in picker, A/B variants, multi-step
+      forms.
 - [x] **T3 R014 — SEO meta + favicon + sitemap + OG card** — DONE.
       `EditorPageSeo` (R002+) already covered most Goal A; R014
       added `canonical?: string` + `keywords?: string[]` to the

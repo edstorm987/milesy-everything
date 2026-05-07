@@ -29,6 +29,7 @@ import BannerBlock from "./blocks/BannerBlock";
 import CookieConsentBlock from "./blocks/CookieConsentBlock";
 import BlogFeedBlock from "./blocks/BlogFeedBlock";
 import BlogPostBlock from "./blocks/BlogPostBlock";
+import FormEmbedBlock from "./blocks/FormEmbedBlock";
 import BeforeAfterBlock from "./blocks/BeforeAfterBlock";
 import BookingWidgetBlock from "./blocks/BookingWidgetBlock";
 import ButtonBlock from "./blocks/ButtonBlock";
@@ -298,6 +299,20 @@ export const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
       ] },
       { key: "dismissible", label: "Dismissible", type: "boolean", default: true },
       { key: "sticky", label: "Stick to top", type: "boolean", default: false },
+    ],
+  },
+  "form-embed": {
+    type: "form-embed", label: "Form (from Forms plugin)", icon: "📋", category: "content", isContainer: false,
+    Component: FormEmbedBlock,
+    defaultProps: {
+      formId: "",
+      fallbackTitle: "Loading form…",
+      inlineThankYou: "Thanks — we got it.",
+    },
+    fields: [
+      { key: "formId", label: "Form ID", type: "text", help: "Pick via Form picker (or paste a Forms-plugin form id)." },
+      { key: "fallbackTitle", label: "Loading text", type: "text", default: "Loading form…" },
+      { key: "inlineThankYou", label: "Inline thank-you message", type: "text", default: "Thanks — we got it." },
     ],
   },
   "blog-feed": {
