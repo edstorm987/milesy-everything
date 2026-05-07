@@ -111,6 +111,9 @@ The required ones for a production deploy of the **shared portal**:
 | `SENTRY_TRACES_SAMPLE_RATE` | optional | 0–1, default 0 |
 | `NEXT_PUBLIC_SENTRY_DSN` | optional | Browser capture |
 | `PORTAL_BACKEND` | optional | `file` / `kv` / `postgres`. With `DATABASE_URL` set + this unset, defaults to `postgres`. |
+| `GOOGLE_OAUTH_CLIENT_ID` | optional (T1 R9) | Google Cloud Console → APIs & Services → Credentials → Create OAuth 2.0 Client ID (Web application). Login still works without; just hides the "Continue with Google" button. Same STALE-rewrite caveat as elsewhere — full rewrite at T6 R001. |
+| `GOOGLE_OAUTH_CLIENT_SECRET` | optional (T1 R9) | Paired with the Client ID. BOTH must be set for the button to render + the start/callback routes to come alive (else 404). Login still works without. |
+| `GOOGLE_OAUTH_REDIRECT_URI` | optional (T1 R9) | Defaults to `<NEXT_PUBLIC_PORTAL_BASE_URL>/api/auth/oauth/google/callback`. Override only when the deploy origin differs from the one registered with Google. Authorised redirect URI in Google Console MUST match exactly. |
 
 ### 2b. Per-install plugin config
 

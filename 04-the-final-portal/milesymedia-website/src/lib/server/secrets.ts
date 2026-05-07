@@ -60,3 +60,27 @@ export function sentryDsn(): string | undefined {
   const v = optionalEnv("SENTRY_DSN", "");
   return v.length > 0 ? v : undefined;
 }
+
+// ─── Google OAuth (T1 — chapter #143 google-oauth-activation) ──────────────
+// All three optional: env unset → `isGoogleOAuthConfigured()` false →
+// LoginForm hides the "Continue with Google" button + start/callback
+// routes 404. Login still works without these via password / magic-link.
+//
+// To enable: Google Cloud Console → APIs & Services → Credentials →
+// Create OAuth 2.0 Client ID → Web application. Authorised redirect URI =
+// `<NEXT_PUBLIC_PORTAL_BASE_URL>/api/auth/oauth/google/callback`.
+
+export function googleOauthClientId(): string | undefined {
+  const v = optionalEnv("GOOGLE_OAUTH_CLIENT_ID", "");
+  return v.length > 0 ? v : undefined;
+}
+
+export function googleOauthClientSecret(): string | undefined {
+  const v = optionalEnv("GOOGLE_OAUTH_CLIENT_SECRET", "");
+  return v.length > 0 ? v : undefined;
+}
+
+export function googleOauthRedirectUri(): string | undefined {
+  const v = optionalEnv("GOOGLE_OAUTH_REDIRECT_URI", "");
+  return v.length > 0 ? v : undefined;
+}

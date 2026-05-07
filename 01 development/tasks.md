@@ -116,6 +116,26 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
       `bos.incubatorComplete` flips on Brand Builder graduate CTA;
       sidebar Setup section + 5-phase checklist + complete pill.
 
+### Done — T1 Google OAuth activation (chapter #150, 2026-05-07)
+
+- [x] **T1 — Google OAuth audit + gap-fill.** Verified end-to-end
+      flow already working since R9 (chapter #109): start route
+      302s with all required params + HMAC state, callback verifies
+      state + `email_verified`, first-run bootstrap + existing-email
+      branch + unknown-email reject, LoginForm gates button on
+      `isGoogleOAuthConfigured()`, session cookie HttpOnly+Secure+Lax.
+      **Gaps filled**: (G1) callback routes through
+      `resolvePostLoginPath` when state's returnUrl is the generic
+      `/portal` — leads now land on `/business-os` (#125). (G2) 3
+      typed accessors `googleOauth*` in `secrets.ts` (#142). (G3)
+      ENV_ALLOWLIST + `PORTAL_KEY_PATTERN` extended with
+      `GOOGLE_OAUTH_*`. (G4) `.env.example` documents all 3 vars +
+      Google Cloud Console setup steps. (G5) `runbooks/deploy.md`
+      env table extended w/ 3 optional rows + "Login still works
+      without" caveat. NEW smoke `scripts/smoke-google-oauth.test.ts`
+      12/12; pairs w/ existing helper-level smoke (10/10) → 22
+      cases full stack. `tsc --noEmit` clean.
+
 ### Open Sprint-2.5 items (no queue file yet)
 
 - [ ] "Sign in as employee" persona on `/dev/pov` — code was added

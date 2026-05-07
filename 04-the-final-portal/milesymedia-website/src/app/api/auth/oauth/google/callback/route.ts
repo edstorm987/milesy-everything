@@ -17,6 +17,7 @@ import { listAgencies, getAgency } from "@/server/tenants";
 import { bootstrapAgency } from "@/server/agencyBootstrap";
 import { createUser, getUser } from "@/server/users";
 import { logActivity } from "@/server/activity";
+import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
 import crypto from "crypto";
 
 function err(req: NextRequest, code: string, status = 400) {
@@ -110,7 +111,13 @@ function setSessionAndRedirect(
     agencyId: user.agencyId, ...(user.clientId ? { clientId: user.clientId } : {}),
   });
   const cookie = sessionCookie(token);
-  const redirectTo = new URL(returnUrl.startsWith("/") ? returnUrl : "/portal", req.nextUrl.origin);
+  // Role-aware fallback (chapter #125): when state's returnUrl is the
+  // generic `/portal` default, route the user via `resolvePostLoginPath`
+  // so leads land on `/business-os`, agency tier on `/portal/agency`,
+  // client tier on `/portal/clients/<slug>`, end-customer on
+  // `/portal/customer`. Explicit non-default returnUrl overrides.
+  const effective = returnUrl === "/portal" ? resolvePostLoginPath(null, user) : returnUrl;
+  const redirectTo = new URL(effective.startsWith("/") ? effective : "/portal", req.nextUrl.origin);
   const res = NextResponse.redirect(redirectTo, 302);
   res.cookies.set(cookie.name, cookie.value, cookie.options);
   return res;
