@@ -24,6 +24,14 @@ import { ToolsPicker, type PickerPlugin } from "./_ToolsPicker";
 import { BuildPortalWizard, type WizardPlugin } from "./_BuildPortalWizard";
 import { ClientSopsTab } from "./_ClientSopsTab";
 import { assertSopsAccess, familiesForStage, SopsAccessError } from "@/lib/server/sopsAccess";
+import { OnboardingDashboardPanel, type OnboardingPhase } from "./_OnboardingDashboardPanel";
+import {
+  AQUA_PHASE_ORDER,
+  AQUA_MILESTONES,
+  isAquaStage,
+  getMilestoneState,
+  isPhaseComplete,
+} from "@/lib/server/onboardingMilestones";
 
 // Phases that materialise into a per-client custom portal (architecture
 // extension ch.19b). `aqua-mastery` is the Aqua-flavoured Live; `live`
@@ -186,6 +194,39 @@ export default async function ClientHome({
       </header>
 
       <OverviewTabs clientId={client.id} active={tab} />
+
+      {tab === "overview" && isAquaStage(client.stage) && (() => {
+        const aquaPhases = phases.filter(p => AQUA_PHASE_ORDER.includes(p.stage));
+        aquaPhases.sort((a, b) => AQUA_PHASE_ORDER.indexOf(a.stage) - AQUA_PHASE_ORDER.indexOf(b.stage));
+        const currentIdx = AQUA_PHASE_ORDER.indexOf(client.stage);
+        const onboardingPhases: OnboardingPhase[] = aquaPhases.map(p => {
+          const idx = AQUA_PHASE_ORDER.indexOf(p.stage);
+          const state: OnboardingPhase["state"] =
+            idx < currentIdx ? "complete" : idx === currentIdx ? "active" : "future";
+          const seeds = AQUA_MILESTONES[p.stage] ?? [];
+          const milestones = getMilestoneState(client, p.stage).map(m => ({
+            id: m.id,
+            label: seeds.find(s => s.id === m.id)?.label ?? m.id,
+            done: m.done,
+          }));
+          return {
+            id: p.id,
+            stage: p.stage,
+            label: p.label,
+            order: p.order,
+            state,
+            milestones,
+            allComplete: isPhaseComplete(client, p.stage),
+          };
+        });
+        return (
+          <OnboardingDashboardPanel
+            clientId={client.id}
+            phases={onboardingPhases}
+            currentStage={client.stage}
+          />
+        );
+      })()}
 
       {tab === "overview" && (
         <section className="grid gap-4 md:grid-cols-2">

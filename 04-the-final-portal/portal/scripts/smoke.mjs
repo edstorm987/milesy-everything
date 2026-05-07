@@ -226,6 +226,54 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Onboarding dashboard");
+  // Aqua-stage client → overview shows the dashboard panel.
+  const aquaClient = await go("POST", "/api/portal/fulfillment/clients", {
+    body: JSON.stringify({
+      name: `Smoke Onboarding ${Date.now()}`,
+      stage: "aqua-blueprint",
+      brand: { primaryColor: "#0ea5e9" },
+    }),
+  });
+  const aquaClientJson = aquaClient.status < 300 ? await aquaClient.json().catch(() => null) : null;
+  const aquaClientId = aquaClientJson?.client?.id ?? aquaClientJson?.clientId;
+  if (aquaClientId) {
+    const ovr = await go("GET", `/portal/clients/${aquaClientId}`);
+    const body = ovr.status === 200 ? await ovr.text() : "";
+    record("aqua client overview shows onboarding panel", body.includes("onboarding-dashboard"));
+    record("onboarding panel shows phase strip header", body.includes("Onboarding journey"));
+    // Tick a milestone via the foundation route.
+    const tickRes = await go("POST", "/api/tenants/onboarding-tick", {
+      body: JSON.stringify({
+        clientId: aquaClientId,
+        phaseStage: "aqua-blueprint",
+        milestoneId: "brand-audit",
+        done: true,
+      }),
+    });
+    record("onboarding-tick POST 200", tickRes.status === 200, `status=${tickRes.status}`);
+    // Bad payload → 400.
+    const bad = await go("POST", "/api/tenants/onboarding-tick", {
+      body: JSON.stringify({ clientId: aquaClientId, phaseStage: "aqua-blueprint", milestoneId: "nope", done: true }),
+    });
+    record("onboarding-tick rejects unknown milestoneId", bad.status === 400);
+  }
+  // Non-Aqua client → no dashboard panel.
+  const legacyClient = await go("POST", "/api/portal/fulfillment/clients", {
+    body: JSON.stringify({
+      name: `Smoke Legacy ${Date.now()}`,
+      stage: "discovery",
+      brand: { primaryColor: "#999" },
+    }),
+  });
+  const legacyJson = legacyClient.status < 300 ? await legacyClient.json().catch(() => null) : null;
+  const legacyId = legacyJson?.client?.id ?? legacyJson?.clientId;
+  if (legacyId) {
+    const ovr = await go("GET", `/portal/clients/${legacyId}`);
+    const body = ovr.status === 200 ? await ovr.text() : "";
+    record("legacy client overview omits onboarding panel", !body.includes("onboarding-dashboard"));
+  }
+
   console.log("\n§ Founder todos widget");
   // Smoke runs as agency-owner via /demo bootstrap → Founder POV.
   const homeFounder = await go("GET", "/portal/agency");

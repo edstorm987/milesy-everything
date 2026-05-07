@@ -9,6 +9,28 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 006 — Onboarding Dashboard** — DONE.
+      Goal A: NEW `_OnboardingDashboardPanel.tsx` client component
+      on per-client Overview tab (above 2-col grid) — six-chip
+      horizontal phase strip (emerald=complete · brand-primary
+      highlighted=active · muted=future) with `{done}/{total}` glyph;
+      click chip → expanded deliverables pane. Goal B: NEW
+      `lib/server/onboardingMilestones.ts` (`AQUA_PHASE_ORDER` +
+      `AQUA_MILESTONES` seed for all six phases; `getMilestoneState`,
+      `isPhaseComplete`, `tickMilestone`) + storage at
+      `client.metadata.onboardingProgress: Partial<Record<ClientStage,
+      [{id,done,doneAt?}]>>` (Q-ASSUMED: keyed by stable stage enum
+      not per-agency PhaseDefinition.id UUID). NEW
+      `POST /api/tenants/onboarding-tick` foundation route validates
+      Aqua-stage + known milestoneId + persists via `updateClient`.
+      Goal C: active phase chip carries `Mark phase complete →
+      advance` button gated on `allComplete`; POSTs existing
+      `/api/portal/fulfillment/phase/advance` with resolved
+      from/toPhaseId. Goal D: smoke `§ Onboarding dashboard` (Aqua
+      client shows panel testid + heading + tick 200 + unknown-mid
+      400 + legacy client omits panel). Chapter
+      `04-agency-shell-onboarding-dashboard.md`; MASTER row #81;
+      tsc clean. HARD BOUNDARY honoured.
 - [x] **T1 005 — Founder Todos home widget** — DONE.
       Goal A: NEW `_FounderTodosWidget.tsx` client component on
       `/portal/agency` home (above clients grid). Boots via
