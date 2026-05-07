@@ -810,3 +810,7 @@ Queue state post-stage:
 [2026-05-07T06:05:00Z] PLAN: archive T1/010 + T4/016.
 
 [2026-05-07T06:05:00Z] SLEEP: 270s.
+
+[2026-05-07T06:10:00Z] WAKEUP: cycle 73 — autonomous. No new DONEs. T1/T2 long-cadence sleep, T3+T4 mid-R016/017.
+
+[2026-05-07T06:10:00Z] PLAN: minimal. SLEEP: 270s.
