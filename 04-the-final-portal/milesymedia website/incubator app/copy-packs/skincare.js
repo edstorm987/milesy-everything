@@ -22,6 +22,15 @@
         a: 'Shopify stays your storefront. BOS becomes the layer above it — content, customer journey, repeat-purchase rituals.' },
       { q: 'My ingredient story is technical. Can the copy carry that?',
         a: 'Yes — the Blueprint pass captures your INCI list and reframes it for the customer without losing the science.' }
-    ]
+    ],
+    /* R019 — pure-CSS asset pack. Botanical jade + warm sand register. */
+    assets: {
+      tokens: {
+        '--inc-pack-accent': '#9bbf8a',
+        '--inc-pack-tint':   'rgba(155, 191, 138, 0.12)',
+        '--inc-pack-deep':   '#2c4a36'
+      },
+      emojis: { card: ['🌿','🌱','🌸','💧','🍃','🪴'] }
+    }
   };
 })();

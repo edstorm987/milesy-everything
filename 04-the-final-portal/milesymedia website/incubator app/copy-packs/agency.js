@@ -23,6 +23,13 @@
         a: 'Yes — the protocols compress when there\'s only one operator. The Blueprint pass surfaces what to delegate first when you do hire.' },
       { q: 'I already have a CRM. Do I need BOS?',
         a: 'BOS is your operating layer; the CRM is a tool inside it. Most clients wire the existing CRM to BOS rather than replacing it.' }
-    ]
+    ],
+    /* R019 — default pack: keep R008 marble + gold defaults. The
+       loader treats absence-of-tokens as "use defaults" so every
+       Incubator surface stays exactly as today when niche=agency. */
+    assets: {
+      tokens: {},
+      emojis: { card: ['💼','🎯','📞','🛠','📋','🤝'] }
+    }
   };
 })();

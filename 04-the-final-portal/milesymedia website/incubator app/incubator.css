@@ -907,6 +907,107 @@ a:hover { color: var(--inc-gold); }
 .inc-activity-label { flex: 1; color: var(--inc-text); }
 .inc-activity-time { color: var(--inc-muted); font-size: 12px; }
 
+/* ─── R019 niche asset packs — per-niche cover + card overrides ─── */
+/* Applied via body[data-incubator-niche="…"] selector — set by R004
+   IncubatorCopy loader. CSS-only assets (no binary images) so the
+   total payload stays well under the 500KB budget. Honest fallback:
+   skipped when no body attr is present (R008 defaults remain). */
+
+/* SKINCARE — botanical jade + warm sand */
+body[data-incubator-niche="skincare"] .inc-cover[data-variant="forest"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.6)),
+    radial-gradient(circle at 38% 60%, #2c4a36 0%, #14241b 55%, #050a07 100%);
+}
+body[data-incubator-niche="skincare"] .inc-cover[data-variant="marble"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.55)),
+    repeating-linear-gradient(45deg, #2c4a36 0 8px, #1a3324 8px 16px, #4a6b54 16px 24px);
+}
+body[data-incubator-niche="skincare"] .inc-cover[data-variant="water"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.55)),
+    radial-gradient(circle at 30% 40%, #2a4a5a 0%, #14252a 65%, #050a0d 100%);
+}
+body[data-incubator-niche="skincare"] .inc-card-cover[data-variant="forest"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    radial-gradient(circle at 50% 60%, #3a5a44, #1a2e22);
+}
+body[data-incubator-niche="skincare"] .inc-card-cover[data-variant="water"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    radial-gradient(circle at 30% 40%, #2a4a5a, #14252a);
+}
+body[data-incubator-niche="skincare"] .inc-icon { box-shadow: 0 6px 20px rgba(155,191,138,0.18); }
+
+/* COACHING — mountain violet + dawn */
+body[data-incubator-niche="coaching"] .inc-cover[data-variant="forest"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.6)),
+    radial-gradient(circle at 45% 55%, #3b2c52 0%, #1f1730 60%, #07050d 100%);
+}
+body[data-incubator-niche="coaching"] .inc-cover[data-variant="marble"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.55)),
+    repeating-linear-gradient(45deg, #3b2c52 0 8px, #2a1f3d 8px 16px, #5c4880 16px 24px);
+}
+body[data-incubator-niche="coaching"] .inc-cover[data-variant="water"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.55)),
+    radial-gradient(circle at 60% 40%, #6e4d8a 0%, #2a1f3d 60%, #07050d 100%);
+}
+body[data-incubator-niche="coaching"] .inc-card-cover[data-variant="forest"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    radial-gradient(circle at 50% 60%, #4d3a6e, #2a1f3d);
+}
+body[data-incubator-niche="coaching"] .inc-card-cover[data-variant="water"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    radial-gradient(circle at 30% 40%, #6e4d8a, #2a1f3d);
+}
+body[data-incubator-niche="coaching"] .inc-icon { box-shadow: 0 6px 20px rgba(164,142,209,0.18); }
+
+/* AGENCY — keeps R008 defaults (no overrides — honest fallback). */
+
+/* FITNESS — energy coral + sunset */
+body[data-incubator-niche="fitness"] .inc-cover[data-variant="forest"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.6)),
+    radial-gradient(circle at 50% 55%, #5a2a14 0%, #2c1408 55%, #0a0503 100%);
+}
+body[data-incubator-niche="fitness"] .inc-cover[data-variant="marble"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.55)),
+    repeating-linear-gradient(45deg, #5a2a14 0 8px, #3a1808 8px 16px, #8a4a2a 16px 24px);
+}
+body[data-incubator-niche="fitness"] .inc-cover[data-variant="water"] {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.55)),
+    radial-gradient(circle at 60% 40%, #c47a4a 0%, #5a2a14 60%, #0a0503 100%);
+}
+body[data-incubator-niche="fitness"] .inc-card-cover[data-variant="forest"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    radial-gradient(circle at 50% 60%, #8a4a2a, #5a2a14);
+}
+body[data-incubator-niche="fitness"] .inc-card-cover[data-variant="water"] {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.1)),
+    radial-gradient(circle at 30% 40%, #c47a4a, #5a2a14);
+}
+body[data-incubator-niche="fitness"] .inc-icon { box-shadow: 0 6px 20px rgba(224,128,90,0.18); }
+
+/* Pack-aware accent token usage — chips, lockup pills, pa CTAs. */
+body[data-incubator-niche="skincare"] .inc-chip,
+body[data-incubator-niche="coaching"] .inc-chip,
+body[data-incubator-niche="fitness"] .inc-chip {
+  background: var(--inc-pack-tint, rgba(201,167,106,0.12));
+  border-color: var(--inc-pack-accent, var(--inc-gold-soft));
+  color: var(--inc-pack-accent, var(--inc-accent));
+}
+
 /* ─── Tiny header strip ─── */
 .inc-toprail {
   display: flex;

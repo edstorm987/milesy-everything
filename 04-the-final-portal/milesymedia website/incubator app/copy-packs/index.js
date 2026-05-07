@@ -88,6 +88,17 @@
 
     // Tag <body> with the active niche so CSS can hook later if needed.
     if (document.body) document.body.setAttribute('data-incubator-niche', getNiche());
+
+    /* R019 — apply niche asset pack tokens (CSS custom properties)
+       on document.body. Honest fallback: when pack.assets.tokens is
+       missing or empty, we leave existing CSS variables alone — R008
+       defaults remain in force. */
+    if (document.body && pack.assets && pack.assets.tokens) {
+      var t = pack.assets.tokens;
+      Object.keys(t).forEach(function (k) {
+        document.body.style.setProperty(k, t[k]);
+      });
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function () { apply(document); });

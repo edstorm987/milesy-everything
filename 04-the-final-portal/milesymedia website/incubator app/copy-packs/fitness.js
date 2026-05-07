@@ -22,6 +22,15 @@
         a: 'The Blueprint pass is built for short blocks (15–30 mins between sessions). Each phase is a checklist, not a course.' },
       { q: 'Does this work for online + in-person hybrid?',
         a: 'Yes. About-my-studio captures both surfaces; the recommended modules cover hybrid attendance + retention.' }
-    ]
+    ],
+    /* R019 — energy coral + sunset register. */
+    assets: {
+      tokens: {
+        '--inc-pack-accent': '#e0805a',
+        '--inc-pack-tint':   'rgba(224, 128, 90, 0.12)',
+        '--inc-pack-deep':   '#5a2a14'
+      },
+      emojis: { card: ['💪','🔥','🏃','🎟','🔁','🏋'] }
+    }
   };
 })();

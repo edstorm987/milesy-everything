@@ -22,6 +22,15 @@
         a: 'Yes. The Blueprint pass works whether you stay 1:1 or layer a group offer — we don\'t push leverage you don\'t want.' },
       { q: 'Will this make me sound like every other coach?',
         a: 'The Brand Builder phase explicitly prioritises distinctness — your language, your hooks, not a template.' }
-    ]
+    ],
+    /* R019 — mountain-violet + dawn register. */
+    assets: {
+      tokens: {
+        '--inc-pack-accent': '#a48ed1',
+        '--inc-pack-tint':   'rgba(164, 142, 209, 0.12)',
+        '--inc-pack-deep':   '#3b2c52'
+      },
+      emojis: { card: ['🏔','🌅','✍️','🧭','🗝','🌒'] }
+    }
   };
 })();

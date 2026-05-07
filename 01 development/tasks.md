@@ -123,6 +123,30 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R019 — Per-niche asset / imagery packs** — DONE.
+      4 copy-packs each got NEW `assets:{tokens:{--inc-pack-accent,
+      --inc-pack-tint, --inc-pack-deep}, emojis:{card:[6 glyphs]}}`
+      field. **Pure CSS-gradient + emoji approach** (no binary images)
+      — total ~14KB across all 4 packs combined (3 orders under
+      500KB-per-pack budget). Skincare = botanical jade · coaching =
+      mountain violet · agency = empty tokens (intentional R008
+      default = honest fallback) · fitness = energy coral. Loader
+      (`copy-packs/index.js`) extended: iterates pack.assets.tokens
+      and writes each as CSS custom property on document.body via
+      setProperty (idempotent on niche flip). CSS overrides in
+      incubator.css (~110L) keyed via `body[data-incubator-niche=…]`:
+      `.inc-cover[data-variant=forest|marble|water]` 3 niche-tuned
+      gradient sets · matching `.inc-card-cover` variants · `.inc-
+      icon` niche-tinted box-shadow · `.inc-chip` uses pack tokens
+      with R008 fallback via `var(…, default)`. Agency has no
+      override block → R008 marble preserved. **4 fallback paths**
+      all degrade to R008 surface — no broken visuals. Smoke: all
+      pack files + css 200; switch through 4 niches verified.
+      Q-ASSUMED: CSS-gradient over real imagery per budget (R+1 real
+      photography); niche-emoji wiring exposed but not yet consumed
+      by apply (R+1 swap via data-niche-emoji-slot); per-niche font
+      swap rejected. NEW chapter `04-niche-asset-packs.md` + MASTER
+      #95.
 - [x] **T4 R018 — Print/export PDF (HC + Incubator + admin Reports)** — DONE.
       NEW canonical `incubator app/print.css` (~120L) shared across
       HC results + Incubator root + admin Reports via `<link
