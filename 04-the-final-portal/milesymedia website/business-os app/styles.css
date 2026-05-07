@@ -2630,3 +2630,95 @@ body.bos-cp-editing .bos-cp-fields textarea {
   background: rgba(248,113,113,0.10); color: #f87171; border: 1px solid rgba(248,113,113,0.30);
   border-radius: 8px; cursor: pointer; font-size: 12px;
 }
+
+/* ─── Admin tree editor ──────────────────────── */
+.bos-admin-tree { display: grid; gap: 10px; }
+.bos-admin-tree-area {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  transition: border-color .15s;
+}
+.bos-admin-tree-area.is-open { border-color: var(--accent); }
+.bos-admin-tree-area-head {
+  width: 100%; display: grid; grid-template-columns: 36px 1fr auto auto; gap: 12px; align-items: center;
+  padding: 14px 18px; background: transparent; border: 0; cursor: pointer;
+  color: var(--text); text-align: left;
+}
+.bos-admin-tree-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,107,53,0.12); color: var(--accent); display: grid; place-items: center; font-size: 16px; }
+.bos-admin-tree-name { font-weight: 700; font-size: 15px; }
+.bos-admin-tree-meta { font-size: 11px; letter-spacing: 0.04em; }
+.bos-admin-tree-chev { font-size: 14px; opacity: 0.6; }
+
+.bos-admin-tree-body {
+  padding: 18px; border-top: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  display: grid; gap: 14px;
+}
+.bos-admin-tree-fields { display: grid; gap: 10px; grid-template-columns: 2fr 1fr; }
+.bos-admin-tree-fields label:nth-child(3) { grid-column: span 2; }
+.bos-admin-tree-fields label, .bos-admin-tier-meta label, .bos-admin-step label {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mute);
+}
+.bos-admin-tree-fields input, .bos-admin-tree-fields textarea,
+.bos-admin-tier-meta input, .bos-admin-step input, .bos-admin-step textarea, .bos-admin-step select {
+  background: var(--bg-soft); border: 1px solid var(--border-2);
+  color: var(--text); padding: 8px 10px; border-radius: 8px;
+  font-size: 13px; font-family: inherit;
+}
+.bos-admin-tree-fields input:focus, .bos-admin-tree-fields textarea:focus,
+.bos-admin-tier-meta input:focus, .bos-admin-step input:focus, .bos-admin-step textarea:focus { outline: none; border-color: var(--accent); }
+
+.bos-admin-tier-tabs {
+  display: flex; gap: 6px; padding: 4px;
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px;
+  align-items: center;
+}
+.bos-admin-tier-tab {
+  flex: 0 1 auto; padding: 7px 14px; border-radius: 7px;
+  font-size: 12px; font-weight: 700; color: var(--text-dim);
+  background: transparent; border: 0; cursor: pointer; text-transform: capitalize;
+}
+.bos-admin-tier-tab.is-on { color: var(--text); background: rgba(255,107,53,0.18); }
+.bos-admin-tree-area-del {
+  margin-left: auto; padding: 6px 10px; border-radius: 7px;
+  background: rgba(248,113,113,0.10); color: #f87171;
+  border: 1px solid rgba(248,113,113,0.25); cursor: pointer; font-size: 11px;
+}
+.bos-admin-tier-meta { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 8px; }
+
+.bos-admin-steps { display: grid; gap: 10px; }
+.bos-admin-step {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px;
+  display: grid; gap: 8px;
+}
+.bos-admin-step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.bos-admin-step-head select { flex: 0 0 140px; }
+.bos-admin-step-del {
+  margin-left: auto; width: 28px; height: 28px; border-radius: 7px;
+  background: rgba(248,113,113,0.10); color: #f87171;
+  border: 1px solid rgba(248,113,113,0.25); cursor: pointer; font-size: 12px;
+}
+.bos-admin-step-add { margin-top: 4px; }
+@media (max-width: 700px) {
+  .bos-admin-tree-fields { grid-template-columns: 1fr; }
+  .bos-admin-tier-meta   { grid-template-columns: 1fr; }
+  .bos-admin-tree-area-head { grid-template-columns: 32px 1fr auto; }
+  .bos-admin-tree-meta { display: none; }
+}
+
+/* ─── Logo preview in branding modal ──────────── */
+.bos-brand-logo-preview {
+  display: flex; align-items: center; gap: 10px;
+  margin: 6px 0 4px; padding: 8px 10px;
+  background: var(--bg-soft); border: 1px dashed var(--border-2);
+  border-radius: 9px;
+}
+.bos-brand-logo-preview img {
+  width: 44px; height: 44px; object-fit: cover; border-radius: 8px;
+  background: #fff;
+}
+.bos-brand-logo-preview button {
+  margin-left: auto; padding: 6px 12px; border-radius: 7px;
+  background: rgba(248,113,113,0.10); color: #f87171;
+  border: 1px solid rgba(248,113,113,0.25); cursor: pointer; font-size: 11px;
+}

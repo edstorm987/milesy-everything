@@ -221,7 +221,9 @@
       +   '<p class="muted">Drop your logo, your colours, your business name. Three minutes — and the whole OS rebrands. (Skip if you\'d rather get straight in.)</p>'
       +   '<form class="bos-brand-form" data-bos-brand-form>'
       +     '<label>Business name <input type="text" name="companyName" placeholder="e.g. Northbeam Apparel OS" value="' + (b.companyName || '') + '" /></label>'
-      +     '<label>Logo URL <input type="url" name="logo" placeholder="https://… (or leave empty)" value="' + (b.logo || '') + '" /></label>'
+      +     '<label>Logo <input type="file" accept="image/*" data-bos-brand-logo-file /></label>'
+      +     '<input type="hidden" name="logo" value="' + (b.logo || '') + '" data-bos-brand-logo-hidden />'
+      +     (b.logo ? '<div class="bos-brand-logo-preview"><img src="' + b.logo + '" alt="" /><button type="button" data-bos-brand-logo-clear>Remove</button></div>' : '')
       +     '<div class="bos-brand-no-logo">No logo yet? <a href="mailto:hello@milesymedia.co?subject=Logo%20design">We\'ll design one →</a></div>'
       +     '<div class="bos-brand-colours">'
       +       '<label>Primary colour <input type="color" name="primary" value="' + (b.primary || '#FF6B35') + '" /></label>'
@@ -238,6 +240,42 @@
     modal.querySelector('.bos-brand-close').addEventListener('click', close);
     modal.querySelector('[data-bos-brand-skip]').addEventListener('click', close);
     modal.addEventListener('click', function (ev) { if (ev.target === modal) close(); });
+    var fileInput = modal.querySelector('[data-bos-brand-logo-file]');
+    var hiddenInput = modal.querySelector('[data-bos-brand-logo-hidden]');
+    if (fileInput) {
+      fileInput.addEventListener('change', function () {
+        var f = fileInput.files && fileInput.files[0];
+        if (!f) return;
+        if (f.size > 1024 * 1024) {
+          alert('Logo must be under 1MB. Try a smaller PNG or SVG.');
+          fileInput.value = ''; return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          hiddenInput.value = e.target.result;
+          /* live preview */
+          var existing = modal.querySelector('.bos-brand-logo-preview');
+          if (existing) existing.remove();
+          var prev = document.createElement('div');
+          prev.className = 'bos-brand-logo-preview';
+          prev.innerHTML = '<img src="' + e.target.result + '" alt="" /><button type="button" data-bos-brand-logo-clear>Remove</button>';
+          fileInput.closest('label').after(prev);
+          prev.querySelector('[data-bos-brand-logo-clear]').addEventListener('click', function () {
+            hiddenInput.value = ''; prev.remove(); fileInput.value = '';
+          });
+        };
+        reader.readAsDataURL(f);
+      });
+    }
+    /* Existing remove button (when modal opens with a stored logo) */
+    var preExistingClear = modal.querySelector('[data-bos-brand-logo-clear]');
+    if (preExistingClear) {
+      preExistingClear.addEventListener('click', function () {
+        hiddenInput.value = '';
+        var prev = modal.querySelector('.bos-brand-logo-preview');
+        if (prev) prev.remove();
+      });
+    }
     modal.querySelector('[data-bos-brand-form]').addEventListener('submit', function (ev) {
       ev.preventDefault();
       var fd = new FormData(ev.target);
