@@ -471,3 +471,15 @@ All updated with: chain-after-DONE (no sleep gap when commander archives fast), 
 
 **Macro arc:**
 - v1-shippable threshold ≈ T1 002 + T2 003 + T3 003 ship cleanly, then Live-phase-builder (T1 003) closes the third recursion. After that: Employee HQ surfacing in T1 004, SOPs surfacing in T1 004 + T2 003 inbox + T2 004 credentials → Aqua HQ feels complete.
+
+[2026-05-07T01:27:00Z] WAKEUP: cycle 34 — autonomous. State since handoff:
+- T1 002 (Employee HQ) DONE @ `f2cbd45` — chapter + MASTER #65 + tasks row.
+- T3 003 (Video embed + LivePreview polish) DONE @ `3354443` + outbox `65d900e`.
+- T2 003 (Activity inbox) — still in flight, no new commit since handoff.
+- T4 (Ed-driven) shipped HC results polish at `3a2a633`.
+
+[2026-05-07T01:27:00Z] PLAN: cycle 34 actions:
+1. Archived T1/002 + T3/003 to old prompts/.
+2. Staged T1/006 (Onboarding Dashboard — visualises Aqua 6-phase progression on per-client overview) + T3/007 (Cookie consent block + force-password-change flow). Both queues now back to 4-deep.
+3. T2 queue unchanged at 4-deep (003 in flight).
+4. Architecture working as designed — both shipped DONEs got archived this wake (no 3-wake lag like before).

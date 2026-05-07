@@ -1,77 +1,188 @@
-# 04 · Milesy Media ecosystem — T4 progress log
+# 04 · Milesy ecosystem — current state snapshot
 
-Author: T4 (Milesy Media website terminal)
-Status: in-progress, append-only summary for orchestrator visibility.
+Author: T4
 Last update: 2026-05-07.
+Status: living document. Replaces the snapshot section of itself each round.
+
+This is the **single most up-to-date description** of what T4 has built. Read this first if you're picking up the work cold.
 
 ---
 
-## What's being built
-
-The Ed↔T4 thread has expanded from "polish the static milesymedia site" into the full pre-customer ecosystem that funnels into the Aqua portal. Three apps now live side-by-side in `04-the-final-portal/milesymedia website/`:
+## Three apps, one origin
 
 ```
-milesymedia website/
-├── index.html / login.html / admin.html / styles.css   (the static site, served at :3030 via portal rewrites)
-├── lead magnet app/                                    (interactive Health Check, served standalone at :3033)
-└── business-os app/                                    (the "omega lead magnet" — served standalone at :3034)
+04-the-final-portal/milesymedia website/                  ← T4 scope
+├── index.html / login.html / admin.html / styles.css     marketing site (rewritten onto /
+│                                                          via portal vercel.json + next.config.ts)
+├── lead magnet app/                                       Health Check (sub-folder, served at
+│   ├── index.html                                         /lead magnet app/ on portal origin)
+│   ├── hc-questions.js                                    default AREAS — shared with admin
+│   └── styles.css
+└── business-os app/                                       Business OS (sub-folder)
+    ├── index.html         signup / dev bypass
+    ├── app.html           home dashboard
+    ├── company.html       editable Company Profile
+    ├── leads.html         sales-pipeline kanban (Pro)
+    ├── trackers.html      KPIs + time-tracker + connectors (Pro)
+    ├── tasks.html         kanban to-dos (Pro)
+    ├── docs.html          SOPs / templates (Pro)
+    ├── database.html      modules library (Incubator tracks)
+    ├── module.html        ?id=… renderer over lessons.js
+    ├── marketplace.html   add-ons grid
+    ├── roadmap.html       custom roadmap (Pro tease)
+    ├── help.html          Need Some Help? page
+    ├── request.html       Request a feature (curated free tier)
+    ├── admin.html         admin: Overview / Leads / Reports / Questions editor (gated)
+    ├── lessons.js         5 fully-written lessons
+    ├── bos.js             SHARED runtime (sidebar / branding / mode / AI / progress / etc)
+    └── styles.css
 ```
 
-The vision Ed has articulated:
+**Same-origin** — both apps share `localStorage`. HC writes `bos.healthCheck` + `bos.leads`; BOS reads them. No cross-port hack.
 
-1. **Content marketing** drops on social.
-2. **milesymedia.co** hero CTA → free **Health Check** (lead magnet app).
-3. End of Health Check → **🎁 free gift: claim your Business OS** (BOS app signup).
-4. Business OS becomes a **niche-specific** workspace (Therapist OS / Roofer OS / Salon OS / Coach OS / Restaurant OS / Retailer OS / Agency OS / Generic) — pre-customer portal where they read modules, install paid add-ons, talk to Aqua AI, and track XP/level/streak/achievements like a Roblox tycoon.
-5. Inside the BOS, **My Custom Roadmap** is a Pro-locked sidebar item — paid 1-off £750 deep-dive consult with a senior strategist (or included with retainer).
-6. Once they upgrade to retainer, the **Aqua agency portal** unlocks in the same sidebar (currently locked-with-Upgrade-pill in pre-customer mode), and the BOS gets rebranded to "Resources" while the 9 add-ons (Inbox / Website Editor / Ecommerce / Fulfilment / Memberships / Affiliates / CRM / Marketing / Finance) appear as installed sidebar items.
+Dev: single `python3 -m http.server 3033` from `04-the-final-portal/milesymedia website/`. Log at `/tmp/unified-3033.log`.
 
-This is the full funnel: **content → free Health Check → free Business OS → Custom Roadmap (paid) → retainer (Aqua portal unlocks)**.
+Production stitch: portal's `vercel.json` + `next.config.ts` rewrite `/`, `/index.html`, `/login.html`, `/admin.html`, `/styles.css` → `/_milesy/...`. `prepare-milesy.mjs` copies the whole folder into `portal/public/_milesy/` so subfolders (lead magnet app, business-os app) ride along automatically.
+
+**Q-FLAG (still open):** root rewrites don't include `/health-check.html`, `/lead magnet app/`, `/business-os app/`. Direct-URL visits will 404 on production until chief-commander/T6 adds rewrite entries. Same-origin links from rewritten static pages work today via JS shim in index.html.
 
 ---
 
-## Lead magnet app (`:3033`) — what's shipped
+## The funnel (Ed's vision, end-to-end)
 
-- 5 topics, each with **Beginner / Intermediate / Professional** tier cards. Per-tier exercise types: task / reveal / choice / multi / slider / url / text.
-- "Pub test" interactive opener for SEO Beginner.
-- Persistent floating action row on every step (📞 Call us · 📊 Skip to results · ↷ Skip topic).
-- Money-mirror dashboard: leak-card row (% find you, attention seconds, channel-dependence), per-topic score cards, **action-rich quick wins** with multi-route CTAs (📖 Read guide / 📞 Call us / ⚡ We'll do it for you), section navigator to re-enter topics.
-- **🎁 Gift card at end** — claim your free BOS (cross-port-rewritten in dev to localhost:3034). Flips to "← Back to my BOS" if a `bos.user` already exists on the same origin.
-- On completion: writes `bos.healthCheck` summary + grants 250 XP + 8h "time saved" + the "Self-aware" achievement to whoever's logged into the BOS on the same origin.
+```
+1. Content marketing (social)
+2. milesymedia.co hero CTA → free Health Check
+3. End of HC → 🎁 free gift: claim your Business OS
+4. Business OS = niche-specific lead-magnet workspace
+   (8 niches: Therapist / Roofer / Salon / Coach / Restaurant
+    / Retailer / Agency / Generic)
+5. Inside BOS, "My Custom Roadmap" is a Pro-locked sidebar item
+   — paid 1-off £750 strategy consult (or included w/ retainer)
+6. Marketplace add-ons (9 plug-in tiles) — pay-as-you-need
+7. Upgrade to Milesy retainer → Aqua agency portal unlocks in
+   the same sidebar. BOS renames to "Resources" for customers.
+```
 
-## Business OS app (`:3034`) — what's shipped
-
-Routes: `/` (signup), `/app.html` (dashboard), `/database.html` (modules table), `/module.html` (lesson), `/marketplace.html` (add-ons), `/roadmap.html` (Pro-locked custom roadmap).
-
-Shared `bos.js` is the single source of truth for: user hydration, mode (free/customer), niche, XP/level/streak/time-saved, health-check ingestion, sidebar adaptation, dev bar, achievements, Aqua AI widget, and marketplace tile rendering.
-
-Notable surfaces:
-- **Niche picker** on signup (8 visual tiles).
-- **Gamified topbar** (level ring, XP bar, streak flame, time-saved tally).
-- **Achievements** grid (8 cards, gold-on-unlock with toast).
-- **Health-check summary card** on dashboard (empty-state CTA when missing).
-- **Add-ons strip** + featured modules + library slot.
-- **Marketplace** with category filters, prices, "Add to my OS" mailto, banner that hides for customers.
-- **Module template** with outline-sidebar, callouts, 3-route CTA at bottom.
-- **Roadmap page** — Pro-locked hero + blurred sneak-peek timeline (free); active phase cards with milestone pips (customer).
-- **Aqua AI** floating launcher + slide-in panel (5 free messages, niche- and HC-aware mocked replies, upgrade mailto).
-- **Dev bar** (bottom-centre pill): page links, mode toggle, +50 XP test, reset-session.
-- **Dev bypass** on the auth screen seeds a Therapist OS demo user with 350 XP, 2-day streak, and a mock Health Check so the dashboard demos fully on first click.
-
-The Notion export will drop into `business-os app/notion-export/` and replace placeholder content in two clearly-marked slots (one on `/app.html`, one on `/database.html`). Vault context confirmed: AquaOasis-Web (now Milesy Media) → Incubator → BOS Customisation → Resources Lite → Marketing/Billing/Leads/SOPs/Tasks, tone is "executive operating mode / trust the structure".
+Out of T4 scope: Aqua-portal-side **Incubator** (handled by orchestrator / other terminal). T4 stays focused on the BOS lead-magnet tier.
 
 ---
 
-## Stitching contract reminders
+## The free-tier sidebar (curated, not exhaustive)
 
-- The static milesy site is served at `/` on the portal origin via `vercel.json` + `next.config.ts` rewrites (`/`, `/index.html`, `/login.html`, `/admin.html`, `/styles.css` → `/_milesy/...`). `prepare-milesy.mjs` copies the whole `milesymedia website/` folder into `portal/public/_milesy/` so subfolders (lead magnet app, business-os app, future notion-export) ride along automatically.
-- Q-FLAG (still open from earlier rounds): `/health-check.html`, the `/lead magnet app/` and `/business-os app/` subdirs need rewrite entries on the root `vercel.json` + `next.config.ts` for direct-URL visits. Currently only same-origin links from the rewritten static pages work cleanly. Chief commander / T6 to add when ready.
-- `lead magnet app/` and `business-os app/` are running on standalone python http.server processes for fast iteration (`/tmp/lead-magnet-3033.log`, `/tmp/business-os-3034.log`).
+Ed's 2026-05-07 ruling: free should NOT include pipelines / numbers / tasks / files. Free is **personal and curated** — user tells us what they need via the Request-a-feature page, we switch it on.
 
-## Today's plan (Ed-stated, 2026-05-07)
+```
+My business     · Home · About my business
+Learn           · Lessons · Health check
+Get help        · Need help? · Ask Aqua AI · Book a free call · Request a feature
+More            · Custom roadmap (Pro) · Aqua agency portal (locked)
+```
 
-1. Polish responsiveness across all three apps (mobile breakpoints, padding, centering).
-2. Revamp `milesymedia website/index.html` to fit the ecosystem narrative: process / quick-wins / earn-our-trust framing, VSL slot, fleshed-out services page (bespoke software → websites → GMB photoshoots).
-3. Get the Health Check airtight, then deepen the Business OS (niche-specific module library, real Lighthouse hookup for Pro tier, real Aqua AI hookup).
-4. Health-check delivery plan documented in `lead magnet app/DELIVERY-PLAN.md` so we know what "shipping" means.
-5. Wait on Notion export to populate BOS library content.
+**Pro mode** unlocks: My customers (leads) · My numbers (trackers) · My to-dos (tasks) · My files (docs). bos.js renders the sidebar mode-aware. Free users hitting Pro pages directly see a clean lockup with Request-access + Marketplace CTAs.
+
+Mode toggle: dev bar (only visible with `?dev=1` sticky flag).
+
+---
+
+## What works on the free tier (genuinely useful)
+
+- **Home page**: friendly greeting + niche tagline + "Customise" branding entry + ONE adaptive "Your next move" card (HC → company profile → first lesson → first to-do → "you're set") + 3 friendly cards (Read a lesson / Ask AI / Need something else?) + HC-derived leak strip when HC complete.
+- **Company Profile** (`/company.html`): inline-editable cards — 30-second answer, customer, offer architecture, brand, founder, team rows, suppliers, critical accounts. Edit toggle persists everything to `bos.company`.
+- **Health Check assessment** end-to-end (see HC chapter for details).
+- **5 lessons** (1.1 Chrome Profile · 1.5 Core Principles · 3.5 Super Sales · 4.4 Operations · 5.2 Referral Alchemy) rendered via `module.html?id=…` from `lessons.js`. Other lessons in the library are visible-but-locked with a Pro tag.
+- **Aqua AI floating widget**: 5 free messages, niche- and HC-aware mocked replies. Suggestion chips. Upgrade mailto in footer.
+- **Gamification (slim)**: XP / level / streak / time-saved / achievements stored in `bos.progress`. Slim home progress strip only shows after they've earned XP.
+- **Branding**: logo file upload (FileReader → data URL, 1MB cap) + colour pickers + company name. Applied via CSS vars and brand-label swaps. First-visit modal nudge. Re-openable from Customise button.
+- **Request a feature** (`/request.html`): textarea + 7 category tags + urgency, composes structured mailto with user/business/niche/urgency prefilled.
+- **Help page** (`/help.html`): support card + 6-action grid + FAQ.
+
+---
+
+## What's gated to Pro (working but locked)
+
+- **Leads & Clients HQ** (`/leads.html`) — sales pipeline kanban with 6 stages, per-stage £ totals, lead cards w/ source/value/icons + stage-move dropdown.
+- **Trackers & KPIs** (`/trackers.html`) — 5 KPIs (manual edit), time-tracker widget, connectors strip (QuickBooks/Stripe/Sheets/Manual).
+- **Tasks** (`/tasks.html`) — 4-column kanban (Today/Week/Backlog/Done) with quick-add + inline edit + move buttons.
+- **Documents** (`/docs.html`) — 6 folders + live search + seeded file table + 4 free template downloads.
+
+Each shows a clean lockup card to free users with `Request access →` + `See add-ons` CTAs.
+
+---
+
+## Marketplace (9 add-ons)
+
+`/marketplace.html` mirrors the eventual portal-plugin tile set:
+
+| id | name | category | £/mo |
+|---|---|---|---|
+| inbox | All-in-One Inbox | comms | 49 |
+| website | Website Editor | site | 79 |
+| ecom | Ecommerce | sell | 89 |
+| fulfil | Fulfilment | sell | 39 |
+| members | Memberships | retain | 39 |
+| affil | Affiliates | grow | 29 |
+| crm | Client CRM | comms | 49 |
+| marketing | Marketing Suite | grow | 59 |
+| finance | Finance | ops | 39 |
+
+All "Add to my OS" CTAs are mailto stubs today. Customer-mode flips them to "Installed / Open" pills.
+
+---
+
+## Admin
+
+`/admin.html` (password gate: `milesy` or `aqua`):
+
+- **Overview** tab — KPIs (HC completed / leads / pipeline £ / sign-ups).
+- **Leads** tab — all `bos.leads` rows.
+- **Reports** tab — HC headlines + leak £ + topic scores.
+- **Questions editor** tab — tree (area → tier → steps) editor over the live HC. Saves to `localStorage['bos.hcQuestions']`. Lead-magnet reads override on next load. Shared default lives in `lead magnet app/hc-questions.js` (`window.HC_AREAS`).
+
+---
+
+## Storage shape (single source of truth)
+
+All BOS state lives under `bos.*` keys in `localStorage`. Schema is deliberately compatible with the future Postgres plugin tables — see `04-business-os-plugin-handoff.md` for the migration mapping.
+
+```
+bos.user            { name, business, email, niche, dev? }
+bos.mode            'free' | 'customer'
+bos.brand           { companyName, logo (data URL), primary, secondary }
+bos.progress        { xp, timeSavedHrs, streak, lastActive, completed, achievements[] }
+bos.healthCheck     { headline, leakEstimate, topics[{name, icon, score, status}] }
+bos.company         { oneliner, mission, usp, customer, problem, area, lead-offer,
+                      flagship, premium, aov, tone, colour-1, colour-2, brand-folder,
+                      founder-name/role/email/mobile, team[], suppliers[], accounts[] }
+bos.kpis            { leads, conversion, aov, ontime, runway }
+bos.timer           { running: {task, startedAt} | null, sessions[] }
+bos.tasks           { today[], week[], backlog[], done[] }
+bos.leads           [{ id, name, source, value, stage, fromHc?, contact? }, …]
+bos.docs            [{ name, folder, type, updated }, …]
+bos.ai              { remaining, cap, history[] }
+bos.adminUnlocked   '1' if password ever entered
+bos.dev             '1' if ?dev=1 ever set (sticky)
+bos.hcQuestions     full AREAS shape — admin override of HC defaults
+hc.contact          { name, contact, capturedAt: 'progress-save' | 'results-grab' }
+hc.progressDismissed '1' if user skipped the post-Q5 modal
+```
+
+---
+
+## Cross-cutting decisions
+
+- **Tone**: "trust the structure", executive-operating-mode (vault). Every page has an optional Notion-style "Introduction — please open me!" callout (collapsed by default).
+- **Honesty contract on the HC results**: no fabricated numbers, range-not-point money headline, per-topic leak cards only fill when answered, transparency block listing real-data connectors. See `04-hc-results-honesty.md`.
+- **Personalisation > pre-loaded depth**: free user gets the curated 6-item sidebar, not the 12-page maximalist version. Request a feature is the lever.
+- **Future plugin extraction**: the BOS becomes `@aqua/plugin-business-os` mounted in the agency portal sidebar. localStorage shapes deliberately mirror the Postgres tables.
+
+---
+
+## Cross-references
+
+- `04-business-os-plugin-handoff.md` — future plugin shape + storage migration map
+- `04-hc-results-honesty.md` — the no-fabricated-numbers ruling + range maths
+- `04-admin-questions-editor.md` — tree editor + live HC bridge
+- `04-free-vs-pro-gating.md` — sidebar mode rules + Pro lockup pattern
+- `04-open-followups.md` — every open Q / TODO / mesh hazard
+- `lead magnet app/DELIVERY-PLAN.md` — shippable-tier delivery plan
