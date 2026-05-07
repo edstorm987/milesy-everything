@@ -67,6 +67,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Link href="/login" className="btn btn-ghost">
               Sign in
             </Link>
+            <Link href="/demo" className="btn btn-secondary">
+              Try the demo
+            </Link>
             <Link href="/signup" className="btn btn-primary">
               Get started
             </Link>
