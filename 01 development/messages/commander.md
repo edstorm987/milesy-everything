@@ -1629,3 +1629,13 @@ Remaining Sprint-2.5 items:
 - Performance pass beyond dev-bypass memoize — biggest lever still `PORTAL_BACKEND=postgres` (operator action).
 
 Operator-side items unchanged: env vars · vercel link · operator dry-run · T5/T6 reactivation for Felicia + production deploy.
+
+[2026-05-07T23:05:00Z] **Gap #4 closed** — `funnelMePort.getMeContextByUserId` now hydrates `hcSlot` + `capturedAt` from the public-funnel plugin's container instead of returning a skeleton. Walks every agency's public-funnel install (leads aren't bound to a single agency) until it finds a capture for the user. All-failure paths fall through to the skeleton — BOS gate `me` endpoint always renders. tsc clean. Build green.
+
+**All 4 chapter #161 gaps now closed**:
+- Gap #1 ✅ public-funnel registry registration (commit 2b77312)
+- Gap #2 ✅ leads-pipeline manifest id (earlier same day)
+- Gap #3 ✅ email-sender registration (commit 9a29443, ch#162)
+- Gap #4 ✅ funnelMePort.hcSlot hydration (this commit)
+
+Sprint 2.5 complete except for the perf-pass (operator action — `PORTAL_BACKEND=postgres`).

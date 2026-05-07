@@ -70,11 +70,14 @@ export const sessionPort = {
   },
 };
 
-// `FunnelMePort` adapter. The public-funnel plugin's storage owns the
-// `hcSlot`/`capturedAt` payload; the foundation doesn't model leads
-// beyond the user record. R+1 wires this to the actual storage; v1
-// returns an honest skeleton (just the user identity) so BOS's `me`
-// endpoint renders without 500ing when the plugin isn't installed.
+// `FunnelMePort` adapter. Reads HC slot + capture timestamp from the
+// public-funnel plugin's container (chapter #161 Gap #4 closure).
+// Walks every agency's public-funnel install until it finds a capture
+// for this user — leads aren't bound to a single agency, so the first
+// install with a matching capture wins. Falls back to a skeleton
+// (just user identity) when no funnel install exists, no capture is
+// found, or any plugin import fails — BOS's `me` endpoint always
+// renders.
 export const funnelMePort = {
   async getMeContextByUserId(userId: string): Promise<{
     leadUserId: string;
@@ -85,14 +88,49 @@ export const funnelMePort = {
     const u = getUserById(userId);
     if (!u) return null;
     if (u.role !== "lead") return null;
-    return {
+
+    // Honest skeleton — we always return at least identity. Hydrate
+    // hcSlot + capturedAt from public-funnel storage when reachable.
+    const skeleton = {
       leadUserId: u.id,
       email: u.email,
-      // R+1: read from public-funnel plugin storage. Today the BOS gate
-      // tolerates these as undefined (chapter #137 §me payload).
-      hcSlot: undefined,
-      capturedAt: u.createdAt,
+      hcSlot: undefined as Record<string, unknown> | undefined,
+      capturedAt: u.createdAt as number | undefined,
     };
+
+    try {
+      const [{ containerFor }, { listAgencies }, { getInstall }, { makePluginStorage }] =
+        await Promise.all([
+          import("@aqua/plugin-public-funnel/server"),
+          import("@/server/tenants"),
+          import("@/server/pluginInstalls"),
+          import("@/lib/server/pluginStorage"),
+        ]);
+      for (const agency of listAgencies()) {
+        const install = getInstall({ agencyId: agency.id }, "public-funnel");
+        if (!install) continue;
+        const storage = makePluginStorage(install.id);
+        const container = containerFor({
+          agencyId: agency.id,
+          storage: storage as unknown as Parameters<typeof containerFor>[0]["storage"],
+          install: install as unknown as Parameters<typeof containerFor>[0]["install"],
+        });
+        const ctx = await container.funnel.meContext(u.id);
+        if (ctx) {
+          return {
+            leadUserId: u.id,
+            email: u.email,
+            ...(ctx.hcSlot !== undefined ? { hcSlot: ctx.hcSlot } : {}),
+            capturedAt: ctx.captures[0]?.capturedAt ?? u.createdAt,
+          };
+        }
+      }
+    } catch {
+      // Any failure (plugin not installed yet on this tenant, schema
+      // drift, missing module) → fall through to skeleton. BOS gate
+      // tolerates undefined hcSlot per chapter #137.
+    }
+    return skeleton;
   },
 };
 
