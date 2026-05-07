@@ -32,6 +32,7 @@ interface FormState {
   whatsappLink: string;
   stripeLink: string;
   lockInPaid: boolean;
+  useIncubator: boolean;
 }
 
 const DEFAULT_STATE: FormState = {
@@ -46,7 +47,12 @@ const DEFAULT_STATE: FormState = {
   whatsappLink: "",
   stripeLink: "",
   lockInPaid: false,
+  useIncubator: true,
 };
+
+function defaultUseIncubator(stage: string): boolean {
+  return stage === "aqua-epic-intro" || stage.endsWith("-intro");
+}
 
 const FALLBACK_PRESETS: PhasePreset[] = [
   { stage: "aqua-epic-intro",    label: "Epic Intro",                   pluginPreset: [] },
@@ -105,6 +111,10 @@ export function NewClientButton() {
         next.slug = slugify(composedDisplayName(next));
       }
       if (key === "slug") slugTouched.current = true;
+      // T1 R14: when operator changes phase, re-derive Incubator toggle
+      // default unless they've manually toggled it (we treat any explicit
+      // toggle as a user-touch — see the dedicated useIncubator branch).
+      if (key === "stage") next.useIncubator = defaultUseIncubator(next.stage);
       return next;
     });
   }
@@ -147,6 +157,34 @@ export function NewClientButton() {
         return;
       }
       const newId = data.client?.id ?? data.clientId;
+
+      // T1 R14: when the operator opted into the Aqua Incubator
+      // template, fire the foundation route that applies the
+      // `aqua-incubator` portal variant + resolves placeholders via
+      // `applyIncubatorClientMetadata`. Failures here are
+      // non-blocking — the client was created, log + continue.
+      if (newId && state.useIncubator) {
+        const phaseLabel = presets.find(p => p.stage === state.stage)?.label ?? state.stage;
+        const planTierLabel =
+          PLAN_TIERS.find(p => p.value === state.planTier)?.label ?? state.planTier;
+        try {
+          await fetch("/api/tenants/apply-incubator-variant", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              clientId: newId,
+              metadata: {
+                phase: phaseLabel,
+                planTier: planTierLabel,
+                therapistName: state.therapistName.trim() || undefined,
+                practiceName:  state.practiceName.trim()  || undefined,
+                onboardingStartedAt: new Date().toISOString().slice(0, 10),
+              },
+            }),
+          });
+        } catch { /* non-blocking — client already created */ }
+      }
+
       setOpen(false);
       router.push(newId ? `/portal/clients/${newId}` : "/portal/agency");
       router.refresh();
@@ -293,6 +331,28 @@ export function NewClientButton() {
                       : <>No plugins auto-install at this phase yet.</>}
                   </small>
                 )}
+              </label>
+
+              <label
+                data-testid="incubator-toggle"
+                className="flex items-start gap-2 rounded-md border border-black/10 bg-amber-50/60 p-2 text-xs"
+              >
+                <input
+                  type="checkbox"
+                  checked={state.useIncubator}
+                  disabled={busy}
+                  onChange={(e) => update("useIncubator", e.target.checked)}
+                  className="mt-0.5"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="font-medium text-amber-900">Use Aqua Incubator template</span>
+                  <span className="block text-[11px] text-amber-900/75">
+                    Seeds the client&apos;s account portal with the canonical Incubator
+                    welcome variant + resolves placeholders (`{`{phase}`}`,
+                    `{`{planTier}`}`, therapist + practice names) on apply.
+                    Default ON for Epic Intro, off for later phases.
+                  </span>
+                </span>
               </label>
 
               <label className="flex flex-col gap-1">

@@ -226,6 +226,47 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ New client Incubator toggle");
+  // Modal markup is rendered inline on the agency home — toggle testid present.
+  const home = await go("GET", "/portal/agency");
+  const homeBodyInc = home.status === 200 ? await home.text() : "";
+  record("agency home carries incubator-toggle testid", homeBodyInc.includes("incubator-toggle"));
+  // Create a fresh aqua-epic-intro client with metadata so apply-incubator-variant has fields to resolve.
+  const created = await go("POST", "/api/portal/fulfillment/clients", {
+    body: JSON.stringify({
+      name: `Smoke Incubator ${Date.now()}`,
+      stage: "aqua-epic-intro",
+      brand: { primaryColor: "#0EA5A4" },
+      metadata: { therapistName: "Smoke", practiceName: "Test Practice", planTier: "foundational" },
+    }),
+  });
+  const cj = created.status < 300 ? await created.json().catch(() => null) : null;
+  const incClientId = cj?.client?.id ?? cj?.clientId;
+  if (incClientId) {
+    // Install website-editor on this client so applyStarterVariant has a target install.
+    await go("POST", "/api/portal/fulfillment/marketplace/install", {
+      body: JSON.stringify({ clientId: incClientId, pluginId: "website-editor" }),
+    });
+    const apply = await go("POST", "/api/tenants/apply-incubator-variant", {
+      body: JSON.stringify({
+        clientId: incClientId,
+        metadata: {
+          phase: "Epic Intro",
+          planTier: "Foundational Flow",
+          therapistName: "Smoke",
+          practiceName: "Test Practice",
+          onboardingStartedAt: "2026-05-07",
+        },
+      }),
+    });
+    record("apply-incubator-variant 200", apply.status === 200, `status=${apply.status}`);
+    const applyJson = apply.status === 200 ? await apply.json().catch(() => null) : null;
+    record("apply-incubator-variant returns variantId", applyJson?.variantId === "aqua-incubator");
+  }
+  // Bad payload → 400.
+  const bad = await go("POST", "/api/tenants/apply-incubator-variant", { body: JSON.stringify({}) });
+  record("apply-incubator-variant rejects empty body", bad.status === 400);
+
   console.log("\n§ Demo mode");
   // Demo agency must contain the original Felicia mirror + 2 extras.
   const dHome = await go("GET", "/portal/agency");

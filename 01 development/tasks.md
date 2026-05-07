@@ -9,6 +9,25 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 014 — "+ New client" Incubator template toggle** — DONE.
+      Goal A: `_NewClientButton.tsx` modal gains `useIncubator`
+      checkbox (amber callout, `data-testid="incubator-toggle"`)
+      between phase select and remaining fields. Default ON for
+      `aqua-epic-intro`/`*-intro`; re-derives on stage change. Goal
+      B: NEW `POST /api/tenants/apply-incubator-variant` foundation
+      route — `getInstall(scope, "website-editor")` → `makeCtx`
+      PluginStorage → `applyStarterVariant({role:"account",
+      variantId:"aqua-incubator"})` → `getPage` +
+      `applyIncubatorClientMetadata(blocks, metadata)` substitute
+      placeholders → `updatePage(blocks)` → marks
+      `metadata.useIncubator=true`. Modal submit fires the apply
+      route after client create when toggle ON; non-blocking on
+      apply failure. Q-ASSUMED: role="account"; relative-path
+      import to bypass node_modules snapshot lag. Goal C+D: smoke
+      `§ New client Incubator toggle` (4 — toggle testid +
+      apply 200 + variantId + empty-body 400). Chapter
+      `04-new-client-incubator-toggle.md`; MASTER row #89; tsc
+      clean. HARD BOUNDARY honoured.
 - [x] **T1 013 — Demo mode polish (POV toggle + 3 clients + embed)** — DONE.
       Goal A: `seedDemoAgency()` extended with 2 extra clients
       (demo-brand-builder on aqua-brand-builder + demo-mastery on
