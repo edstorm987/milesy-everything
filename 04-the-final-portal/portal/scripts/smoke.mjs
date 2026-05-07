@@ -284,6 +284,18 @@ async function main() {
   // Reset embed cookie for downstream blocks.
   await go("GET", "/demo?source=stitch-smoke");
 
+  console.log("\n§ Founder dashboard");
+  const dashHome = await go("GET", "/portal/agency");
+  const dashBody = dashHome.status === 200 ? await dashHome.text() : "";
+  record("agency home shows founder-dashboard-kpis testid", dashBody.includes("founder-dashboard-kpis"));
+  for (const id of ["clients", "tasks-week", "lockin", "touchpoints", "stale"]) {
+    record(`KPI tile ${id} testid present`, dashBody.includes(`kpi-tile-${id}`));
+  }
+  record("agency home shows agency-activity-feed testid", dashBody.includes("agency-activity-feed"));
+  // activity-inbox endpoint reachable.
+  const inbox = await go("GET", "/api/portal/activity-inbox/list?limit=5");
+  record("activity-inbox list 200", inbox.status === 200, `status=${inbox.status}`);
+
   console.log("\n§ Aqua HQ sidebar polish");
   // Sidebar 6-section restructure: Dashboard / Clients / Inbox / SOPs / Finance / Settings.
   const aquaHome = await go("GET", "/portal/agency");

@@ -16,6 +16,8 @@ import { listActivity } from "@/server/activity";
 import { phaseLabel } from "@/server/phases";
 import { NewClientButton } from "./_NewClientButton";
 import { FounderTodosWidget } from "./_FounderTodosWidget";
+import { FounderDashboardKpis } from "./_FounderDashboardKpis";
+import { AgencyActivityFeed } from "./_AgencyActivityFeed";
 
 function formatRelative(ts: number): string {
   const delta = Date.now() - ts;
@@ -60,7 +62,22 @@ export default async function AgencyHome() {
         {clients.length > 0 && <NewClientButton />}
       </section>
 
+      <FounderDashboardKpis
+        activeClients={clients.filter(c => c.stage !== "churned").length}
+        lockInCollected={clients.filter(c => {
+          const m = (c.metadata ?? {}) as { lockInPaid?: boolean };
+          return m.lockInPaid === true;
+        }).length}
+        staleClients={clients.filter(c => {
+          const m = (c.metadata ?? {}) as { lastContactedAt?: number };
+          if (!m.lastContactedAt) return true;
+          return Date.now() - m.lastContactedAt > 7 * 24 * 60 * 60 * 1000;
+        }).length}
+      />
+
       <FounderTodosWidget isFounder={session.role === "agency-owner"} />
+
+      <AgencyActivityFeed />
 
       {clients.length === 0 ? (
         <section className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-black/15 bg-white/50 px-6 py-16 text-center">

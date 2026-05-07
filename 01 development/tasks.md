@@ -9,6 +9,23 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 018 — Founder home dashboard (KPI strip + agency feed)** — DONE.
+      Goal A+B: NEW `_FounderDashboardKpis.tsx` 5-tile KPI strip on
+      `/portal/agency` above clients grid. Active clients (server),
+      Tasks·This Week (kanban fetch), Lock-in collected (server),
+      Touchpoints/7d (marketing fetch), Stale clients (server).
+      Plugin-missing → `—` + "Connect ___ to see" subtext per
+      chapter #68 honesty (no fabricated numbers); muted-bg fallback
+      tiles. Goal C: NEW `_AgencyActivityFeed.tsx` below Founder
+      Todos pulling `/api/portal/activity-inbox/list?limit=15` —
+      category chip + message + relative ts; graceful plugin-missing
+      copy. Q-ASSUMED: client-side fetch for kanban/marketing/
+      activity (foundation can't reach plugin storage easily); tasks
+      active-only; touchpoints = leads.lastContactedAt. Goal D:
+      smoke `§ Founder dashboard` (8 — KPI section testid + 5×tile
+      testids + activity-feed testid + inbox list 200). Chapter
+      `04-founder-home-dashboard.md`; MASTER row #93; tsc clean.
+      HARD BOUNDARY honoured.
 - [x] **T1 017 — Default favicons + Aqua HQ sidebar polish** — DONE.
       Goal A: 4 NEW favicon assets in `portal/public/` —
       favicon-default-{32,180,192}.png + favicon-default.ico
