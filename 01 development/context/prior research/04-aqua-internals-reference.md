@@ -359,6 +359,135 @@ the Founder role only.
 ### Future Employee HQ round
 - Spec captured in §9. Ship after T1 Agency Shell + T2 Kanban land.
 
+## 15. Client onboarding — Notion-style visual pattern
+
+Source: 7 screenshots in `01 development/ed-dropbox/screenshots/Incubator
+(client onboarding)/`. They show **THE OPULENCE INCUBATOR 3.0** — the
+Notion-built client onboarding portal Felicia (and every Aqua client) sees
+when they first onboard. **This is the look-and-feel target for the
+website-editor's "client portal — incubator" template.**
+
+### 15a. The page anatomy (top to bottom)
+
+1. **Cover banner** — wide hero image at top (forest / nature / dark-marble-
+   with-gold textures). Sits flush with the page edge.
+2. **Page icon chip** — small landmark/badge/emoji art (~64×64) overlapping
+   the cover, left-aligned.
+3. **Page title** — large H1 ("THE OPULENCE INCUBATOR 3.0", "My Client
+   Portal - Access", "Aqua Onboarding - Start Here!"). Optional caption
+   line under ("Your Onboarding Control Panel — Please Follow Each Step in
+   Order.").
+4. **"X more properties" disclosure** — Notion-style collapsible row
+   exposing structured props (date / status / tags / phase / etc.).
+5. **Body**: a vertical stack of blocks — see §15b.
+
+### 15b. The block taxonomy
+
+| Block | What it does | Existing website-editor mapping |
+|---|---|---|
+| `cover` | Wide banner image / video header. | Adapt `hero` block (full-bleed mode). |
+| `icon` | Small art chip overlapping cover. | New tiny block — single image with offset positioning. |
+| `pageTitle` | H1 + caption. | `headline`/`hero-text` already exists. |
+| `propertyStrip` | Notion-style key-value rows in a disclosure. | NEW — small block; rows = `{key, value, type}`. |
+| `videoEmbed` | Vimeo / YouTube / loom embed. | Already exists in 02 (lift if not yet ported). |
+| `toggle` | `▸ Header` disclosure that opens to nested blocks. | NEW — `BlockTree` children rendered when open. |
+| `cardGrid` | 2-col grid of cards; each card = cover image + emoji + label + link. | Adapt `productGrid` rendering or new `cardGrid` block. |
+| `button` | Inline link button ("Click Me To Enter Your Portal!"). | Already exists. |
+| `divider` | Thin horizontal line between sections. | Already exists. |
+| `helpRow` | Small inline row with emoji + "Need Some Help? Get In Touch Here." | Use `toggle` with help content. |
+| `feedbackRow` | Same shape, "Have an Idea? Your Feedback Drives Our System Evolution." | Use `toggle`. |
+
+Three new blocks: `icon`, `propertyStrip`, `toggle`, `cardGrid`. Everything
+else is in the catalogue.
+
+### 15c. The navigation pattern
+
+Each onboarding "page" links to ~4 sub-pages via `cardGrid`. The screenshots
+show:
+
+- **Root** — `THE OPULENCE INCUBATOR 3.0` with cards: Aqua Onboarding ·
+  My Client Portal · Aqua Resources Lite · Discover AquaOasis-Web.
+- **Discover AquaOasis-Web** — `All Things Aqua` cards: Aqua Philosophy ·
+  Meet the Team · Aqua Community · Charity & Impact · Follow the Movement ·
+  Become an Affiliate.
+- **Aqua Resources Lite** — `Aqua Recourses` cards: Incubator Modules ·
+  Personal AI Assistants. Plus toggles: AquaSuite GHL Tutorial · My
+  Business OS Tutorial · Where time is no longer tied to income.
+- **Aqua Onboarding - Start Here!** — Vimeo at top + Introduction toggle +
+  buttons: System Production Form · My Minimum Viable Business Checklist.
+- **My Client Portal - Access** — Introduction toggle + single big button
+  "Click Me To Enter Your Portal!" (this is the **gateway** into their
+  Aqua portal proper — bridges from the Notion-style incubator back into
+  the website-editor-rendered portal).
+
+### 15d. Visual register
+
+- **Dark theme baseline** — black background, ~`#0F0F0F` cards.
+- **Gold-marble accent imagery** — repeating texture across cards.
+- **Nature/forest hero imagery** — water, roots, organic motifs.
+- **Mythos copy register** — *"Roots Are Setting. Video Coming Soon!"*,
+  *"opulence beyond anything ever witnessed"*, *"Where time is no longer
+  tied to income"*. Match this voice in starter copy; let operators rewrite.
+
+### 15e. The "Incubator Template" website-editor preset
+
+When a new client lands at phase 1 (Epic Intro), their portal should
+auto-populate with this template. As a website-editor preset:
+
+```
+Page: "Welcome to the Aqua Incubator, {therapistName}"
+├── cover(image="aqua-roots.jpg")
+├── icon(image="incubator-badge.png")
+├── pageTitle("THE OPULENCE INCUBATOR 3.0",
+│             caption="Your Onboarding Control Panel — Please Follow Each Step in Order.")
+├── propertyStrip([
+│     { key: "Phase",        type: "phase",  value: "Epic Intro" },
+│     { key: "Plan",         type: "select", value: "{planTier}" },
+│     { key: "Started",      type: "date",   value: "{onboardingStartedAt}" },
+│   ])
+├── videoEmbed("vimeo:...")
+├── toggle("Your First Action Step - Please Open Me!", [...])
+├── helpRow("Need Some Help? Get In Touch Here.", whatsappLink)
+├── feedbackRow("Have an Idea? Your Feedback Drives Our System Evolution.", formId)
+├── divider
+├── cardGrid("Incubator Navigation", [
+│     { coverImg, icon: "💎", label: "Aqua Onboarding - Start Here!",       href: ".../onboarding" },
+│     { coverImg, icon: "🏛", label: "My Client Portal - Access",           href: ".../client-portal" },
+│     { coverImg, icon: "✨", label: "Aqua Resources Lite - Bonus!",        href: ".../resources" },
+│     { coverImg, icon: "🌊", label: "Discover AquaOasis-Web",              href: ".../discover" },
+│   ])
+└── divider
+```
+
+Each card destination is itself a page using the same anatomy. Operators
+edit the template like any other page; the portal-export plugin
+materialises it on Live.
+
+### 15f. The bridge from incubator → portal
+
+`My Client Portal - Access` page contains a single primary button
+*"Click Me To Enter Your Portal!"* — that hop-out CTA is the bridge from
+the Notion-style incubator (operator-curated, content-heavy) into the
+client's actual app portal (functional — phase board, kanban, files,
+content the client interacts with). Two distinct surfaces; this button
+is the seam. Implementation: same-origin link to `/portal/customer` (or
+the client's account hub) carrying the existing session cookie.
+
+### 15g. Round-shape proposal (do AFTER T1+T2 R+1 ship)
+
+A future T3 round — `client-onboarding-incubator-template`:
+
+- Add the 4 missing blocks (`icon`, `propertyStrip`, `toggle`, `cardGrid`)
+  to `@aqua/plugin-website-editor`.
+- Ship the "Incubator Template" preset (§15e) — picked at "+ New client"
+  when phase = Epic Intro (or via a "Use Aqua Incubator template" toggle).
+- Wire the CardGrid block's destinations as relative links inside the
+  client's portal-variant tree so links resolve regardless of domain.
+- Smoke: template instantiates clean for a new client; toggles open/close;
+  cardGrid renders 4 cards; bridge button navigates to `/portal/customer`.
+- Update T1's "+ New client" modal: when phase = Epic Intro, default the
+  "starter portal" to the Incubator Template (toggleable).
+
 ## 14. Source pointers
 
 - `~/Desktop/obsidian/Mission Ed/05 Business & Ventures/Aqua Bios -

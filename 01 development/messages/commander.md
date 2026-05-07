@@ -379,3 +379,7 @@ Did NOT drop new NOTEs in T1/T2 inboxes — the prior NOTE (cycle 26) already po
 6. T3 still needs re-paste of T3-editor-deeplink.md — flagged in tasks.md before.
 
 [2026-05-07T00:11:00Z] SLEEP: 1500s (25 min). T1 + T2 likely pick up new prompts on next /loop fire. T3 awaits Ed re-paste. T4 firing.
+
+[2026-05-07T00:25:00Z] PLAN: Ed pointed at 7 Incubator screenshots in `01 development/ed-dropbox/screenshots/Incubator (client onboarding)/`. Looked at all 7 — the actual Aqua Incubator client onboarding portal (THE OPULENCE INCUBATOR 3.0). Notion-style: cover banner + icon chip + big title + "X more properties" disclosure + Vimeo embed + ▸ Toggle disclosures + 2-col card grids (gold-marble cover imagery) + inline buttons + sub-page recursion.
+- Expanded chapter #59 with §15 — full visual pattern: §15a anatomy, §15b block taxonomy + which 4 new blocks needed (icon / propertyStrip / toggle / cardGrid), §15c navigation pattern from screenshots, §15d visual register (dark + gold-marble + mythos copy), §15e "Incubator Template" preset structure, §15f bridge button incubator→portal, §15g round-shape proposal.
+- Did NOT draft a new round prompt yet — Ed wants T1+T2 R+1 to finish first. Round-shape captured in §15g for when they're done.
