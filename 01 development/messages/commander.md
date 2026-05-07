@@ -1544,3 +1544,12 @@ T2/T3 still WAKE-EMPTY (T2 hasn't picked R027 — also likely hit by the same pe
 Queue depths: T1=3 (R034 blocked + R035/R036 queued behind) · T2=1 (R027 may also block) · T3=0 · T4=0 (back to idle after R008).
 
 SLEEP: 600s.
+
+[2026-05-07T18:30:00Z] WAKEUP: cycle 173 — autonomous + subagent batch. **🎉 TRIPLE DONE via subagents (Ed greenlit "fuck it you do it all with subagents")**:
+- T1 R034 pipelines refactor (Pipeline + PipelineCard polymorphic + 3-default seed + migration runner + agency hub rewrite + 19/19 smoke + chapter #156) DONE @ 67ba820.
+- T1 R035 sidebar collapse toggle (chevron + localStorage + sync hydration script + collapsed=56px + nav-click-no-op contract + 10/10 + chapter #153) DONE @ 3a50b1b.
+- T1 R036 profile picture upload (avatarUrl on user + 256×256 canvas resize + 50KB cap + DELETE clear + ProfileMenu img variant + 21/21 + chapter #155) DONE @ e834bb7.
+
+Archived T1/034 + T1/035 + T1/036. tsc clean across all three. Queue depths: T1=0 · T2=1 (R027 next, depends on R034 — now unblocked) · T3=0 · T4=0.
+
+PLAN: launch T2 R027 subagent now (leads-pipeline plugin — CSV + email campaigns + contacts).
