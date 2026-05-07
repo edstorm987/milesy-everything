@@ -100,7 +100,8 @@ export type TemplateId =
   | "fulfillment-mirror"
   | "lead-pipeline"
   | "client-tasks"
-  | "blank";
+  | "blank"
+  | "founder-todos";
 
 export interface TemplateColumnSeed {
   label: string;
@@ -120,4 +121,12 @@ export interface TemplateDefinition {
   description: string;
   columns: TemplateColumnSeed[];
   cards: TemplateCardSeed[];
+  // R2 (Aqua templates round). When set, the template is hidden from
+  // the picker for operators whose role string doesn't match (case-
+  // insensitive). v1 uses a single role match — multi-role gating
+  // can extend to string[] later.
+  requiresRole?: string;
+  // When set, BoardService.create refuses to apply the template to a
+  // mismatched-scope board (e.g. founder-todos is agency-only).
+  requiresScope?: BoardScope;
 }

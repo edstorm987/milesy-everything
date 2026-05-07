@@ -407,6 +407,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       dispatch. See `context/prior research/04-foundation-round3.md`.
 
 ## Done — Kanban (T2)
+- [x] **T2 — Kanban R2 — Aqua-real templates + founder-todos** — DONE.
+      Swapped placeholder template columns for Ed's actual Aqua
+      operating columns from chapter #59 §6+§11. fulfillment-mirror →
+      Epic Intro / Blueprint Setup / Diagnostics / Brand Builder /
+      Traffic / Mastery. lead-pipeline → Pre-Sales / DCB / DCD /
+      Invoice Sent / Aqua Incubator Active / Shock & Awe Sent / System
+      Build / Onboarded. client-tasks → Backlog / This Week / Doing /
+      Waiting On Client / Review / Done. blank unchanged. NEW 5th
+      template `founder-todos` (Today / This Week / Backlog / Done)
+      gated to Founder role + agency-scope. Domain: TemplateDefinition
+      gains `requiresRole?: string` (case-insensitive) + `requiresScope?:
+      BoardScope` (BoardService.create enforces). New
+      `listTemplatesForRoles(roles?)` helper + `GET /templates?role=`
+      query param. Existing boards untouched by registry changes
+      (template-id-tag isolation, smoke #18). Smoke 12→18 (6 new
+      cases). tsc clean. Chapter `04-plugin-kanban.md` R2 section
+      appended; MASTER row #60 updated. Foundation pending: surface
+      actorRoles on PluginPageProps; project Founder role for Ed.
 - [x] **T2 — `@aqua/plugin-kanban`** — DONE.
       Generic kanban engine + 4 install-time templates
       (fulfillment-mirror / lead-pipeline / client-tasks / blank).

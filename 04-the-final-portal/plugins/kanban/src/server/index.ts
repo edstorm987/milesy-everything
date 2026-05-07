@@ -2,7 +2,7 @@
 
 export { BoardService } from "./boards";
 export { CardService } from "./cards";
-export { TEMPLATES, getTemplate, listTemplates } from "./templates";
+export { TEMPLATES, getTemplate, listTemplates, listTemplatesForRoles } from "./templates";
 
 export type {
   ActivityLogPort,

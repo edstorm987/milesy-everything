@@ -67,6 +67,9 @@ export class BoardService {
     let cardSeeds: { columnId: string; title: string; description?: string; tags?: string[] }[] = [];
     if (input.templateId) {
       const tpl = getTemplate(input.templateId);
+      if (tpl.requiresScope && tpl.requiresScope !== input.scope) {
+        throw new Error(`Template ${tpl.id} requires scope ${tpl.requiresScope}, got ${input.scope}.`);
+      }
       columns = tpl.columns.map((c, i) => ({
         id: makeId("col"),
         label: c.label,

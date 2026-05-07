@@ -2,7 +2,7 @@
 
 import type { PluginCtx } from "../lib/aquaPluginTypes";
 import { containerFor } from "../server/foundationAdapter";
-import { listTemplates } from "../server/templates";
+import { listTemplates, listTemplatesForRoles } from "../server/templates";
 import type {
   CardFilter,
   CreateBoardInput,
@@ -41,6 +41,14 @@ function build(ctx: PluginCtx) {
 
 export async function listTemplatesHandler(req: Request, _ctx: PluginCtx): Promise<Response> {
   if (req.method !== "GET") return json({ ok: false, error: "method_not_allowed" }, 405);
+  // Honour ?role=foo[,bar] so role-gated templates (e.g. founder-todos)
+  // stay hidden from non-matching operators.
+  const url = new URL(req.url);
+  const roleParam = url.searchParams.get("role");
+  if (roleParam) {
+    const roles = roleParam.split(",").map(r => r.trim()).filter(Boolean);
+    return json({ ok: true, templates: listTemplatesForRoles(roles) });
+  }
   return json({ ok: true, templates: listTemplates() });
 }
 

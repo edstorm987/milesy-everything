@@ -225,3 +225,94 @@ cd 04-the-final-portal/plugins/kanban
 npx tsc --noEmit                            # clean
 npx tsx --test src/__smoke__/kanban.test.ts # 12/12 pass
 ```
+
+---
+
+## R2 — Aqua-real templates + founder-todos (2026-05-07)
+
+Light follow-up. Sourced template column lists from chapter
+`04-aqua-internals-reference.md` (MASTER #59) §6 + §11 — replacing the
+v1 placeholder column sets with Ed's actual Aqua operating columns and
+adding a fifth Founder-only template.
+
+### Changed
+
+| Template | v1 columns | R2 columns |
+|----------|-----------|-----------|
+| `fulfillment-mirror` | Discovery / Development / Onboarding / Live (4) | Epic Intro / Blueprint Setup / Diagnostics / Brand Builder / Traffic / Mastery (6) |
+| `lead-pipeline` | New / Qualified / Proposal / Won / Lost (5) | Pre-Sales / Discovery Call Booked / Discovery Call Done / Invoice Sent / Aqua Incubator Active / Shock & Awe Sent / System Build / Onboarded (8) |
+| `client-tasks` | Backlog / Doing / Review / Done (4) | Backlog / This Week / Doing / Waiting On Client / Review / Done (6) |
+| `blank` | unchanged | unchanged |
+| **`founder-todos` (new)** | — | Today / This Week / Backlog / Done (4) |
+
+### Domain extensions
+
+- `TemplateId` += `"founder-todos"`.
+- `TemplateDefinition` gains two optional fields:
+  - `requiresRole?: string` — when set, the template is hidden from
+    operators whose role doesn't match (case-insensitive). Used for
+    `founder-todos` (role = `"founder"`).
+  - `requiresScope?: BoardScope` — when set, `BoardService.create`
+    refuses to apply the template to a mismatched-scope board. Used
+    for `founder-todos` (scope = `"agency"`).
+
+### Service + API
+
+- `BoardService.create` enforces `requiresScope` — throws
+  `Template <id> requires scope <required>, got <input>` when the
+  caller passes a mismatched scope. Existing scope-mismatch errors
+  (agency-vs-client) still fire first.
+- New `listTemplatesForRoles(roles?: string[])` helper filters the
+  registry by `requiresRole` (case-insensitive). Templates without
+  `requiresRole` are always visible.
+- `GET /api/portal/kanban/templates` accepts an optional `?role=foo[,bar]`
+  query param — when present it routes through `listTemplatesForRoles`,
+  otherwise it returns the full registry. Foundation passes the
+  operator's role string(s) when rendering the picker so non-founder
+  operators never see `founder-todos`.
+
+### Existing-board isolation
+
+Boards store the resolved `Column[]` inline at creation time, so
+swapping the registry's column lists does NOT mutate any existing
+board state. Smoke case 18 pins this — operator-renamed columns
+survive a registry change in either direction.
+
+### Smoke (18 cases total — 12 R1 + 6 R2)
+
+13. `lead-pipeline` seeds Pre-Sales → Onboarded (8 columns).
+14. `client-tasks` seeds Backlog / This Week / Doing / Waiting On
+    Client / Review / Done (6 columns).
+15. `founder-todos` agency-scope creation seeds 4 columns + 2 sample
+    cards ("Review week's pipeline" + "Plan next round of social
+    posts").
+16. `founder-todos` rejected at client scope with explicit
+    `/requires scope agency/` error.
+17. `listTemplatesForRoles` filters: non-founder roles get 4
+    templates, founder gets 5, case-insensitive match works,
+    `undefined` roles → 4 ungated templates.
+18. Existing boards untouched when registry column lists swap —
+    operator-edited columns survive registry changes (template-id-
+    tag isolation).
+
+`npx tsc --noEmit` clean. `npx tsx --test src/__smoke__/kanban.test.ts`
+→ 18/18 pass.
+
+### Foundation pending — R2 additions
+
+- Foundation's `templates` route call should pass the operator's role
+  string(s) via `?role=...` so the picker honours `requiresRole`. v1
+  fall-back: omit the param and the picker shows all 5 (founder-todos
+  is still scope-guarded at create-time).
+- BoardListPage server-renders the unfiltered registry today (no role
+  context in `PluginPageProps`); foundation should inject role-aware
+  filtering when rendering the picker. Logged as cross-team handoff.
+
+### Cross-team handoffs (additions)
+
+- Foundation — surface `actorRoles: string[]` on `PluginPageProps`
+  (or via `services.user.getRoles(actor)`) so the picker can filter
+  templates without an extra API roundtrip.
+- Foundation — projecting a `"founder"` role for the Founder user
+  (Ed) is a foundation concern; the kanban plugin only matches
+  whatever role string foundation supplies.

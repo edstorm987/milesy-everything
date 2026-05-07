@@ -15,7 +15,7 @@ import type {
   EventBusPort,
 } from "../server/ports";
 import { containerWithDeps } from "../server/foundationAdapter";
-import { listTemplates, getTemplate } from "../server/templates";
+import { listTemplates, listTemplatesForRoles, getTemplate } from "../server/templates";
 import { setClock, resetClock } from "../lib/time";
 
 const AGENCY_ID: AgencyId = "agency_kb";
@@ -94,26 +94,29 @@ function otherAgencyContainer(world: World) {
 describe("kanban plugin", () => {
   before(() => { setClock(() => 1_700_000_000_000); });
   // tests share a world; each test sets up its own
-  test("1. templates registry — 4 templates with valid columns", () => {
+  test("1. templates registry — 5 templates with valid columns", () => {
     const list = listTemplates();
-    assert.equal(list.length, 4);
-    for (const id of ["fulfillment-mirror", "lead-pipeline", "client-tasks", "blank"] as const) {
+    assert.equal(list.length, 5);
+    for (const id of ["fulfillment-mirror", "lead-pipeline", "client-tasks", "blank", "founder-todos"] as const) {
       const t = getTemplate(id);
       assert.ok(t.columns.length >= 1, `${id} has columns`);
-      // sample card columnIndex must be in range
       for (const c of t.cards) assert.ok(c.columnIndex < t.columns.length);
     }
   });
 
-  test("2. board creation from fulfillment-mirror seeds 4 columns + 2 sample cards", async () => {
+  test("2. fulfillment-mirror seeds the 6 Aqua phases + 2 sample cards", async () => {
     const w = buildWorld();
     const c = clientContainer(w);
     const { board, cardSeeds } = await c.boards.create({
       name: "Felicia ops", scope: "client", templateId: "fulfillment-mirror",
     }, ACTOR);
-    assert.equal(board.columns.length, 4);
-    assert.equal(board.columns[0]!.label, "Discovery");
-    assert.equal(board.columns[3]!.label, "Live");
+    assert.equal(board.columns.length, 6);
+    assert.equal(board.columns[0]!.label, "Epic Intro");
+    assert.equal(board.columns[1]!.label, "Blueprint Setup");
+    assert.equal(board.columns[2]!.label, "Diagnostics");
+    assert.equal(board.columns[3]!.label, "Brand Builder");
+    assert.equal(board.columns[4]!.label, "Traffic");
+    assert.equal(board.columns[5]!.label, "Mastery");
     assert.equal(cardSeeds.length, 2);
     const cards = await c.cards._seedCards(
       cardSeeds.map(s => ({ ...s, boardId: board.id })), ACTOR,
@@ -374,6 +377,97 @@ describe("kanban plugin", () => {
       "kanban.card.archived",
     ]) assert.ok(eventNames.has(n));
     for (const e of w.inspect.activityLog) assert.equal(e.category, "kanban");
+  });
+
+  // ─── R2 (Aqua templates) tests ────────────────────────────────────────
+
+  test("13. lead-pipeline seeds Aqua sales columns (Pre-Sales → Onboarded)", async () => {
+    const w = buildWorld();
+    const c = clientContainer(w);
+    const { board } = await c.boards.create({
+      name: "Aqua sales", scope: "client", templateId: "lead-pipeline",
+    }, ACTOR);
+    assert.equal(board.columns.length, 8);
+    assert.deepEqual(
+      board.columns.map(x => x.label),
+      ["Pre-Sales", "Discovery Call Booked", "Discovery Call Done", "Invoice Sent",
+       "Aqua Incubator Active", "Shock & Awe Sent", "System Build", "Onboarded"],
+    );
+  });
+
+  test("14. client-tasks seeds Aqua weekly cadence columns", async () => {
+    const w = buildWorld();
+    const c = clientContainer(w);
+    const { board } = await c.boards.create({
+      name: "Felicia tasks", scope: "client", templateId: "client-tasks",
+    }, ACTOR);
+    assert.deepEqual(
+      board.columns.map(x => x.label),
+      ["Backlog", "This Week", "Doing", "Waiting On Client", "Review", "Done"],
+    );
+  });
+
+  test("15. founder-todos — agency-scope, role-gated, 4 columns + 2 seed cards", async () => {
+    const w = buildWorld();
+    const ag = agencyContainer(w);
+    const { board, cardSeeds } = await ag.boards.create({
+      name: "Ed's todos", scope: "agency", templateId: "founder-todos",
+    }, ACTOR);
+    assert.deepEqual(
+      board.columns.map(x => x.label),
+      ["Today", "This Week", "Backlog", "Done"],
+    );
+    assert.equal(cardSeeds.length, 2);
+    assert.equal(cardSeeds[0]!.title, "Review week's pipeline");
+    assert.equal(cardSeeds[1]!.title, "Plan next round of social posts");
+  });
+
+  test("16. founder-todos rejected at client scope (requiresScope guard)", async () => {
+    const w = buildWorld();
+    const cl = clientContainer(w);
+    await assert.rejects(
+      () => cl.boards.create({ name: "X", scope: "client", templateId: "founder-todos" }, ACTOR),
+      /requires scope agency/,
+    );
+  });
+
+  test("17. listTemplatesForRoles filters founder-only template by role", () => {
+    // Non-founder operators get 4 templates (founder-todos hidden).
+    const nonFounder = listTemplatesForRoles(["agency-staff"]);
+    assert.equal(nonFounder.length, 4);
+    assert.ok(nonFounder.every(t => t.id !== "founder-todos"));
+
+    // Founder gets all 5.
+    const founder = listTemplatesForRoles(["founder"]);
+    assert.equal(founder.length, 5);
+    assert.ok(founder.some(t => t.id === "founder-todos"));
+
+    // Case-insensitive match.
+    const mixedCase = listTemplatesForRoles(["FOUNDER"]);
+    assert.ok(mixedCase.some(t => t.id === "founder-todos"));
+
+    // No roles supplied → only ungated templates.
+    const anon = listTemplatesForRoles(undefined);
+    assert.equal(anon.length, 4);
+  });
+
+  test("18. existing boards untouched when registry column lists swap (template-id-tag isolation)", async () => {
+    // A board created from a template stores the resolved Column[]
+    // inline — registry changes don't retroactively mutate it.
+    const w = buildWorld();
+    const c = clientContainer(w);
+    const { board } = await c.boards.create({
+      name: "Pinned", scope: "client", templateId: "client-tasks",
+    }, ACTOR);
+    const labelsAtCreate = board.columns.map(x => x.label);
+    // Operator now renames a column — registry untouched.
+    await c.boards.renameColumn(board.id, board.columns[0]!.id, "Custom backlog", ACTOR);
+    const refetched = (await c.boards.get(board.id))!;
+    assert.equal(refetched.columns[0]!.label, "Custom backlog");
+    // The template registry's first column is still "Backlog" — operator
+    // edits don't propagate back, registry edits don't propagate forward.
+    assert.equal(getTemplate("client-tasks").columns[0]!.label, "Backlog");
+    assert.notDeepEqual(refetched.columns.map(x => x.label), labelsAtCreate);
   });
 
   resetClock();
