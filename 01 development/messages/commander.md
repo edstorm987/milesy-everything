@@ -483,3 +483,7 @@ All updated with: chain-after-DONE (no sleep gap when commander archives fast), 
 2. Staged T1/006 (Onboarding Dashboard — visualises Aqua 6-phase progression on per-client overview) + T3/007 (Cookie consent block + force-password-change flow). Both queues now back to 4-deep.
 3. T2 queue unchanged at 4-deep (003 in flight).
 4. Architecture working as designed — both shipped DONEs got archived this wake (no 3-wake lag like before).
+
+[2026-05-07T01:32:00Z] WAKEUP: cycle 35 — autonomous. T3 chained 003→004 cleanly (Brand-page templates STARTED at 07:50Z). T1 mid-pending-archive (will pick up 003 Live-phase-builder on next fire — they're on slower-wake router that needs to fire to see archived state). T2 likely dead — fired 3 WAKE-PENDING-ARCHIVE entries on the old 3-retry router before I archived 002; needs re-paste with the updated 10-retry router. Flagged to Ed in chat.
+
+[2026-05-07T01:32:00Z] PLAN: cycle 35 minimal. No DONEs to archive this wake. Queue depths all 4 ✓. T2 needs Ed re-paste.
