@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <main class="bos-main bos-admin">
+
+    <header class="bos-topbar">
+      <div>
+        <div class="muted bos-topbar-eyebrow">Admin · Lead-magnet traffic</div>
+        <h1>BusinessOS Admin.</h1>
+        <p class="muted bos-topbar-sub">Everyone who's started, captured leads, completed health checks, and the questions editor. Will wire into the Aqua portal under "Lead magnet traffic" later — for now this is your local view.</p>
+      </div>
+      <div class="bos-topbar-actions">
+        <a href="app.html" class="btn btn-ghost">← Back to app</a>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="bos-admin-tabs">
+      <button class="bos-admin-tab is-on" data-admin-tab="overview">Overview</button>
+      <button class="bos-admin-tab" data-admin-tab="leads">Leads</button>
+      <button class="bos-admin-tab" data-admin-tab="reports">Health-check reports</button>
+      <button class="bos-admin-tab" data-admin-tab="editor">Questions editor</button>
+    </div>
+
+    <!-- Overview -->
+    <section class="bos-admin-pane" data-admin-pane="overview">
+      <div class="kpi-row">
+        <div class="kpi"><div class="lbl">Health checks completed</div><div class="num" data-admin-stat="hc-count">0</div></div>
+        <div class="kpi"><div class="lbl">Leads captured</div><div class="num" data-admin-stat="lead-count">0</div></div>
+        <div class="kpi"><div class="lbl">Pipeline value</div><div class="num">£<span data-admin-stat="lead-value">0</span></div></div>
+        <div class="kpi"><div class="lbl">BOS sign-ups</div><div class="num" data-admin-stat="user-count">0</div></div>
+      </div>
+      <div class="bos-notion-slot" style="margin-top:24px">
+        <div class="bos-notion-slot-icon">ℹ️</div>
+        <div>
+          <h3>Local-storage view</h3>
+          <p class="muted">This admin reads from <code>localStorage</code> on this device — exactly what your free-tier user state would look like server-side. Once we wire the portal plugin, this same UI reads from <code>business_os_*</code> Postgres tables instead. Same shapes; same screen.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leads -->
+    <section class="bos-admin-pane" data-admin-pane="leads" hidden>
+      <div class="bos-table-wrap">
+        <table class="bos-table">
+          <thead>
+            <tr><th>Name</th><th>Source</th><th>Stage</th><th>Value</th><th>Contact</th><th></th></tr>
+          </thead>
+          <tbody data-admin-leads></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Reports -->
+    <section class="bos-admin-pane" data-admin-pane="reports" hidden>
+      <div class="bos-table-wrap">
+        <table class="bos-table">
+          <thead>
+            <tr><th>Headline</th><th>Leak estimate</th><th>Topics</th><th>Captured at</th></tr>
+          </thead>
+          <tbody data-admin-reports></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Questions editor -->
+    <section class="bos-admin-pane" data-admin-pane="editor" hidden>
+      <div class="bos-section-head">
+        <div>
+          <h2>Health-check questions editor</h2>
+          <p class="muted">Edit the live question set. Save writes to <code>localStorage</code> (key <code>bos.hcQuestions</code>) — the lead-magnet app reads the override on next load. Restore-defaults clears the override.</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" data-admin-restore>Restore defaults</button>
+          <button class="btn btn-primary" data-admin-add-question>+ New question</button>
+        </div>
+      </div>
+      <div class="bos-admin-editor" data-admin-editor></div>
+    </section>
+
+  </main>
+
+  <script>
+    /* ─── Helpers ─────────────────────────────── */
+    function getJson(k, d) { try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); } catch (e) { return d; } }
+    function setJson(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+    /* ─── Tabs ────────────────────────────────── */
+    document.querySelectorAll('[data-admin-tab]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-admin-tab]').forEach(function (x) { x.classList.remove('is-on'); });
+        b.classList.add('is-on');
+        var t = b.getAttribute('data-admin-tab');
+        document.querySelectorAll('[data-admin-pane]').forEach(function (p) {
+          p.hidden = p.getAttribute('data-admin-pane') !== t;
+        });
+      });
+    });
+
+    /* ─── Overview KPIs ────────────────────────── */
+    function paintOverview() {
+      var leads = getJson('bos.leads', []);
+      var hc = getJson('bos.healthCheck', null);
+      var user = getJson('bos.user', null);
+      var pipelineValue = leads.reduce(function (s, l) { return s + (l.value || 0); }, 0);
+      document.querySelector('[data-admin-stat="hc-count"]').textContent = hc ? 1 : 0;
+      document.querySelector('[data-admin-stat="lead-count"]').textContent = leads.length;
+      document.querySelector('[data-admin-stat="lead-value"]').textContent = pipelineValue.toLocaleString();
+      document.querySelector('[data-admin-stat="user-count"]').textContent = user ? 1 : 0;
+    }
+    paintOverview();
+
+    /* ─── Leads table ──────────────────────────── */
+    function paintLeads() {
+      var leads = getJson('bos.leads', []);
+      var tbody = document.querySelector('[data-admin-leads]');
+      if (!leads.length) { tbody.innerHTML = '<tr><td colspan="6" class="bos-cp-empty" style="padding:22px">No leads captured yet.</td></tr>'; return; }
+      tbody.innerHTML = leads.map(function (l) {
+        return '<tr>'
+          + '<td><strong>' + (l.name || '?') + '</strong></td>'
+          + '<td>' + (l.source || '—') + '</td>'
+          + '<td><span class="badge badge-good">' + (l.stage || 'new') + '</span></td>'
+          + '<td>£' + (l.value || 0) + '</td>'
+          + '<td>' + (l.contact || '—') + '</td>'
+          + '<td><a href="leads.html" class="bos-row-cta">Open →</a></td>'
+          + '</tr>';
+      }).join('');
+    }
+    paintLeads();
+
+    /* ─── HC reports ───────────────────────────── */
+    function paintReports() {
+      var hc = getJson('bos.healthCheck', null);
+      var contact = getJson('hc.contact', null);
+      var tbody = document.querySelector('[data-admin-reports]');
+      if (!hc) { tbody.innerHTML = '<tr><td colspan="4" class="bos-cp-empty" style="padding:22px">No health-check reports captured yet on this device.</td></tr>'; return; }
+      var topics = (hc.topics || []).map(function (t) { return t.name + ' ' + t.score; }).join(' · ');
+      tbody.innerHTML = '<tr>'
+        + '<td><strong>' + (hc.headline || '—') + '</strong>' + (contact ? '<div class="bos-row-sub">' + (contact.name || '') + ' · ' + (contact.contact || '') + '</div>' : '') + '</td>'
+        + '<td>£' + (hc.leakEstimate || 0).toLocaleString() + '</td>'
+        + '<td>' + topics + '</td>'
+        + '<td class="muted">' + (contact && contact.capturedAt || 'completion') + '</td>'
+        + '</tr>';
+    }
+    paintReports();
+
+    /* ─── Questions editor ─────────────────────── */
+    /* Default seed mirrors what the lead-magnet app uses today.
+       Editor allows adding / editing / removing. Doesn't change the
+       lead-magnet code — the lead-magnet would need a small reader
+       hook to honour `bos.hcQuestions` (Q-FOLLOWUP). */
+    var DEFAULT_QUESTIONS = [
+      { area: 'Visibility & Search', tier: 'beginner', type: 'choice',
+        prompt: 'Where did your eyes go first?',
+        options: ['The top result', 'The map / places box', 'The 2nd or 3rd link', 'I scrolled past page one'] },
+      { area: 'Visibility & Search', tier: 'beginner', type: 'choice',
+        prompt: 'Where did YOU appear?',
+        options: ['Top of the page', 'On the page somewhere', 'Page 2 or further', "I couldn't see myself"] }
+    ];
+    function loadQuestions() { return getJson('bos.hcQuestions', DEFAULT_QUESTIONS); }
+    function saveQuestions(qs) { setJson('bos.hcQuestions', qs); }
+
+    function paintEditor() {
+      var qs = loadQuestions();
+      var host = document.querySelector('[data-admin-editor]');
+      host.innerHTML = qs.map(function (q, i) {
+        return '<div class="bos-admin-q" data-q-i="' + i + '">'
+          + '<div class="bos-admin-q-row">'
+          +   '<label>Area<input type="text" data-q-k="area"  value="' + (q.area || '').replace(/"/g, '&quot;') + '" /></label>'
+          +   '<label>Tier<select data-q-k="tier">'
+          +     ['beginner','intermediate','professional'].map(function (t) { return '<option' + (t === q.tier ? ' selected' : '') + '>' + t + '</option>'; }).join('')
+          +   '</select></label>'
+          +   '<label>Type<select data-q-k="type">'
+          +     ['choice','multi','slider','text','task','reveal','url'].map(function (t) { return '<option' + (t === q.type ? ' selected' : '') + '>' + t + '</option>'; }).join('')
+          +   '</select></label>'
+          +   '<button class="bos-admin-q-del" data-q-del>✕</button>'
+          + '</div>'
+          + '<label>Prompt<textarea data-q-k="prompt" rows="2">' + (q.prompt || '') + '</textarea></label>'
+          + '<label>Options (one per line)<textarea data-q-k="options" rows="3">' + (Array.isArray(q.options) ? q.options.join('\n') : '') + '</textarea></label>'
+          + '</div>';
+      }).join('') || '<p class="muted bos-cp-empty" style="padding:22px">No questions yet — add one with the button above.</p>';
+
+      host.querySelectorAll('[data-q-i]').forEach(function (row) {
+        var i = parseInt(row.getAttribute('data-q-i'), 10);
+        row.querySelectorAll('[data-q-k]').forEach(function (inp) {
+          inp.addEventListener('input', function () {
+            var qs2 = loadQuestions();
+            var k = inp.getAttribute('data-q-k');
+            qs2[i][k] = (k === 'options') ? inp.value.split(/\n+/).map(function (s) { return s.trim(); }).filter(Boolean) : inp.value;
+            saveQuestions(qs2);
+          });
+        });
+        row.querySelector('[data-q-del]').addEventListener('click', function () {
+          var qs2 = loadQuestions();
+          qs2.splice(i, 1); saveQuestions(qs2); paintEditor();
+        });
+      });
+    }
+    document.querySelector('[data-admin-add-question]').addEventListener('click', function () {
+      var qs = loadQuestions();
+      qs.push({ area: 'New area', tier: 'beginner', type: 'choice', prompt: 'New question prompt?', options: ['Option A', 'Option B'] });
+      saveQuestions(qs); paintEditor();
+    });
+    document.querySelector('[data-admin-restore]').addEventListener('click', function () {
+      if (!confirm('Restore defaults? This clears your edits.')) return;
+      try { localStorage.removeItem('bos.hcQuestions'); } catch (e) {}
+      paintEditor();
+    });
+    paintEditor();
+  </script>
+
+</body>
+</html>

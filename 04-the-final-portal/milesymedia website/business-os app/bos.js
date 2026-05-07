@@ -176,6 +176,87 @@
     }
   }
 
+  /* ─── Branding (logo / colours / company name) ── */
+  var KEY_BRAND = 'bos.brand';
+  function getBrand() { return getJSON(KEY_BRAND, null); }
+  function setBrand(b) { setJSON(KEY_BRAND, b); }
+
+  function applyBranding() {
+    var b = getBrand();
+    if (!b) return;
+    if (b.primary)   document.documentElement.style.setProperty('--accent', b.primary);
+    if (b.secondary) document.documentElement.style.setProperty('--accent-2', b.secondary);
+    if (b.companyName) {
+      document.querySelectorAll('[data-bos-niche-label]').forEach(function (el) { el.textContent = b.companyName; });
+    }
+    if (b.logo) {
+      document.querySelectorAll('[data-bos-niche-icon]').forEach(function (el) {
+        el.innerHTML = '<img src="' + b.logo + '" alt="" class="bos-logo-img" />';
+      });
+    }
+  }
+
+  /* First-visit branding nudge */
+  function maybeBrandNudge() {
+    if (getBrand()) return;
+    if (location.pathname.indexOf('app.html') === -1) return;
+    var seen = false;
+    try { seen = localStorage.getItem('bos.brandNudgeShown') === '1'; } catch (e) {}
+    if (seen) return;
+    try { localStorage.setItem('bos.brandNudgeShown', '1'); } catch (e) {}
+    setTimeout(showBrandModal, 800);
+  }
+
+  function showBrandModal() {
+    var existing = document.querySelector('.bos-brand-modal');
+    if (existing) { existing.remove(); }
+    var b = getBrand() || {};
+    var modal = document.createElement('div');
+    modal.className = 'bos-brand-modal';
+    modal.innerHTML = ''
+      + '<div class="bos-brand-modal-card">'
+      +   '<button class="bos-brand-close" aria-label="Close">✕</button>'
+      +   '<div class="bos-brand-icon">✨</div>'
+      +   '<h2>Make it yours.</h2>'
+      +   '<p class="muted">Drop your logo, your colours, your business name. Three minutes — and the whole OS rebrands. (Skip if you\'d rather get straight in.)</p>'
+      +   '<form class="bos-brand-form" data-bos-brand-form>'
+      +     '<label>Business name <input type="text" name="companyName" placeholder="e.g. Northbeam Apparel OS" value="' + (b.companyName || '') + '" /></label>'
+      +     '<label>Logo URL <input type="url" name="logo" placeholder="https://… (or leave empty)" value="' + (b.logo || '') + '" /></label>'
+      +     '<div class="bos-brand-no-logo">No logo yet? <a href="mailto:hello@milesymedia.co?subject=Logo%20design">We\'ll design one →</a></div>'
+      +     '<div class="bos-brand-colours">'
+      +       '<label>Primary colour <input type="color" name="primary" value="' + (b.primary || '#FF6B35') + '" /></label>'
+      +       '<label>Secondary colour <input type="color" name="secondary" value="' + (b.secondary || '#FFB800') + '" /></label>'
+      +     '</div>'
+      +     '<div class="bos-brand-actions">'
+      +       '<button type="button" class="btn btn-ghost" data-bos-brand-skip>Skip</button>'
+      +       '<button type="submit" class="btn btn-primary">Save &amp; rebrand →</button>'
+      +     '</div>'
+      +   '</form>'
+      + '</div>';
+    document.body.appendChild(modal);
+    var close = function () { modal.remove(); };
+    modal.querySelector('.bos-brand-close').addEventListener('click', close);
+    modal.querySelector('[data-bos-brand-skip]').addEventListener('click', close);
+    modal.addEventListener('click', function (ev) { if (ev.target === modal) close(); });
+    modal.querySelector('[data-bos-brand-form]').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var fd = new FormData(ev.target);
+      setBrand({
+        companyName: (fd.get('companyName') || '').trim(),
+        logo:        (fd.get('logo') || '').trim(),
+        primary:     fd.get('primary'),
+        secondary:   fd.get('secondary')
+      });
+      close();
+      window.location.reload();
+    });
+  }
+
+  /* Expose a button hook so home page can re-open the modal */
+  document.addEventListener('click', function (ev) {
+    if (ev.target.closest('[data-bos-brand-open]')) { ev.preventDefault(); showBrandModal(); }
+  });
+
   /* ─── User hydration ─────────────────────── */
   function hydrateUser() {
     var u = getUser() || { name: 'Friend', business: 'Your Business', email: '', niche: 'generic' };
@@ -580,8 +661,10 @@
   document.addEventListener('DOMContentLoaded', function () {
     mountAutoSidebar();
     hydrateUser();
+    applyBranding();
     applyMode();
     maybeProLock();
+    maybeBrandNudge();
     tickStreak();
     paintProgress();
     paintHealthCheck();

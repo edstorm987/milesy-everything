@@ -132,6 +132,23 @@
         </div>
       </section>
 
+      <!-- ─── Progress-save modal (after Q5 of section 1) ─── -->
+      <div class="hc-modal" data-hc-progress-modal hidden>
+        <div class="hc-modal-card">
+          <div class="hc-modal-icon">💾</div>
+          <h2>Quick one — save your progress?</h2>
+          <p>You're a few minutes in. We're <strong>not trying to sell you</strong> — we just don't want you to lose what you've answered if you close the tab. Drop a name &amp; way to reach you and we'll keep your spot.</p>
+          <form data-hc-progress-form class="hc-modal-form">
+            <label>Your name<input type="text" name="name" placeholder="Jordan Lee" /></label>
+            <label>Email or mobile<input type="text" name="contact" placeholder="you@yourbusiness.co.uk · or 07…" required /></label>
+            <div class="hc-modal-actions">
+              <button type="button" class="btn btn-ghost" data-hc-progress-skip>Skip — I'll keep going</button>
+              <button type="submit" class="btn btn-primary">Save my progress →</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <!-- ─── BUILDING ──────────────────────────── -->
       <section class="hc-step" data-step="building" hidden>
         <div class="hc-building">
@@ -234,6 +251,27 @@
             <a href="mailto:hello@milesymedia.co?subject=Strategy%20call" class="btn btn-primary btn-lg">Book a strategy call →</a>
             <a href="../business-os app/app.html" class="btn btn-secondary btn-lg" data-hc-bos-return hidden>← Back to my Business OS</a>
             <button class="btn btn-secondary btn-lg" data-hc-action="restart">Start over</button>
+          </div>
+
+          <!-- Email a copy / share UI (visible always, mock now) -->
+          <div class="hc-share-row">
+            <button class="hc-share-btn" data-hc-share="email">📧 Email me a copy</button>
+            <button class="hc-share-btn" data-hc-share="link">🔗 Get a shareable link</button>
+            <button class="hc-share-btn" data-hc-share="pdf">📄 Download as PDF</button>
+          </div>
+
+          <!-- Second sign-up grab — only if no contact captured earlier -->
+          <div class="hc-signup-grab" data-hc-signup-grab hidden>
+            <div class="hc-signup-grab-icon">✨</div>
+            <div class="hc-signup-grab-body">
+              <h3>One last thing — would you like us to look at your answers?</h3>
+              <p>If you drop your details, we'll send a few personalised pointers based on what you said. No catch, no auto-pilot drip campaign — a real reply from a real person within a working day.</p>
+              <form data-hc-signup-grab-form class="hc-modal-form">
+                <input type="text" name="name" placeholder="Your name" required />
+                <input type="text" name="contact" placeholder="Email or mobile" required />
+                <button type="submit" class="btn btn-primary">Send me my pointers →</button>
+              </form>
+            </div>
           </div>
         </div>
       </section>
@@ -991,6 +1029,28 @@
 
     var moneyEstimate = Math.max(800, Math.round((100 - overall) * 95));
     persistToBOS(pillars, moneyEstimate);
+    /* Mirror any captured HC contact into the BOS lead store too —
+       cross-app same-origin localStorage. */
+    try {
+      var contact = JSON.parse(localStorage.getItem('hc.contact') || 'null');
+      if (contact) {
+        var rawLeads = localStorage.getItem('bos.leads');
+        var leads = rawLeads ? JSON.parse(rawLeads) : [];
+        var exists = leads.some(function (l) { return l && l.fromHc && l.contact === contact.contact; });
+        if (!exists) {
+          leads.unshift({
+            id: Date.now(),
+            name: contact.name || 'HC lead',
+            source: 'health check (' + (contact.capturedAt || '?') + ')',
+            value: 250,
+            stage: 'new',
+            fromHc: true,
+            contact: contact.contact
+          });
+          localStorage.setItem('bos.leads', JSON.stringify(leads));
+        }
+      }
+    } catch (e) {}
     var unanswered = AREAS.length - coveredCount;
     var unansweredHint = unanswered > 0
       ? ' <span class="hc-headline-hint">(based on ' + coveredCount + '/' + AREAS.length + ' topics — answer the rest to sharpen this)</span>'
@@ -1061,18 +1121,87 @@
     show('overview'); renderOverview();
   }
 
+  /* ─ Soft progress-save prompt ───────────── */
+  /* Trigger once: after question 5 of the first answered area. */
+  function maybeShowProgressModal() {
+    try {
+      if (localStorage.getItem('hc.contact')) return false;       // already captured
+      if (localStorage.getItem('hc.progressDismissed')) return false; // user opted out
+    } catch (e) {}
+    var slot = state.answers[currentArea().id];
+    if (!slot) return false;
+    var answered = Object.keys(slot.raw).length;
+    if (answered < 5) return false;
+    document.querySelector('[data-hc-progress-modal]').removeAttribute('hidden');
+    return true;
+  }
+  document.querySelector('[data-hc-progress-skip]').addEventListener('click', function () {
+    try { localStorage.setItem('hc.progressDismissed', '1'); } catch (e) {}
+    document.querySelector('[data-hc-progress-modal]').setAttribute('hidden', '');
+  });
+  document.querySelector('[data-hc-progress-form]').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var fd = new FormData(ev.target);
+    try {
+      localStorage.setItem('hc.contact', JSON.stringify({
+        name: fd.get('name'), contact: fd.get('contact'), capturedAt: 'progress-save'
+      }));
+    } catch (e) {}
+    document.querySelector('[data-hc-progress-modal]').setAttribute('hidden', '');
+  });
+
   function nextStepOrArea() {
     if (state.exerciseIdx < currentTier().exercise.length - 1) {
       state.exerciseIdx++; renderStep();
+      // After rendering the new step, see if we should pop the save prompt.
+      if (state.exerciseIdx >= 4) maybeShowProgressModal();
     } else {
       if (state.areaIdx < AREAS.length - 1) {
         state.areaIdx++; startArea();
       } else {
         show('building');
-        setTimeout(function () { buildResults(); show('results'); }, 1200);
+        setTimeout(function () { buildResults(); show('results'); show('results'); paintResultsExtras(); }, 1200);
       }
     }
   }
+
+  /* ─ Results extras: signup grab + share buttons ─ */
+  function paintResultsExtras() {
+    try {
+      var contact = JSON.parse(localStorage.getItem('hc.contact') || 'null');
+      var grab = document.querySelector('[data-hc-signup-grab]');
+      if (!contact && grab) grab.removeAttribute('hidden');
+    } catch (e) {}
+  }
+  var grabForm = document.querySelector('[data-hc-signup-grab-form]');
+  if (grabForm) {
+    grabForm.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var fd = new FormData(ev.target);
+      try {
+        localStorage.setItem('hc.contact', JSON.stringify({
+          name: fd.get('name'), contact: fd.get('contact'), capturedAt: 'results-grab'
+        }));
+      } catch (e) {}
+      document.querySelector('[data-hc-signup-grab]').setAttribute('hidden', '');
+      alert('Thanks — we\'ll be in touch within a working day.');
+    });
+  }
+  document.querySelectorAll('[data-hc-share]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var kind = b.getAttribute('data-hc-share');
+      if (kind === 'email') {
+        var subj = encodeURIComponent('My Milesy Health Check results');
+        var body = encodeURIComponent('Saving my Health Check results — see attached / link below.\n\n[results URL placeholder]');
+        location.href = 'mailto:?subject=' + subj + '&body=' + body;
+      } else if (kind === 'link') {
+        navigator.clipboard && navigator.clipboard.writeText(location.href);
+        alert('Shareable link copied to your clipboard.');
+      } else if (kind === 'pdf') {
+        window.print();
+      }
+    });
+  });
 
   // Show "back to BOS" button if user came from the OS
   if (new URLSearchParams(location.search).get('from') === 'bos') {
@@ -1080,22 +1209,9 @@
     if (btn) btn.removeAttribute('hidden');
   }
 
-  // Cross-port helper: in dev (lead magnet on :3033, BOS on :3034) the
-  // relative `../business-os app/...` path 404s because each app is
-  // served from its own folder. Rewrite to localhost:3034 for dev. In
-  // production (Vercel single origin) the relative path works.
-  function bosUrl(path) {
-    if (location.hostname === 'localhost' && location.port === '3033') {
-      return 'http://localhost:3034/' + path.replace(/^.*business-os app\//, '');
-    }
-    return path;
-  }
-  document.querySelectorAll('[data-hc-claim-bos]').forEach(function (a) {
-    a.setAttribute('href', bosUrl(a.getAttribute('href')));
-  });
-  document.querySelectorAll('[data-hc-bos-return]').forEach(function (a) {
-    a.setAttribute('href', bosUrl(a.getAttribute('href')));
-  });
+  // Same-origin now (single :3033 server serving both apps as
+  // sub-folders), relative paths work — no rewrite needed.
+  function bosUrl(path) { return path; }
 
   // If a BOS user already exists on this origin, swap the gift CTA for
   // a "Back to my OS" button. Cross-origin in dev means we can't always
