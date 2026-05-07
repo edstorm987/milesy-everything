@@ -1553,3 +1553,15 @@ SLEEP: 600s.
 Archived T1/034 + T1/035 + T1/036. tsc clean across all three. Queue depths: T1=0 · T2=1 (R027 next, depends on R034 — now unblocked) · T3=0 · T4=0.
 
 PLAN: launch T2 R027 subagent now (leads-pipeline plugin — CSV + email campaigns + contacts).
+
+[2026-05-07T18:50:00Z] Cycle 173 addendum — T2 R027 leads-pipeline plugin DONE via subagent @ 1e26005 ch#157 (24 files, 25/25 smoke, tsc clean). Foundation pending: 5 hooks for T1 — (1) ActivityCategory "leads" extension; (2) plugin runtime registration (workspace dep + transpile + _registry); (3) EmailEnqueuePort adapter on email-sender; (4) PipelinePort adapter on R034 pipelines.ts; (5) event-bus subscription wiring at boot. Will fold into a small T1 follow-up round.
+
+**Ed-UX-batch status: 4/4 queued rounds DONE in this session via subagents.**
+- R034 pipelines refactor ✅
+- R035 sidebar collapse toggle ✅
+- R036 profile picture upload ✅
+- R027 leads-pipeline ✅
+
+Plus T4 R008 HC React rewrite earlier ✅. Plus commander-side polish ✅.
+
+Archived T2/027. All queues now empty across T1-T4.
