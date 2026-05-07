@@ -226,6 +226,17 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Phase transitions");
+  // Founder-only button — smoke runs as agency-owner via /demo bootstrap.
+  if (clientId) {
+    const ovr = await go("GET", `/portal/clients/${clientId}`);
+    const body = ovr.status === 200 ? await ovr.text() : "";
+    record("client overview shows phase-transition button", body.includes("phase-transition-button"));
+  }
+  // Phases endpoint reachable.
+  const phasesRes = await go("GET", "/api/portal/fulfillment/phases");
+  record("fulfillment phases 200", phasesRes.status === 200);
+
   console.log("\n§ Finance tab");
   if (clientId) {
     const fin = await go("GET", `/portal/clients/${clientId}?tab=finance`);

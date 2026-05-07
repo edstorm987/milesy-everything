@@ -9,6 +9,25 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 012 — Phase transition mechanics (operator UI)** — DONE.
+      Goal A: NEW `_PhaseTransitionButton.tsx` Founder-facing client
+      component pinned in per-client header right of phase chip.
+      Primary `Advance to {next.label} →` button + dropdown (Regress
+      / Skip to). Goal B: confirm modal computes `pluginPreset`
+      set-difference (toInstall + toDisable) and previews emerald +
+      amber lists; Confirm POSTs `/phase/advance`. Goal C: archived
+      config + reversible disable already handled by fulfillment
+      `transitionService` (T2 R002). Goal D: activity log entry
+      already written by transitionService. Goal E: kanban / SOP
+      seed-on-phase partially handled lazily (R5/R8/R4 auto-create
+      on first mount); eager seed-on-event documented as R+1
+      (needs foundation event-bus hook). Founder client-side gate
+      via session.role==="agency-owner". Q-ASSUMED: skip-to allows
+      any phase (transitionService trusts caller intent); diff via
+      set-difference (portal variant changes ignored). Goal F:
+      smoke `§ Phase transitions` (2 — testid visible Founder POV +
+      `/phases` 200). Chapter `04-phase-transitions.md`; MASTER row
+      #87; tsc clean. HARD BOUNDARY honoured.
 - [x] **T1 011 — Per-client Finance tab** — DONE.
       Goal A: NEW `_FinanceTabClient.tsx` header strip — Plan tier
       chip + lock-in pill (£100 paid / Unpaid) + Stripe quick-link

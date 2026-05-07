@@ -27,6 +27,7 @@ import { KanbanTabClient } from "./_KanbanTabClient";
 import { CommsRow } from "./_CommsRow";
 import { FilesTabClient, type FileCategory } from "./_FilesTabClient";
 import { FinanceTabClient } from "./_FinanceTabClient";
+import { PhaseTransitionButton } from "./_PhaseTransitionButton";
 import { assertSopsAccess, familiesForStage, SopsAccessError } from "@/lib/server/sopsAccess";
 import { RequirePermission } from "@/lib/server/RequirePermission";
 import { OnboardingDashboardPanel, type OnboardingPhase } from "./_OnboardingDashboardPanel";
@@ -166,6 +167,11 @@ export default async function ClientHome({
                 Live
               </span>
             )}
+            <PhaseTransitionButton
+              clientId={client.id}
+              currentStage={client.stage}
+              isFounder={session.role === "agency-owner"}
+            />
             {planLabel && (
               <span className="text-[11px] text-black/55">Plan tier: <span className="font-medium text-black/75">{planLabel}</span></span>
             )}
