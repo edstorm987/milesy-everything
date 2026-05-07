@@ -7,11 +7,13 @@
 // (e.g. `?tab=tools`) hydrate with full data. The "+ Add capability"
 // picker on the Tools tab is the only client-side mutating UI.
 
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ensureHydrated } from "@/server/storage";
 import { requireRoleForClient } from "@/lib/server/auth";
-import { ALL_ROLES } from "@/server/types";
+import { ALL_ROLES, type ClientStage } from "@/server/types";
 import { getClientForAgency } from "@/server/tenants";
 import { listInstalledFor } from "@/server/pluginInstalls";
 import { listActivity } from "@/server/activity";
@@ -19,6 +21,38 @@ import { phaseLabel, listPhasesForAgency } from "@/server/phases";
 import { listPlugins } from "@/plugins/_registry";
 import { OverviewTabs, TABS, type TabId } from "./_OverviewTabs";
 import { ToolsPicker, type PickerPlugin } from "./_ToolsPicker";
+import { BuildPortalWizard, type WizardPlugin } from "./_BuildPortalWizard";
+
+// Phases that materialise into a per-client custom portal (architecture
+// extension ch.19b). `aqua-mastery` is the Aqua-flavoured Live; `live`
+// is the legacy generic Live still kept for compatibility.
+const LIVE_STAGES: ReadonlySet<ClientStage> = new Set(["aqua-mastery", "live"]);
+function isLivePhase(stage: ClientStage): boolean {
+  return LIVE_STAGES.has(stage);
+}
+
+// Plugin set the operator typically pulls into a Live-stage custom
+// portal (chapter 19b §5a). Surfaced as a one-click "Recommended for
+// Live" install on the Tools tab and as the default-checked plugin set
+// in the Build-custom-portal wizard.
+const LIVE_RECOMMENDED_PLUGINS: readonly string[] = [
+  "website-editor",
+  "client-crm",
+  "forms",
+  "ecommerce",
+  "memberships",
+  "affiliates",
+  "agency-marketing",
+];
+
+// Repo root → `04-the-final-portal/clients/<slug>/` lives two levels
+// above `portal/`. We resolve from `process.cwd()` (= the portal app
+// root in dev + Vercel build) and walk up.
+function customPortalExists(slug: string): boolean {
+  const root = process.cwd();
+  const path = join(root, "..", "clients", slug);
+  return existsSync(path);
+}
 
 const TAB_IDS = new Set(TABS.map(t => t.id));
 
@@ -72,6 +106,10 @@ export default async function ClientHome({
   };
   const planLabel = meta.planTier ? PLAN_LABELS[meta.planTier] : null;
 
+  const live = isLivePhase(client.stage);
+  const portalMaterialized = live && customPortalExists(client.slug);
+  const liveRecommended = LIVE_RECOMMENDED_PLUGINS;
+
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-center gap-4">
@@ -96,6 +134,11 @@ export default async function ClientHome({
             >
               {phaseLabel(client.stage)}
             </span>
+            {live && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900">
+                Live
+              </span>
+            )}
             {planLabel && (
               <span className="text-[11px] text-black/55">Plan tier: <span className="font-medium text-black/75">{planLabel}</span></span>
             )}
@@ -111,6 +154,33 @@ export default async function ClientHome({
             )}
           </div>
         </div>
+        {live && (
+          <div className="flex shrink-0 items-center">
+            {portalMaterialized ? (
+              <a
+                href={`/clients/${client.slug}/`}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-md border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-900 shadow-sm hover:bg-amber-100"
+              >
+                Open custom portal ↗
+              </a>
+            ) : (
+              <BuildPortalWizard
+                clientId={client.id}
+                clientName={client.name}
+                slug={client.slug}
+                plugins={listPlugins().map<WizardPlugin>(plugin => ({
+                  id: plugin.id,
+                  name: plugin.name ?? plugin.id,
+                  description: plugin.description,
+                  installed: installedIds.has(plugin.id),
+                  recommended: liveRecommended.includes(plugin.id),
+                }))}
+              />
+            )}
+          </div>
+        )}
       </header>
 
       <OverviewTabs clientId={client.id} active={tab} />
@@ -285,6 +355,8 @@ export default async function ClientHome({
           </div>
           <ToolsPicker
             clientId={client.id}
+            isLive={live}
+            liveRecommended={liveRecommended}
             plugins={listPlugins().map<PickerPlugin>(plugin => {
               const install = installs.find(i => i.pluginId === plugin.id);
               return {

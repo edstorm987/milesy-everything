@@ -137,6 +137,52 @@ export async function imageHandler(req: Request, ctx: PluginCtx): Promise<Respon
   }
 }
 
+// POST /image/variations — R005. body { sourceImageUrl, count?, strength? }.
+export async function imageVariationsHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const body = await safeJson<{ sourceImageUrl: string; count?: number; strength?: number }>(req);
+  if (!body?.sourceImageUrl) return json({ ok: false, error: "sourceImageUrl required" }, 400);
+  const c = buildImageContainer(ctx);
+  try {
+    const images = await c.images.variations({
+      sourceImageUrl: body.sourceImageUrl,
+      ...(body.count ? { count: body.count } : {}),
+      ...(body.strength != null ? { strength: body.strength } : {}),
+    });
+    return json({ ok: true, images });
+  } catch (e) {
+    if (e instanceof CeilingReachedError) {
+      return json({ ok: false, error: "ceiling-reached", kind: e.kind, resetsOn: e.resetsOn }, 429);
+    }
+    return json({ ok: false, error: e instanceof Error ? e.message : String(e) }, 500);
+  }
+}
+
+// POST /image/inpaint — R005. body { sourceImageUrl, mask, prompt }.
+export async function imageInpaintHandler(req: Request, ctx: PluginCtx): Promise<Response> {
+  const guard = methodGuard(req, "POST");
+  if (guard) return guard;
+  const body = await safeJson<{ sourceImageUrl: string; mask: string; prompt: string }>(req);
+  if (!body?.sourceImageUrl || !body?.mask || !body?.prompt) {
+    return json({ ok: false, error: "sourceImageUrl, mask, prompt required" }, 400);
+  }
+  const c = buildImageContainer(ctx);
+  try {
+    const image = await c.images.inpaint({
+      sourceImageUrl: body.sourceImageUrl,
+      mask: body.mask,
+      prompt: body.prompt,
+    });
+    return json({ ok: true, image });
+  } catch (e) {
+    if (e instanceof CeilingReachedError) {
+      return json({ ok: false, error: "ceiling-reached", kind: e.kind, resetsOn: e.resetsOn }, 429);
+    }
+    return json({ ok: false, error: e instanceof Error ? e.message : String(e) }, 500);
+  }
+}
+
 // GET /usage — R9. This-month tokens + images + ceilings + reset date.
 export async function usageHandler(req: Request, ctx: PluginCtx): Promise<Response> {
   if (req.method !== "GET") return json({ ok: false, error: "method_not_allowed" }, 405);

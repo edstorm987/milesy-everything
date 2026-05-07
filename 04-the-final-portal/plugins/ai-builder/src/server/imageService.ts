@@ -28,6 +28,10 @@ export interface GeneratedImage {
 export interface ImageProviderPort {
   id: "stub" | "openai" | (string & {});
   generate(input: { prompt: string; size: string; count: number; apiKey?: string }): Promise<GeneratedImage[]>;
+  // R005 — variations + inpaint. Optional so existing real-provider
+  // shims keep type-checking; the stub implements both.
+  variations?(input: { sourceImageUrl: string; count: number; strength?: number; apiKey?: string }): Promise<GeneratedImage[]>;
+  inpaint?(input: { sourceImageUrl: string; mask: string; prompt: string; apiKey?: string }): Promise<GeneratedImage & { stub?: boolean }>;
 }
 
 let injected: ImageProviderPort | null = null;
@@ -48,6 +52,25 @@ export const stubImageProvider: ImageProviderPort = {
       out.push({ url: `https://picsum.photos/seed/${seed}/${w}/${h}`, width: w, height: h });
     }
     return out;
+  },
+  // R005 — variations: derive 4 picsum URLs from a hash of the
+  // source URL + an attempt index. Same source → stable variant set
+  // so operators see consistent results when re-opening the modal.
+  async variations(input) {
+    const count = Math.max(1, Math.min(input.count, 8));
+    const out: GeneratedImage[] = [];
+    const base = stableHash(`var::${input.sourceImageUrl}::${input.strength ?? 0.5}`);
+    for (let i = 0; i < count; i++) {
+      const seed = stableHash(`${base}::${i}`);
+      out.push({ url: `https://picsum.photos/seed/${seed}/1024/1024`, width: 1024, height: 1024 });
+    }
+    return out;
+  },
+  // R005 — inpaint stub returns the source URL unchanged with a
+  // `stub:true` flag so the caller knows the mask wasn't applied.
+  // Real provider impls (OpenAI image edits) replace this.
+  async inpaint(input) {
+    return { url: input.sourceImageUrl, width: 1024, height: 1024, stub: true };
   },
 };
 
@@ -117,6 +140,73 @@ export class ImageService {
 
     await this.bumpUsage({ images: images.length });
     return images;
+  }
+
+  // ─── R005: variations + inpaint ─────────────────────────────────────────
+  // Both consult the monthly image ceiling (each variation = 1 image,
+  // each inpaint = 1 image) and bump usage on success.
+
+  async variations(input: {
+    sourceImageUrl: string;
+    count?: number;
+    strength?: number;
+    providerOverride?: ImageProviderPort;
+  }): Promise<GeneratedImage[]> {
+    const config = { ...DEFAULT_CONFIG, ...this.deps.config };
+    const count = Math.max(1, Math.min(input.count ?? 4, 8));
+
+    const usage = await this.usageThisMonth();
+    const ceiling = config.monthlyImageCeiling ?? DEFAULT_CONFIG.monthlyImageCeiling!;
+    if (usage.images + count > ceiling) {
+      throw new CeilingReachedError("images", nextMonthResetIso());
+    }
+
+    const provider =
+      input.providerOverride ??
+      (config.imageProvider === "openai" && injected?.id === "openai" ? injected : stubImageProvider);
+    if (!provider.variations) {
+      throw new Error(`provider ${provider.id} does not implement variations`);
+    }
+
+    const images = await provider.variations({
+      sourceImageUrl: input.sourceImageUrl,
+      count,
+      ...(input.strength != null ? { strength: input.strength } : {}),
+      ...(config.openaiApiKey ? { apiKey: config.openaiApiKey } : {}),
+    });
+    await this.bumpUsage({ images: images.length });
+    return images;
+  }
+
+  async inpaint(input: {
+    sourceImageUrl: string;
+    mask: string;
+    prompt: string;
+    providerOverride?: ImageProviderPort;
+  }): Promise<GeneratedImage & { stub?: boolean }> {
+    const config = { ...DEFAULT_CONFIG, ...this.deps.config };
+
+    const usage = await this.usageThisMonth();
+    const ceiling = config.monthlyImageCeiling ?? DEFAULT_CONFIG.monthlyImageCeiling!;
+    if (usage.images + 1 > ceiling) {
+      throw new CeilingReachedError("images", nextMonthResetIso());
+    }
+
+    const provider =
+      input.providerOverride ??
+      (config.imageProvider === "openai" && injected?.id === "openai" ? injected : stubImageProvider);
+    if (!provider.inpaint) {
+      throw new Error(`provider ${provider.id} does not implement inpaint`);
+    }
+
+    const image = await provider.inpaint({
+      sourceImageUrl: input.sourceImageUrl,
+      mask: input.mask,
+      prompt: input.prompt,
+      ...(config.openaiApiKey ? { apiKey: config.openaiApiKey } : {}),
+    });
+    await this.bumpUsage({ images: 1 });
+    return image;
   }
 
   // ─── Usage roll-ups (R9) ────────────────────────────────────────────────
