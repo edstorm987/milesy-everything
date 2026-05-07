@@ -2630,3 +2630,8 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       base64 <2MB + external-ref hook for T6 S3 wiring; 5 categories;
       visibleToClient ACL; rotating share-link tokens via reverse
       index).
+- [x] T2 R011 — `@aqua/plugin-agency-domains` skeleton shipped
+      (chapter #107, smoke 12/12, NEW skeleton companion to existing
+      `@aqua/plugin-domains` chapter #50 — intent-only DomainAttach
+      with status state machine + NS-record viewer + verify() stub
+      flagged for T6 production wiring).
