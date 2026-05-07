@@ -100,6 +100,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R004 — Brand-page templates (therapist storefront)** — DONE.
+      Goal A: 7 starter brand presets in `pageTemplates.ts` re-using
+      existing block catalogue — `brand-about` / `brand-our-story` /
+      `brand-philosophy` / `brand-sustainability` / `brand-faq` /
+      `brand-contact` / `brand-lab-tests`. Felicia mythos placeholder
+      copy; cover images empty (operators drop via R003 asset upload).
+      Goal B: composite `brand-page-pack` starter — root from About's
+      tree + 6 sibling pages auto-seeded via `applyStarterVariant`
+      (same pattern as R002 Aqua-Incubator). `BRAND_PAGE_TEMPLATE_IDS`
+      + `BRAND_PAGE_PACK_ID` exported. starterLoader fall-through;
+      `listStarterIds()` 11→19. Goal C: NEW `__smoke__/brand-page-
+      templates.test.ts` 39 cases. Plugin total **254/254**
+      (68+25+25+26+39+32+39). tsc clean. Chapter
+      `04-brand-page-templates.md` + MASTER row #66.
+      Cross-team: T1 surfaces brand-page-pack as featured composite
+      in "+ New page" picker. Q-ASSUMED: starter role="account".
+      Deferred: industry-vertical packs, rich copy library,
+      preview thumbnails, auto-sitemap navbar.
 - [x] **T3 R003 — videoEmbed + asset upload + LivePreview polish** — DONE.
       Goal A: NEW `videoEmbed` block — auto-detect provider (vimeo /
       youtube / loom / raw) via `lib/videoEmbed.ts`; `toEmbedUrl`

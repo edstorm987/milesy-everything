@@ -108,6 +108,29 @@ export async function applyStarterVariant(
       }
     }
 
+    // Brand-page pack (R004) — root page is About; seed the other 6
+    // brand-page presets as siblings on the same site so the operator
+    // gets a complete therapist storefront in one click.
+    if (input.variantId === "brand-page-pack") {
+      const { BRAND_PAGE_TEMPLATE_IDS, getTemplate } = await import("../components/pageTemplates");
+      for (const id of BRAND_PAGE_TEMPLATE_IDS) {
+        if (id === "brand-about") continue;
+        const tpl = getTemplate(id);
+        if (!tpl) continue;
+        await createPage(storage, {
+          siteId: site.id,
+          agencyId: input.agencyId,
+          clientId: input.clientId,
+          title: tpl.defaultTitle,
+          slug: tpl.defaultSlug,
+          blocks: tpl.build(),
+          portalRole: input.role,
+          isActivePortal: false,
+          variantId: id,
+        });
+      }
+    }
+
     return { ok: true, variantId: input.variantId, pageId: page.id, siteId: site.id };
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);

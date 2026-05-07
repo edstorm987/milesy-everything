@@ -23,7 +23,10 @@ import loginDesign from "../starters/login-design.json" with { type: "json" };
 import affiliatesDefault from "../starters/affiliates-default.json" with { type: "json" };
 import ordersDefault from "../starters/orders-default.json" with { type: "json" };
 import accountDefault from "../starters/account-default.json" with { type: "json" };
-import { getTemplate, AQUA_INCUBATOR_TEMPLATE_IDS } from "../components/pageTemplates";
+import {
+  getTemplate, AQUA_INCUBATOR_TEMPLATE_IDS,
+  BRAND_PAGE_TEMPLATE_IDS, BRAND_PAGE_PACK_ID,
+} from "../components/pageTemplates";
 
 const STARTERS: Record<string, StarterTreeFile> = {
   "login-default": loginDefault as StarterTreeFile,
@@ -53,9 +56,37 @@ export async function loadStarterTree(variantId: string): Promise<StarterTreeFil
       blocks: tpl.build(),
     };
   }
+  // Brand-page templates (R004) — each preset is also a starter, plus
+  // the composite `brand-page-pack` that resolves to the About tree as
+  // its root (sibling-seeding for the other 6 happens in
+  // applyStarterVariant). Role is `account` for v1 — same Q-ASSUMED
+  // as the Incubator pack.
+  if (BRAND_PAGE_TEMPLATE_IDS.includes(variantId)) {
+    const tpl = getTemplate(variantId);
+    if (!tpl) return null;
+    return {
+      variantId, role: "account",
+      title: tpl.defaultTitle, description: tpl.description, blocks: tpl.build(),
+    };
+  }
+  if (variantId === BRAND_PAGE_PACK_ID) {
+    const about = getTemplate("brand-about");
+    if (!about) return null;
+    return {
+      variantId, role: "account",
+      title: about.defaultTitle,
+      description: "Brand-page pack — seeds About + Story + Philosophy + Sustainability + FAQ + Contact + Lab tests.",
+      blocks: about.build(),
+    };
+  }
   return null;
 }
 
 export function listStarterIds(): string[] {
-  return [...Object.keys(STARTERS), ...AQUA_INCUBATOR_TEMPLATE_IDS];
+  return [
+    ...Object.keys(STARTERS),
+    ...AQUA_INCUBATOR_TEMPLATE_IDS,
+    ...BRAND_PAGE_TEMPLATE_IDS,
+    BRAND_PAGE_PACK_ID,
+  ];
 }

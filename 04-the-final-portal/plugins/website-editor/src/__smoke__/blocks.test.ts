@@ -138,7 +138,7 @@ async function main(): Promise<void> {
 
   console.log("\nstarter trees");
   const ids = listStarterIds();
-  expect("11 starter trees indexed (R002 +5 aqua-incubator)", ids.length === 11, `actual: ${ids.length}`);
+  expect("19 starter trees indexed (R004 +7 brand presets +1 brand-page-pack)", ids.length === 19, `actual: ${ids.length}`);
   for (const id of ids) {
     const t = await loadStarterTree(id);
     expect(`load ${id}`, t !== null && t.variantId === id, `got ${JSON.stringify(t?.variantId)}`);

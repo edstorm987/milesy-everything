@@ -14,7 +14,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx src/__smoke__/blocks.test.ts && node --import tsx src/__smoke__/cross-plugin-renderers.test.ts && node --import tsx src/__smoke__/save-target.test.ts && node --import tsx src/__smoke__/deep-link.test.ts && node --import tsx src/__smoke__/incubator-template.test.ts && node --import tsx src/__smoke__/video-and-preview.test.ts"
+    "test": "node --import tsx src/__smoke__/blocks.test.ts && node --import tsx src/__smoke__/cross-plugin-renderers.test.ts && node --import tsx src/__smoke__/save-target.test.ts && node --import tsx src/__smoke__/deep-link.test.ts && node --import tsx src/__smoke__/incubator-template.test.ts && node --import tsx src/__smoke__/video-and-preview.test.ts && node --import tsx src/__smoke__/brand-page-templates.test.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0",

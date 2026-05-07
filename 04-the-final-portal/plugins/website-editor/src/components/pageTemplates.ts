@@ -364,6 +364,10 @@ export const PAGE_TEMPLATES: PageTemplate[] = [
   // Notion-style client-onboarding portal — chapter §15e. Auto-applied
   // when phase = "Epic Intro" via selectStarterForPhase().
   ...buildAquaIncubatorTemplates(),
+  // ── Therapist / healing brand-page templates (R004) ──────────────────
+  // 7 starter pages a typical Aqua client storefront needs. Composite
+  // "brand-page-pack" starter seeds all 7 in one apply.
+  ...buildBrandPageTemplates(),
 ];
 
 const AQUA_INCUBATOR_COVER = "/aqua-incubator/cover-roots.jpg";
@@ -543,6 +547,222 @@ export const AQUA_INCUBATOR_TEMPLATE_IDS: readonly string[] = [
   "aqua-incubator-resources",
   "aqua-incubator-discover",
 ];
+
+// IDs of the 7 brand-page presets. The composite `brand-page-pack`
+// starter seeds all of them as siblings in one applyStarterVariant
+// pass (chapter R004 Goal B).
+export const BRAND_PAGE_TEMPLATE_IDS: readonly string[] = [
+  "brand-about",
+  "brand-our-story",
+  "brand-philosophy",
+  "brand-sustainability",
+  "brand-faq",
+  "brand-contact",
+  "brand-lab-tests",
+];
+
+function brandHero(headline: string, subhead: string): Block {
+  return blk("hero", { headline, subhead, ctaLabel: "", ctaHref: "" });
+}
+
+function buildBrandPageTemplates(): PageTemplate[] {
+  return [
+    {
+      id: "brand-about",
+      label: "About",
+      description: "Brand about page — hero + paragraph + team grid.",
+      icon: "👋",
+      defaultSlug: "/about",
+      defaultTitle: "About",
+      build: () => [
+        brandHero("About us", "The people, the practice, the why."),
+        blk("section", { fullWidth: false }, [
+          blk("heading", { text: "Our practice", level: 2 }),
+          blk("text", { text: "We're a small team of practitioners who believe healing happens in relationship. Every session is a co-creation. Every client is a story we have the privilege to walk beside." }),
+        ]),
+        blk("section", { fullWidth: false }, [
+          blk("heading", { text: "Meet the team", level: 2 }),
+          blk("card-grid", {
+            heading: "",
+            columns: 3,
+            items: [
+              { coverImg: "", icon: "👤", label: "Lead practitioner",      href: "#" },
+              { coverImg: "", icon: "👤", label: "Senior associate",       href: "#" },
+              { coverImg: "", icon: "👤", label: "Practice manager",       href: "#" },
+            ],
+          }),
+        ]),
+      ],
+    },
+    {
+      id: "brand-our-story",
+      label: "Our story",
+      description: "Brand story — alternating image+text chapters.",
+      icon: "📖",
+      defaultSlug: "/our-story",
+      defaultTitle: "Our story",
+      build: () => [
+        brandHero("Our story", "How a question became a practice."),
+        blk("section", { fullWidth: false }, [
+          blk("heading", { text: "Chapter one — the question", level: 2 }),
+          blk("text", { text: "It started with a simple question: what if healing wasn't a transaction? What if it was a relationship?" }),
+        ]),
+        blk("divider", {}),
+        blk("section", { fullWidth: false }, [
+          blk("heading", { text: "Chapter two — the practice", level: 2 }),
+          blk("text", { text: "From that question, a practice. From the practice, a community. From the community, a movement." }),
+        ]),
+        blk("divider", {}),
+        blk("section", { fullWidth: false }, [
+          blk("heading", { text: "Chapter three — today", level: 2 }),
+          blk("text", { text: "Today we serve clients across the world. The question still drives us. The relationship is still at the centre." }),
+        ]),
+      ],
+    },
+    {
+      id: "brand-philosophy",
+      label: "Philosophy",
+      description: "Brand philosophy — principles list.",
+      icon: "🌿",
+      defaultSlug: "/philosophy",
+      defaultTitle: "Philosophy",
+      build: () => [
+        brandHero("Our philosophy", "Five principles that guide every session."),
+        blk("section", { fullWidth: false }, [
+          blk("card-grid", {
+            heading: "Principles",
+            columns: 2,
+            items: [
+              { coverImg: "", icon: "🪞", label: "Honesty over comfort",      href: "#" },
+              { coverImg: "", icon: "🌳", label: "Roots before reach",        href: "#" },
+              { coverImg: "", icon: "🤲", label: "Service as practice",       href: "#" },
+              { coverImg: "", icon: "🕯️", label: "Slow over fast",            href: "#" },
+              { coverImg: "", icon: "🌊", label: "Flow with what is",         href: "#" },
+            ],
+          }),
+        ]),
+      ],
+    },
+    {
+      id: "brand-sustainability",
+      label: "Sustainability",
+      description: "Brand sustainability — impact metrics + commitments.",
+      icon: "♻️",
+      defaultSlug: "/sustainability",
+      defaultTitle: "Sustainability",
+      build: () => [
+        brandHero("Our impact", "Measured, reported, improved."),
+        blk("stats-bar", {
+          items: [
+            { label: "Trees planted",        value: "2,400" },
+            { label: "Carbon offset (tons)", value: "12" },
+            { label: "% recycled packaging", value: "100%" },
+          ],
+        }),
+        blk("section", { fullWidth: false }, [
+          blk("heading", { text: "Our commitments", level: 2 }),
+          blk("toggle", { label: "Carbon-neutral by 2027" }, [
+            blk("text", { text: "We track every shipment, every flight, every kilowatt. Independent verification by a third-party body." }),
+          ]),
+          blk("toggle", { label: "Plastic-free packaging" }, [
+            blk("text", { text: "100% recycled or biodegradable. No exceptions." }),
+          ]),
+          blk("toggle", { label: "1% for the planet" }, [
+            blk("text", { text: "1% of revenue donated to environmental causes — annually published." }),
+          ]),
+        ]),
+      ],
+    },
+    {
+      id: "brand-faq",
+      label: "FAQ",
+      description: "Brand FAQ — accordion of toggle blocks.",
+      icon: "❓",
+      defaultSlug: "/faq",
+      defaultTitle: "FAQ",
+      build: () => [
+        brandHero("Frequently asked", "The questions we hear most."),
+        blk("section", { fullWidth: false }, [
+          blk("toggle", { label: "How do I book a session?" }, [
+            blk("text", { text: "Use the contact form, or call us directly. We'll match you with the right practitioner." }),
+          ]),
+          blk("toggle", { label: "What's your cancellation policy?" }, [
+            blk("text", { text: "24 hours' notice — we know life happens. Three or more late cancellations and we'll have a conversation." }),
+          ]),
+          blk("toggle", { label: "Do you take insurance?" }, [
+            blk("text", { text: "We can provide receipts for out-of-network reimbursement. Direct billing varies by carrier — ask us." }),
+          ]),
+          blk("toggle", { label: "Are sessions remote or in-person?" }, [
+            blk("text", { text: "Both. Most clients mix. The practitioner will guide what fits your work." }),
+          ]),
+          blk("toggle", { label: "How long is each session?" }, [
+            blk("text", { text: "60 or 90 minutes. The first session is always 90." }),
+          ]),
+        ]),
+      ],
+    },
+    {
+      id: "brand-contact",
+      label: "Contact",
+      description: "Brand contact — form + map placeholder.",
+      icon: "✉️",
+      defaultSlug: "/contact",
+      defaultTitle: "Contact",
+      build: () => [
+        brandHero("Get in touch", "Tell us where you are. We'll meet you there."),
+        blk("section", { fullWidth: false }, [
+          blk("contact-form", {
+            heading: "Send us a message",
+            subheading: "We respond within one business day.",
+            submitLabel: "Send",
+            showPhone: true,
+            formName: "contact",
+          }),
+        ]),
+        blk("section", { fullWidth: false }, [
+          blk("heading", { text: "Find us", level: 2 }),
+          blk("map", { address: "" }),
+        ]),
+      ],
+    },
+    {
+      id: "brand-lab-tests",
+      label: "Lab tests & certifications",
+      description: "Brand lab tests — cert grid + downloads.",
+      icon: "🧪",
+      defaultSlug: "/lab-tests",
+      defaultTitle: "Lab tests & certifications",
+      build: () => [
+        brandHero("Lab tests & certifications", "Independently verified, publicly available."),
+        blk("section", { fullWidth: false }, [
+          blk("card-grid", {
+            heading: "Certifications",
+            columns: 3,
+            items: [
+              { coverImg: "", icon: "✅", label: "ISO 9001",                href: "#" },
+              { coverImg: "", icon: "🌿", label: "Organic certified",       href: "#" },
+              { coverImg: "", icon: "🔬", label: "Third-party lab tested",  href: "#" },
+            ],
+          }),
+        ]),
+        blk("section", { fullWidth: false }, [
+          blk("heading", { text: "Downloads", level: 2 }),
+          blk("toggle", { label: "Latest lab report (PDF)" }, [
+            blk("text", { text: "Operator: link the PDF here." }),
+          ]),
+          blk("toggle", { label: "Certificate of analysis" }, [
+            blk("text", { text: "Operator: link the COA here." }),
+          ]),
+        ]),
+      ],
+    },
+  ];
+}
+
+// Selects the brand-page composite pack id when the operator picks
+// "Use brand pack" at "+ New page". Pure helper — pairs with
+// `BRAND_PAGE_TEMPLATE_IDS` for sibling-seeding in `applyStarterVariant`.
+export const BRAND_PAGE_PACK_ID = "brand-page-pack";
 
 export function getTemplate(id: string): PageTemplate | undefined {
   return PAGE_TEMPLATES.find(t => t.id === id);
