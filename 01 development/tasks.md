@@ -100,6 +100,12 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       SiteHead.tsx renders `<script type="application/ld+json">` per
       schema with CSP-safe escape inherited from R037. 23/23 smoke +
       chapter #149.
+- [x] **R046 — Static export sitemap bundle** — DONE 2026-05-07.
+      `server/staticExport.ts` swap R014 narrow → R036 advanced for
+      bundled `sitemap.xml`+`robots.txt`; per-locale `sitemap-<locale>.xml`
+      when site has any locale-tagged pages; same filter stack as R044
+      runtime routes (drafts/private/noIndex/redirect-sources). 21/21
+      smoke + chapter #152. R033 smoke (34/34) still green.
 
 ### T4 manual (Ed driving)
 

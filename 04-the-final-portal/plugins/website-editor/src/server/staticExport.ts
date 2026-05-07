@@ -1,8 +1,11 @@
 // R033 — Static site export.
 //
 // `exportSiteToZip` renders every published page in a site to a static
-// HTML file and bundles them with brand.css, robots.txt, sitemap.xml
-// and a README into a single store-only ZIP (Uint8Array).
+// HTML file and bundles them with brand.css, robots.txt, sitemap.xml,
+// per-locale sitemap-<locale>.xml (R046), and a README into a single
+// store-only ZIP (Uint8Array). Sitemap + robots use the R036 advanced
+// generators (changefreq + priority + per-locale alternates +
+// redirect-source / draft / private / noIndex filters).
 //
 // Honesty caveat: this is a snapshot. Form submissions, member gates,
 // commerce blocks, and any other dynamic surface depend on the running
@@ -332,15 +335,57 @@ export async function exportSiteToZip(input: ExportSiteInput): Promise<ExportSit
     entries.push({ name: pageFilename(p), data: enc.encode(html) });
   }
 
-  const sitemapPages: SitemapPage[] = pages.map(p => ({
+  // R046 — bundle sitemap + robots from R036 advanced helpers.
+  // Filters: drafts (R035), redirect-source slugs (R041), private +
+  // noIndex (R025), portal-variants + underscore-prefix (R036).
+  const advancedPages: SitemapPageInput[] = pages.map(p => ({
     slug: p.slug.startsWith("/") ? p.slug : `/${p.slug}`,
     status: p.status,
-    updatedAt: p.updatedAt,
-    isPortalVariant: Boolean(p.portalRole),
-    noIndex: p.seo?.noIndex,
+    ...(p.publishedAt ? { publishedAt: p.publishedAt } : {}),
+    ...(p.privacy ? { privacy: p.privacy } : {}),
+    noIndex: p.seo?.noIndex === true,
+    ...(p.isHomepage ? { isHomepage: true } : {}),
+    ...(p.portalRole ? { portalRole: p.portalRole } : {}),
+    ...((p as { locales?: SitemapPageInput["locales"] }).locales
+      ? { locales: (p as { locales?: SitemapPageInput["locales"] }).locales }
+      : {}),
   }));
-  entries.push({ name: "sitemap.xml", data: enc.encode(buildSitemapXml(sitemapPages, baseUrl)) });
-  entries.push({ name: "robots.txt", data: enc.encode(buildRobotsTxt(sitemapPages, baseUrl)) });
+  const redirectSources: string[] = [];
+  for (const p of pages) {
+    const sources = (p as { redirectSourceSlugs?: string[] }).redirectSourceSlugs;
+    if (Array.isArray(sources)) {
+      for (const s of sources) {
+        if (typeof s === "string" && s.length > 0) redirectSources.push(s);
+      }
+    }
+  }
+  const filtered = selectSitemapPages(advancedPages, {
+    redirectFromSlugs: redirectSources,
+  });
+  entries.push({
+    name: "sitemap.xml",
+    data: enc.encode(buildAdvancedSitemap(filtered, { baseUrl })),
+  });
+  entries.push({
+    name: "robots.txt",
+    data: enc.encode(buildAdvancedRobotsTxt({ sitemapUrl: `${baseUrl}/sitemap.xml` })),
+  });
+  // Per-locale sitemaps when any page carries locales.
+  const locales = new Set<string>();
+  for (const p of filtered) {
+    if (p.locales) {
+      for (const k of Object.keys(p.locales.locales)) locales.add(k);
+    }
+  }
+  for (const loc of locales) {
+    const localePages = filtered.filter(
+      (p) => p.locales && p.locales.locales[loc],
+    );
+    entries.push({
+      name: `sitemap-${loc}.xml`,
+      data: enc.encode(buildAdvancedSitemap(localePages, { baseUrl })),
+    });
+  }
   entries.push({ name: "README.txt", data: enc.encode(buildExportReadme(siteId, baseUrl, pages.length)) });
 
   const zip = buildZip(entries);
