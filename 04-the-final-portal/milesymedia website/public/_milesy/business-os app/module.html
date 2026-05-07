@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Lesson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="module.html"></nav>
+      <div class="bos-side-section bos-mod-outline-host" data-bos-mod-outline-host>
+        <div class="bos-side-label">In this module</div>
+        <div data-bos-lesson-outline></div>
+      </div>
+    </aside>
+
+    <main class="bos-main bos-module">
+
+      <a href="database.html" class="back-link">← All modules</a>
+
+      <header class="bos-mod-head">
+        <div class="bos-mod-cat-pill" data-bos-lesson-pill>Module</div>
+        <h1 data-bos-lesson-title>Lesson</h1>
+        <p class="muted bos-mod-lead" data-bos-lesson-lead></p>
+        <div class="bos-mod-meta-row">
+          <span class="bos-pip bos-pip-doing"></span>
+          <span data-bos-lesson-progress>Lesson 1 of 1 · 0% complete</span>
+          <a href="tel:+441234567890" class="btn btn-secondary" style="margin-left:auto">📞 Stuck? Call us</a>
+        </div>
+      </header>
+
+      <article class="bos-prose" data-bos-lesson-body></article>
+
+      <div class="bos-mod-cta">
+        <h3>Done with this lesson — what's next?</h3>
+        <p class="muted">Pick how you want to act on it. There's no wrong answer — but there is a wrong "I'll think about it later".</p>
+        <div class="hc-actions" data-bos-lesson-cta></div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="lessons.js"></script>
+  <script src="bos.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var qs = new URLSearchParams(location.search);
+      var id = qs.get('id') || 'core-principles';
+      var lesson = (window.BOS_LESSONS || {})[id];
+
+      if (!lesson) {
+        document.querySelector('[data-bos-lesson-title]').textContent = 'Lesson not found';
+        document.querySelector('[data-bos-lesson-lead]').textContent = 'The lesson "' + id + '" doesn\'t exist yet — head back to the library to pick one.';
+        document.querySelector('[data-bos-lesson-body]').innerHTML = '';
+        document.querySelector('[data-bos-lesson-cta]').innerHTML = '<a href="database.html" class="btn btn-primary">← Back to the library</a>';
+        return;
+      }
+
+      document.title = 'Business OS — ' + lesson.step + ' ' + lesson.title.replace(/<[^>]+>/g, '');
+      document.querySelector('[data-bos-lesson-pill]').innerHTML = (lesson.icon || '◆') + ' ' + lesson.track + ' · Step ' + lesson.step;
+      document.querySelector('[data-bos-lesson-title]').innerHTML = lesson.title;
+      document.querySelector('[data-bos-lesson-lead]').textContent = lesson.lead;
+      document.querySelector('[data-bos-lesson-body]').innerHTML = lesson.body;
+
+      var p = lesson.progress || { current: 1, total: 1, pct: 0 };
+      document.querySelector('[data-bos-lesson-progress]').textContent =
+        'Lesson ' + p.current + ' of ' + p.total + ' · ' + p.pct + '% complete';
+
+      // Outline → sidebar
+      var outline = document.querySelector('[data-bos-lesson-outline]');
+      outline.innerHTML = (lesson.outline || []).map(function (s, i) {
+        var pip = i === 0 ? 'done' : i === 1 ? 'doing' : 'todo';
+        return '<a href="#' + s.id + '" class="bos-mod-lesson"><span class="bos-pip bos-pip-' + pip + '"></span> ' + s.title + '</a>';
+      }).join('');
+
+      // CTA row
+      var cta = document.querySelector('[data-bos-lesson-cta]');
+      var nextHtml = lesson.next
+        ? '<a href="' + lesson.next.href + '" class="btn btn-secondary">' + lesson.next.label + '</a>'
+        : '<a href="database.html" class="btn btn-secondary">← Back to library</a>';
+      cta.innerHTML = ''
+        + nextHtml
+        + '<a href="tel:+441234567890" class="btn btn-secondary">📞 Want me to walk you through?</a>'
+        + '<a href="mailto:hello@milesymedia.co?subject=' + encodeURIComponent('Help me apply: ' + lesson.title.replace(/<[^>]+>/g, '')) + '" class="btn btn-primary">⚡ Help me apply this</a>';
+    });
+  </script>
+
+</body>
+</html>

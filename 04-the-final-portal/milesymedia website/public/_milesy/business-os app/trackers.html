@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Trackers &amp; KPIs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="trackers.html"></nav>
+      <div class="bos-side-user">
+        <div class="av" data-bos-initial>JL</div>
+        <div>
+          <div class="bos-side-user-name" data-bos-name>Jordan Lee</div>
+          <div class="bos-side-user-biz muted" data-bos-business>Northbeam Apparel</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="bos-main">
+
+      <header class="bos-topbar">
+        <div>
+          <div class="muted bos-topbar-eyebrow">Run · Numbers</div>
+          <h1>Trackers &amp; KPIs.</h1>
+          <p class="muted bos-topbar-sub">Five numbers, one screen. Reviewed weekly. The signal you steer by — without drowning in dashboards.</p>
+        </div>
+        <div class="bos-topbar-actions">
+          <button class="btn btn-secondary" data-bos-kpi-edit>✎ Edit numbers</button>
+        </div>
+      </header>
+
+      <details class="bos-page-intro">
+        <summary>👋 Introduction — please open me!</summary>
+        <div class="bos-page-intro-body">
+          <p>Five numbers, reviewed weekly. <strong>This is your steering wheel.</strong> If a KPI moves more than 20% week-on-week, that's the meeting for the week. If they're flat, no meeting needed.</p>
+          <p>The free tier ships with manual entry (90 seconds on a Monday) plus the time-tracker for personal use. The Pro upgrade plugs in <strong>QuickBooks / Stripe / live data feeds</strong> so the numbers update themselves and you stop guessing.</p>
+        </div>
+      </details>
+
+      <!-- 5 KPI cards -->
+      <section class="bos-section">
+        <div class="kpi-row">
+          <div class="kpi"><div class="lbl">Leads this week</div><div class="num" data-bos-kpi="leads">0</div><div class="muted bos-kpi-delta-good">— vs last week</div></div>
+          <div class="kpi"><div class="lbl">Conversion %</div><div class="num" data-bos-kpi="conversion">0</div><div class="muted">Lead → customer</div></div>
+          <div class="kpi"><div class="lbl">Avg revenue / customer</div><div class="num">£<span data-bos-kpi="aov">0</span></div><div class="muted">Pricing health</div></div>
+          <div class="kpi"><div class="lbl">On-time delivery %</div><div class="num" data-bos-kpi="ontime">0</div><div class="muted">Operations health</div></div>
+          <div class="kpi"><div class="lbl">Runway (months)</div><div class="num" data-bos-kpi="runway">0</div><div class="muted">Survival health</div></div>
+        </div>
+      </section>
+
+      <!-- Time tracker -->
+      <section class="bos-section">
+        <div class="bos-section-head">
+          <div>
+            <span class="eyebrow">Time tracker</span>
+            <h2>Where your hours actually go.</h2>
+          </div>
+        </div>
+        <div class="bos-tracker-card">
+          <div class="bos-timer">
+            <div class="bos-timer-display" data-bos-timer-display>00:00:00</div>
+            <div class="bos-timer-tag">
+              <input type="text" placeholder="What are you working on?" data-bos-timer-task />
+            </div>
+            <div class="bos-timer-actions">
+              <button class="btn btn-primary" data-bos-timer-start>▶ Start</button>
+              <button class="btn btn-secondary" data-bos-timer-stop hidden>■ Stop &amp; log</button>
+            </div>
+          </div>
+          <div class="bos-timer-log">
+            <div class="bos-timer-log-head">
+              <span>Today's log</span>
+              <span data-bos-timer-total>0h 00m</span>
+            </div>
+            <ul class="bos-timer-log-list" data-bos-timer-log-list>
+              <li class="bos-cp-empty">No sessions logged today. Start the timer above.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Embeds + connectors -->
+      <section class="bos-section">
+        <div class="bos-section-head">
+          <div>
+            <span class="eyebrow">Connectors</span>
+            <h2>Wire in your real numbers.</h2>
+            <p class="muted bos-topbar-sub" style="margin-top:6px">Pick the source that fits how you work today. Switch later — your KPIs stay put.</p>
+          </div>
+        </div>
+        <div class="bos-connector-grid">
+          <div class="bos-connector">
+            <div class="bos-connector-icon" style="background:rgba(124,92,255,0.14);color:var(--accent-3)">QB</div>
+            <h3>QuickBooks</h3>
+            <p class="muted">Live revenue, invoices, runway. Most accountants already have this — we hook in via OAuth.</p>
+            <div class="bos-connector-actions">
+              <a href="mailto:hello@milesymedia.co?subject=Connect%20QuickBooks" class="btn btn-secondary">Connect →</a>
+              <span class="bos-connector-status">Not connected</span>
+            </div>
+          </div>
+          <div class="bos-connector">
+            <div class="bos-connector-icon" style="background:rgba(99,91,255,0.14);color:#7c5cff">St</div>
+            <h3>Stripe</h3>
+            <p class="muted">Auto-pulls MRR, churn, refunds, average transaction. Two-click connect once we wire it.</p>
+            <div class="bos-connector-actions">
+              <a href="mailto:hello@milesymedia.co?subject=Connect%20Stripe" class="btn btn-secondary">Connect →</a>
+              <span class="bos-connector-status">Not connected</span>
+            </div>
+          </div>
+          <div class="bos-connector">
+            <div class="bos-connector-icon" style="background:rgba(34,197,94,0.14);color:#22c55e">GS</div>
+            <h3>Google Sheets template (free)</h3>
+            <p class="muted">Don't want to connect anything yet? Use our free Sheets template — same five KPIs, copy your numbers in by hand each Monday.</p>
+            <div class="bos-connector-actions">
+              <a href="https://docs.google.com/spreadsheets/" target="_blank" rel="noopener" class="btn btn-primary">Get the template →</a>
+              <span class="bos-connector-status">Free · no signup</span>
+            </div>
+          </div>
+          <div class="bos-connector">
+            <div class="bos-connector-icon" style="background:rgba(255,107,53,0.14);color:var(--accent)">M</div>
+            <h3>Manual (this page)</h3>
+            <p class="muted">Type the numbers in directly each Monday. Honest, simple, takes 90 seconds. Hit "Edit numbers" above.</p>
+            <div class="bos-connector-actions">
+              <button class="btn btn-secondary" onclick="document.querySelector('[data-bos-kpi-edit]').click()">Enter manually</button>
+              <span class="bos-connector-status bos-connector-status-on">Active</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Weekly review prompt -->
+      <section class="bos-section">
+        <div class="bos-tracker-review">
+          <div>
+            <span class="eyebrow">Monday rhythm</span>
+            <h2>The 15-minute weekly review.</h2>
+            <p class="muted">Open this every Monday at 9am. If a number moves more than 20% from last week, that's the conversation for the week. If they're flat, no meeting needed.</p>
+          </div>
+          <a href="module.html?id=ops-sustainability" class="btn btn-primary">Read the rhythm playbook →</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="bos.js"></script>
+  <script>
+    /* KPIs ─────────────────────────────────── */
+    var KEY_KPI = 'bos.kpis';
+    var kpi = JSON.parse(localStorage.getItem(KEY_KPI) || '{}');
+    Object.keys(kpi).forEach(function (k) {
+      var el = document.querySelector('[data-bos-kpi="' + k + '"]');
+      if (el) el.textContent = kpi[k];
+    });
+    document.querySelector('[data-bos-kpi-edit]').addEventListener('click', function () {
+      var keys = ['leads', 'conversion', 'aov', 'ontime', 'runway'];
+      keys.forEach(function (k) {
+        var el = document.querySelector('[data-bos-kpi="' + k + '"]');
+        var cur = el.textContent.trim();
+        var v = prompt('New value for ' + k + ':', cur);
+        if (v == null) return;
+        el.textContent = v;
+        kpi[k] = v;
+      });
+      localStorage.setItem(KEY_KPI, JSON.stringify(kpi));
+    });
+
+    /* Timer ────────────────────────────────── */
+    var KEY_TIMER = 'bos.timer';
+    var timerState = JSON.parse(localStorage.getItem(KEY_TIMER) || '{"sessions":[],"running":null}');
+    function saveTimer() { localStorage.setItem(KEY_TIMER, JSON.stringify(timerState)); }
+    var disp = document.querySelector('[data-bos-timer-display]');
+    var startBtn = document.querySelector('[data-bos-timer-start]');
+    var stopBtn  = document.querySelector('[data-bos-timer-stop]');
+    var taskInput= document.querySelector('[data-bos-timer-task]');
+    var tickHandle = null;
+
+    function fmt(s) {
+      var h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+      return [h, m, sec].map(function (n) { return String(n).padStart(2, '0'); }).join(':');
+    }
+    function tick() {
+      if (!timerState.running) return;
+      var s = Math.floor((Date.now() - timerState.running.startedAt) / 1000);
+      disp.textContent = fmt(s);
+    }
+    function startTimer() {
+      var task = (taskInput.value || 'Untitled').trim();
+      timerState.running = { task: task, startedAt: Date.now() };
+      saveTimer();
+      startBtn.hidden = true; stopBtn.hidden = false;
+      tickHandle = setInterval(tick, 1000);
+    }
+    function stopTimer() {
+      if (!timerState.running) return;
+      var ended = Date.now();
+      var session = { task: timerState.running.task, startedAt: timerState.running.startedAt, endedAt: ended,
+                      seconds: Math.floor((ended - timerState.running.startedAt) / 1000) };
+      timerState.sessions.unshift(session);
+      timerState.running = null;
+      saveTimer(); clearInterval(tickHandle); tickHandle = null;
+      disp.textContent = '00:00:00'; startBtn.hidden = false; stopBtn.hidden = true;
+      taskInput.value = ''; renderLog();
+    }
+    function renderLog() {
+      var ul = document.querySelector('[data-bos-timer-log-list]');
+      var today = new Date().toISOString().slice(0, 10);
+      var todays = timerState.sessions.filter(function (s) { return new Date(s.startedAt).toISOString().slice(0, 10) === today; });
+      var totalSec = todays.reduce(function (sum, s) { return sum + s.seconds; }, 0);
+      document.querySelector('[data-bos-timer-total]').textContent = Math.floor(totalSec/3600) + 'h ' + String(Math.floor((totalSec%3600)/60)).padStart(2, '0') + 'm';
+      if (!todays.length) { ul.innerHTML = '<li class="bos-cp-empty">No sessions logged today. Start the timer above.</li>'; return; }
+      ul.innerHTML = todays.map(function (s) {
+        var t = new Date(s.startedAt);
+        var hh = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+        var dur = Math.floor(s.seconds/60) + ' min';
+        return '<li><span class="bos-timer-log-time">' + hh + '</span><span class="bos-timer-log-task">' + s.task + '</span><span class="bos-timer-log-dur">' + dur + '</span></li>';
+      }).join('');
+    }
+    startBtn.addEventListener('click', startTimer);
+    stopBtn.addEventListener('click', stopTimer);
+    /* Resume if running */
+    if (timerState.running) {
+      startBtn.hidden = true; stopBtn.hidden = false;
+      taskInput.value = timerState.running.task;
+      tickHandle = setInterval(tick, 1000); tick();
+    }
+    renderLog();
+  </script>
+
+</body>
+</html>

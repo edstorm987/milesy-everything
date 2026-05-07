@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <main class="bos-main bos-admin">
+
+    <header class="bos-topbar">
+      <div>
+        <div class="muted bos-topbar-eyebrow">Admin · Lead-magnet traffic</div>
+        <h1>BusinessOS Admin.</h1>
+        <p class="muted bos-topbar-sub">Everyone who's started, captured leads, completed health checks, and the questions editor. Will wire into the Aqua portal under "Lead magnet traffic" later — for now this is your local view.</p>
+      </div>
+      <div class="bos-topbar-actions">
+        <a href="app.html" class="btn btn-ghost">← Back to app</a>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="bos-admin-tabs">
+      <button class="bos-admin-tab is-on" data-admin-tab="overview">Overview</button>
+      <button class="bos-admin-tab" data-admin-tab="leads">Leads</button>
+      <button class="bos-admin-tab" data-admin-tab="reports">Health-check reports</button>
+      <button class="bos-admin-tab" data-admin-tab="editor">Questions editor</button>
+    </div>
+
+    <!-- Overview -->
+    <section class="bos-admin-pane" data-admin-pane="overview">
+      <div class="kpi-row">
+        <div class="kpi"><div class="lbl">Health checks completed</div><div class="num" data-admin-stat="hc-count">0</div></div>
+        <div class="kpi"><div class="lbl">Leads captured</div><div class="num" data-admin-stat="lead-count">0</div></div>
+        <div class="kpi"><div class="lbl">Pipeline value</div><div class="num">£<span data-admin-stat="lead-value">0</span></div></div>
+        <div class="kpi"><div class="lbl">BOS sign-ups</div><div class="num" data-admin-stat="user-count">0</div></div>
+      </div>
+      <div class="bos-notion-slot" style="margin-top:24px">
+        <div class="bos-notion-slot-icon">ℹ️</div>
+        <div>
+          <h3>Local-storage view</h3>
+          <p class="muted">This admin reads from <code>localStorage</code> on this device — exactly what your free-tier user state would look like server-side. Once we wire the portal plugin, this same UI reads from <code>business_os_*</code> Postgres tables instead. Same shapes; same screen.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leads -->
+    <section class="bos-admin-pane" data-admin-pane="leads" hidden>
+      <div class="bos-table-wrap">
+        <table class="bos-table">
+          <thead>
+            <tr><th>Name</th><th>Source</th><th>Stage</th><th>Value</th><th>Contact</th><th></th></tr>
+          </thead>
+          <tbody data-admin-leads></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Reports -->
+    <section class="bos-admin-pane" data-admin-pane="reports" hidden>
+      <div class="bos-table-wrap">
+        <table class="bos-table">
+          <thead>
+            <tr><th>Headline</th><th>Leak estimate</th><th>Topics</th><th>Captured at</th></tr>
+          </thead>
+          <tbody data-admin-reports></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Questions editor -->
+    <section class="bos-admin-pane" data-admin-pane="editor" hidden>
+      <div class="bos-section-head">
+        <div>
+          <h2>Health-check questions editor</h2>
+          <p class="muted">Edits the live question set. Saves to <code>localStorage['bos.hcQuestions']</code> — the lead-magnet picks it up on next load. Restore-defaults clears the override.</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" data-admin-restore>Restore defaults</button>
+          <a href="../lead magnet app/index.html?from=bos" target="_blank" class="btn btn-secondary">Open Health Check ↗</a>
+        </div>
+      </div>
+      <div class="bos-admin-tree" data-admin-tree></div>
+    </section>
+
+  </main>
+
+  <script src="../lead magnet app/hc-questions.js"></script>
+  <script>
+    /* ─── Admin gate ──────────────────────────── */
+    (function () {
+      try {
+        if (localStorage.getItem('bos.adminUnlocked') === '1') return;
+        var pw = prompt('Admin access — enter password:');
+        if (pw === 'milesy' || pw === 'aqua') {
+          localStorage.setItem('bos.adminUnlocked', '1');
+          return;
+        }
+        document.body.innerHTML = '<div style="display:grid;place-items:center;min-height:100vh;color:#fff;font-family:system-ui;text-align:center;padding:24px"><div><h1 style="margin-bottom:14px">🔒 Admin only</h1><p style="opacity:0.7">This page is gated. <a href="app.html" style="color:#FF6B35">Return to the app →</a></p></div></div>';
+        throw new Error('locked');
+      } catch (e) {
+        if (e && e.message === 'locked') throw e;
+      }
+    })();
+
+    /* ─── Helpers ─────────────────────────────── */
+    function getJson(k, d) { try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); } catch (e) { return d; } }
+    function setJson(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+    /* ─── Tabs ────────────────────────────────── */
+    document.querySelectorAll('[data-admin-tab]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-admin-tab]').forEach(function (x) { x.classList.remove('is-on'); });
+        b.classList.add('is-on');
+        var t = b.getAttribute('data-admin-tab');
+        document.querySelectorAll('[data-admin-pane]').forEach(function (p) {
+          p.hidden = p.getAttribute('data-admin-pane') !== t;
+        });
+      });
+    });
+
+    /* ─── Overview KPIs ────────────────────────── */
+    function paintOverview() {
+      var leads = getJson('bos.leads', []);
+      var hc = getJson('bos.healthCheck', null);
+      var user = getJson('bos.user', null);
+      var pipelineValue = leads.reduce(function (s, l) { return s + (l.value || 0); }, 0);
+      document.querySelector('[data-admin-stat="hc-count"]').textContent = hc ? 1 : 0;
+      document.querySelector('[data-admin-stat="lead-count"]').textContent = leads.length;
+      document.querySelector('[data-admin-stat="lead-value"]').textContent = pipelineValue.toLocaleString();
+      document.querySelector('[data-admin-stat="user-count"]').textContent = user ? 1 : 0;
+    }
+    paintOverview();
+
+    /* ─── Leads table ──────────────────────────── */
+    function paintLeads() {
+      var leads = getJson('bos.leads', []);
+      var tbody = document.querySelector('[data-admin-leads]');
+      if (!leads.length) { tbody.innerHTML = '<tr><td colspan="6" class="bos-cp-empty" style="padding:22px">No leads captured yet.</td></tr>'; return; }
+      tbody.innerHTML = leads.map(function (l) {
+        return '<tr>'
+          + '<td><strong>' + (l.name || '?') + '</strong></td>'
+          + '<td>' + (l.source || '—') + '</td>'
+          + '<td><span class="badge badge-good">' + (l.stage || 'new') + '</span></td>'
+          + '<td>£' + (l.value || 0) + '</td>'
+          + '<td>' + (l.contact || '—') + '</td>'
+          + '<td><a href="leads.html" class="bos-row-cta">Open →</a></td>'
+          + '</tr>';
+      }).join('');
+    }
+    paintLeads();
+
+    /* ─── HC reports ───────────────────────────── */
+    function paintReports() {
+      var hc = getJson('bos.healthCheck', null);
+      var contact = getJson('hc.contact', null);
+      var tbody = document.querySelector('[data-admin-reports]');
+      if (!hc) { tbody.innerHTML = '<tr><td colspan="4" class="bos-cp-empty" style="padding:22px">No health-check reports captured yet on this device.</td></tr>'; return; }
+      var topics = (hc.topics || []).map(function (t) { return t.name + ' ' + t.score; }).join(' · ');
+      tbody.innerHTML = '<tr>'
+        + '<td><strong>' + (hc.headline || '—') + '</strong>' + (contact ? '<div class="bos-row-sub">' + (contact.name || '') + ' · ' + (contact.contact || '') + '</div>' : '') + '</td>'
+        + '<td>£' + (hc.leakEstimate || 0).toLocaleString() + '</td>'
+        + '<td>' + topics + '</td>'
+        + '<td class="muted">' + (contact && contact.capturedAt || 'completion') + '</td>'
+        + '</tr>';
+    }
+    paintReports();
+
+    /* ─── Questions editor (tree: area → tier → steps) ─── */
+    /* Reads the same default AREAS the lead-magnet uses (window.HC_AREAS,
+       loaded below via a script include from the lead-magnet folder).
+       Saves the full AREAS shape to bos.hcQuestions. */
+    function loadAreas() {
+      var ovr = getJson('bos.hcQuestions', null);
+      if (ovr && Array.isArray(ovr) && ovr.length) return ovr;
+      return JSON.parse(JSON.stringify(window.HC_AREAS || []));
+    }
+    function saveAreas(a) { setJson('bos.hcQuestions', a); }
+
+    var TIER_KEYS = ['beginner', 'intermediate', 'professional'];
+    var STEP_TYPES = ['choice', 'multi', 'slider', 'text', 'task', 'reveal', 'url'];
+    var openArea = null, openTier = 'beginner';
+
+    function renderTree() {
+      var areas = loadAreas();
+      var host = document.querySelector('[data-admin-tree]');
+      if (!areas.length) {
+        host.innerHTML = '<p class="bos-cp-empty" style="padding:22px">No areas loaded — make sure hc-questions.js is reachable.</p>';
+        return;
+      }
+      host.innerHTML = areas.map(function (a, i) {
+        var isOpen = i === openArea;
+        return '<div class="bos-admin-tree-area' + (isOpen ? ' is-open' : '') + '" data-area-i="' + i + '">'
+          + '<button class="bos-admin-tree-area-head" data-area-toggle="' + i + '">'
+          +   '<span class="bos-admin-tree-icon">' + (a.icon || '◆') + '</span>'
+          +   '<span class="bos-admin-tree-name">' + (a.name || 'Untitled area') + '</span>'
+          +   '<span class="bos-admin-tree-meta muted">' + TIER_KEYS.map(function (t) { return ((a.tiers && a.tiers[t] && a.tiers[t].exercise) ? a.tiers[t].exercise.length : 0) + ' ' + t.slice(0,3); }).join(' · ') + '</span>'
+          +   '<span class="bos-admin-tree-chev">' + (isOpen ? '▾' : '▸') + '</span>'
+          + '</button>'
+          + (isOpen ? renderAreaBody(a, i) : '')
+          + '</div>';
+      }).join('')
+      + '<button class="btn btn-secondary" data-admin-add-area style="margin-top:14px">+ New area</button>';
+
+      wireTree();
+    }
+
+    function renderAreaBody(a, i) {
+      var html = '<div class="bos-admin-tree-body">';
+      html += '<div class="bos-admin-tree-fields">'
+        +   '<label>Area name<input type="text" data-area-k="name" value="' + (a.name || '').replace(/"/g, '&quot;') + '" /></label>'
+        +   '<label>Icon<input type="text" data-area-k="icon" value="' + (a.icon || '').replace(/"/g, '&quot;') + '" placeholder="emoji or symbol" /></label>'
+        +   '<label>Blurb<textarea data-area-k="blurb" rows="2">' + (a.blurb || '') + '</textarea></label>'
+        + '</div>';
+      html += '<div class="bos-admin-tier-tabs">'
+        + TIER_KEYS.map(function (t) {
+            return '<button class="bos-admin-tier-tab' + (t === openTier ? ' is-on' : '') + '" data-tier-pick="' + t + '">' + t + '</button>';
+          }).join('')
+        + '<button class="bos-admin-tree-area-del" data-area-del="' + i + '">✕ Delete area</button>'
+        + '</div>';
+      var tier = (a.tiers && a.tiers[openTier]) || {};
+      html += '<div class="bos-admin-tier-meta">'
+        +   '<label>Tier label<input type="text" data-tier-k="label" value="' + (tier.label || '').replace(/"/g, '&quot;') + '" /></label>'
+        +   '<label>Time<input type="text" data-tier-k="time" value="' + (tier.time || '').replace(/"/g, '&quot;') + '" placeholder="~3 min" /></label>'
+        +   '<label>Summary<input type="text" data-tier-k="summary" value="' + (tier.summary || '').replace(/"/g, '&quot;') + '" /></label>'
+        + '</div>';
+      var steps = tier.exercise || [];
+      html += '<div class="bos-admin-steps">';
+      steps.forEach(function (step, si) {
+        html += '<div class="bos-admin-step" data-step-i="' + si + '">'
+          + '<div class="bos-admin-step-head">'
+          +   '<span class="muted">Step ' + (si + 1) + '</span>'
+          +   '<select data-step-k="type">'
+          +     STEP_TYPES.map(function (t) { return '<option' + (t === step.type ? ' selected' : '') + '>' + t + '</option>'; }).join('')
+          +   '</select>'
+          +   '<button class="bos-admin-step-del" data-step-del="' + si + '">✕</button>'
+          + '</div>';
+        if (step.type === 'choice' || step.type === 'multi') {
+          html += '<label>Prompt<textarea data-step-k="prompt" rows="2">' + (step.prompt || '') + '</textarea></label>'
+            + '<label>Options (one per line · format: "label | score")<textarea data-step-k="options" rows="4">'
+            + (Array.isArray(step.options) ? step.options.map(function (o) { return (o.label || '') + (o.score != null ? ' | ' + o.score : ''); }).join('\n') : '')
+            + '</textarea></label>';
+        } else if (step.type === 'task' || step.type === 'reveal') {
+          html += '<label>Title<input type="text" data-step-k="title" value="' + (step.title || '').replace(/"/g, '&quot;') + '" /></label>'
+            + '<label>Body (HTML allowed)<textarea data-step-k="body" rows="3">' + (step.body || '') + '</textarea></label>'
+            + (step.type === 'task' ? '<label>Done-button label<input type="text" data-step-k="done" value="' + (step.done || '').replace(/"/g, '&quot;') + '" /></label>' : '');
+        } else if (step.type === 'slider') {
+          html += '<label>Prompt<input type="text" data-step-k="prompt" value="' + (step.prompt || '').replace(/"/g, '&quot;') + '" /></label>'
+            + '<label>Min<input type="number" data-step-k="min" value="' + (step.min || 0) + '" /></label>'
+            + '<label>Max<input type="number" data-step-k="max" value="' + (step.max || 100) + '" /></label>'
+            + '<label>Suffix<input type="text" data-step-k="suffix" value="' + (step.suffix || '').replace(/"/g, '&quot;') + '" placeholder="%" /></label>';
+        } else if (step.type === 'url' || step.type === 'text') {
+          html += '<label>Prompt<input type="text" data-step-k="prompt" value="' + (step.prompt || '').replace(/"/g, '&quot;') + '" /></label>'
+            + '<label>Placeholder<input type="text" data-step-k="placeholder" value="' + (step.placeholder || '').replace(/"/g, '&quot;') + '" /></label>';
+        }
+        html += '</div>';
+      });
+      html += '<button class="btn btn-secondary bos-admin-step-add" data-step-add>+ Add step</button>';
+      html += '</div>';
+      html += '</div>';
+      return html;
+    }
+
+    function wireTree() {
+      document.querySelectorAll('[data-area-toggle]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var i = parseInt(b.getAttribute('data-area-toggle'), 10);
+          openArea = (openArea === i) ? null : i;
+          openTier = 'beginner';
+          renderTree();
+        });
+      });
+      document.querySelectorAll('[data-area-k]').forEach(function (inp) {
+        inp.addEventListener('input', function () {
+          var areas = loadAreas();
+          areas[openArea][inp.getAttribute('data-area-k')] = inp.value;
+          saveAreas(areas);
+        });
+      });
+      document.querySelectorAll('[data-tier-pick]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          openTier = b.getAttribute('data-tier-pick');
+          renderTree();
+        });
+      });
+      document.querySelectorAll('[data-tier-k]').forEach(function (inp) {
+        inp.addEventListener('input', function () {
+          var areas = loadAreas();
+          if (!areas[openArea].tiers) areas[openArea].tiers = {};
+          if (!areas[openArea].tiers[openTier]) areas[openArea].tiers[openTier] = { exercise: [] };
+          areas[openArea].tiers[openTier][inp.getAttribute('data-tier-k')] = inp.value;
+          saveAreas(areas);
+        });
+      });
+      document.querySelectorAll('[data-step-i]').forEach(function (row) {
+        var si = parseInt(row.getAttribute('data-step-i'), 10);
+        row.querySelectorAll('[data-step-k]').forEach(function (inp) {
+          inp.addEventListener('input', function () {
+            var areas = loadAreas();
+            var step  = areas[openArea].tiers[openTier].exercise[si];
+            var k = inp.getAttribute('data-step-k');
+            if (k === 'options') {
+              step.options = inp.value.split(/\n+/).map(function (line) {
+                var parts = line.split('|').map(function (s) { return s.trim(); });
+                if (!parts[0]) return null;
+                var o = { label: parts[0] };
+                if (parts[1] != null && parts[1] !== '') o.score = parseInt(parts[1], 10);
+                return o;
+              }).filter(Boolean);
+            } else if (k === 'min' || k === 'max') {
+              step[k] = parseInt(inp.value, 10);
+            } else if (k === 'type') {
+              step.type = inp.value;
+            } else {
+              step[k] = inp.value;
+            }
+            saveAreas(areas);
+          });
+        });
+        row.querySelector('[data-step-del]').addEventListener('click', function () {
+          var areas = loadAreas();
+          areas[openArea].tiers[openTier].exercise.splice(si, 1);
+          saveAreas(areas); renderTree();
+        });
+      });
+      var addStep = document.querySelector('[data-step-add]');
+      if (addStep) addStep.addEventListener('click', function () {
+        var areas = loadAreas();
+        if (!areas[openArea].tiers[openTier]) areas[openArea].tiers[openTier] = { exercise: [] };
+        areas[openArea].tiers[openTier].exercise.push({ type: 'choice', prompt: 'New question?', options: [{ label: 'Option A', score: 50 }, { label: 'Option B', score: 50 }] });
+        saveAreas(areas); renderTree();
+      });
+      document.querySelectorAll('[data-area-del]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (!confirm('Delete this whole area?')) return;
+          var areas = loadAreas();
+          areas.splice(parseInt(b.getAttribute('data-area-del'), 10), 1);
+          openArea = null; saveAreas(areas); renderTree();
+        });
+      });
+      var addArea = document.querySelector('[data-admin-add-area]');
+      if (addArea) addArea.addEventListener('click', function () {
+        var areas = loadAreas();
+        areas.push({
+          id: 'area-' + Date.now(), name: 'New topic', icon: '◆',
+          blurb: 'Describe this topic.',
+          tiers: {
+            beginner:     { label: 'Just show me', time: '~3 min', summary: '', exercise: [] },
+            intermediate: { label: 'I dabble',     time: '~3 min', summary: '', exercise: [] },
+            professional: { label: 'Run the audit',time: '~3 min', summary: '', exercise: [] }
+          }
+        });
+        openArea = areas.length - 1;
+        saveAreas(areas); renderTree();
+      });
+    }
+
+    document.querySelector('[data-admin-restore]').addEventListener('click', function () {
+      if (!confirm('Restore defaults? This clears your edits.')) return;
+      try { localStorage.removeItem('bos.hcQuestions'); } catch (e) {}
+      openArea = null; renderTree();
+    });
+
+    /* HC_AREAS is loaded async via the script tag below; render once it's there. */
+    function bootEditor() {
+      if (window.HC_AREAS) renderTree();
+      else setTimeout(bootEditor, 80);
+    }
+    bootEditor();
+  </script>
+
+</body>
+</html>
