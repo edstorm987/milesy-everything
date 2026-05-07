@@ -1474,3 +1474,32 @@ footer {
   border-radius: 3px;
   letter-spacing: 0.02em;
 }
+
+/* T4 R002 — Resource sub-page tools (seo-audit / site-speed / a11y) */
+.mm-tool-shell { padding: 96px 0 120px; }
+.mm-tool-head { max-width: 720px; margin: 24px 0 48px; }
+.mm-tool-head h1 { font-size: 2.4rem; margin: 8px 0 12px; }
+.mm-tool-head p { color: var(--muted, #c8c8d2); line-height: 1.5; }
+.mm-tool { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 28px; max-width: 820px; }
+.mm-tool-form label { display:block; font-weight:600; margin-bottom:8px; font-size:.92rem; letter-spacing:.02em; }
+.mm-tool-row { display:flex; gap:12px; flex-wrap:wrap; }
+.mm-tool-row input { flex:1 1 280px; padding:12px 14px; border-radius:8px; border:1px solid rgba(255,255,255,.18); background:#0e0e14; color:#f2f2f5; font:inherit; }
+.mm-tool-row input:focus { outline:2px solid #C9A76A; outline-offset:1px; }
+.mm-tool-row button { flex:0 0 auto; }
+.mm-tool-caption { color: var(--muted, #c8c8d2); font-size:.88rem; margin-top:12px; line-height:1.5; }
+.mm-tool-result { margin-top:32px; border-top:1px solid rgba(255,255,255,.08); padding-top:24px; }
+.mm-tool-result-head h2 { font-size:1.2rem; margin:6px 0; word-break:break-all; color:#f2f2f5; }
+.mm-tool-band { font-size:1rem; margin:12px 0 16px; }
+.mm-tool-note { background:rgba(201,167,106,.08); border-left:3px solid #C9A76A; padding:10px 14px; margin:12px 0; font-size:.9rem; line-height:1.5; }
+.mm-tool-checks { list-style:none; padding:0; margin:18px 0 0; }
+.mm-tool-checks li { display:grid; grid-template-columns: 28px 1fr; align-items:start; gap:8px 14px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.06); }
+.mm-tool-checks li[data-pass="true"]  .mm-tool-check-mark { color:#7CDFA7; }
+.mm-tool-checks li[data-pass="false"] .mm-tool-check-mark { color:#E27D7D; }
+.mm-tool-check-mark { font-weight:700; font-size:1.05rem; }
+.mm-tool-check-label { font-weight:600; }
+.mm-tool-check-detail { grid-column:2; color: var(--muted, #c8c8d2); font-size:.85rem; }
+.mm-tool-stats { list-style:none; padding:0; margin:18px 0 0; display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; }
+.mm-tool-stats li { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:14px 16px; }
+.mm-tool-stat-label { display:block; color: var(--muted, #c8c8d2); font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+.mm-tool-stat-val { font-size:1.4rem; font-weight:700; color:#f2f2f5; }
+.mm-tool-footer { margin-top:36px; color: var(--muted, #c8c8d2); font-size:.92rem; max-width:720px; line-height:1.55; }

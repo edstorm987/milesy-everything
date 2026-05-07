@@ -81,6 +81,10 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       with self/conflict/cycle issue detection + resolveRedirect with
       chain-walk + 8-hop runtime cap + withSlugRename helper) + 23/23
       smoke + chapter #135.
+- [x] **R042 — Page-type templates** — DONE 2026-05-07. `lib/pageTemplates.ts`
+      (6 templates: landing/blog-post/product/about/contact/faq with seoDefaults +
+      applyTemplate restamping ids on every call + uniqueSlug helper) + 20/20
+      smoke + chapter #138.
 
 ### T4 manual (Ed driving)
 
@@ -88,9 +92,9 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       fitness/agencies` to match `/`'s Resources dropdown (chapter
       #123 carry-forward). **DONE T4 R001 — chapter #136.**
 - [ ] `app/page.tsx` orphan resolution — decide JSX rewrite vs delete.
-- [ ] Resource sub-page real implementations — replace 3 of 7 stubs
+- [x] Resource sub-page real implementations — replace 3 of 7 stubs
       this sprint (start with `seo-audit`, `site-speed`,
-      `accessibility-audit`).
+      `accessibility-audit`). **DONE T4 R002 — chapter #137.**
 - [ ] Copy polish across marketing surfaces (Ed's flagged items).
 
 ### Blocked
