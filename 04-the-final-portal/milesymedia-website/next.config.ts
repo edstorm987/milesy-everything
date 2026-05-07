@@ -43,11 +43,25 @@ const nextConfig: NextConfig = {
   // `/incubator` and serve their index.html. Next.js doesn't auto-resolve
   // directory paths to index.html in `public/`; rewrites do.
   async rewrites() {
-    return [
-      { source: "/health-check", destination: "/health-check/index.html" },
-      { source: "/business-os",  destination: "/business-os/index.html" },
-      { source: "/incubator",    destination: "/incubator/index.html" },
-    ];
+    return {
+      // T4 unify-4 — marketing surface lives in public/_marketing/.
+      // beforeFiles fires ahead of Next's filesystem matching so / wins
+      // over app/page.tsx (which becomes orphaned legacy until we
+      // delete it in Step 5 cleanup).
+      beforeFiles: [
+        { source: "/",                destination: "/_marketing/index.html" },
+        { source: "/for-skincare",    destination: "/_marketing/for-skincare.html" },
+        { source: "/for-coaching",    destination: "/_marketing/for-coaching.html" },
+        { source: "/for-fitness",     destination: "/_marketing/for-fitness.html" },
+        { source: "/for-agencies",    destination: "/_marketing/for-agencies.html" },
+        // Static-app directory paths → their index.html.
+        { source: "/health-check",    destination: "/health-check/index.html" },
+        { source: "/business-os",     destination: "/business-os/index.html" },
+        { source: "/incubator",       destination: "/incubator/index.html" },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
   },
   // T4 unify-1 — anchor Turbopack + output-file tracing one level up
   // (at `04-the-final-portal/`) so the sibling `../plugins/*` source
