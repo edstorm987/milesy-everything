@@ -570,3 +570,19 @@ After all 12 rounds queued, the agency-OS for new clients is feature-complete pe
 4. No Q-BLOCKED. Mesh hazard recurring (3 absorptions this cycle alone) — known, work all on origin.
 
 [2026-05-07T02:35:00Z] SLEEP: 270s.
+
+[2026-05-07T03:00:00Z] BULK STAGE — Ed asked for 10 rounds drafted per terminal so queues never starve. Drafted 32 new round prompts:
+- T1 007-013 (7): effective-role · client-tasks kanban · comms widget · Files tab · Finance tab · phase transitions · demo+POV toggle
+- T2 007-013 (7): agency-finance · agency-marketing · agency-ops · client-files · agency-domains skeleton · pre-sales-hq · aqua-resources
+- T3 009-016 (8): Notion blocks · Incubator preset · brand-kit CSS-vars · portal-variant editor · iframe-embed customer · SEO/meta · forms-as-block · marketplace polish
+- T4 002-011 (10): per-phase pages · BOS deep-link · niche packs · HC→next-actions · lessons→phase-advance · scripted Aqua AI · marketing overhaul · founder admin polish · HC→Incubator handoff · Pro upgrade mockup
+
+All 32 follow the locked round-prompt shape (mandatory pre-read · Scope A-F · NOT in scope · When done DONE referencing). Sourced from: eds requirments.md, chapter #59 §1/§5/§5a/§7/§13/§15, chapter #66-74 (T4 ecosystem), chapters 08/09/12 (variants/storefront/bridge), chapter 17 (concepts to port). All respect Ed's standing constraints: no API wiring (T4), honesty contract, brand-kit CSS-vars, per-territory boundaries.
+
+Queue state post-stage:
+- T1: 10 staged (004 active... once 003 archive picks up — wait, 003 already archived; T1 will chain to 004 next wake).
+- T2: 10 staged (004 will be active next wake; 003 already archived).
+- T3: 11 files (006 active mid-flight + 10 ahead).
+- T4: 11 files (001 active awaiting Ed paste + 10 ahead).
+
+[2026-05-07T03:00:00Z] PLAN: bulk stage now committed. Next loop cycles continue normal archive cadence — when DONEs land, archive promptly and queue stays 7-10 ahead at all times. Ed's threshold for "app complete to my requirements" is the union of all 41 rounds shipped (28 prior + 13 already-staged + 32 new = 73 total round prompts written, of which ~25 already shipped). After the 73rd, v1 = feature-complete per requirements + chapter #59 + #66-74. T6 production gate + T5 Felicia/Luv&Ker remain after that.
