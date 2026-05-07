@@ -24,6 +24,7 @@
     "smoke:lead-role": "tsx --test scripts/smoke-lead-role.test.ts",
     "smoke:founder-seed": "tsx --test scripts/smoke-founder-seed.test.ts",
     "smoke:multi-agency-users": "tsx --test scripts/smoke-multi-agency-users.test.ts",
+    "smoke:topbar-agency-switcher": "tsx --test scripts/smoke-topbar-agency-switcher.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

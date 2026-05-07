@@ -8,6 +8,7 @@
 import Link from "next/link";
 import type { Role } from "@/server/types";
 import { MobileNav } from "@/components/chrome/MobileNav";
+import { AgencySwitcher, type AgencyOption } from "@/components/chrome/AgencySwitcher";
 import type { NavPanel } from "@/lib/chrome/sidebarLayout";
 
 interface Props {
@@ -22,6 +23,11 @@ interface Props {
   panels?: NavPanel[];
   tenantLabel?: string;
   currentPath?: string;
+  // R026: optional agency-switcher inputs. Pass session.agencyIds[]
+  // resolved to AgencyOption[] (id + name + brand swatch) plus the
+  // current activeAgencyId. Switcher hides itself when ≤1 agency.
+  agencies?: AgencyOption[];
+  activeAgencyId?: string;
 }
 
 const ROLE_LABEL: Record<Role, string> = {
@@ -35,7 +41,7 @@ const ROLE_LABEL: Record<Role, string> = {
   "lead":           "Lead",
 };
 
-export function Topbar({ title, subtitle, role, email, panels, tenantLabel, currentPath }: Props) {
+export function Topbar({ title, subtitle, role, email, panels, tenantLabel, currentPath, agencies, activeAgencyId }: Props) {
   return (
     <header className="flex min-h-14 flex-wrap items-center justify-between gap-2 border-b border-black/10 bg-white/40 px-4 py-2 md:px-6">
       <div className="flex items-center gap-3 min-w-0">
@@ -58,6 +64,9 @@ export function Topbar({ title, subtitle, role, email, panels, tenantLabel, curr
             Sign out
           </button>
         </form>
+        {agencies && activeAgencyId && (
+          <AgencySwitcher agencies={agencies} activeAgencyId={activeAgencyId} />
+        )}
         <Link
           href="/"
           aria-label="Back to the marketing site"

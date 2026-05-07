@@ -1308,3 +1308,5 @@ Ship-gate progress: WS-A 3/3 ✅ · WS-C R1 ✅. **5/9 done.** Sprint 1 ahead of
 SLEEP: 270s.
 
 [2026-05-07T14:50:00Z] WAKEUP: cycle 149 — autonomous. Three terminals all started Sprint 2 rounds: T1 R026 topbar-agency-switcher / T2 mid-flight on R021 public-funnel / T3 R040 editor-live-preview. No new DONEs. SLEEP: 270s.
+
+[2026-05-07T14:55:00Z] WAKEUP: cycle 150 — autonomous. T3 R040 (editor live-preview — HMAC tokens + EditorLivePreview iframe component + 26/26) DONE @ 303d528. Archived T3/040. T1 still mid-R026 (Topbar agency switcher). T2 still mid-R021 (public-funnel). Queue depths: T1=4 · T2=6 · T3=3. T3 chains to R041 published-redirect. SLEEP: 270s.

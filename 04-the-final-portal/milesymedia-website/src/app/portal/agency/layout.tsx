@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import { ensureHydrated } from "@/server/storage";
-import { requireRole } from "@/lib/server/auth";
+import { requireRole, getSessionAgencyIds, getActiveAgencyId } from "@/lib/server/auth";
 import { AGENCY_ROLES } from "@/server/types";
 import { getAgency } from "@/server/tenants";
 import { listInstalledFor } from "@/server/pluginInstalls";
@@ -85,6 +85,13 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
             panels={panels}
             tenantLabel={agency.name}
             currentPath={currentPath}
+            agencies={getSessionAgencyIds(session).flatMap(id => {
+              const a = getAgency(id);
+              return a
+                ? [{ id: a.id, name: a.name, swatch: a.brand?.primaryColor }]
+                : [];
+            })}
+            activeAgencyId={getActiveAgencyId(session)}
           />
           <main id="main-content" className="flex-1 px-8 py-6">
             <ErrorBoundary label="agency workspace">{children}</ErrorBoundary>
