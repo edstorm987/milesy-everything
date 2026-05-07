@@ -3120,6 +3120,17 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       gate; bounded ring-buffer webhook log MAX_LOG_ENTRIES=200 per
       scope; scopePolicy:"either" w/ agency↔client scope isolation
       verified; ActivityCategory `integrations` flagged R+1).
+- [x] T2 R017 — `@aqua/plugin-support-desk` shipped (chapter #119,
+      smoke 12/12, NEW per-client lightweight helpdesk; storefront
+      `support-form` block w/ honeypot silent-200 on bot detection;
+      Ticket+TicketMessage thread (flat array, single-read); status
+      state machine new→in-progress→waiting-customer→resolved→closed
+      w/ re-open paths; auto-flips agent-on-new + customer-on-waiting
+      → in-progress; auto-assign by tag w/ first-rule-match-wins;
+      subscribes ecommerce.order.shipped to post follow-up on OPEN
+      tickets from same email; scopePolicy "client" isolation across
+      same-agency clients verified; ActivityCategory `support` flagged
+      R+1).
 - [x] T1 R19 — End-customer portal (chapter #116, smoke 16/16,
       closes third-audience loop from requirements §3+§6: 5 NEW
       foundation sub-route stubs at /portal/customer/{orders,account,
