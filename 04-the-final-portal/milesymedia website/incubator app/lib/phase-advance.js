@@ -124,6 +124,9 @@
     if (next && phaseIdx >= currentIdx) setCurrentPhase(next);
     var detail = { phaseId: phaseId, nextPhaseId: next };
     document.dispatchEvent(new CustomEvent('incubator:phase-complete', { detail: detail }));
+    if (window.Activity && typeof window.Activity.log === 'function') {
+      window.Activity.log('incubator.phase-advanced', { from: phaseId, to: next });
+    }
     fireConfetti();
     showToast(next ? 'Phase complete → ' + phaseLabel(next) : 'All phases complete. Onwards.');
   }

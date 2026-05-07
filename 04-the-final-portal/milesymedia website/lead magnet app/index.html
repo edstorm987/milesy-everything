@@ -332,6 +332,8 @@
     </div>
   </footer>
 
+  <script src="../incubator app/lib/storage.js"></script>
+  <script src="../incubator app/lib/activity.js"></script>
   <script src="hc-questions.js"></script>
   <script>
   /* ─── DATA ──────────────────────────────────── */
@@ -583,6 +585,13 @@
         })
       };
       localStorage.setItem('bos.healthCheck', JSON.stringify(summary));
+      /* R013 — log HC completion. Idempotent guard via prog.completed.healthCheck below. */
+      if (window.Activity && typeof window.Activity.log === 'function') {
+        var alreadyLoggedProg = JSON.parse(localStorage.getItem('bos.progress') || 'null');
+        if (!alreadyLoggedProg || !alreadyLoggedProg.completed || !alreadyLoggedProg.completed.healthCheck) {
+          window.Activity.log('hc.completed', { leakEstimate: moneyEstimate, topicsAnswered: summary.topics.length });
+        }
+      }
       // XP grant + achievement on first completion
       var prog = JSON.parse(localStorage.getItem('bos.progress') || '{"xp":0,"timeSavedHrs":0,"streak":0,"lastActive":null,"completed":{},"achievements":[]}');
       if (!prog.completed.healthCheck) {
@@ -943,10 +952,14 @@
     setStr('incubator.bridgedFromHC', '1');
     if (name) setStr('incubator.userName', name);
 
-    /* Activity log — admin reports R009 can surface this in R+1. */
-    var activity = get('bos.activity', []) || [];
-    activity.push({ ts: new Date().toISOString(), type: 'hc-to-incubator', msg: (name ? name + ' ' : '') + 'continued from HC into the Incubator' });
-    set('bos.activity', activity);
+    /* Activity log via window.Activity (R013) when present. */
+    if (window.Activity && typeof window.Activity.log === 'function') {
+      window.Activity.log('incubator.bridged', { name: name, business: business, niche: niche, goal: goal });
+    } else {
+      var activity = get('bos.activity', []) || [];
+      activity.push({ ts: new Date().toISOString(), kind: 'incubator.bridged', payload: { name: name } });
+      set('bos.activity', activity);
+    }
   }
   document.addEventListener('click', function (ev) {
     var a = ev.target.closest('[data-hc-incubator-cta]');

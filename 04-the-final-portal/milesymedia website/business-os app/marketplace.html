@@ -113,16 +113,20 @@
       }
 
       /* Click tracker — admin overview reads bos.marketplaceClicks
-         (R009). Increment on every click inside an addon card. */
+         (R009). Increment on every click inside an addon card. R013:
+         also log to Activity if the helper has loaded. */
       document.addEventListener('click', function (ev) {
         var card = ev.target.closest('[data-mp-addon]');
         if (!card) return;
+        var id = card.getAttribute('data-mp-addon');
         try {
           var m = JSON.parse(localStorage.getItem('bos.marketplaceClicks') || '{}') || {};
-          var id = card.getAttribute('data-mp-addon');
           m[id] = (m[id] || 0) + 1;
           localStorage.setItem('bos.marketplaceClicks', JSON.stringify(m));
         } catch (e) {}
+        if (window.Activity && typeof window.Activity.log === 'function') {
+          window.Activity.log('marketplace.click', { addonId: id });
+        }
       });
     });
   </script>

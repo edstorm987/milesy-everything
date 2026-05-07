@@ -15,9 +15,13 @@
   function setJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function escape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
 
-  function logActivity(msg) {
+  function logActivity(msg, kind) {
+    if (window.Activity && typeof window.Activity.log === 'function') {
+      window.Activity.log(kind || 'incubator.welcomed', { msg: msg });
+      return;
+    }
     var a = getJSON(KEY_ACTIVITY, []) || [];
-    a.push({ ts: new Date().toISOString(), type: 'incubator-welcome', msg: msg });
+    a.push({ ts: new Date().toISOString(), kind: kind || 'incubator.welcomed', payload: { msg: msg } });
     setJSON(KEY_ACTIVITY, a);
   }
 
@@ -96,7 +100,7 @@
     if (!d) return;
     setStr(KEY_WELCOMED, new Date().toISOString());
     var name = readName();
-    logActivity((name ? name + ' ' : '') + 'dismissed the Incubator welcome banner');
+    logActivity((name ? name + ' ' : '') + 'dismissed the Incubator welcome banner', 'incubator.welcome-dismissed');
     render();
   });
 

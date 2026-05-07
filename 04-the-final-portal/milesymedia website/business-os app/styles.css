@@ -2917,3 +2917,40 @@ body.bos-cp-editing .bos-cp-fields textarea {
 .bos-switcher-menu button:hover { background: rgba(201,167,106,0.12); }
 .bos-switcher-menu button.is-active { color: #8E7340; font-weight: 600; }
 .bos-switcher-sep { border-top: 1px solid var(--bos-line, #e6e1d4); margin: 6px 0; }
+
+/* ─── R013 Activity timeline (business-os app/activity.html) ─── */
+.bos-activity-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin: 18px 0 22px;
+  align-items: center;
+}
+.bos-activity-filter-group { display: inline-flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.bos-activity-filter-group .muted { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+.bos-chip {
+  background: var(--bos-card-2, #f5f1e8);
+  color: var(--text, #1a1a1a);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.bos-chip:hover { border-color: #C9A76A; }
+.bos-chip.is-on { background: #C9A76A; color: #1a1208; border-color: #C9A76A; }
+.bos-activity-list { list-style: none; padding: 0; margin: 0; }
+.bos-activity-row {
+  display: flex; gap: 14px; padding: 12px 4px; border-top: 1px solid var(--bos-line, #e6e1d4);
+}
+.bos-activity-row:first-child { border-top: 0; }
+.bos-activity-icon { font-size: 20px; line-height: 1; flex: 0 0 auto; padding-top: 2px; }
+.bos-activity-body { flex: 1; min-width: 0; }
+.bos-activity-line { font-size: 14px; }
+.bos-activity-payload { color: var(--text-mute, #555); font-size: 13px; margin-left: 6px; }
+.bos-activity-meta { font-size: 12px; margin-top: 2px; }
+.bos-activity-meta code { background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+.bos-activity-empty {
+  padding: 28px; text-align: center; color: var(--text-mute, #555); font-style: italic;
+}

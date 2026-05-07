@@ -868,6 +868,45 @@ a:hover { color: var(--inc-gold); }
 .bos-switcher-menu button.is-active { color: #C9A76A; }
 .bos-switcher-sep { border-top: 1px solid #2A2A2A; margin: 6px 0; }
 
+/* ─── Recent activity widget (R013) ─── */
+.inc-activity-widget {
+  background: var(--inc-card);
+  border: 1px solid var(--inc-line);
+  border-radius: var(--inc-radius);
+  padding: 18px 22px;
+  margin: 24px 0;
+}
+.inc-activity-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.inc-activity-head a {
+  font-size: 13px;
+  color: var(--inc-muted);
+}
+.inc-activity-head a:hover { color: var(--inc-accent); }
+.inc-activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+.inc-activity-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  border-top: 1px solid var(--inc-line);
+  font-size: 14px;
+}
+.inc-activity-list li:first-child { border-top: 0; }
+.inc-activity-icon { font-size: 16px; flex: 0 0 auto; }
+.inc-activity-label { flex: 1; color: var(--inc-text); }
+.inc-activity-time { color: var(--inc-muted); font-size: 12px; }
+
 /* ─── Tiny header strip ─── */
 .inc-toprail {
   display: flex;

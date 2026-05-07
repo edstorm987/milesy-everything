@@ -88,6 +88,28 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R013 — Activity & timeline view** — DONE.
+      NEW `incubator app/lib/activity.js` (~95L) exposes `window.
+      Activity.{log,list,byKind,recent,clear,KINDS,metaFor}` w/ 14-kind
+      registry (HC/Incubator/lesson/marketplace/Pro/feedback…), record
+      shape `{id,ts,kind,payload,business}`, cap 200, dispatches
+      `activity:logged` CustomEvent, mirrors via `BOSStorage.set` when
+      R012 loaded. **Wired 5 emit-points**: HC completion (idempotent
+      guard) + HC→Incubator bridge (replaces R010 raw push) + welcome/
+      dismiss (R010 helper delegates) + phase-advance (R006) + lesson
+      mark-done/undone (module.html) + marketplace click (alongside
+      R009 counter). NEW `business-os app/activity.html` (~115L) —
+      full timeline w/ Kind+Range filter chips (prefix-match: kind=
+      'hc' catches all hc.*), honest empty state, Clear-log w/
+      confirm, auto-repaint on event. Incubator root gains widget
+      showing last 5 (hidden when empty, auto-repaint). Admin
+      Overview gains 5th KPI tile "Activity events · 7d". CSS in
+      both incubator.css (~40L widget) + bos styles.css (~50L
+      timeline + chips). Smoke: 6 URLs 200; HC/bridge/lesson/mp/phase
+      all logged + visible. Q-ASSUMED: bos.section-visited +
+      feedback.submitted kinds registered but no surface emits yet
+      (R+1 trivial). NEW chapter `04-activity-timeline.md` + MASTER
+      #89.
 - [x] **T4 R012 — Multi-business localStorage segregation** — DONE.
       Per-business namespace under `businesses.<id>.<key>` + active-
       business switcher. **Switch-by-mirror approach**: 14

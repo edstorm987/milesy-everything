@@ -120,8 +120,12 @@
       paintDone();
       doneBtn.addEventListener('click', function () {
         var m = readLessonMap();
-        if (m[id]) { delete m[id]; } else { m[id] = true; }
+        var nowDone;
+        if (m[id]) { delete m[id]; nowDone = false; } else { m[id] = true; nowDone = true; }
         try { localStorage.setItem('bos.lessonProgress', JSON.stringify(m)); } catch (e) {}
+        if (window.Activity && typeof window.Activity.log === 'function') {
+          window.Activity.log(nowDone ? 'lesson.done' : 'lesson.undone', { lessonId: id, title: lesson.title.replace(/<[^>]+>/g, '') });
+        }
         paintDone();
       });
     });

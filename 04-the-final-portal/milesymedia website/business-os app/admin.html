@@ -48,6 +48,7 @@
         <div class="kpi"><div class="lbl">Lessons completed</div><div class="num" data-admin-stat="lessons-done">0</div><div class="muted" style="font-size:12px;margin-top:4px" data-admin-stat="lessons-of">of 5 written</div></div>
         <div class="kpi"><div class="lbl">Phase advances</div><div class="num" data-admin-stat="phase-advances">0</div></div>
         <div class="kpi"><div class="lbl">Top marketplace clicks</div><div class="num" style="font-size:18px;font-weight:600" data-admin-stat="mp-top">—</div><div class="muted" style="font-size:12px;margin-top:4px" data-admin-stat="mp-total">0 total clicks</div></div>
+        <div class="kpi"><div class="lbl">Activity events · 7d</div><div class="num" data-admin-stat="activity-7d">0</div><div class="muted" style="font-size:12px;margin-top:4px"><a href="activity.html">Open timeline →</a></div></div>
       </div>
       <div class="bos-notion-slot" style="margin-top:24px">
         <div class="bos-notion-slot-icon">ℹ️</div>
@@ -228,6 +229,13 @@
       var total = sortedClicks.reduce(function (s, p) { return s + p[1]; }, 0);
       document.querySelector('[data-admin-stat="mp-top"]').textContent = sortedClicks[0] ? sortedClicks[0][0] + ' (' + sortedClicks[0][1] + ')' : '—';
       document.querySelector('[data-admin-stat="mp-total"]').textContent = total + ' total clicks';
+
+      /* R013 Activity events / 7d KPI. */
+      var activity = getJson('bos.activity', []);
+      var cutoff = Date.now() - 7 * 86400000;
+      var weekN = activity.filter(function (e) { return +new Date(e.ts) >= cutoff; }).length;
+      var act7Cell = document.querySelector('[data-admin-stat="activity-7d"]');
+      if (act7Cell) act7Cell.textContent = weekN;
     }
     paintOverview();
 

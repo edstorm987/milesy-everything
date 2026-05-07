@@ -136,9 +136,13 @@
     </div>
 
     <hr class="inc-divider" />
+
+    <!-- R013 Recent activity widget -->
+    <section class="inc-activity-widget" data-inc-activity hidden></section>
   </div>
 
   <script src="lib/storage.js"></script>
+  <script src="lib/activity.js"></script>
   <script src="lib/business-switcher.js"></script>
   <script src="copy-packs/all.js"></script>
   <script src="lib/recommend.js"></script>
@@ -146,5 +150,41 @@
   <script src="lib/aqua-ai.js"></script>
   <script src="lib/aqua-ai-ui.js"></script>
   <script src="incubator.js"></script>
+  <script>
+    /* R013 — Recent activity widget on Incubator root. Shows last 5
+       entries from window.Activity. Hidden when empty (honest). */
+    (function () {
+      var host = document.querySelector('[data-inc-activity]');
+      if (!host || !window.Activity) return;
+      function escape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+      function relTime(iso) {
+        var s = Math.round((Date.now() - +new Date(iso)) / 1000);
+        if (s < 60) return s + 's ago';
+        if (s < 3600) return Math.round(s/60) + 'm ago';
+        if (s < 86400) return Math.round(s/3600) + 'h ago';
+        return Math.round(s/86400) + 'd ago';
+      }
+      function render() {
+        var rows = window.Activity.recent(5);
+        if (!rows.length) { host.hidden = true; host.innerHTML = ''; return; }
+        host.hidden = false;
+        host.innerHTML =
+          '<div class="inc-activity-head">' +
+            '<span class="inc-grid-label" style="margin:0">Recent activity</span>' +
+            '<a href="../business-os app/activity.html">See all ↗</a>' +
+          '</div>' +
+          '<ul class="inc-activity-list">' +
+            rows.map(function (e) {
+              var meta = window.Activity.metaFor(e.kind);
+              return '<li><span class="inc-activity-icon">' + escape(meta.icon) + '</span>' +
+                '<span class="inc-activity-label">' + escape(meta.label) + '</span>' +
+                '<span class="inc-activity-time">' + relTime(e.ts) + '</span></li>';
+            }).join('') +
+          '</ul>';
+      }
+      render();
+      document.addEventListener('activity:logged', render);
+    })();
+  </script>
 </body>
 </html>
