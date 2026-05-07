@@ -738,6 +738,37 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R020 — Code mode JSON tree editor** — DONE.
+      Closes chapter 06 Live/Block/Code triplet — Live+Block
+      were shipped, Code was missing. NEW `lib/blockTreeJson.ts`
+      pure validator: `parseBlockTreeJson` (with best-effort
+      line/col from V8 syntax errors), `validateBlockTree`
+      (recursive id/type/children shape with full error path
+      `[0].children[1].type: required string`), `formatBlockTreeJson`
+      (2-space indent), `compareTrees` returning identical /
+      counts / firstDifferenceAt. NEW `CodeModePanel.tsx` split-
+      view (left textarea + Reformat/Copy/Paste/Save; right host-
+      rendered preview via `renderPreview(lastGood)` callback);
+      validates on every keystroke, surfaces inline error with
+      line/col + amber `(last-good)` flag when invalid; save
+      opens confirm modal with compareTrees summary; clipboard
+      copy/paste with graceful fallback. CSS-var driven. NEW
+      `__smoke__/r020-code-mode.test.ts` 24/24 (parser valid+
+      invalid+nested-path errors, validateBlockTree shape,
+      formatBlockTreeJson round-trip, compareTrees identical/
+      diff variants, panel SSR emits all controls + textarea
+      seeded with HTML-escaped JSON + custom renderPreview
+      output). package.json test chain extended. tsc-clean.
+      Chapter `04-code-mode.md` + MASTER row #101.
+      Q-ASSUMED: host editor wires CodeModePanel into Code-mode
+      tab + passes existing Live/Block renderPreview (R+1);
+      JSON.parse line/col best-effort across engines; diff view
+      out of scope (single first-difference path in confirm
+      modal); schema validation structural-only not registry-
+      level (R+1); clipboard graceful fallback. Deferred:
+      syntax highlighting (CodeMirror/Monaco), registry-level
+      validation warnings, full diff view, path-jumper,
+      sub-tree extract+paste.
 - [x] **T3 R019 — Multi-device viewport + mobile preview** — DONE.
       NEW `lib/viewport.ts` (pure SSR-safe): `Viewport`
       union (desktop/tablet/mobile), `VIEWPORT_SPECS`
