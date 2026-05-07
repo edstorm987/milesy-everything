@@ -19,6 +19,7 @@
     "smoke:portal-role-brandkit": "tsx --test scripts/smoke-portal-role-brandkit.test.ts",
     "smoke:end-customer-portal": "tsx --test scripts/smoke-end-customer-portal.test.ts",
     "smoke:signup-flow": "tsx --test scripts/smoke-signup-flow.test.ts",
+    "smoke:password-reset": "tsx --test scripts/smoke-password-reset.test.ts",
     "smoke:session-security": "tsx --test scripts/smoke-session-security.test.ts",
     "smoke:post-login-redirect": "tsx --test scripts/smoke-post-login-redirect.test.ts",
     "smoke:lead-role": "tsx --test scripts/smoke-lead-role.test.ts",

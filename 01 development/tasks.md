@@ -101,6 +101,26 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
       a clear "foundation pending" error until that round lands);
       manifest `id: "@aqua/plugin-leads-pipeline"` is rejected by the
       registry validator regex (T2 plugin-side fix — foundation-pending).
+- [x] **T1 R038 — forgotten-password flow** (NEW `lib/server/passwordReset.ts`
+      mirroring emailVerification.ts · `NonceKind += "password-reset"` ·
+      `/api/auth/password/{request-reset,reset}` routes (5/min IP rate-limit,
+      no-leak generic success, sessionRev bump on completion) ·
+      `/login/forgot` + `/login/reset` SiteShell-wrapped pages + client form
+      components · "Forgot password?" link in LoginForm via `mm-form-toggle`).
+      DONE — chapter #160, smoke 12/12 pass via `npm run smoke:password-reset`,
+      `npx tsc --noEmit` clean. Q-ASSUMED: email-sender foundation-registration
+      still pending so request-reset falls through to dev-console URL log when
+      port throws (same caveat as #159); reuses `emailEnqueuePort` over a new
+      password-reset-only port to avoid duplicating the foundation-pending
+      dance; session invalidation drops EVERY device on reset (leaked-password
+      threat model); activity logged at completion layer only (request-reset
+      is anonymous-by-design — logging there would be the email-existence
+      oracle); chapter numbers in the round prompt did not match the actual
+      MASTER index (prompt cited #117/#129/#138/#144 — only #138 lined up; the
+      relevant chapters were #117 signup-flow / #129 founder-rotation /
+      #138 durable-nonce / #144 observability — NOT SMTP — chapter #144 was
+      misremembered, treated `emailEnqueuePort` from #159 as the canonical
+      enqueue handle).
 - [ ] HC + lead-magnet → portal tracking integration verification.
       T4 R008 wired the React rewrite + completion endpoint; verify
       lead really appears in leads pipeline post-R037 foundation glue.

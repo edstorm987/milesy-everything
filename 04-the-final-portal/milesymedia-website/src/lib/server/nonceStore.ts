@@ -31,7 +31,7 @@
 
 import "node:async_hooks"; // marker — file is server-only intent; runtime guard via storagePostgres lazy import.
 
-export type NonceKind = "magic-link" | "email-verify" | "csrf";
+export type NonceKind = "magic-link" | "email-verify" | "password-reset" | "csrf";
 
 export interface NonceStore {
   kind: "memory" | "postgres";

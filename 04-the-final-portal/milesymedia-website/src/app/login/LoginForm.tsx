@@ -172,6 +172,11 @@ export function LoginForm({
           />
         </label>
       )}
+      {!isMagic && mode === "signin" && (
+        <a href="/login/forgot" className="mm-form-toggle" data-testid="login-forgot-link">
+          Forgot password?
+        </a>
+      )}
       {error && <p role="alert" className="mm-form-error">{error}</p>}
       {magicSent && (
         <p role="status" className="mm-form-success">
