@@ -503,7 +503,7 @@
 
   /* ─── INLINE EMBED (search / site preview) ──── */
   function searchEmbedUrl(q) {
-    return 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(q || '');
+    return 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(q || '');
   }
   function safeSiteUrl(u) {
     if (!u) return '';
@@ -527,8 +527,8 @@
         ? '<iframe class="hc-embed-frame" data-hc-embed-frame src="' + src
             + '" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" loading="lazy"></iframe>'
         : '<div class="hc-embed-empty">Type a search above to see real results.</div>';
-      var note = '<div class="hc-embed-note">Live results via DuckDuckGo (Google blocks embedding) — same scan-the-page feel. <a href="https://www.google.com/search?q='
-        + encodeURIComponent(q || '') + '" target="_blank" rel="noopener">Open in Google ↗</a></div>';
+      var note = '<div class="hc-embed-note">Live Google results (embedded mode). If results look stripped down or blank, <a href="https://www.google.com/search?q='
+        + encodeURIComponent(q || '') + '" target="_blank" rel="noopener">open in a new tab ↗</a>.</div>';
       return '<div class="hc-embed" data-hc-embed-kind="search">' + input + frame + note + '</div>';
     }
     if (embed.kind === 'site') {
@@ -612,8 +612,8 @@
       var frame = src
         ? '<iframe class="hc-embed-frame" src="' + src + '" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" loading="lazy"></iframe>'
         : '<div class="hc-embed-empty">Type a search above to see real results.</div>';
-      var note = '<div class="hc-embed-note">Live results via DuckDuckGo (Google blocks embedding) — same scan-the-page feel. <a href="https://www.google.com/search?q='
-        + encodeURIComponent(q || '') + '" target="_blank" rel="noopener">Open in Google ↗</a></div>';
+      var note = '<div class="hc-embed-note">Live Google results (embedded mode). If results look stripped down or blank, <a href="https://www.google.com/search?q='
+        + encodeURIComponent(q || '') + '" target="_blank" rel="noopener">open in a new tab ↗</a>.</div>';
       host.innerHTML = '<div class="hc-embed">' + input + frame + note + '</div>';
       var f = host.querySelector('[data-hc-sticky-form]');
       if (f) f.addEventListener('submit', function (e) {
