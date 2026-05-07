@@ -9,6 +9,28 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 002 — Employee HQ + Role Builder** — DONE.
+      Goal A: Staff domain extended additively with `agencyEmployee?`,
+      `customRoleId?`, `assignments?: ClientAssignment[]`, `metadata?`;
+      `update()` merges metadata. Goal B: NEW `RoleService` in
+      `agency-hr/src/server/roles.ts` — `CustomRole` w/ 18-key
+      `PermissionKey` union (14 prompt keys + 5 `sops.tag.<family>`),
+      seedDefaults idempotent (Founder/Admin/Designer/Copywriter/Ops),
+      seed rows refuse mutation; onInstall calls seedDefaults. Goal C:
+      NEW EmployeesPage + EmployeeListClient (filter `agencyEmployee||
+      customRoleId`, row-expand profile, `+ Add employee` modal) + NEW
+      RolesPage + RoleMatrixClient (sticky-leftmost role col + 18 perm
+      cols + per-cell checkbox + Clone seed + `+ New role`). Goal D:
+      `permissionGuard(role, requires)` exported — opt-in 403-throw;
+      `roleHasPermission` predicate. Goal E: data-side wiring of
+      `visibleViewIds`; chrome reading documented R+1. Goal F: smoke
+      "§ Employee HQ" block (roles GET 200 + 5 seed roles flagged
+      seed:true + clone POST + invite employee POST). 4 new API routes
+      `/api/portal/agency-hr/roles` (GET viewers; POST/PATCH/DELETE
+      admins). Manifest: 2 navItems + 2 pages registered. HARD BOUNDARY
+      honoured; tsc clean (agency-hr workspace). Chapter
+      `04-employee-hq.md` + MASTER row #65. Live smoke deferred (Next
+      single-instance lock collision — same WARN as R7/R8).
 - [x] **T1 Agency Shell R2 — Aqua reskin** — DONE.
       Goal A: replaced fulfillment's `DEFAULT_PHASE_PRESETS` with Aqua's
       six (Epic Intro → Mastery & Ascension) + Churned tail. ClientStage
