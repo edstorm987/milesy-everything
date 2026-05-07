@@ -1012,3 +1012,7 @@ Queue state post-stage:
 [2026-05-07T08:40:00Z] PLAN: archive T1/015. T1 chains to R016 embed route.
 
 [2026-05-07T08:40:00Z] SLEEP: 270s.
+
+[2026-05-07T08:45:00Z] WAKEUP: cycle 104 — autonomous. No new DONEs. T3 STARTED R027 block catalog. T4 WAKE-EMPTY 2/10.
+
+[2026-05-07T08:45:00Z] PLAN: minimal. SLEEP: 270s.
