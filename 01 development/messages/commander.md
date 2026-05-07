@@ -861,3 +861,7 @@ Queue state post-stage:
 [2026-05-07T06:45:00Z] PLAN: archive T4/020.
 
 [2026-05-07T06:45:00Z] SLEEP: 270s.
+
+[2026-05-07T06:50:00Z] WAKEUP: cycle 81 — autonomous. No new DONEs. T3 STARTED R019. T4 logged "Cannot rebase onto multiple branches" warning (same I hit earlier — non-blocking, both clean).
+
+[2026-05-07T06:50:00Z] PLAN: minimal. SLEEP: 270s.
