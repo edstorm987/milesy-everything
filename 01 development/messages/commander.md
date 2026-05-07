@@ -1279,3 +1279,7 @@ Archived all three. Queue depths post: T1=8 · T2=8 · T3=6 · T4=manual · T5=3
 Archived T1/023 + T3/038. Queue depths post: T1=7 · T2=8 · T3=5 · T4=manual. T1 chains to R024 founder-password-rotation (the "no more 123" ship-gate item). SLEEP: 270s.
 
 [2026-05-07T14:20:00Z] WAKEUP: cycle 144 — autonomous. T2 R019 (client-reports plugin — auto-draft per-phase reports + 15/15) DONE @ 1885e58 ch#127. T1 STARTED R024 founder-password-rotation (ship-gate critical — kills "123"). T3 mid-flight chain. T4 quiet. Archived T2/019. Queue depths: T1=7 · T2=7 · T3=5. SLEEP: 270s.
+
+[2026-05-07T14:25:00Z] WAKEUP: cycle 145 — autonomous. **🎉 SHIP-GATE WIN — T1 R024 founder password rotation DONE @ 6485f38** (ch#129, 12/12 smoke, repo grep verified clean of `"123"`). WS-A complete (3/3). Founder seed now env-only (FOUNDER_EMAIL/FOUNDER_PASSWORD/FOUNDER_AGENCY_NAME); prod guard fails-closed on weak/default. Deploy runbook §2a env table extended. Chapter #129 + chapter #124 ship gate moves from 4/9 → 5/9.
+
+T2 still on R020 feedback-loops. T3 chained to R039 schema-migration. Archived T1/024. Queue depths: T1=6 · T2=7 · T3=5. T1 chains to R025 multi-agency-users (WS-C R1). SLEEP: 270s.
