@@ -20,6 +20,7 @@ import {
 import { ensureHydrated } from "@/server/storage";
 import { getUser } from "@/server/users";
 import { issueSession, sessionCookie } from "@/lib/server/auth";
+import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
 import { cookies } from "next/headers";
 
 type Persona = "founder" | "demo-owner" | "demo-client" | "demo-customer";
@@ -29,30 +30,28 @@ async function signInAs(persona: Persona) {
   await ensureHydrated();
 
   let email: string;
-  let landing: string;
   let isDemo = false;
 
   if (persona === "founder") {
     await seedFounder();
     email = FOUNDER_EMAIL;
-    landing = "/portal/agency";
   } else {
-    const seed = await seedDemoAgency("dev-pov");
+    await seedDemoAgency("dev-pov");
     isDemo = true;
     if (persona === "demo-owner") {
       email = DEMO_OWNER_EMAIL;
-      landing = "/portal/agency";
     } else if (persona === "demo-client") {
       email = DEMO_CLIENT_EMAIL;
-      landing = `/portal/clients/${seed.client.slug}`;
     } else {
       email = DEMO_CUSTOMER_EMAIL;
-      landing = "/portal/customer";
     }
   }
 
   const user = getUser(email);
   if (!user) throw new Error(`POV user ${email} not seeded`);
+  // R022: same resolver production users go through, so POV personas
+  // exercise the real route mapping.
+  const landing = resolvePostLoginPath(null, user);
 
   const token = issueSession({
     userId: user.id,

@@ -97,16 +97,16 @@ export function LoginForm({
           body: JSON.stringify({ email, password, clientId }),
         });
       }
-      const data = (await res.json()) as { ok: boolean; error?: string; returnUrl?: string };
+      const data = (await res.json()) as { ok: boolean; error?: string; returnUrl?: string; redirect?: string };
       if (!res.ok || !data.ok) {
         setError(data.error ?? `${mode === "signup" ? "Sign-up" : "Sign-in"} failed.`);
         setBusy(false);
         return;
       }
       // Server may suggest a return URL via the client's
-      // `endCustomers.postLoginReturnUrl` config; otherwise honour the
-      // page-level success destination computed above.
-      navigate(data.returnUrl ?? success);
+      // `endCustomers.postLoginReturnUrl` config (returnUrl) or a
+      // role-aware redirect (R022). Either overrides page-level success.
+      navigate(data.returnUrl ?? data.redirect ?? success);
     } catch {
       setError("Network error. Try again.");
       setBusy(false);

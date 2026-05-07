@@ -27,6 +27,7 @@ import { bootstrapAgency } from "@/server/agencyBootstrap";
 import { createUser, getUser } from "@/server/users";
 import { signVerifyEmailToken } from "@/lib/server/emailVerification";
 import { logActivity } from "@/server/activity";
+import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
 
 interface Body {
   companyName?: unknown;
@@ -123,7 +124,7 @@ export async function POST(req: NextRequest) {
   const res = NextResponse.json({
     ok: true,
     user: { id: user.id, email: user.email, role: user.role, agencyId: user.agencyId },
-    redirect: "/portal/agency",
+    redirect: resolvePostLoginPath(null, user),
     ...(isDev ? { devVerifyUrl: verifyUrl } : {}),
   });
   res.cookies.set(cookie.name, cookie.value, cookie.options);

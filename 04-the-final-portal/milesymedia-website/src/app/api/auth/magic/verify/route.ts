@@ -15,6 +15,7 @@ import { getClient } from "@/server/tenants";
 import { createUser, getUser } from "@/server/users";
 import { logActivity } from "@/server/activity";
 import { verifyMagicToken, isUsed, markUsed } from "@/lib/server/magicLink";
+import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
 
 function err(req: NextRequest, code: string) {
   const url = new URL("/login", req.nextUrl.origin);
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest) {
   await ensureHydrated();
 
   const token = req.nextUrl.searchParams.get("token");
-  const ret = req.nextUrl.searchParams.get("return") ?? "/portal/customer";
+  const ret = req.nextUrl.searchParams.get("return");
   if (!token) return err(req, "missing_token");
 
   const v = verifyMagicToken(token);
@@ -77,7 +78,9 @@ export async function GET(req: NextRequest) {
     agencyId: user.agencyId, ...(user.clientId ? { clientId: user.clientId } : {}),
   });
   const cookie = sessionCookie(sessionToken);
-  const redirectTo = new URL(ret.startsWith("/") ? ret : "/portal/customer", req.nextUrl.origin);
+  const fallback = resolvePostLoginPath(null, user);
+  const target = ret && ret.startsWith("/") ? ret : fallback;
+  const redirectTo = new URL(target, req.nextUrl.origin);
   const res = NextResponse.redirect(redirectTo, 302);
   res.cookies.set(cookie.name, cookie.value, cookie.options);
   return res;

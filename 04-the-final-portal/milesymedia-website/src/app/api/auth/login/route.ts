@@ -16,6 +16,7 @@ import { listAgencies, getAgency } from "@/server/tenants";
 import { bootstrapAgency } from "@/server/agencyBootstrap";
 import { createUser, listUsersForAgency, verifyPassword } from "@/server/users";
 import { logActivity } from "@/server/activity";
+import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
 
 interface Body {
   email?: unknown;
@@ -98,7 +99,11 @@ export async function POST(req: NextRequest) {
       userId: user.id, email: user.email, role: user.role, agencyId: user.agencyId,
     });
     const cookie = sessionCookie(token);
-    const res = NextResponse.json({ ok: true, bootstrap: true });
+    const res = NextResponse.json({
+      ok: true,
+      bootstrap: true,
+      redirect: resolvePostLoginPath(null, user),
+    });
     res.cookies.set(cookie.name, cookie.value, cookie.options);
     return res;
   }
@@ -164,6 +169,7 @@ export async function POST(req: NextRequest) {
     ok: true,
     user: { id: user.id, email: user.email, name: user.name, role: user.role, agencyId: user.agencyId, clientId: user.clientId },
     mustChangePassword: user.mustChangePassword === true,
+    redirect: resolvePostLoginPath(null, user),
   });
   res.cookies.set(cookie.name, cookie.value, cookie.options);
   return res;

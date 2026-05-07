@@ -21,9 +21,11 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
 
 ### To do — T1 (foundation)
 
-- [ ] **R022 — Role-aware post-login redirect** (WS-A). `/login`
-      reads `effectiveRole` and routes per chapter #124 WS-A R022
-      table. Smoke each role's redirect.
+- [x] **R022 — Role-aware post-login redirect** (WS-A). NEW
+      `lib/server/postLoginRedirect.ts` resolver wired into
+      `/api/auth/login` (bootstrap + standard) + `/api/auth/signup` +
+      `/api/auth/magic/verify` + `/dev/pov`. LoginForm chains
+      `data.redirect` behind `returnUrl`. Smoke 11/11. Chapter #125.
 - [ ] **R023 — `lead` role added to PortalRole enum + permission grid**
       (WS-A). Empty grid (read own user only). Update `effectiveRole`.
 - [ ] **R024 — Founder password rotation** (WS-A). Move `FOUNDER_EMAIL`

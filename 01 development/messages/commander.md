@@ -1248,3 +1248,15 @@ PLAN: monitor; archive DONEs; coordinate. SLEEP: 1200s (idle until terminals sta
 - T4-router.md → `_dormant/T4-router.md` (T4 currently manual; reactivate later)
 - T6-production-gate.md → `_dormant/T6-production-gate.md` (T6 dormant until Sprint 3)
 README.md fully rewritten as a concrete index — table of active prompts + subfolder map + reactivation notes. Folder is now self-explanatory.
+
+[2026-05-07T13:55:00Z] QUEUE ABUNDANCE — staged 16 new round prompts to ensure terminals don't run out of work. Tally per terminal:
+
+**T1 (foundation)** — Sprint 2 + Sprint 3 = 5 new (R026 topbar-agency-switcher · R027 postgres-backend · R028 durable-nonce-store · R029 env-secrets-policy · R030 observability). Total queue: 8 ahead beyond R022 active.
+
+**T2 (plugins)** — Sprint 2 + Sprint 3 = 4 new (R023 rank-my-website · R024 smtp-outbound · R025 stripe-basic · R026 ga4-readonly). Total queue: 9.
+
+**T3 (website-editor)** — 4 new (R040 editor-live-preview · R041 published-redirect · R042 page-templates · R043 webhook-block). Total queue: 7.
+
+**T5 (Felicia portal)** — 3 new in NEW `queues/T5/` directory (R001 felicia-portal-scaffold · R002 felicia-content · R003 end-customer-flow). T5 dormant until Sprint 3 activates; queue ready when commander pastes T5 prompt.
+
+Note: T1 R022 (role-aware redirect) STARTED at 12:45Z, source file present, awaiting DONE log. Tasks.md was pre-marked [x] (looks like Ed-edit) — actual DONE entry from T1 will land soon.
