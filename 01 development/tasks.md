@@ -1024,6 +1024,39 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R031 — Accessibility audit walker + WCAG 2.1 AA gates** — DONE.
+      NEW `lib/a11yAudit.ts` (pure). `auditAccessibility(blocks)` walks
+      tree → `A11yAuditResult { issues, countsBySeverity, countsByCode,
+      total, passesBaseline }`. `passesBaseline` = no critical/serious is
+      the publish-flow gate. Issue codes: img-missing-alt (critical
+      autofix), icon-button-missing-label (critical w/icon, serious
+      blank), link-missing-text, heading-empty (autofix), heading-skip-
+      level, form-input-missing-label (per-field), video-missing-track,
+      duplicate-id, missing-landmark (no section/main warning, no nav
+      info). Issues severity-then-path-sorted. Contrast helpers
+      `contrastRatio(fg,bg)` (3+6-char hex, null on invalid) and
+      `classifyContrast(r)` → fail / AA-large / AA / AAA at 3/4.5/7.
+      Smoke `__smoke__/r031-a11y.test.ts` 29/29: clean-tree 0
+      critical/serious + passesBaseline + info nav, image-no-alt
+      critical + autofix + nested-path, icon vs blank button, heading-
+      skip warning, empty-heading serious autofix, form unlabeled (only
+      unlabeled flagged), video no track warning, duplicate id,
+      empty-tree, aggregation, contrast (black-white≈21 AAA, gray AA-
+      large/fail, invalid null, 3-char hex). package.json chain
+      extended. Renderer landmark fixes + sidebar Audit panel are host-
+      page wiring (one-liners per renderer + R011/R029 sidebar pattern).
+      NOT in scope: WCAG AAA, screen-reader smoke, keyboard-trap
+      detection inside custom-html.
+      Q-ASSUMED: regex-based BlockType matching (open-ext third-party
+      blocks unaudited; R+1 blockRegistry-driven a11y check
+      registration); contrast walker helper-only this round (renderer
+      wiring into low-contrast-text issue is host); editor sidebar UI
+      deferred to host composition; publish-gate override
+      `--allow-a11y-warnings` is host-flag.
+      Files: `04-the-final-portal/plugins/website-editor/src/lib/a11yAudit.ts`
+      (NEW) · `__smoke__/r031-a11y.test.ts` (NEW) · `package.json`
+      test chain · `01 development/context/prior research/04-
+      accessibility.md` (NEW chapter) · MASTER row #112.
 - [x] **T3 R030 — Block animations + scroll-triggered effects** — DONE.
       BlockStyles.animate union already shipped (R002+).
       NEW `lib/blockAnimations.ts` (pure SSR-safe):
