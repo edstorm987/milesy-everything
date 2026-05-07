@@ -872,6 +872,32 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R024 — Image library + asset manager** — DONE.
+      R003's assets handler extended. NEW `lib/assetTags.ts` —
+      `deriveAutoTags` (family from mimeType + filename keyword
+      scan: logo/hero/product/team/icon/background/thumbnail/
+      screenshot/map/diagram + extension) + `mergeTags`
+      (operator-first dedupe lowercase). `PortalAsset.tags?`
+      added. `handleListAssets` extended with `?tag=`/`?q=`
+      filters + `tagCounts` aggregate. `handleUploadAsset`
+      auto-tags on upload + accepts operator tags. NEW
+      `handleBulkTagAssets` at `POST /assets/bulk-tag` (add +
+      remove + notFound roster, 400 paths). NEW
+      `AssetPickerModal.tsx` with grid + tag chip row (frequency-
+      sorted with counts) + search + inline upload via
+      FileReader → POST → reload + onPick callback + cap-usage
+      footer. NEW `__smoke__/r024-asset-manager.test.ts` 33/33
+      (deriveAutoTags branches + mergeTags + HTTP upload+list+
+      filter + bulk-tag add/remove/combined/notFound/400×2 +
+      modal SSR). package.json test chain extended. tsc-clean.
+      Chapter `04-asset-manager.md` + MASTER row #105.
+      Q-ASSUMED: /admin/assets page deferred (AssetPickerModal
+      already covers grid+upload+filter; admin is host-page
+      composition); sidebar wire-up R+1 (R005 pattern); 8/64 MiB
+      caps inherited; CDN + image transforms out of scope;
+      keywords English-first. Deferred: /admin/assets page,
+      sidebar Open-asset-picker button, CDN upload, replace-by-
+      id, dedup hashing, usedAt index, keyword i18n.
 - [x] **T3 R023 — Site-wide find-and-replace** — DONE.
       NEW `lib/findReplace.ts` pure search: `findInTree`,
       `replaceInTree`, `findAcrossPages`, `totalMatches`. Walks

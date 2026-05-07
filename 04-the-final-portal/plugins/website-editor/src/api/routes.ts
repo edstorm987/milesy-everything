@@ -59,7 +59,7 @@ import {
   handleConfigStub,
 } from "./handlers/discoveries";
 import { handlePromote } from "./handlers/promote";
-import { handleListAssets, handleUploadAsset, handleDeleteAsset } from "./handlers/assets";
+import { handleListAssets, handleUploadAsset, handleDeleteAsset, handleBulkTagAssets } from "./handlers/assets";
 import {
   handleListTemplates,
   handleSaveTemplate,
@@ -146,10 +146,11 @@ export const apiRoutes: PluginApiRoute[] = [
   // Promote (GitHub PR)
   { path: "/promote", methods: ["POST"], handler: handlePromote },
 
-  // Assets — Round-1 stubs
+  // Assets — Round-1 stubs (R024 extends with tags + bulk-tag).
   { path: "/assets", methods: ["GET"], handler: handleListAssets },
   { path: "/assets", methods: ["POST"], handler: handleUploadAsset },
   { path: "/assets", methods: ["DELETE"], handler: handleDeleteAsset },
+  { path: "/assets/bulk-tag", methods: ["POST"], handler: handleBulkTagAssets },
 
   // Template marketplace (R006) — builtin gallery + per-agency saved.
   { path: "/templates", methods: ["GET"], handler: handleListTemplates },
