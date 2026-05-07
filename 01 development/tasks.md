@@ -82,9 +82,9 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
 
 ### T4 manual (Ed driving)
 
-- [ ] Niche pages mega-menu mirror — sweep `for-skincare/coaching/
+- [x] Niche pages mega-menu mirror — sweep `for-skincare/coaching/
       fitness/agencies` to match `/`'s Resources dropdown (chapter
-      #123 carry-forward).
+      #123 carry-forward). **DONE T4 R001 — chapter #136.**
 - [ ] `app/page.tsx` orphan resolution — decide JSX rewrite vs delete.
 - [ ] Resource sub-page real implementations — replace 3 of 7 stubs
       this sprint (start with `seo-audit`, `site-speed`,
