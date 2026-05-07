@@ -2711,3 +2711,9 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       `@aqua/plugin-domains` chapter #50 — intent-only DomainAttach
       with status state machine + NS-record viewer + verify() stub
       flagged for T6 production wiring).
+- [x] T2 R012 — `@aqua/plugin-pre-sales-hq` shipped (chapter #109,
+      smoke 12/12, NEW agency-scope plugin: DiscoveryCall + Proposal
+      + NurtureTouch domains + Re-Nurturing cadence engine over
+      lead-id pool from client-crm; 9 API routes; 4 admin pages;
+      onCrmLeadStatusChanged subscriber port + pre-sales.proposal-sent
+      event for cross-plugin agency-marketing).
