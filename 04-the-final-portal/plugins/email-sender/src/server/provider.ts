@@ -45,6 +45,7 @@ export class ProviderService {
       provider: input.provider ?? existing.provider,
       defaultFromIdentityId: input.defaultFromIdentityId ?? existing.defaultFromIdentityId,
       webhookSecret: input.webhookSecret ?? existing.webhookSecret,
+      smtp: input.smtp ?? existing.smtp,
       status: input.provider === "none" ? "unconfigured" : (input.apiKey ? "active" : existing.status),
       updatedAt: now(),
     };

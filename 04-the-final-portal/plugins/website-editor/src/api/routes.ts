@@ -71,7 +71,12 @@ import {
 import { handleGetForcePassword, handleSetForcePassword } from "./handlers/forcePassword";
 import { handleGetBrandKitExtended, handleSaveBrandKitExtended } from "./handlers/brandKit";
 import { handleGetEmbedAllowList, handleSetEmbedAllowList } from "./handlers/embedAllow";
-import { handleSitemapXml, handleRobotsTxt, handleOgCard } from "./handlers/seoMeta";
+import { handleOgCard } from "./handlers/seoMeta";
+import {
+  handleAdvancedSitemapXml,
+  handleAdvancedRobotsTxt,
+  handleLocaleSitemapXml,
+} from "./handlers/sitemapHostRoutes";
 import {
   handleSaveVersion,
   handleListVersions,
@@ -203,9 +208,14 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/embed/allowed-origins", methods: ["GET"], handler: handleGetEmbedAllowList },
   { path: "/embed/allowed-origins", methods: ["POST"], handler: handleSetEmbedAllowList },
 
-  // SEO + sitemap + OG card (R014). XML/text/SVG responses, not JSON.
-  { path: "/sitemap.xml", methods: ["GET"], handler: handleSitemapXml },
-  { path: "/robots.txt", methods: ["GET"], handler: handleRobotsTxt },
+  // SEO + sitemap + OG card. XML/text/SVG responses, not JSON.
+  // R044 swaps R014's narrow handlers on /sitemap.xml + /robots.txt for
+  // R036's advanced generators (changefreq + priority + per-locale
+  // alternates + redirect-source filter). R014 helpers stay exported
+  // from `handlers/seoMeta.ts` for the static-export pipeline (R033).
+  { path: "/sitemap.xml", methods: ["GET"], handler: handleAdvancedSitemapXml },
+  { path: "/sitemap-:locale.xml", methods: ["GET"], handler: handleLocaleSitemapXml },
+  { path: "/robots.txt", methods: ["GET"], handler: handleAdvancedRobotsTxt },
   { path: "/og", methods: ["GET"], handler: handleOgCard },
 
   // Page versions (R022) — auto-save + named checkpoints.

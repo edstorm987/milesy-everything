@@ -28,6 +28,7 @@
     "smoke:postgres-backend-wired": "tsx --test scripts/smoke-postgres-backend-wired.test.ts",
     "smoke:durable-nonce-store": "tsx --test scripts/smoke-durable-nonce-store.test.ts",
     "smoke:env-secrets": "tsx --test scripts/smoke-env-secrets.test.ts",
+    "smoke:observability": "tsx --test scripts/smoke-observability.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

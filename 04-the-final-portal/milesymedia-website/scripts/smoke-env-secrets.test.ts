@@ -23,7 +23,7 @@ const ROOT = join(__dirname, "..");
 const ENV_EXAMPLE = join(ROOT, ".env.example");
 const SECRETS = join(ROOT, "src", "lib", "server", "secrets.ts");
 
-const PROD_REQUIRED_ENV = {
+const PROD_REQUIRED_ENV: NodeJS.ProcessEnv = {
   NODE_ENV: "production",
   PORTAL_SESSION_SECRET: "x".repeat(48),
   DATABASE_URL: "postgres://user:pass@host/db",
@@ -36,25 +36,25 @@ const PROD_REQUIRED_ENV = {
 describe("Env secrets — requireEnv (R029)", () => {
   it("throws in production when missing", () => {
     const orig = { node: process.env.NODE_ENV, secret: process.env.PORTAL_SESSION_SECRET };
-    process.env.NODE_ENV = "production";
+    (process.env as Record<string, string>).NODE_ENV = "production";
     delete process.env.PORTAL_SESSION_SECRET;
     try {
       assert.throws(() => requireEnv("PORTAL_SESSION_SECRET"), /required but not set/);
     } finally {
-      process.env.NODE_ENV = orig.node;
+      (process.env as Record<string, string>).NODE_ENV = orig.node;
       if (orig.secret !== undefined) process.env.PORTAL_SESSION_SECRET = orig.secret;
     }
   });
 
   it("returns undefined in dev when missing (no throw)", () => {
     const orig = process.env.NODE_ENV;
-    process.env.NODE_ENV = "development";
+    (process.env as Record<string, string>).NODE_ENV = "development";
     delete process.env.SOME_NOT_SET_VAR;
     try {
       const v = requireEnv("SOME_NOT_SET_VAR");
       assert.equal(v, undefined);
     } finally {
-      process.env.NODE_ENV = orig;
+      (process.env as Record<string, string>).NODE_ENV = orig;
     }
   });
 
@@ -69,12 +69,12 @@ describe("Env secrets — requireEnv (R029)", () => {
 
   it("alwaysRequired throws even in dev", () => {
     const orig = process.env.NODE_ENV;
-    process.env.NODE_ENV = "development";
+    (process.env as Record<string, string>).NODE_ENV = "development";
     delete process.env.MM_NOT_SET;
     try {
       assert.throws(() => requireEnv("MM_NOT_SET", { alwaysRequired: true }));
     } finally {
-      process.env.NODE_ENV = orig;
+      (process.env as Record<string, string>).NODE_ENV = orig;
     }
   });
 });

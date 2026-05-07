@@ -73,13 +73,12 @@ export function logRequest(entry: RequestLogEntry): void {
 // Caller resolves tenancy via the supplied tagger; handler returns a
 // Response. Skipped paths still execute the handler but don't log.
 type Handler = (req: Request, ctx?: unknown) => Promise<Response>;
+type Tag = Pick<RequestLogEntry, "userId" | "agencyId" | "clientId">;
+type TagFn = (req: Request, ctx?: unknown) => Tag | undefined;
 
 export function withRequestLog(
   handler: Handler,
-  opts: {
-    route?: string;
-    tag?: (req: Request, ctx?: unknown) => Pick<RequestLogEntry, "userId" | "agencyId" | "clientId"> | undefined;
-  } = {},
+  opts: { route?: string; tag?: TagFn } = {},
 ): Handler {
   return async (req: Request, ctx?: unknown) => {
     const start = Date.now();
@@ -104,11 +103,7 @@ export function withRequestLog(
   };
 }
 
-function safeTag(
-  tag: NonNullable<Parameters<typeof withRequestLog>[1]["tag"]>,
-  req: Request,
-  ctx: unknown,
-): ReturnType<NonNullable<Parameters<typeof withRequestLog>[1]["tag"]>> | undefined {
+function safeTag(tag: TagFn, req: Request, ctx: unknown): Tag | undefined {
   try {
     return tag(req, ctx);
   } catch {

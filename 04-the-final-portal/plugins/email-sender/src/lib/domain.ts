@@ -20,6 +20,10 @@ export interface ProviderConfig {
   status: ProviderStatus;
   testedAt?: number;
   errorMessage?: string;
+  // SMTP transport config (populated when provider === "smtp"). The
+  // password lives in the same private slot as `apiKey` so it never
+  // round-trips through API responses.
+  smtp?: SmtpConfig;
   updatedAt: number;
 }
 
@@ -28,6 +32,20 @@ export interface UpdateProviderInput {
   apiKey?: string;                   // full key — masked + stored in install.config
   defaultFromIdentityId?: string;
   webhookSecret?: string;
+  smtp?: SmtpConfig;
+}
+
+// SMTP transport config. Public part — the password is stored
+// separately under the same private slot used by Postmark's apiKey
+// (so PROVIDER_API_KEY = SMTP password when provider === "smtp").
+export interface SmtpConfig {
+  host: string;
+  port: number;
+  user: string;
+  // "tls" — implicit TLS on port 465.
+  // "starttls" — STARTTLS upgrade on port 587 / 25.
+  // "none" — plain SMTP (test only; never use in prod).
+  secure: "tls" | "starttls" | "none";
 }
 
 // ─── Sender identity ─────────────────────────────────────────────────────

@@ -48,6 +48,7 @@ export class DeliveryService {
       apiKey,
       webhookSecret: cfg.webhookSecret,
       agencyId: this.agencyId,
+      ...(cfg.smtp ? { smtp: cfg.smtp } : {}),
     };
     const result = await driver.send({ ctx, message: sending });
     if (result.ok) {

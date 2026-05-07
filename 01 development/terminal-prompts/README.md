@@ -12,11 +12,14 @@ spin them up. One file per terminal role.
 | `T1-router.md` | Ed → fresh terminal | Autonomous T1 (foundation) | Reads queue at `queues/T1/`, ships rounds, logs DONE. Sprint 1 owner of WS-A + WS-C. |
 | `T2-router.md` | Ed → fresh terminal | Autonomous T2 (plugins) | Reads queue at `queues/T2/`. Sprint 1 owner of WS-B. |
 | `T3-router.md` | Ed → fresh terminal | Autonomous T3 (website-editor) | Reads queue at `queues/T3/`. |
-| `T4-router.md` | Ed → fresh terminal | Autonomous T4 (Sprint 2 polish lane) | Reactivated 2026-05-07. Reads queue at `queues/T4/`, ships polish rounds (niche-pages mega-menu mirror · Resource sub-page real impls · `app/page.tsx` orphan · AquaOasis Demo content · final copy pass). Replaces the prior `T4-manual.md` mode. |
+| `T4-router.md` | Ed → fresh terminal | Autonomous T4 (Sprint 2 polish lane) | Reactivated 2026-05-07. Reads queue at `queues/T4/`, ships polish rounds. |
+| `T5-router.md` | Ed → fresh terminal | Autonomous T5 (first real client — Felicia) | Reads queue at `queues/T5/` (3 rounds: portal scaffold · content · end-customer flow). Sprint 3 WS-F. |
+| `T6-router.md` | Ed → fresh terminal | Autonomous T6 (production deploy + observability) | Reads queue at `queues/T6/` (5 rounds: deploy runbook rewrite · CI pipeline · vercel config · domain attach · prod-readiness smoke). Sprint 3 WS-E final lap. |
+| `T7-router.md` | Ed → fresh terminal | Autonomous T7 (niche-agency satellites + parallel scale) | Reads queue at `queues/T7/` (5 rounds: domain-aware marketing · per-agency lead-magnet packs · agency-spawner plugin · therapist niche pack · 3 more niches). Phase 12 R3+ scale lane. |
 
-That's the live set. Five files. If you're not sure what to paste, paste
-`orchestrator-init.md` for the commander or `T<N>-router.md` for an
-autonomous worker or `T4-manual.md` for the manual website lane.
+That's the live set. **Eight files** (1 commander + 7 worker terminals).
+If you're not sure what to paste, paste `orchestrator-init.md` for the
+commander or `T<N>-router.md` for an autonomous worker.
 
 ## Subfolders
 
@@ -27,15 +30,16 @@ terminal-prompts/
 ├── T1-router.md                  ← T1 autonomous
 ├── T2-router.md                  ← T2 autonomous
 ├── T3-router.md                  ← T3 autonomous
-├── T4-manual.md                  ← T4 manual (active)
+├── T4-router.md                  ← T4 autonomous (polish)
+├── T5-router.md                  ← T5 autonomous (Felicia)
+├── T6-router.md                  ← T6 autonomous (production)
+├── T7-router.md                  ← T7 autonomous (niche satellites)
 ├── queues/                       ← per-terminal active round backlogs
 │   ├── README.md
-│   ├── T1/                       ← lowest-numbered .md = current round
-│   ├── T2/
-│   ├── T3/
-│   └── T4/                       ← Sprint 2 polish queue (5 rounds staged)
-├── _dormant/                     ← prompts NOT to paste right now
-│   └── T6-production-gate.md     ← T6 prod-deploy prompt (reactivates Sprint 3)
+│   ├── T1/ T2/ T3/ T4/           ← lowest-numbered .md = current round
+│   ├── T5/                       ← Felicia rounds (3 staged)
+│   ├── T6/                       ← production rounds (5 staged)
+│   └── T7/                       ← niche-satellite rounds (5 staged)
 └── old prompts/                  ← shipped queue files + retired prompts (archive only)
 ```
 

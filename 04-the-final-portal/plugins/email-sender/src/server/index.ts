@@ -34,7 +34,8 @@ export {
 } from "./foundationAdapter";
 export type { EmailSenderFoundation, ContainerForArgs } from "./foundationAdapter";
 
-export { defaultDriverRegistry, NoopDriver, PostmarkDriver, StubDriver } from "./drivers";
+export { defaultDriverRegistry, NoopDriver, PostmarkDriver, SmtpDriver, StubDriver, buildSmtpDataBody, PLACEHOLDER_SMTP_TRANSPORT } from "./drivers";
+export type { SmtpDialOptions, SmtpDialResult, SmtpDialFailure, SmtpTransport } from "./drivers";
 
 import type { AgencyId } from "../lib/tenancy";
 import type { PluginStorage } from "../lib/aquaPluginTypes";

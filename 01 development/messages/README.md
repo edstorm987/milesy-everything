@@ -11,8 +11,9 @@ Terminal split (current — refreshed 2026-05-07 for Ship Plan v1):
 - **T2** — plugins (every new plugin lands here — agency-* / client-* / public-funnel / etc). Sprint 1 owner of WS-B (public funnel).
 - **T3** — website-editor (blocks / editor admin / cross-plugin renderers).
 - **T4** — Milesy Media ecosystem + marketing surface. Reactivated to autonomous 2026-05-07 for Sprint 2 polish (queue: niche-pages mega-menu · Resource sub-pages real · `app/page.tsx` orphan · AquaOasis Demo content · final copy pass).
-- **T5** — first real per-client portal (Felicia / Luv & Ker) at `clients/luv-and-ker/`. **Reactivates Sprint 3** for WS-F.
-- **T6** — production deployment + custom domains + observability. **Reactivates Sprint 3** for production preview.
+- **T5** — first real per-client portal (Felicia / Luv & Ker) at `clients/luv-and-ker/`. **Activated 2026-05-07** for WS-F (Sprint 3).
+- **T6** — production deployment + custom domains + observability. **Activated 2026-05-07** for WS-E final lap + ship-gate.
+- **T7** — niche-agency satellites + parallel scale. **Activated 2026-05-07** for Phase 12 R3+ (domain-aware marketing · per-agency lead-magnet packs · agency-spawner plugin · niche content packs).
 
 Read **chapter #124 `04-ship-plan-v1.md`** for the full plan; this
 file is just the protocol.

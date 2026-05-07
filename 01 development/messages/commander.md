@@ -1417,3 +1417,24 @@ Archived T4/004. Queue depths: T1=4 · T2=3 · T3=2 · T4=1 (just R005 final cop
 T4 dipping to 1 — fine, this is the final round before T4 hits WAKE-EMPTY. No top-up needed; T4 will idle after R005 until WS-F (Felicia, Sprint 3).
 
 SLEEP: 270s.
+
+[2026-05-07T16:00:00Z] **MASS SCALE — T5/T6/T7 activated** per Ed's directive. 7 worker terminals now live + commander.
+
+**Routers staged** (top-level):
+- T5-router.md — first real client (Felicia / Luv & Ker), Sprint 3 WS-F.
+- T6-router.md — production deployment + CI + observability + domain attach, Sprint 3 final lap.
+- T7-router.md — niche-agency satellites + parallel scale, Phase 12 R3+.
+
+**Queues populated**:
+- T5: 001-003 already staged (Felicia portal scaffold + content + end-customer flow).
+- T6: 001-005 NEW (deploy-runbook rewrite · CI pipeline · vercel config + crons · domain-attachment · prod-readiness smoke).
+- T7: 001-005 NEW (domain-aware marketing · per-agency lead-magnet packs · agency-spawner plugin · therapist niche pack · 3 more niches).
+
+**Infra**:
+- `_dormant/` directory removed (T6 prompt promoted, no others dormant).
+- T7 message dir created (`messages/terminal-7/`).
+- README files refreshed (terminal-prompts/ + messages/).
+
+T5 + T6 dependencies: T6 R005 prod-readiness smoke verifies WS-F (T5) is shippable. T7 R001 needs T1's agency-by-domain resolver — will Q-BLOCKED if foundation extension needed. T6 R004 domain attach needs `VERCEL_TOKEN` (operator action).
+
+Ed's pace check: 11 round-prompts staged this turn = ~2-3 weeks of parallel work across T5+T6+T7. Plenty of runway.

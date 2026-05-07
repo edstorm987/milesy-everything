@@ -119,6 +119,10 @@ export interface DriverContext {
   apiKey?: string;
   webhookSecret?: string;
   agencyId: AgencyId;
+  // SMTP-specific transport config. Populated only when the active
+  // provider is `smtp` so the SmtpDriver can dial. Other drivers
+  // ignore this field.
+  smtp?: import("../lib/domain").SmtpConfig;
 }
 
 export interface EmailDriver {
