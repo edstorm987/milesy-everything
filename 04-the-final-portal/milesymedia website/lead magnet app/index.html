@@ -184,6 +184,38 @@
           </div>
         </div>
 
+        <!-- ── Transparency block — how we got this & what we'd verify ── -->
+        <div class="hc-transparency">
+          <details class="hc-transparency-detail">
+            <summary>🧮 How we got this number</summary>
+            <div class="hc-transparency-body">
+              <p>The range above is derived from <strong>your answers</strong>, not from your live business data. Three inputs feed it:</p>
+              <ol>
+                <li><strong>Headroom</strong> — how far each topic score sits below 100, averaged across the topics you answered.</li>
+                <li><strong>Confidence</strong> — what fraction of the 5 topics you actually answered. Less coverage → narrower claim.</li>
+                <li><strong>Sector benchmark multiplier</strong> — typical revenue impact a healthy version of each topic produces in your kind of business.</li>
+              </ol>
+              <p class="muted">This is a self-report, not a measurement. The range is deliberately wide. A real audit replaces it with measured numbers.</p>
+            </div>
+          </details>
+          <details class="hc-transparency-detail">
+            <summary>🔌 What we'd verify against — for the real version</summary>
+            <div class="hc-transparency-body">
+              <p>To convert this from a self-report to a measured audit, we'd plug into:</p>
+              <ul class="hc-verify-list">
+                <li><span class="hc-verify-icon">🔍</span><div><strong>Google Search Console</strong> — actual impressions, clicks, ranking positions, queries you appear for.</div></li>
+                <li><span class="hc-verify-icon">📍</span><div><strong>Google Business Profile Insights</strong> — direction requests, calls, map vs search appearances.</div></li>
+                <li><span class="hc-verify-icon">⚡</span><div><strong>Lighthouse / PageSpeed Insights</strong> — real performance/SEO/accessibility score, LCP, CLS, INP.</div></li>
+                <li><span class="hc-verify-icon">📈</span><div><strong>GA4 / server-side events</strong> — actual conversion rates, source attribution, drop-off pages.</div></li>
+                <li><span class="hc-verify-icon">💷</span><div><strong>Stripe / QuickBooks</strong> — real revenue, MRR, refunds, customer LTV.</div></li>
+                <li><span class="hc-verify-icon">🗺</span><div><strong>SERP rank tracker (DataForSEO / Ahrefs)</strong> — third-party verification of where you actually rank.</div></li>
+              </ul>
+              <p class="muted">Free tier: self-report only. Pro/audit tier: we run these connectors against your real accounts and replace every estimate with a measurement.</p>
+              <a href="../business-os app/marketplace.html" class="btn btn-secondary">See the connector add-ons →</a>
+            </div>
+          </details>
+        </div>
+
         <!-- Quick wins -->
         <div class="hc-section-block">
           <div class="hc-section-block-head">
@@ -570,8 +602,8 @@
       $("[data-hc-leak-trust]").innerHTML = '—';
       $("[data-hc-leak-dependence]").innerHTML = '—';
       $("[data-hc-quickwins]").innerHTML = '<div class="hc-quickwin-empty"><p class="muted">Quick wins are computed from your answers. Answer one topic and they\'ll appear here.</p></div>';
-      $("[data-hc-recos]").innerHTML = '';
-      $("[data-hc-pillars]").innerHTML = '';
+      var transp = document.querySelector('.hc-transparency');
+      if (transp) transp.style.display = 'none';
       $("[data-hc-section-nav]").innerHTML = pillars.map(function (p, i) {
         return '<button class="hc-section-nav-card is-pending" data-hc-jump="' + i + '">'
           + '<div class="hc-section-nav-icon">' + p.area.icon + '</div>'
@@ -591,6 +623,9 @@
       });
       return;
     }
+
+    var transp = document.querySelector('.hc-transparency');
+    if (transp) transp.style.display = '';
 
     var overall = Math.round(scored.reduce(function (s, p) { return s + p.score; }, 0) / scored.length);
 
