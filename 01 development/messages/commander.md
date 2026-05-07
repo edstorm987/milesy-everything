@@ -1136,3 +1136,11 @@ End of handoff.
 Queue depths post-archive: T1=4 (019-022) · T2=3 (015-017) · T3=3 (033-035) · T4=0 (idle).
 
 [2026-05-07T10:50:00Z] PLAN: minimal — all queues at-or-above 3-deep target. SLEEP: 270s.
+
+[2026-05-07T10:51:00Z] SLEEP: 270s.
+
+[2026-05-07T10:55:00Z] STAGED: T4 manual-mode prompt at terminal-prompts/T4-manual.md (Ed pairing on website work — non-loop). Drafted 9 new round prompts to deepen queues:
+- T1/023 agency-settings-hub · 024 team-invites · 025 audit-log
+- T2/018 onboarding-checklist · 019 client-reports · 020 feedback-loops
+- T3/036 sitemap-robots · 037 structured-data · 038 image-srcset
+Post-stage queue depths: T1=7 · T2=6 · T3=6 · T4=0 (manual mode w/ Ed).
