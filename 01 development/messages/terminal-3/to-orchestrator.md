@@ -230,3 +230,4 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T15:35:00Z] COMMIT: pending — staging R027 explicit-path bundle.
 [2026-05-07T15:36:00Z] COMMIT: 18c8411 "T3 R027: in-editor block catalog — BlockCatalog with category groups + JSON expander + 23/23 smoke". 7 files clean. Pushed.
 [2026-05-07T15:36:00Z] DONE: queue file `027-block-catalog-page.md` — round shipped. website-editor smoke 23/23 + tsc-clean. Chapter `04-block-catalog.md` + MASTER row #108 + tasks.md row added. Cross-team: host editor wires Catalog tab + onInsert→existing insertBlock(type) flow. Q-ASSUMED: registry has no description field (R+1 to add); live previews + changelog out of scope; preview tile = icon glyph. Commander may archive 027; queue still has 028-029.
+[2026-05-07T15:37:00Z] WAKE-PENDING-ARCHIVE: 027 still lowest. Sleeping 600s.
