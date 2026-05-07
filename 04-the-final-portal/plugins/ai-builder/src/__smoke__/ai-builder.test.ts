@@ -245,6 +245,164 @@ test("R9 ceilings: token ceiling reached → generate returns rejected w/ ceilin
   assert.ok(out.validationError?.startsWith("ceiling-reached:"), `unexpected msg ${out.validationError}`);
 });
 
+// ─── R005: variations + inpaint ─────────────────────────────────────────────
+
+test("R005 variations: stub returns 4 picsum URLs + bumps usage by 4", async () => {
+  const { ImageService, stubImageProvider } = await import("../server/imageService");
+  const d = deps();
+  const svc = new ImageService({
+    agencyId: d.agencyId,
+    actor: d.actor,
+    storage: d.storage,
+    config: { ...d.config, monthlyImageCeiling: 50 },
+  });
+  const out = await svc.variations({
+    sourceImageUrl: "https://example.com/source.jpg",
+    providerOverride: stubImageProvider,
+  });
+  assert.equal(out.length, 4, "default count is 4");
+  for (const v of out) {
+    assert.ok(v.url.startsWith("https://picsum.photos/seed/"), `unexpected URL ${v.url}`);
+  }
+  const u = await svc.usageThisMonth();
+  assert.equal(u.images, 4, "image counter bumped by 4");
+});
+
+test("R005 variations: ceiling-reached throws CeilingReachedError", async () => {
+  const { ImageService, CeilingReachedError, stubImageProvider } = await import("../server/imageService");
+  const d = deps();
+  const svc = new ImageService({
+    agencyId: d.agencyId,
+    actor: d.actor,
+    storage: d.storage,
+    config: { ...d.config, monthlyImageCeiling: 3 },
+  });
+  let caught: unknown = null;
+  try {
+    await svc.variations({ sourceImageUrl: "https://x/s.jpg", count: 4, providerOverride: stubImageProvider });
+  } catch (e) { caught = e; }
+  assert.ok(caught instanceof CeilingReachedError, "over-ceiling throws");
+  assert.equal((caught as InstanceType<typeof CeilingReachedError>).kind, "images");
+});
+
+test("R005 inpaint: stub returns sourceImageUrl unchanged with stub=true + bumps usage by 1", async () => {
+  const { ImageService, stubImageProvider } = await import("../server/imageService");
+  const d = deps();
+  const svc = new ImageService({
+    agencyId: d.agencyId,
+    actor: d.actor,
+    storage: d.storage,
+    config: { ...d.config, monthlyImageCeiling: 5 },
+  });
+  const out = await svc.inpaint({
+    sourceImageUrl: "https://example.com/keep-me.jpg",
+    mask: "data:image/png;base64,iVBORw0KGgo=",
+    prompt: "swap background to ocean",
+    providerOverride: stubImageProvider,
+  });
+  assert.equal(out.url, "https://example.com/keep-me.jpg", "stub returns source unchanged");
+  assert.equal(out.stub, true, "stub flag set");
+  const u = await svc.usageThisMonth();
+  assert.equal(u.images, 1, "image counter bumped by 1");
+});
+
+test("R005 inpaint: ceiling-reached throws CeilingReachedError", async () => {
+  const { ImageService, CeilingReachedError, stubImageProvider } = await import("../server/imageService");
+  const d = deps();
+  const { monthKeyForDate } = await import("../lib/domain");
+  const monthKey = monthKeyForDate();
+  // Pre-seed usage at the ceiling.
+  await d.storage.set(`t/${d.agencyId}/_agency/ai-builder/metrics/usage/${monthKey}`, {
+    monthKey, tokens: 0, images: 5,
+  });
+  const svc = new ImageService({
+    agencyId: d.agencyId,
+    actor: d.actor,
+    storage: d.storage,
+    config: { ...d.config, monthlyImageCeiling: 5 },
+  });
+  let caught: unknown = null;
+  try {
+    await svc.inpaint({ sourceImageUrl: "x", mask: "y", prompt: "z", providerOverride: stubImageProvider });
+  } catch (e) { caught = e; }
+  assert.ok(caught instanceof CeilingReachedError, "at-ceiling throws");
+});
+
+test("R005 handlers: variations + inpaint route shape", async () => {
+  const { imageVariationsHandler, imageInpaintHandler } = await import("../api/handlers");
+  const installConfig = {
+    anthropicApiKey: "sk-fake",
+    defaultModel: "claude-haiku-4-5-20251001",
+    fallbackModel: "claude-sonnet-4-6",
+    cacheSystemPrompt: true,
+    maxTokens: 1024,
+    monthlyImageCeiling: 50,
+  };
+  const storage = memStorage();
+  const ctx = {
+    agencyId: "ag_smoke",
+    actor: "u_smoke",
+    install: { config: installConfig },
+    storage,
+    services: {} as Record<string, unknown>,
+  } as unknown as Parameters<typeof imageVariationsHandler>[1];
+
+  // Variations
+  const vReq = new Request("http://x/image/variations", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ sourceImageUrl: "https://example.com/a.jpg", count: 4 }),
+  });
+  const vRes = await imageVariationsHandler(vReq, ctx);
+  assert.equal(vRes.status, 200);
+  const vBody = await vRes.json() as { ok: boolean; images: { url: string }[] };
+  assert.equal(vBody.ok, true);
+  assert.equal(vBody.images.length, 4);
+
+  // Inpaint
+  const iReq = new Request("http://x/image/inpaint", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ sourceImageUrl: "https://example.com/a.jpg", mask: "data:image/png;base64,AA==", prompt: "ocean" }),
+  });
+  const iRes = await imageInpaintHandler(iReq, ctx);
+  assert.equal(iRes.status, 200);
+  const iBody = await iRes.json() as { ok: boolean; image: { url: string; stub?: boolean } };
+  assert.equal(iBody.ok, true);
+  assert.equal(iBody.image.url, "https://example.com/a.jpg");
+  assert.equal(iBody.image.stub, true);
+
+  // Missing args → 400
+  const bad = await imageInpaintHandler(new Request("http://x/image/inpaint", {
+    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({}),
+  }), ctx);
+  assert.equal(bad.status, 400);
+});
+
+test("R005 handlers: ceiling-reached → 429", async () => {
+  const { imageVariationsHandler } = await import("../api/handlers");
+  const installConfig = { monthlyImageCeiling: 1 };
+  const storage = memStorage();
+  const ctx = {
+    agencyId: "ag_smoke",
+    actor: "u_smoke",
+    install: { config: installConfig },
+    storage,
+    services: {} as Record<string, unknown>,
+  } as unknown as Parameters<typeof imageVariationsHandler>[1];
+
+  const req = new Request("http://x/image/variations", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ sourceImageUrl: "https://example.com/a.jpg", count: 4 }),
+  });
+  const res = await imageVariationsHandler(req, ctx);
+  assert.equal(res.status, 429);
+  const body = await res.json() as { ok: boolean; error: string };
+  assert.equal(body.ok, false);
+  assert.equal(body.error, "ceiling-reached");
+});
+
 test("metrics: cache-hit counter increments on cacheReadInputTokens > 0", async () => {
   const d = deps();
   const svc = new GenerationService(d);

@@ -10,6 +10,8 @@
 // "patch" messages when the operator changes a value.
 
 import { useEffect, useRef, useState } from "react";
+import ImageVariationsModal from "./ImageVariationsModal";
+import ImageInpaintModal from "./ImageInpaintModal";
 
 export interface SelectedElement {
   // The data-portal-edit key — opaque identifier the overlay uses.
@@ -39,6 +41,7 @@ export default function EditorPropertiesSidebar({
 }: Props) {
   const [draft, setDraft] = useState("");
   const [dirty, setDirty] = useState(false);
+  const [aiMode, setAiMode] = useState<null | "variations" | "inpaint">(null);
   const inputRef = useRef<HTMLTextAreaElement | HTMLInputElement | null>(null);
 
   // Re-seed draft when a different element is selected.
@@ -128,7 +131,42 @@ export default function EditorPropertiesSidebar({
           /* eslint-disable-next-line @next/next/no-img-element */
           <img src={draft} alt="" className="rounded-md border border-white/5 max-h-32 object-contain mx-auto" />
         )}
+
+        {selected.type === "image-src" && draft && (
+          <div className="pt-2 border-t border-white/5 space-y-2">
+            <p className="text-[10px] tracking-[0.28em] uppercase text-cyan-400/80">AI tools</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setAiMode("variations")}
+                className="flex-1 px-2 py-1.5 rounded-md text-[11px] bg-white/5 hover:bg-white/10 border border-white/10 text-brand-cream"
+              >
+                ✨ Generate variations
+              </button>
+              <button
+                onClick={() => setAiMode("inpaint")}
+                className="flex-1 px-2 py-1.5 rounded-md text-[11px] bg-white/5 hover:bg-white/10 border border-white/10 text-brand-cream"
+              >
+                🖌 Edit with mask
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      {aiMode === "variations" && selected.type === "image-src" && (
+        <ImageVariationsModal
+          sourceUrl={draft}
+          onClose={() => setAiMode(null)}
+          onPick={(url) => { handleChange(url); setAiMode(null); }}
+        />
+      )}
+      {aiMode === "inpaint" && selected.type === "image-src" && (
+        <ImageInpaintModal
+          sourceUrl={draft}
+          onClose={() => setAiMode(null)}
+          onPick={(url) => { handleChange(url); setAiMode(null); }}
+        />
+      )}
 
       <footer className="px-4 py-3 border-t border-white/5 flex items-center justify-end gap-2">
         {dirty && (

@@ -100,6 +100,34 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R005 — AI image editing (variations + inpaint)** — DONE.
+      Goal A: `POST /api/portal/ai-builder/image/variations` (body
+      `{ sourceImageUrl, count?=4, strength? }`) → 4 stub picsum URLs
+      keyed by `hash(sourceUrl + strength + i)`. Goal B:
+      `POST /api/portal/ai-builder/image/inpaint` (body
+      `{ sourceImageUrl, mask, prompt }`) → stub returns source URL
+      unchanged with `stub:true`. Both consult R9's
+      `monthlyImageCeiling`, bump usage on success, surface
+      `CeilingReachedError` as 429. `ImageProviderPort` extended with
+      optional `variations()` + `inpaint()`; `stubImageProvider`
+      implements both. Goal C: `EditorPropertiesSidebar.tsx` grows
+      "AI tools" sub-section on `image-src` selection — ✨ Generate
+      variations + 🖌 Edit with mask buttons mount NEW
+      `ImageVariationsModal.tsx` (2×2 thumbs grid, "Use this"
+      replaces draft via existing patch flow) and NEW
+      `ImageInpaintModal.tsx` (512×384 canvas, white strokes mask,
+      prompt textarea, `toDataURL("image/png")` serialization, stub-
+      flag honest hint, Clear/Cancel/Generate). Goal D: 6 new smoke
+      tests in `__smoke__/ai-builder.test.ts` (stub variations +
+      ceiling, stub inpaint + ceiling, handler 200/400/429).
+      `@aqua/plugin-ai-builder` 14/14 pass. ai-builder +
+      website-editor tsc-clean. Chapter
+      `04-ai-image-editing.md` + MASTER row #72.
+      Q-ASSUMED: variations stub size fixed 1024×1024; inpaint
+      canvas 512×384; AI-tools section only renders with non-empty
+      draft URL. Deferred: real OpenAI provider impl, brush
+      controls + eraser, variation history strip, before/after
+      preview, video editing.
 - [x] **T3 R004 — Brand-page templates (therapist storefront)** — DONE.
       Goal A: 7 starter brand presets in `pageTemplates.ts` re-using
       existing block catalogue — `brand-about` / `brand-our-story` /
