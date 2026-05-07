@@ -31,9 +31,11 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       sentinel; `effectiveRole` lead → EMPTY; NEW `requireAgencyScope`
       helper; `createUser` tolerates lead w/ optional agencyId. Smoke
       9/9. Chapter #127.
-- [ ] **R024 — Founder password rotation** (WS-A). Move `FOUNDER_EMAIL`
-      + `FOUNDER_PASSWORD` to env-only seed; remove `"123"` hardcode;
-      re-introduce `validatePassword`. Update deploy runbook.
+- [x] **R024 — Founder password rotation** (WS-A). Env-driven creds
+      (FOUNDER_EMAIL/PASSWORD/AGENCY_NAME); direct-mutate bypass dropped
+      → seed via `createUser`; production fail-closed guard (≥12 chars +
+      email-not-default); `.env.example` + runbook §2a updated. Smoke
+      12/12. Chapter #129. `grep -r '"123"' src/` clean.
 - [ ] **R025 — `agencyIds[]` migration** (WS-C R1). Replace
       `ServerUser.agencyId` with `agencyIds: string[]`. Migration
       runner. Default `[primaryAgencyId]` so legacy code keeps working.
