@@ -65,6 +65,35 @@
   function getMode() { try { return localStorage.getItem(KEY_MODE) || 'free'; } catch (e) { return 'free'; } }
   function setMode(m) { try { localStorage.setItem(KEY_MODE, m); } catch (e) {} }
 
+  /* R011 — Pro entitlement source of truth.
+     `bos.entitlement = { tier:'free'|'pro-trial'|'pro', startedAt, expiresAt? }`
+     Pro lockups should read `isPro()` (not bos.mode directly). Back-compat:
+     legacy `bos.mode === 'customer'` still counts as Pro so existing
+     installs unlock correctly. Expiry: pro-trial with `expiresAt < now`
+     auto-rolls back to `free` on the next read (data preserved). */
+  var KEY_ENT = 'bos.entitlement';
+  function getEntitlement() {
+    try {
+      var raw = localStorage.getItem(KEY_ENT);
+      if (!raw) return null;
+      var e = JSON.parse(raw);
+      if (e && e.tier === 'pro-trial' && e.expiresAt && +new Date(e.expiresAt) < Date.now()) {
+        // Trial expired — flip back to free, preserve data.
+        try {
+          localStorage.setItem(KEY_ENT, JSON.stringify({ tier: 'free', startedAt: e.startedAt, expiredAt: new Date().toISOString() }));
+          localStorage.setItem(KEY_MODE, 'free');
+        } catch (er) {}
+        return { tier: 'free', startedAt: e.startedAt, expiredAt: new Date().toISOString() };
+      }
+      return e;
+    } catch (e) { return null; }
+  }
+  function isPro() {
+    var e = getEntitlement();
+    if (e && (e.tier === 'pro' || e.tier === 'pro-trial')) return true;
+    return getMode() === 'customer';
+  }
+
   function getProgress() {
     return getJSON(KEY_PROGRESS, {
       xp: 0, timeSavedHrs: 0, streak: 0, lastActive: null,
@@ -668,7 +697,9 @@
      when the user is on the free tier, hiding the real content. */
   var PRO_ONLY = ['leads.html', 'trackers.html', 'tasks.html', 'docs.html'];
   function maybeProLock() {
-    if (getMode() === 'customer') return;
+    /* R011: source of truth is now `isPro()` (covers both `bos.entitlement`
+       tier in pro|pro-trial AND legacy `bos.mode === 'customer'`). */
+    if (isPro()) return;
     var page = (location.pathname.split('/').pop() || '').toLowerCase();
     if (PRO_ONLY.indexOf(page) === -1) return;
     var main = document.querySelector('.bos-main');
@@ -773,8 +804,39 @@
     }, 80);
   }
 
+  /* R011 — trial-expiry banner. Renders when on a Pro trial with ≤2 days
+     remaining, and a final "trial expired — back on free" notice once
+     auto-rollback fires. Dismissable per-banner-day via `bos.trialBanner.lastDismissedDay`. */
+  function mountTrialBanner() {
+    var e = getEntitlement();
+    if (!e) return;
+    var msg = null, kind = 'warn';
+    if (e.tier === 'pro-trial' && e.expiresAt) {
+      var rem = Math.max(0, Math.round((+new Date(e.expiresAt) - Date.now()) / 86400000));
+      if (rem <= 2 && rem > 0) {
+        msg = 'Pro trial ends in ' + rem + ' day' + (rem === 1 ? '' : 's') + '. Confirm Pro to keep the unlock shelf live.';
+      } else if (rem === 0) {
+        msg = 'Pro trial ends today. Confirm Pro to keep the unlock shelf live.';
+      }
+    } else if (e.expiredAt && e.tier === 'free') {
+      var dayDiff = Math.round((Date.now() - +new Date(e.expiredAt)) / 86400000);
+      if (dayDiff <= 7) {
+        msg = 'Your Pro trial ended. You\'re on Free again — your data is preserved. Re-upgrade any time.';
+        kind = 'info';
+      }
+    }
+    if (!msg) return;
+    if (document.querySelector('[data-bos-trial-banner]')) return;
+    var bar = document.createElement('div');
+    bar.setAttribute('data-bos-trial-banner', '');
+    bar.style.cssText = 'background:' + (kind === 'warn' ? '#3a2a14' : '#0F1420') + ';color:#D4B888;border-bottom:1px solid #2A2A2A;padding:10px 16px;font-size:13px;text-align:center;letter-spacing:0.02em;';
+    bar.innerHTML = msg + ' <a href="upgrade.html" style="color:#D4B888;font-weight:700;margin-left:8px">Upgrade →</a>';
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     mountIncubatorStrip();
+    mountTrialBanner();
     mountAutoSidebar();
     hydrateUser();
     applyBranding();
@@ -794,6 +856,7 @@
   window.BOS = {
     NICHES: NICHES, ADDONS: ADDONS, ACHIEVEMENTS: ACHIEVEMENTS, LEVELS: LEVELS,
     getUser: getUser, setUser: setUser, getMode: getMode, setMode: setMode,
+    getEntitlement: getEntitlement, isPro: isPro,
     getNiche: getNiche, nicheMeta: nicheMeta,
     getProgress: getProgress, gainXP: gainXP, unlockAchievement: unlockAchievement,
     renderMarketplace: renderMarketplace

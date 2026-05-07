@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Checkout (Demo)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="checkout.html"></nav>
+    </aside>
+
+    <main class="bos-main bos-checkout">
+
+      <div class="bos-upgrade-demo-banner">
+        🎬 <strong>Demo mode — no charge.</strong> Card fields below are stubbed and inactive. Submitting flips your local entitlement to <code>pro</code>; nothing is sent anywhere. Real Stripe wires in via T6.
+      </div>
+
+      <header class="bos-checkout-head">
+        <span class="eyebrow">Checkout</span>
+        <h1>Confirm your <span class="accent">Pro plan</span>.</h1>
+        <p class="muted">£49 / month. Cancel any time. <strong>This is a demo</strong> — no real card is collected.</p>
+      </header>
+
+      <div class="bos-checkout-grid">
+        <form class="bos-checkout-form" data-bos-checkout-form autocomplete="off" novalidate>
+          <fieldset disabled class="bos-checkout-fieldset" aria-label="Demo card fields — not collected">
+            <legend>Card details (demo)</legend>
+            <div class="field">
+              <label>Cardholder name</label>
+              <input type="text" placeholder="Demo only · field disabled" />
+            </div>
+            <div class="field">
+              <label>Card number</label>
+              <input type="text" placeholder="•••• •••• •••• ••••" />
+            </div>
+            <div class="bos-checkout-grid-2">
+              <div class="field">
+                <label>Expiry</label>
+                <input type="text" placeholder="MM / YY" />
+              </div>
+              <div class="field">
+                <label>CVC</label>
+                <input type="text" placeholder="•••" />
+              </div>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="btn btn-primary btn-lg bos-checkout-submit">Confirm Pro · go (demo)</button>
+          <p class="muted bos-checkout-fine">Clicking confirm sets <code>bos.entitlement.tier = "pro"</code> with no expiry — your existing data, settings and progress are preserved.</p>
+        </form>
+
+        <aside class="bos-checkout-summary">
+          <h3>Order summary</h3>
+          <div class="bos-checkout-line"><span>Pro plan</span><span>£49.00</span></div>
+          <div class="bos-checkout-line"><span>14-day trial credit</span><span>−£49.00</span></div>
+          <hr />
+          <div class="bos-checkout-line bos-checkout-total"><span>Today</span><span>£0.00</span></div>
+          <p class="muted">Trial ends in 14 days; first real charge would happen then. <strong>Demo</strong> — no actual charge.</p>
+          <a href="upgrade.html" class="btn btn-secondary">← Back to upgrade</a>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="bos.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function setJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+      var form = document.querySelector('[data-bos-checkout-form]');
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        setJSON('bos.entitlement', { tier: 'pro', startedAt: new Date().toISOString() });
+        try { localStorage.setItem('bos.mode', 'customer'); } catch (e) {}
+        var act = JSON.parse(localStorage.getItem('bos.activity') || '[]');
+        act.push({ ts: new Date().toISOString(), type: 'pro-confirmed-demo', msg: 'Pro plan confirmed (DEMO — no charge)' });
+        try { localStorage.setItem('bos.activity', JSON.stringify(act)); } catch (e) {}
+        document.querySelector('.bos-checkout-submit').textContent = '✓ Pro active — redirecting…';
+        setTimeout(function () { location.href = 'app.html'; }, 1200);
+      });
+    });
+  </script>
+
+</body>
+</html>

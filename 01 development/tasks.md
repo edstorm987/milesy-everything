@@ -88,6 +88,28 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R011 — Pro upgrade flow mockup** — DONE.
+      NEW source-of-truth `bos.entitlement={tier:free|pro-trial|pro,
+      startedAt, expiresAt?, expiredAt?}` in bos.js + `isPro()` helper
+      (entitlement OR back-compat `bos.mode==='customer'`);
+      `maybeProLock()` rewritten to use `isPro()`. NEW `business-os
+      app/upgrade.html` (~150L) — DEMO banner + 3 pricing tiers (Free
+      / Pro / Agency-managed) + 10-row comparison matrix + Start-Pro-
+      Trial CTA writes pro-trial entitlement w/ +14d expiry then
+      redirects to checkout. NEW `business-os app/checkout.html`
+      (~95L) — DEMO banner + disabled card fieldset (literally can't
+      type card data) + order summary £0 today + submit writes
+      `entitlement.tier='pro'` no-expiry + appends bos.activity[].
+      NEW `mountTrialBanner()` in bos.js boot — amber ≤2d-remaining +
+      day-of-expiry + blue post-expiry "trial ended; data preserved".
+      Auto-rollback in getEntitlement (pro-trial past expiresAt →
+      free, sets expiredAt, flips mode). Honesty contract: every
+      surface labelled DEMO; no real card collection; data preserved
+      on expiry. CSS `.bos-upgrade-*` + `.bos-checkout-*` (~140L).
+      Window.BOS exposes getEntitlement + isPro. Smoke: upgrade +
+      checkout + app all 200; trial-start + checkout-submit + expiry
+      rollback + all banner states verified. NEW chapter
+      `04-upgrade-flow-mockup.md` + MASTER #87.
 - [x] **T4 R010 — HC → Incubator handoff flow** — DONE.
       NEW `.hc-incubator-handoff` primary CTA card inserted between HC
       results leak strip + transparency block. Inline

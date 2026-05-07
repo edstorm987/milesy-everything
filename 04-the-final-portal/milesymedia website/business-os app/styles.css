@@ -2722,3 +2722,146 @@ body.bos-cp-editing .bos-cp-fields textarea {
   background: rgba(248,113,113,0.10); color: #f87171;
   border: 1px solid rgba(248,113,113,0.25); cursor: pointer; font-size: 11px;
 }
+
+/* ─── R011 Upgrade + Checkout (Pro mockup) ───────────────────────── */
+
+.bos-upgrade-demo-banner,
+.bos-checkout .bos-upgrade-demo-banner {
+  background: linear-gradient(180deg, #3a2a14, #2a1f0e);
+  color: #D4B888;
+  border: 1px solid #C9A76A;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin: 0 0 24px;
+  letter-spacing: 0.02em;
+}
+.bos-upgrade-demo-banner code { background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; }
+
+.bos-upgrade-head h1 { font-family: "Playfair Display", Georgia, serif; font-size: 36px; margin: 6px 0 10px; }
+.bos-upgrade-head .accent { color: var(--accent, #FF6B35); }
+.bos-upgrade-active {
+  background: rgba(120, 160, 90, 0.12);
+  border: 1px solid #5a7a3a;
+  color: #b3d28a;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin: 14px 0 24px;
+  font-size: 14px;
+}
+
+.bos-upgrade-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 28px 0 40px;
+}
+.bos-upgrade-tier {
+  position: relative;
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 14px;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+}
+.bos-upgrade-tier--pro {
+  border-color: #C9A76A;
+  background: linear-gradient(180deg, rgba(201,167,106,0.06), transparent);
+  box-shadow: 0 6px 20px rgba(201,167,106,0.1);
+}
+.bos-upgrade-tier-ribbon {
+  position: absolute;
+  top: -10px;
+  right: 16px;
+  background: #C9A76A;
+  color: #1a1208;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.bos-upgrade-tier-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.bos-upgrade-tier-name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  margin-right: 6px;
+}
+.bos-upgrade-tier-price {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text, #1a1a1a);
+}
+.bos-upgrade-tier > p { color: var(--text-mute, #555); margin: 8px 0 14px; }
+.bos-upgrade-tier-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 18px;
+  font-size: 14px;
+  flex: 1;
+}
+.bos-upgrade-tier-list li { padding: 6px 0; }
+.bos-upgrade-cta { margin-top: auto; }
+
+.bos-upgrade-h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  margin: 32px 0 14px;
+}
+.bos-upgrade-matrix th { text-align: center; }
+.bos-upgrade-matrix td:first-child { font-weight: 600; }
+.bos-upgrade-matrix td { text-align: center; }
+.bos-upgrade-matrix td:first-child { text-align: left; }
+
+.bos-upgrade-fine { font-size: 12px; color: var(--text-mute, #555); margin-top: 18px; }
+
+@media (max-width: 880px) {
+  .bos-upgrade-tiers { grid-template-columns: 1fr; }
+}
+
+/* Checkout */
+.bos-checkout-head h1 { font-family: "Playfair Display", Georgia, serif; font-size: 30px; margin: 6px 0 10px; }
+.bos-checkout-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 28px;
+  margin-top: 18px;
+}
+.bos-checkout-form .field { margin-bottom: 14px; }
+.bos-checkout-form .field input {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--bos-line, #e6e1d4); border-radius: 8px; font: inherit;
+}
+.bos-checkout-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.bos-checkout-fieldset {
+  border: 1px dashed var(--bos-line, #e6e1d4);
+  border-radius: 12px;
+  padding: 18px;
+  opacity: 0.85;
+  background: rgba(0,0,0,0.02);
+}
+.bos-checkout-fieldset legend { padding: 0 8px; color: var(--text-mute, #555); font-size: 13px; }
+.bos-checkout-submit { margin-top: 12px; width: 100%; }
+.bos-checkout-fine { font-size: 12px; color: var(--text-mute, #555); margin-top: 10px; }
+
+.bos-checkout-summary {
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 12px;
+  padding: 22px;
+}
+.bos-checkout-summary h3 { margin: 0 0 14px; font-family: "Playfair Display", Georgia, serif; }
+.bos-checkout-line {
+  display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px;
+}
+.bos-checkout-total { font-weight: 700; font-size: 16px; }
+.bos-checkout-summary hr { border: 0; border-top: 1px solid var(--bos-line, #e6e1d4); margin: 10px 0; }
+
+@media (max-width: 760px) { .bos-checkout-grid { grid-template-columns: 1fr; } }
