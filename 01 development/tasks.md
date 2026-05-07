@@ -74,6 +74,11 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       (mint/verify token + buildPreviewSrc + postMessage shapes +
       split-pref) + `<EditorLivePreview>` component skeleton +
       26/26 smoke + chapter #132.
+- [x] **R041 — Published-only slug redirect helper** — DONE 2026-05-07
+      (pulled from Sprint 2). `lib/slugRedirects.ts` (buildRedirectMap
+      with self/conflict/cycle issue detection + resolveRedirect with
+      chain-walk + 8-hop runtime cap + withSlugRename helper) + 23/23
+      smoke + chapter #135.
 
 ### T4 manual (Ed driving)
 
