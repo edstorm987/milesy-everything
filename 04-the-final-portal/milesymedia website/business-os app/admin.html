@@ -79,14 +79,14 @@
       <div class="bos-section-head">
         <div>
           <h2>Health-check questions editor</h2>
-          <p class="muted">Edit the live question set. Save writes to <code>localStorage</code> (key <code>bos.hcQuestions</code>) — the lead-magnet app reads the override on next load. Restore-defaults clears the override.</p>
+          <p class="muted">Edits the live question set. Saves to <code>localStorage['bos.hcQuestions']</code> — the lead-magnet picks it up on next load. Restore-defaults clears the override.</p>
         </div>
         <div>
           <button class="btn btn-secondary" data-admin-restore>Restore defaults</button>
-          <button class="btn btn-primary" data-admin-add-question>+ New question</button>
+          <a href="../lead magnet app/index.html?from=bos" target="_blank" class="btn btn-secondary">Open Health Check ↗</a>
         </div>
       </div>
-      <div class="bos-admin-editor" data-admin-editor></div>
+      <div class="bos-admin-tree" data-admin-tree></div>
     </section>
 
   </main>

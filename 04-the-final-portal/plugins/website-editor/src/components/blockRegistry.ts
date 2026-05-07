@@ -82,6 +82,7 @@ import ThemeSelectorBlock from "./blocks/ThemeSelectorBlock";
 import TimelineBlock from "./blocks/TimelineBlock";
 import VariantPickerBlock from "./blocks/VariantPickerBlock";
 import VideoBlock from "./blocks/VideoBlock";
+import VideoEmbedBlock from "./blocks/VideoEmbedBlock";
 
 // ─── External-plugin block renderers (registered by this plugin) ──────────
 // T2's @aqua/plugin-ecommerce + @aqua/plugin-memberships declare block

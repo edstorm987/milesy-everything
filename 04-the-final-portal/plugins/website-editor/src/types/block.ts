@@ -21,7 +21,7 @@ export type BlockType =
   | "property-strip" | "toggle"
   | "footer" | "navbar" | "timeline" | "form" | "contact-form"
   // media
-  | "image" | "video" | "icon" | "gallery" | "map" | "before-after" | "marquee"
+  | "image" | "video" | "video-embed" | "icon" | "gallery" | "map" | "before-after" | "marquee"
   // commerce
   | "product-card" | "product-grid" | "collection-grid" | "cart-summary"
   | "checkout-summary" | "payment-button" | "order-success" | "variant-picker"
