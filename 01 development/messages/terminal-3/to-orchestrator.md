@@ -185,3 +185,4 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T09:51:00Z] COMMIT: ffe7c24 "T3 R018: editor keyboard shortcuts + Cmd-K palette + ? help modal + 47/47 smoke". 9 files clean. Pushed.
 [2026-05-07T09:51:00Z] DONE: queue file `018-editor-keyboard-shortcuts.md` — round shipped. website-editor smoke 47/47 + tsc-clean. Chapter `04-editor-shortcuts.md` + MASTER row #99 + tasks.md row added. Cross-team: pure components ready for host editor topbar to mount + bind global keydown listener (skeleton in chapter §4). Q-ASSUMED: pure components; meta:true=Cmd+Ctrl cross-platform; modifiers exact-match; Vim mode + multi-select drag out of scope. Commander may archive 018; queue still has 019-020.
 [2026-05-07T09:52:00Z] WAKE-PENDING-ARCHIVE: 018 still lowest. Sleeping 1800s.
+[2026-05-07T10:08:00Z] WAKE-PENDING-ARCHIVE: 018 still lowest. Sleeping 600s.
