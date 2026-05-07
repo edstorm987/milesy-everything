@@ -1594,3 +1594,12 @@ Queue depths: T1=1 (R037 ready) · T2=0 · T3=0 · T4=0.
 Top-level now has **9 MD files** (README + 8 docs) all internally consistent + cross-referenced. No stale references to the deleted `portal/` folder remain. Manager-with-subagent pattern (chapter #158) referenced consistently from CLAUDE/orchestrator/README/tasks/rundown.
 
 `runbooks/deploy.md` STILL has its STALE banner — full rewrite is T6 R001 when reactivated. `web.md` (Mode B) untouched — non-blocking; refresh when web mode reactivates.
+
+[2026-05-07T19:45:00Z] **TRIPLE PARALLEL SHIP via subagents** — Ed's new asks (forgotten password + Google OAuth verify + Incubator-into-BOS):
+- ✅ **Forgotten password flow** @ `613294a` chapter #160 (12/12 smoke). NEW `lib/server/passwordReset.ts` (HMAC + durable nonce, 24h TTL) · NEW `/api/auth/password/{request-reset,reset}` routes · NEW `/login/forgot` + `/login/reset` UI pages · "Forgot password?" link in LoginForm. No-leak generic success on unknown email. setUserPassword bumps sessionRev (kills all devices). Email enqueued via emailEnqueuePort (foundation-pending — falls back to dev console URL when port not wired).
+- ✅ **Google OAuth audit + activation** @ `518d1a6` chapter #150 (12/12 smoke; 22/22 combined w/ existing R9 smoke). Already-working: env-gated start/callback, HMAC-stateless CSRF state, email_verified guard, signup-or-link branching, HttpOnly+Lax+Secure cookie. Newly added: lead→/business-os via resolvePostLoginPath fallback · typed secrets accessors (`googleOauthClientId/Secret/RedirectUri`) · ENV_ALLOWLIST + `.env.example` + deploy.md docs · route-level smoke. Operator action remains: set the 3 GOOGLE_OAUTH_* env vars (Google Cloud Console → OAuth 2.0 Client ID).
+- ✅ **Incubator-inside-BOS** @ `4a5e0cb` chapter #159 (10-step manual checklist). Strategy: rewrite over physical move — `/business-os/incubator` as canonical, `/incubator/:path+` 307s, bare `/incubator` server-redirects. BOS sidebar gains Setup section showing 5 phases · localStorage `bos.incubatorComplete` gates BOS landing (false → routes to incubator first; true → main dashboard with "Setup complete ✓" pill). Zero T1/T2 handoffs — pure T4 work.
+
+3 chapters · 34 new smoke tests · `tsc --noEmit` clean across all three. ~25 min wall-clock vs days sequentially. Manager-with-subagent pattern (chapter #158) paying off exactly as predicted.
+
+Sprint 2.5 status: 17 done · 1 queued (HC→leads-pipeline tracking verification, post foundation glue) · 2 open (employee persona + perf pass).
