@@ -1296,3 +1296,13 @@ Note re: earlier `git pull --rebase` error ("Cannot rebase onto multiple branche
 SLEEP: 270s.
 
 [2026-05-07T14:35:00Z] WAKEUP: cycle 147 — autonomous. Quiet. T3/039 already archived last cycle (T3's late DONE log at 19:42Z just adds detail — round was already shipped). T1 still mid-R025 multi-agency-users. T2 still mid-R020 feedback-loops. T4 quiet. SLEEP: 270s.
+
+[2026-05-07T14:45:00Z] WAKEUP: cycle 148 — autonomous. **Double DONE**:
+- T1 R025 multi-agency users (`agencyIds[]` schema dual-write + lazy migration + assertTenantScope helper + 10/10 smoke) DONE @ 2f4231e ch#131. **🎉 SPRINT 1 T1 COMPLETE** — R022/R023/R024/R025 all shipped. T1 chains to R026 (Sprint 2 — Topbar agency switcher).
+- T2 R020 feedback-loops (Pulse 1-10 + TestimonialRequest state machine + 18/18) DONE @ 5847bbe ch#131. T2 chains to R021 public-funnel (WS-B critical — depends on T1 R023 lead-role which is done ✅).
+
+Archived T1/025 + T2/020. Queue depths: T1=5 (R026-R030 Sprint 2/3) · T2=6 (R021-R026) · T3=4 · T4=manual · T5=3.
+
+Ship-gate progress: WS-A 3/3 ✅ · WS-C R1 ✅. **5/9 done.** Sprint 1 ahead of pace.
+
+SLEEP: 270s.
