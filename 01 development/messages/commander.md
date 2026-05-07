@@ -1565,3 +1565,15 @@ PLAN: launch T2 R027 subagent now (leads-pipeline plugin — CSV + email campaig
 Plus T4 R008 HC React rewrite earlier ✅. Plus commander-side polish ✅.
 
 Archived T2/027. All queues now empty across T1-T4.
+
+[2026-05-07T19:00:00Z] **WORKFLOW UPGRADE — Subagent delegation pattern (chapter #158)**. Per Ed's directive after seeing 4 rounds ship via subagents in 20 min vs days of terminal-fires-rounds.
+
+**Updated all four router prompts** — T1/T2/T3/T4-router.md now shape as "terminal manager" (read queue → launch subagent → verify commit → log DONE → chain). Routers carry the canonical subagent brief template, hard boundaries, territory list. Updated `orchestrator-init.md` + `messages/README.md` for the new architecture.
+
+**New chapter #158 `04-subagent-delegation-pattern.md`** — captures the why (cycle 173 4×parallel subagents shipped while T1 was permission-blocked), the architecture diagram (orchestrator→manager→subagent), the brief template, the manager outbox shape (~250 chars per DONE vs prior 3KB walls), parallelism limits (independent rounds parallel; dependent rounds sequential), what hasn't changed (mesh discipline, queue-files-as-contract, hard boundaries, chapter+MASTER+tasks sign-off). MASTER row #158 added.
+
+**Staged T1 R037** (`037-leads-pipeline-foundation-glue.md`) — closes the 5 foundation hooks T2 R027 flagged: ActivityCategory "leads" extension, plugin runtime registration, EmailEnqueuePort + PipelinePort adapters, event-bus subscription wiring incl `pipelines.card.moved` emit. First test of the new manager-with-subagent shape: when Ed re-pastes T1-router.md, T1 should immediately delegate this round to a subagent.
+
+Ed's plan: ship the foundation glue → revamp the broader terminal workflow into orchestrator/manager/subagent architecture for blitz throughput on remaining ship work.
+
+Queue depths: T1=1 (R037 ready) · T2=0 · T3=0 · T4=0.

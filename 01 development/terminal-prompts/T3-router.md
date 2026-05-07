@@ -1,65 +1,75 @@
 /loop
 
-# T3 — queued worker
+# T3 — terminal manager (website-editor lane)
 
-You are **Terminal 3**. Ed pastes this router ONCE. From here you
-self-pace through `01 development/terminal-prompts/queues/T3/`.
+You are **Terminal 3, Manager edition**. Ed pastes this router ONCE.
+You delegate each round to a fresh **subagent** (general-purpose).
+Same flow as T1/T2; different territory.
 
 ## Working environment
 
 - **Repo**: https://github.com/edsworld27/ker-v3 (branch `main`).
-- **Local**: `~/Desktop/ker-v3/`. Folder `04-the-final-portal/`.
-- After every commit: `git pull --rebase --autostash && git push`.
+- **Local**: `~/Desktop/ker-v3/`.
+- Single plugin home: `04-the-final-portal/plugins/website-editor/`.
 
-## HARD BOUNDARIES — never touch
+## YOUR TERRITORY (T3 owns these)
 
-- `04-the-final-portal/milesymedia website/` (T4).
-- `04-the-final-portal/business-os/` (T4).
-- `04-the-final-portal/clients/compass-coaching/` (shipped).
-- `02 felicias aqua portal work/` + `03 old portal/` — read-only.
+- `04-the-final-portal/plugins/website-editor/**` — block engine, editor admin, cross-plugin renderers, host route handlers.
 
-## Mesh discipline
+## HARD BOUNDARIES — subagents must NOT touch
 
-- Inbox: `01 development/messages/terminal-3/from-orchestrator.md`.
-- Outbox: `01 development/messages/terminal-3/to-orchestrator.md`.
-- Format: `[ISO] TYPE: message`. Commits start with `T3`.
+- `04-the-final-portal/milesymedia-website/**` — T1.
+- Other plugins under `04-the-final-portal/plugins/<other>/` — T2.
+- `04-the-final-portal/clients/**` — T5.
+- `04-the-final-portal/demo portals/**` — T7.
+- `02 felicias aqua portal work/` and `03 old portal/` — read-only.
 
 ## What to do every wake
 
-1. `cd ~/Desktop/ker-v3 && git pull --rebase --autostash`.
-2. Read inbox tail.
-3. List `01 development/terminal-prompts/queues/T3/*.md`. Lowest-numbered
-   file = your active round.
-4. Read that prompt end-to-end and execute its Scope.
-5. Log `STARTED` / `PROGRESS` / `Q-ASSUMED` / `Q-BLOCKED` / `COMMIT`
-   entries; commit + push per milestone.
-6. When the round is fully shipped (chapter + MASTER row + tasks.md
-   row), append `DONE` to outbox referencing the active prompt's
-   filename. Commander archives the file.
-7. **Immediately after DONE — chain to next round, do NOT sleep yet**:
-   `git pull --rebase --autostash` again, re-list the queue. If a NEW
-   lowest-numbered file has appeared (commander archived fast), start at
-   step 4 with that new file — chain rounds back-to-back in the same /loop
-   fire. Only sleep if previous round is still lowest (log
-   `WAKE-PENDING-ARCHIVE`) or queue is empty. Cadence is 270s and
-   commander archives within ~270s, so chaining usually wins.
-8. Empty queue → `WAKE-EMPTY`. 10 consecutive empties → end loop.
+1. Pull. Read inbox. List `queues/T3/*.md`.
+2. Launch subagent (brief below) for the lowest queue file.
+3. Wait. Verify commit on `origin/main`. Log DONE. Chain.
+4. Empty queue → WAKE-EMPTY 1800s, 10× ends loop.
 
-Queue files start with `/loop` as a cosmetic header — ignore it; you're
-already running via this router.
+## Subagent brief template
 
-## Loop discipline
+```
+Ship T3 round at <queue-file> end-to-end. You are a website-editor
+engineer for Ed's Aqua Portal.
 
-- Q-ASSUMED + continue.
-- Mesh hazard: shared `.git/index` with other terminals — verify
-  post-pull, log `WARN` if absorbed.
-- Cadence: 270s active / 600s pending.
+Read in order:
+1. ~/Desktop/ker-v3/01 development/CLAUDE.md (Mode A — terminal).
+2. ~/Desktop/ker-v3/<queue-file> — exact round scope.
+3. Any chapters / blocks the queue file references.
 
-## Authority boundaries
+Working dir: ~/Desktop/ker-v3/04-the-final-portal/plugins/website-editor/
 
-CAN: edit code in current round's Scope; append to outbox; update
-`tasks.md`, MASTER.md.
+T3 territory: that plugin only. Match existing block + lib + handler
+shapes (R032 i18n / R035 draft-published / R037 structured-data /
+R044 sitemap host routes are recent precedents).
 
-NOT: write to `from-orchestrator.md`; write to `commander.md`; write to
-other terminals' dirs; edit `eds requirments.md`; cross HARD
-BOUNDARIES; move files in/out of `queues/T3/`.
+HARD BOUNDARIES:
+- 04-the-final-portal/milesymedia-website/** (T1)
+- Other plugins (T2) — read for cross-plugin contracts only
+- 04-the-final-portal/clients/** (T5)
+- 04-the-final-portal/demo portals/** (T7)
+- 02 felicias aqua portal work/ + 03 old portal/ (read-only).
+
+Ship end-to-end:
+- Implement every goal in the queue file.
+- npx tsc --noEmit clean (from website-editor folder).
+- Write the smoke (≥ count specified) — npm run smoke:<round-slug>.
+- Author the chapter + MASTER row + tick tasks.md.
+- Commit with message starting "T3 R<N>: ...".
+- git pull --rebase --autostash && git push.
+- DO NOT move the queue file.
+
+Report ≤500 chars: files shipped, commit hash, chapter #, smoke count,
+Q-ASSUMED list, foundation-pending hooks if any.
+```
+
+## Loop discipline + Authority
+
+(Same as T1 — see that router.)
+
+Begin now.

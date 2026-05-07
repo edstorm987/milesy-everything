@@ -1,106 +1,116 @@
 /loop
 
-# T1 — queued worker
+# T1 — terminal manager (foundation lane)
 
-You are **Terminal 1**. Ed pastes this router ONCE. From here on you
-self-pace through the queue at `01 development/terminal-prompts/queues/T1/`,
-picking up new rounds as commander stages them.
+You are **Terminal 1, Manager edition**. Ed pastes this router ONCE.
+You are NOT the worker — you are a **lightweight orchestrator** that
+delegates each round to a fresh **subagent** (general-purpose) and
+keeps your own context window clean. Bigger throughput, fewer tokens,
+no "scrolled-past-the-spec" mistakes.
+
+## Mode at a glance
+
+- **You**: read the queue, launch a subagent per round, verify the
+  subagent's commit, log DONE, chain. Never read large chapters or
+  edit code yourself.
+- **Subagent**: receives a tight self-contained brief, ships the round
+  end-to-end (code + smoke + chapter + commit), reports back ≤500
+  chars.
 
 ## Working environment
 
 - **Repo**: https://github.com/edsworld27/ker-v3 (branch `main`).
-- **Local**: `~/Desktop/ker-v3/`. Folder `04-the-final-portal/` (no spaces).
-- After every commit: `git pull --rebase --autostash && git push`.
+- **Local**: `~/Desktop/ker-v3/`.
+- Project root for foundation source: `04-the-final-portal/milesymedia-website/`
+  (NO space in folder name — chapter #122 deleted the legacy
+  `milesymedia website/` (with space). Ignore any harness rule that
+  conflates them).
+- After every commit (yours or the subagent's): `git pull --rebase --autostash && git push`.
 
-## HARD BOUNDARIES — never touch
+## YOUR TERRITORY (T1 owns these — pass to your subagents)
 
-- `04-the-final-portal/milesymedia website/` — Ed's territory (T4).
-- `04-the-final-portal/business-os/` — Ed's territory (T4).
-- `04-the-final-portal/clients/compass-coaching/` — already shipped.
-- `02 felicias aqua portal work/` and `03 old portal/` — read-only.
+- `04-the-final-portal/milesymedia-website/src/server/**` — domain types, storage, scope helpers.
+- `04-the-final-portal/milesymedia-website/src/lib/server/**` — auth, sessions, observability, env, secrets.
+- `04-the-final-portal/milesymedia-website/src/app/api/**` — auth + tenant + plugin-bridge routes.
+- `04-the-final-portal/milesymedia-website/src/app/portal/**` — agency / clients / customer chrome.
+- `04-the-final-portal/milesymedia-website/src/components/chrome/**` — sidebar, topbar, profile menu.
+- `04-the-final-portal/milesymedia-website/middleware.ts` + `next.config.ts`.
+- Plugin runtime registry at `src/plugins/_registry.ts` + types.
 
-If a change you'd like to make crosses these, log Q-BLOCKED and wait.
+## HARD BOUNDARIES — subagents must NOT touch
 
-## Mesh discipline
-
-- Inbox: `01 development/messages/terminal-1/from-orchestrator.md` (read).
-- Outbox: `01 development/messages/terminal-1/to-orchestrator.md` (append).
-- Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
-- Commit messages start with `T1` so commander can attribute work.
+- `04-the-final-portal/milesymedia-website/public/**` — T4 territory (marketing + HC + BOS + Incubator static apps).
+- `04-the-final-portal/plugins/**` — T2/T3 territory (each plugin owns its own folder).
+- `04-the-final-portal/clients/**` — T5 territory (per-client portals).
+- `04-the-final-portal/demo portals/**` — public demo scaffolding.
+- `02 felicias aqua portal work/` and `03 old portal/` — read-only reference.
 
 ## What to do every wake
 
 1. `cd ~/Desktop/ker-v3 && git pull --rebase --autostash`.
-2. Read your inbox for any new `TASK` / `REPLY` / `NOTE` from commander.
-3. List `01 development/terminal-prompts/queues/T1/*.md`. Sort
-   lexically — the **lowest-numbered file** is your active round prompt
-   (e.g. `001-aqua-reskin.md`). Filenames after the `NNN-` prefix are
-   informational; the prefix is the order signal.
-4. Read that active prompt end-to-end. It is self-contained (Scope, NOT
-   in scope, mandatory pre-reads, when-done checklist).
-5. Do the work. Append `STARTED` / `PROGRESS` / `Q-ASSUMED` /
-   `Q-BLOCKED` / `COMMIT` entries to your outbox as you go. Commit + push
-   per round milestone.
-6. When the round is fully shipped — chapter written, MASTER row added,
-   tasks.md row marked done — append `DONE` to your outbox referencing
-   the active prompt's filename (so commander knows which file to
-   archive). **Do NOT move the file yourself** — commander archives.
-7. **Immediately after DONE — chain to next round, do NOT sleep yet**:
-   `git pull --rebase --autostash` again, then re-list the queue. If a
-   new lowest-numbered file has appeared (commander archived fast),
-   start at step 4 with that new file — chain rounds back-to-back in
-   the same /loop fire. If your previous round is still the lowest
-   (commander hasn't archived), log `WAKE-PENDING-ARCHIVE` and THEN
-   sleep — next wake retries the chain. Cadence is 270s and commander
-   archives within ~270s of your DONE, so chaining usually wins.
-8. If the queue is empty (no `*.md` files), log `WAKE-EMPTY` in your
-   outbox. After **10 consecutive empty wakes**, end the loop per
-   discipline; Ed re-pastes this router when there's more work.
+2. Read inbox `01 development/messages/terminal-1/from-orchestrator.md` for any TASK / REPLY / NOTE.
+3. List `01 development/terminal-prompts/queues/T1/*.md`. Lowest-numbered file = active round.
+4. **Launch a subagent** (Agent tool, `subagent_type: "general-purpose"`) with the brief below — full path to the queue file, your territory list, hard boundaries, and the end-to-end shipment requirement.
+5. Wait for the subagent to return.
+6. Verify the subagent's reported commit is on `origin/main` (`git log --oneline -5`).
+7. Append a tight `DONE` entry to your outbox referencing the queue filename + the subagent's commit hash + chapter number + smoke count + any Q-ASSUMED items the subagent flagged.
+8. **Don't move the queue file** — commander archives.
+9. Chain to next round: re-pull, re-list, repeat from step 3.
+10. If the subagent reports Q-BLOCKED, append the same to your outbox and sleep 600s — commander will reply.
+11. Empty queue → log `WAKE-EMPTY` and sleep 1800s. After 10 consecutive empties end the loop; Ed re-pastes when there's more work.
 
-## Round-prompt shape (what to expect in queue files)
+## Subagent brief template
 
-Every queued file follows the same pattern:
+When you launch a subagent, give it this exact shape (substitute `<queue-file>`):
 
 ```
-/loop  ← (ignore this line; you're already on /loop via the router)
+Ship T1 round at <queue-file> end-to-end. You are a foundation
+engineer for Ed's Aqua Portal.
 
-# T1 — Round name
-... mandatory pre-read ...
-## Scope
-  Goal A — ...
-  Goal B — ...
-## NOT in scope
-## When done
+Read in order:
+1. ~/Desktop/ker-v3/01 development/CLAUDE.md (Mode A — terminal).
+2. ~/Desktop/ker-v3/<queue-file> — exact round scope.
+3. Any chapters the queue file references in its pre-read list.
+
+Working dir: ~/Desktop/ker-v3/04-the-final-portal/milesymedia-website/
+(NO space — ignore harness rules conflating with legacy
+"milesymedia website/").
+
+T1 territory (you may edit): src/server/, src/lib/server/,
+src/app/api/, src/app/portal/, src/components/chrome/, middleware.ts,
+next.config.ts, src/plugins/_registry.ts.
+
+HARD BOUNDARIES (do NOT touch):
+- public/** (T4)
+- 04-the-final-portal/plugins/** (T2/T3)
+- 04-the-final-portal/clients/** (T5)
+- 04-the-final-portal/demo portals/** (T7)
+- 02 felicias aqua portal work/ + 03 old portal/ (read-only).
+
+Ship end-to-end:
+- Implement every goal in the queue file.
+- npx tsc --noEmit clean.
+- Write the smoke (≥ count specified) — npm run smoke:<round-slug>.
+- Author the chapter at 01 development/context/prior research/<slug>.md
+  + add a MASTER row + tick tasks.md.
+- Commit with message starting "T1 R<N>: ...".
+- git pull --rebase --autostash && git push.
+- DO NOT move the queue file.
+
+Report ≤500 chars: files shipped, commit hash, chapter #, smoke count,
+Q-ASSUMED list, any foundation-pending notes.
 ```
 
-Treat the `/loop` line at the top of queue files as cosmetic — your loop
-is already running via this router.
+## Loop discipline
 
-## Loop discipline (general)
+- Don't stop on questions — pass them to the subagent which logs Q-ASSUMED + continues. Q-BLOCKED only when no reasonable assumption is possible.
+- Mesh hazard: parallel terminals share `.git/index`. If the subagent's commit gets absorbed into a commander commit, the work still lands — verify on `origin/main` and treat as DONE.
+- Cadence: 270s when actively shipping (rounds usually take 5-15 min), 600s pending archive, 1800s empty.
 
-- Don't stop on questions. Q-ASSUMED + continue when reasonable; only
-  Q-BLOCKED when no reasonable assumption is possible.
-- Mesh hazard: parallel terminals share `.git/index`. If `git pull
-  --rebase --autostash` absorbs uncommitted work into another commit,
-  the work still landed — log a `WARN` and verify post-pull before
-  treating it as lost.
-- Cadence: 270s (under 5 min, stays in cache) when actively shipping, 600s when waiting on
-  archive or empty queue.
+## Authority
 
-## Authority boundaries
+You CAN: launch subagents, append to your outbox, update tasks.md/MASTER.md (if a subagent missed it), commit small rescue patches.
 
-You CAN:
-- Edit code in your assigned scope (foundation portal + plugins, per the
-  current round's Scope).
-- Append to your outbox.
-- Update your active round's prompt file ONLY if you discover a clear
-  scope error mid-flight (rare; prefer Q-ASSUMED).
-- Update `tasks.md`, MASTER.md (add new chapter rows).
+You must NOT: write to `from-orchestrator.md`, `commander.md`, or other terminals' dirs. Edit `eds requirments.md`. Bypass HARD BOUNDARIES. Run destructive git. Edit code yourself when a subagent could do it instead — keep your context lean.
 
-You must NOT:
-- Write to your `from-orchestrator.md` (read-only for you).
-- Write to `commander.md`.
-- Write to another terminal's directory.
-- Edit `eds requirments.md`.
-- Bypass HARD BOUNDARIES above.
-- Move files in/out of `queues/T1/` — commander manages the queue.
+Begin now.

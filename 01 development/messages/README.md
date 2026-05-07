@@ -1,10 +1,17 @@
 # Messages — autonomous comms hub
 
-**Six** terminals (T1 / T2 / T3 / T4 / T5 / T6) and one chief
-commander operate asynchronously on this repo. They coordinate by
-appending to log files in this folder. The chief commander runs on a
-self-paced `/loop` that wakes periodically, pulls the repo, reads the
-logs, responds, and re-schedules.
+**Four active terminal MANAGERS** (T1 / T2 / T3 / T4 — each
+delegating round work to fresh subagents per chapter #158) plus a
+chief commander operate asynchronously on this repo. T5/T6/T7
+parked. They coordinate by appending to log files in this folder.
+The chief commander runs on a self-paced `/loop` that wakes
+periodically, pulls the repo, reads the logs, responds, and
+re-schedules.
+
+Workflow: orchestrator → manager → subagent. Managers read queues
+and launch general-purpose subagents per round; subagents do the
+reading, coding, smoke, chapter, commit. Manager outboxes stay
+short — one DONE line per round referencing the subagent's commit.
 
 Terminal split (current — refreshed 2026-05-07 for Ship Plan v1):
 - **T1** — foundation (auth / chrome / plugin runtime / DB / scope helpers). Sprint 1 owner of WS-A (auth completion) + WS-C (multi-agency core).

@@ -8,19 +8,31 @@ autonomous mesh.
 
 ## You are
 
-The **chief commander** coordinating **4 active worker terminals**
-(T1 / T2 / T3 / T4) running on Ed's Mac. They build code; you coordinate.
+The **chief commander** coordinating **4 active terminal MANAGERS**
+(T1 / T2 / T3 / T4) running on Ed's Mac. Each manager delegates the
+actual round work to fresh **subagents** (general-purpose). You set
+direction + stage rounds; managers route work; subagents execute.
+Cleaner main-thread context, parallel throughput.
 
-- **T1** — foundation + agency-shell (Ed's home, per-client overview, sidebar)
-- **T2** — plugins (every new plugin goes here)
-- **T3** — website-editor (blocks, templates, page builder)
-- **T4** — Milesy Media ecosystem + client-facing **Incubator-phase portal**
-  (lives at `04-the-final-portal/milesymedia website/`, single :3033 host
-  shared with HC + BOS). T1/T2/T3 still must NOT touch T4's territory.
+- **T1** — foundation + agency-shell. Single Next.js host at
+  `04-the-final-portal/milesymedia-website/` (NO space — chapter
+  #122 deleted the legacy `milesymedia website/`). Auth · plugin
+  runtime · scope · DB · chrome.
+- **T2** — plugins. Every new plugin scaffolds at `plugins/<id>/`.
+- **T3** — website-editor. Blocks · page builder · host route
+  handlers · sitemap/JSON-LD/redirects.
+- **T4** — Marketing + ecosystem. `public/_marketing` · HC · BOS ·
+  Incubator · niche pages · SiteShell · Resource Finder.
 
-**Other terminals**:
-- **T5** — paused (Felicia / Luv & Ker; resume after agency OS for new clients works)
-- **T6** — deferred (production deploy + alerts; resume when ready to ship)
+**Parked terminals** (queues preserved at `queues/T{5,6,7}/`):
+- **T5** — first real client (Felicia / Luv & Ker). Reactivates Sprint 3.
+- **T6** — production deploy + observability. Reactivates Sprint 3.
+- **T7** — niche-agency satellites (Phase 12 R3+). Post-ship.
+
+**Workflow** (chapter `04-subagent-delegation-pattern.md`): managers
+read queue → launch subagent with tight brief → verify commit on
+origin/main → log DONE → chain. Subagents do the reading, the coding,
+the smoke, the chapter, the commit. Managers stay lean.
 
 Read `01 development/orchestrator.md` for your full protocol.
 
