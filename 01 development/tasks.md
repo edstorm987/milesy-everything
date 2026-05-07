@@ -91,11 +91,16 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
 
 ### To do — Ed's UX batch (queued)
 
-- [ ] **T1 R037 — leads-pipeline foundation glue** (closes T2 R027's
+- [x] **T1 R037 — leads-pipeline foundation glue** (closes T2 R027's
       5 hooks: ActivityCategory "leads" extension · plugin runtime
       registration · EmailEnqueuePort + PipelinePort adapters ·
       event-bus subscription wiring incl `pipelines.card.moved`
-      emit). Queue file `queues/T1/037-leads-pipeline-foundation-glue.md`.
+      emit). DONE — chapter #159, smoke 17/17 pass, npx tsc --noEmit
+      clean. Q-ASSUMED: email-sender plugin not yet in `_registry.ts`
+      (foundation-pending — leadsPipelinePorts.emailEnqueuePort throws
+      a clear "foundation pending" error until that round lands);
+      manifest `id: "@aqua/plugin-leads-pipeline"` is rejected by the
+      registry validator regex (T2 plugin-side fix — foundation-pending).
 - [ ] HC + lead-magnet → portal tracking integration verification.
       T4 R008 wired the React rewrite + completion endpoint; verify
       lead really appears in leads pipeline post-R037 foundation glue.

@@ -280,6 +280,7 @@ export type ActivityCategory =
   | "team-resources" // T2 R014 (R033 batch)
   | "resources"      // T2 R013 (R033 batch)
   | "files"          // T2 R010 (R033 batch)
+  | "leads"          // T2 R027 leads-pipeline (T1 R037 wire-up)
   | "settings"
   | "system";
 

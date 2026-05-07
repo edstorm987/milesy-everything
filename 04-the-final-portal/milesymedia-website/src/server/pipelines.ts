@@ -18,6 +18,7 @@ import "server-only";
 import crypto from "crypto";
 import { getState, mutate } from "./storage";
 import { listClients, getClient } from "./tenants";
+import { emit as emitEvent } from "./eventBus";
 import type {
   Pipeline,
   PipelineCard,
@@ -339,6 +340,67 @@ export function addCard(
     state.pipelineCards[id] = saved;
   });
   return saved;
+}
+
+// T1 R037 — column-move helper. Updates `columnId` + emits
+// `pipelines.card.moved` on the foundation event bus so subscribed
+// plugins (e.g. `@aqua/plugin-leads-pipeline`) can react to lead-card
+// promotions. Returns the updated card or null when not found / out of
+// scope. Idempotent: a no-op move (same column) does not re-emit.
+export interface MoveCardResult {
+  card: PipelineCard;
+  fromColumn: string;
+  toColumn: string;
+}
+
+export function moveCard(
+  agencyId: string,
+  cardId: string,
+  toColumnId: string,
+): MoveCardResult | null {
+  const ctx: {
+    result: MoveCardResult | null;
+    pipelineAgencyId: string | null;
+    cardKind: string | null;
+    leadIdSnap: string | undefined;
+  } = { result: null, pipelineAgencyId: null, cardKind: null, leadIdSnap: undefined };
+  mutate(state => {
+    const card = state.pipelineCards[cardId];
+    if (!card) return;
+    const pipeline = state.pipelines[card.pipelineId];
+    if (!pipeline || pipeline.agencyId !== agencyId) return;
+    if (!pipeline.columns.find(c => c.id === toColumnId)) return;
+    ctx.pipelineAgencyId = pipeline.agencyId;
+    ctx.cardKind = card.kind;
+    if (card.kind === "lead") {
+      ctx.leadIdSnap = (card.lead as unknown as { leadId?: string }).leadId;
+    }
+    if (card.columnId === toColumnId) {
+      ctx.result = { card, fromColumn: card.columnId, toColumn: toColumnId };
+      return;
+    }
+    const fromColumnId = card.columnId;
+    const order = Object.values(state.pipelineCards)
+      .filter(c => c.pipelineId === card.pipelineId && c.columnId === toColumnId).length;
+    const updated = { ...card, columnId: toColumnId, order, updatedAt: Date.now() } as PipelineCard;
+    state.pipelineCards[cardId] = updated;
+    ctx.result = { card: updated, fromColumn: fromColumnId, toColumn: toColumnId };
+  });
+  const finalResult = ctx.result;
+  if (finalResult && ctx.pipelineAgencyId && finalResult.fromColumn !== finalResult.toColumn) {
+    const pipeline = getState().pipelines[finalResult.card.pipelineId];
+    const fromLabel = pipeline?.columns.find(c => c.id === finalResult.fromColumn)?.label ?? finalResult.fromColumn;
+    const toLabel = pipeline?.columns.find(c => c.id === finalResult.toColumn)?.label ?? finalResult.toColumn;
+    emitEvent({ agencyId: ctx.pipelineAgencyId }, "pipelines.card.moved" as never, {
+      cardKind: ctx.cardKind,
+      cardId,
+      fromColumn: fromLabel,
+      toColumn: toLabel,
+      agencyId: ctx.pipelineAgencyId,
+      leadId: ctx.leadIdSnap,
+    });
+  }
+  return finalResult;
 }
 
 export function listCards(pipelineId: string): PipelineCard[] {

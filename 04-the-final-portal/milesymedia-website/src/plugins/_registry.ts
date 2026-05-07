@@ -24,6 +24,7 @@ import affiliatesManifest from "@aqua/plugin-affiliates";
 import agencyFinanceManifest from "@aqua/plugin-agency-finance";
 import agencyMarketingManifest from "@aqua/plugin-agency-marketing";
 import clientCrmManifest from "@aqua/plugin-client-crm";
+import leadsPipelineManifest from "@aqua/plugin-leads-pipeline";
 
 // Side-effect imports — each side-effect file binds the plugin's
 // register-once foundation adapter to T1's modules at boot. Order is
@@ -36,6 +37,7 @@ import "./foundation-adapters/affiliatesFoundation";
 import "./foundation-adapters/agencyFinanceFoundation";
 import "./foundation-adapters/agencyMarketingFoundation";
 import "./foundation-adapters/clientCrmFoundation";
+import "./foundation-adapters/leadsPipelineFoundation";
 
 // R6 cross-plugin event-bus subscriber registrations. Each plugin's
 // adapter file declared what it cares about; the side-effect import
@@ -64,6 +66,7 @@ const PLUGINS: AquaPlugin[] = [
   agencyFinanceManifest as unknown as AquaPlugin,
   agencyMarketingManifest as unknown as AquaPlugin,
   clientCrmManifest as unknown as AquaPlugin,
+  leadsPipelineManifest as unknown as AquaPlugin,
 ];
 
 // Validate every shipped plugin once on module load. Authoring mistakes

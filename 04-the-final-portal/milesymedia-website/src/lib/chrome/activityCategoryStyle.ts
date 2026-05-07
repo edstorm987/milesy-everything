@@ -47,6 +47,7 @@ const STYLES: Record<ActivityCategory, CategoryStyle> = {
   "team-resources": { color: "#0284c7", icon: "📚", label: "Team docs" },
   resources:        { color: "#0d9488", icon: "🌊", label: "Aqua docs" },
   files:            { color: "#737373", icon: "📁", label: "Files" },
+  leads:            { color: "#10b981", icon: "🌱", label: "Leads" },
   settings:         { color: "#64748b", icon: "⚙️", label: "Settings" },
   system:           { color: "#334155", icon: "⚡", label: "System" },
 };
@@ -121,6 +122,7 @@ export const CATEGORY_FILTER_ORDER: readonly ActivityCategory[] = [
   "team-resources",
   "resources",
   "files",
+  "leads",
   "plugin",
   "settings",
   "system",

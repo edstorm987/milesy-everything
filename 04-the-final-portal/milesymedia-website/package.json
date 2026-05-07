@@ -35,6 +35,7 @@
     "smoke:activity-category-batch": "tsx --test scripts/smoke-activity-category-batch.test.ts",
     "smoke:profile-picture-upload": "tsx --test scripts/smoke-profile-picture-upload.test.ts",
     "smoke:pipelines-refactor": "tsx --test scripts/smoke-pipelines-refactor.test.ts",
+    "smoke:leads-pipeline-foundation-glue": "tsx --test scripts/smoke-leads-pipeline-foundation-glue.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {
@@ -45,6 +46,7 @@
     "@aqua/plugin-client-crm": "file:../plugins/client-crm",
     "@aqua/plugin-ecommerce": "file:../plugins/ecommerce",
     "@aqua/plugin-fulfillment": "file:../plugins/fulfillment",
+    "@aqua/plugin-leads-pipeline": "file:../plugins/leads-pipeline",
     "@aqua/plugin-memberships": "file:../plugins/memberships",
     "@aqua/plugin-website-editor": "file:../plugins/website-editor",
     "next": "16.2.4",
