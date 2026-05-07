@@ -341,3 +341,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 [2026-05-07T10:11:00Z] NOTE: inline embeds for HC mini-experiments — pub test (canned query), niche-search (editable input), 5-sec site test (sandboxed iframe + countdown veil); DuckDuckGo html lite for search since Google blocks embedding; honest caption + new-tab fallback. Code absorbed into commander cycle-124 commit 246d8c3.
 
 [2026-05-07T10:19:56Z] NOTE: SEO Beginner arc redesigned around sticky embed — pub-test, eyes Q, reveal, and user-search all share one persistent iframe. Added two reusable step types: lever-calc (LTV × user-guessed enquiries → honest £/yr) and mental-note (slot.painAcknowledged[tag] for warm-lead detection in admin review). Sequence: search → realise → quantify → mental-note → GMB. Commit b02c78f.
+
+[2026-05-07T10:25:04Z] NOTE: branching HC — added skipIf(slot) step predicate + nextActive/prevActive nav helpers. Website Beginner opens with presence gate; Yes/No/Building each get distinct arcs. Quickwins gated by site-presence. SEO follow-ups: keyword-vocab text capture if user invisible in own search; GMB-claim mental-note if missing. Commit 8077363.

@@ -1041,6 +1041,43 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R036 — Sitemap.xml + robots.txt advanced generators** — DONE.
+      R014 shipped minimal sitemap/robots used by R033 static-export.
+      R036 adds production-grade pair: per-page changefreq +
+      priority, per-locale `<xhtml:link rel="alternate"
+      hreflang="…">` from R032 i18n, redirect/private/draft/portal-
+      variant/underscore filtering, basic well-formedness validator.
+      NEW `src/lib/sitemap.ts` (alongside R014's server/sitemap.ts):
+      `selectSitemapPages(pages, {redirectFromSlugs?})` (8 filter
+      rules, Set or array), `buildSitemap(pages, opts)` (per-page
+      lastmod ISO + changefreq + priority clamped [0,1] + per-locale
+      xhtml:link alternates + x-default; xmlns:xhtml only declared
+      when locales present), `buildRobotsTxt({sitemapUrl, disallow?,
+      crawlDelay?, userAgent?, extraLines?})` (defaults /admin
+      /embed /api; leading-slash auto-add), `validateSitemap(xml)`
+      (regex-based: decl + urlset namespace + balanced <url> blocks
+      + one <loc> per block + generic-tag balance via (?<!\/)>
+      lookbehind to ignore self-closing). Smoke 45/45: filter
+      exclusions × 8 + Set form + sitemap shape + priority clamp +
+      i18n hreflang/x-default + & escape + validator passes/rejects
+      + robots defaults/overrides/crawl-delay/extras + empty sitemap
+      valid. package.json chain extended. tsc clean.
+      NOT in scope: image/video sitemap extensions · per-page
+      lastmod from version history · multi-sitemap index (>50k
+      URLs) · auto-ping Google/Bing · host Next route wiring (R+1
+      one-liner).
+      Q-ASSUMED: lib/sitemap.ts (new) + server/sitemap.ts (R014)
+      coexist — two modules so static-export (byte-stable dep-free)
+      doesn't get pulled into i18n/redirect deps; R+1 refactor R014
+      to call R036. Regex validateSitemap not full XML parser —
+      catches smoke failure modes without node:xml/sax dep;
+      xmllint --noout is the CI gate. Self-closing tags ignored via
+      `(?<!\/)>`. `/api /embed /admin` host-canonical defaults;
+      override via `disallow: []`.
+      Files: `04-the-final-portal/plugins/website-editor/src/lib/
+      sitemap.ts` (NEW) · `__smoke__/r036-sitemap-robots.test.ts`
+      (NEW) · `package.json` chain · `01 development/context/prior
+      research/04-sitemap-robots.md` (NEW chapter) · MASTER #118.
 - [x] **T3 R035 — Draft / published state separation** — DONE.
       Until R035 every editor save went live. R035 splits: edits
       land in `draftBlocks`; explicit Publish promotes draft →
