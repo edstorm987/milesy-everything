@@ -25,6 +25,9 @@ export interface EditorPageSeo {
   twitterCard?: "summary" | "summary_large_image";
   schemaJsonLd?: string;
   noIndex?: boolean;
+  // R014 — SEO surface completion.
+  canonical?: string;        // explicit canonical URL (defaults to page absolute URL)
+  keywords?: string[];       // optional keyword list, comma-joined for the meta tag
 }
 
 export interface EditorPage {

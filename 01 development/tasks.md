@@ -470,6 +470,39 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R014 — SEO meta + favicon + sitemap + OG card** — DONE.
+      `EditorPageSeo` (R002+) already covered most Goal A; R014
+      added `canonical?: string` + `keywords?: string[]` to the
+      type. Goal B: NEW `lib/faviconUrls.ts` ships
+      `deriveFaviconUrls(brand, override?)` (5-URL set, brand
+      logo wins, fallback to `/favicon-default-*`,
+      per-variant override) + `faviconHeadLinks(urls)` (5 head
+      fragments). Goal C: NEW `server/sitemap.ts` ships pure
+      builders `buildSitemapXml` (published-non-noIndex-non-
+      portal-variant-non-underscore-slug filter, `<lastmod>`,
+      XML-escape) + `buildRobotsTxt` (User-agent + Disallow
+      per noIndex + always `/_*` + `/embed/` + sitemap pointer);
+      NEW endpoints `GET /sitemap.xml` (application/xml, 5min
+      cache) + `GET /robots.txt` (text/plain, 5min cache).
+      Goal D: NEW `server/ogImageGenerator.ts` ships
+      `buildOgCardSvg` (1200×630, title wrap ≤4 lines, brand
+      line, luminance-derived text colour, XML escape) +
+      `buildOgCardDataUrl` (base64 data URL); NEW
+      `GET /og?title=…&color=…&brand=…` endpoint (image/svg+xml,
+      1-day immutable cache, 400 missing title). No `@vercel/og`
+      dependency — plain SVG. Goal E: NEW
+      `__smoke__/r014-seo-meta.test.ts` 33/33 + package.json
+      test chain extended. tsc-clean. Chapter `04-seo-meta.md`
+      + MASTER row #95.
+      Q-ASSUMED: editor SEO sidebar tab visual deferred (type
+      extension lights up R+1 UI); foundation lands
+      `/favicon-default-*` static assets; SVG OG cards (raster
+      R+1 via `sharp`); per-variant favicon override hook
+      shipped, wire-up R+1; structured data stays free-form
+      `schemaJsonLd` field. Deferred: SEO sidebar tab,
+      foundation favicon assets, raster PNG cards, custom
+      fonts in OG generator, `/sitemap_index.xml` for >50k
+      pages, schema.org pickers.
 - [x] **T3 R013 — Iframe-embed customer surface** — DONE.
       Editor-side primitives shipped; foundation route
       `/embed/[clientSlug]/[variant]` is T1 Q-FOLLOWUP.

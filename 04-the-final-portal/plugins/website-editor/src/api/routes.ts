@@ -64,6 +64,7 @@ import { handleListTemplates, handleSaveTemplate, handleDeleteTemplate } from ".
 import { handleGetForcePassword, handleSetForcePassword } from "./handlers/forcePassword";
 import { handleGetBrandKitExtended, handleSaveBrandKitExtended } from "./handlers/brandKit";
 import { handleGetEmbedAllowList, handleSetEmbedAllowList } from "./handlers/embedAllow";
+import { handleSitemapXml, handleRobotsTxt, handleOgCard } from "./handlers/seoMeta";
 import {
   handleListBlogPosts,
   handleGetBlogPost,
@@ -165,4 +166,9 @@ export const apiRoutes: PluginApiRoute[] = [
   // to emit `frame-ancestors` CSP on `/embed/[clientSlug]/[variant]`.
   { path: "/embed/allowed-origins", methods: ["GET"], handler: handleGetEmbedAllowList },
   { path: "/embed/allowed-origins", methods: ["POST"], handler: handleSetEmbedAllowList },
+
+  // SEO + sitemap + OG card (R014). XML/text/SVG responses, not JSON.
+  { path: "/sitemap.xml", methods: ["GET"], handler: handleSitemapXml },
+  { path: "/robots.txt", methods: ["GET"], handler: handleRobotsTxt },
+  { path: "/og", methods: ["GET"], handler: handleOgCard },
 ];
