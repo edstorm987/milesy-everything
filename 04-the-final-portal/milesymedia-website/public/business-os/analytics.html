@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="../incubator/print.css" media="print" />
+  <link rel="stylesheet" href="/business-os/styles.css" />
+  <link rel="stylesheet" href="/incubator/print.css" media="print" />
 </head>
 <body class="bos-body" data-mobile-checked="2026-05-07">
 
@@ -45,10 +45,10 @@
     </main>
   </div>
 
-  <script src="../incubator/lib/storage.js"></script>
-  <script src="../incubator/lib/notify.js"></script>
-  <script src="../incubator/lib/activity.js"></script>
-  <script src="bos.js"></script>
+  <script src="/incubator/lib/storage.js"></script>
+  <script src="/incubator/lib/notify.js"></script>
+  <script src="/incubator/lib/activity.js"></script>
+  <script src="/business-os/bos.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', function () {
     var state = { periodDays: 30 };
@@ -98,7 +98,7 @@
       if (!hc || !Array.isArray(hc.topics) || !hc.topics.length) {
         return '<div class="bos-an-tile"><div class="bos-an-lbl">🩺 Health Check</div>' +
           '<div class="bos-an-num bos-an-num--muted">—</div>' +
-          '<div class="muted bos-an-sub">No HC on file. <a href="../health-check/index.html">Run the 12-min HC →</a></div></div>';
+          '<div class="muted bos-an-sub">No HC on file. <a href="/health-check/index.html">Run the 12-min HC →</a></div></div>';
       }
       var answered = hc.topics.filter(function (t) { return typeof t.score === 'number'; });
       var avg = answered.length ? Math.round(answered.reduce(function (s, t) { return s + t.score; }, 0) / answered.length) : null;
