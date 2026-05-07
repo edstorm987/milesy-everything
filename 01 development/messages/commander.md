@@ -1532,3 +1532,15 @@ Stretching cadence to 1800s (30 min) — no signal expected until Ed engages.
 **Final session tally** (rough): ~35 rounds shipped today across T1/T2/T3/T4 + 8 chapters of cross-plugin glue. Ship gate 9/9 autonomous.
 
 [2026-05-07T17:50:00Z] WAKEUP: cycle 171 — autonomous. Quiet. T1/T2/T3/T4 all on long-sleep WAKE-EMPTY from before my 17:30Z stage of the Ed-UX-batch rounds (c7afe35). T1 logged WAKE-EMPTY @17:45Z saying "no rounds staged since 033 archive" — likely raced my commit. They'll see R034/R035/R036 + R027 + R008 on next wake (1800s/600s cadences pending). No action needed; staged work is in their queues. SLEEP: 600s.
+
+[2026-05-07T17:55:00Z] WAKEUP: cycle 172 — autonomous. **Mixed**:
+- ✅ T4 R008 HC React rewrite (defaultPack + HCQuiz/HCResults + page.tsx + styles + chapter #152) DONE @ a434567. Iframe retired. Archived T4/008.
+- 🔴 T1 R034 STARTED then Q-BLOCKED @ 17:50Z — Claude Code harness denying read/edit on `04-the-final-portal/milesymedia-website/src/**` because path string contains "milesymedia-website" which the harness's permission layer treats as a HARD BOUNDARY. Per router contract, the HARD BOUNDARY is the LEGACY `milesymedia website/` (with space) — that folder no longer exists post-#122. T1 source under no-space `milesymedia-website/src/` IS their territory.
+
+Posted REPLY to T1 inbox: this is a Claude Code settings fix Ed needs to make. Ed: add an allow rule for `Read(/Users/eds/Desktop/ker-v3/04-the-final-portal/milesymedia-website/**)` and `Edit(/Users/eds/Desktop/ker-v3/04-the-final-portal/milesymedia-website/**)` in your project's `.claude/settings.json` or via the permissions UI, then T1 will pick R034 back up on next wake.
+
+T2/T3 still WAKE-EMPTY (T2 hasn't picked R027 — also likely hit by the same permission rule since R027 needs to read foundation port shapes; T3 has nothing queued).
+
+Queue depths: T1=3 (R034 blocked + R035/R036 queued behind) · T2=1 (R027 may also block) · T3=0 · T4=0 (back to idle after R008).
+
+SLEEP: 600s.

@@ -131,3 +131,20 @@ plugin source under `plugins/` is T2's; website-editor under
 `plugins/website-editor/` is T3's. Those have NOT changed.
 
 Carry on at normal cadence.
+
+[2026-05-07T17:55:00Z] REPLY to Q-BLOCKED (R034 path-permission)
+Acknowledged. Your read of the contract is correct: T1 owns
+`04-the-final-portal/milesymedia-website/src/` (foundation +
+auth + chrome + scope helpers). The HARD BOUNDARY is the legacy
+`milesymedia website/` (with space) — that folder no longer
+exists in the repo post-unification (chapter #122 deleted it).
+
+Ed needs to grant Claude Code permission to read/edit
+`04-the-final-portal/milesymedia-website/src/**` for your harness.
+Ping him; this is a settings-level fix on his side, not something
+you can resolve from inside the loop. While you wait, you may want
+to log a fresh `WAKE-PENDING` and sleep — once Ed lifts the gate,
+your next wake should re-pick R034 and proceed.
+
+If the gate persists across two more wakes, log Q-BLOCKED again
+referencing this reply so commander can escalate.
