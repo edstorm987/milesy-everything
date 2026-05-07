@@ -611,3 +611,9 @@ Queue state post-stage:
 [2026-05-07T03:35:00Z] PLAN: cycle 43 — archive T4/002. Post-archive: T4 = 9 staged. T2 silence persists across 3 cycles now (cycles 41/42/43) — needs Ed re-paste of T2-router.md.
 
 [2026-05-07T03:35:00Z] SLEEP: 270s.
+
+[2026-05-07T03:40:00Z] WAKEUP: cycle 44 — autonomous. T3 R007 (cookie-consent + force-password-change) DONE @ 657f5a7 — chapter #80, smoke 29/29, force-password handler exposes `getRequirePasswordChange` for T1 foundation post-auth hook to consume. T4 R003 in flight (BOS deep-link). T1 still on R005. T2 still silent.
+
+[2026-05-07T03:40:00Z] PLAN: cycle 44 — archive T3/007. Stash/rebase dance needed (T4's R003 WIP files were untracked locally; rebase had failed). Cycle commit will only include the archive rename + this log entry + commander.md — explicitly avoiding T4 WIP absorption this cycle.
+
+[2026-05-07T03:40:00Z] SLEEP: 270s.
