@@ -123,6 +123,32 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R017 — HC progress save / email-capture nudge** — DONE.
+      Existing post-Q5 progress-save modal extended into a resume-link
+      generator. Form-state captures name + required email + optional
+      mobile + amber "Demo mode" fineprint + "Email me my progress
+      link →" submit. On submit toggles to result-state w/ 🔗 URL
+      textarea + Copy-to-clipboard + Close. Token = `btoa(JSON.stringify
+      ({email, savedAt, hcState}))` w/ encodeURIComponent UTF-8 round-
+      trip — payload includes full state so resume restores funnel
+      position. NEW `?resume=<token>` consumer at script top: decodes
+      safely (catch corruption), validates 7-day expiry, restores
+      state + sets `__hcResumed`/`__hcResumedEmail` + writes
+      `hc.contact={..,capturedAt:'resume-link'}`. Failure cases
+      (corrupt/missing/expired) set `__hcResumeError` → surfaced as
+      red honest banner above intro. Resume finalisation IIFE at tail
+      re-paints right step + green "✓ Resumed · <email>" banner. Lead
+      pushed to `bos.leads[]` via new appendLeadFromHcSave (`{id,email,
+      name,source:'hc-progress-nudge',capturedAt}`) — visible in R009
+      admin. R013 Activity fires `hc.shared`. Clipboard copy covers
+      legacy execCommand + navigator.clipboard. CSS `.hc-modal-
+      fineprint` (~12L). Honesty: every surface Demo-mode labelled,
+      expiry honest, failures honest red-banner not silent.
+      Q-ASSUMED: no HMAC/signing yet (T6 must sign before real
+      email); token URL ~KB-scale (R+1 chunk if state explodes).
+      Smoke: hc + ?resume=garbage both 200; full generate→copy→new-
+      tab→Resumed flow verified. NEW chapter `04-hc-progress-email-
+      capture.md` + MASTER #93.
 - [x] **T4 R016 — Marketplace add-on detail pages + cart** — DONE.
       9 NEW detail pages under `business-os app/marketplace/<slug>.html`
       (inbox/website/ecom/fulfil/members/affil/crm/marketing/finance,

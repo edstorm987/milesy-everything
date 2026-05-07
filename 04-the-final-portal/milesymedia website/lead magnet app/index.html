@@ -134,18 +134,32 @@
 
       <!-- ─── Progress-save modal (after Q5 of section 1) ─── -->
       <div class="hc-modal" data-hc-progress-modal hidden>
-        <div class="hc-modal-card">
+        <div class="hc-modal-card" data-hc-progress-shell>
           <div class="hc-modal-icon">💾</div>
           <h2>Quick one — save your progress?</h2>
-          <p>You're a few minutes in. We're <strong>not trying to sell you</strong> — we just don't want you to lose what you've answered if you close the tab. Drop a name &amp; way to reach you and we'll keep your spot.</p>
+          <p>You're a few minutes in. We're <strong>not trying to sell you</strong> — we just don't want you to lose what you've answered if you close the tab. Drop a name + email and we'll generate a resume link you can use on another device.</p>
           <form data-hc-progress-form class="hc-modal-form">
             <label>Your name<input type="text" name="name" placeholder="Jordan Lee" /></label>
-            <label>Email or mobile<input type="text" name="contact" placeholder="you@yourbusiness.co.uk · or 07…" required /></label>
+            <label>Email <span class="muted" style="font-weight:400">(used only for the resume link)</span><input type="email" name="email" placeholder="you@yourbusiness.co.uk" required /></label>
+            <label>Or mobile <span class="muted" style="font-weight:400">(optional)</span><input type="text" name="contact" placeholder="07…" /></label>
+            <p class="muted hc-modal-fineprint">🎬 <strong>Demo mode</strong> — email isn't sent yet. We generate the resume link on this page so you can copy it. Real email send wires later via T6.</p>
             <div class="hc-modal-actions">
               <button type="button" class="btn btn-ghost" data-hc-progress-skip>Skip — I'll keep going</button>
-              <button type="submit" class="btn btn-primary">Save my progress →</button>
+              <button type="submit" class="btn btn-primary">Email me my progress link →</button>
             </div>
           </form>
+        </div>
+        <!-- Resume-link panel (replaces the form on successful submit) -->
+        <div class="hc-modal-card" data-hc-progress-result hidden>
+          <div class="hc-modal-icon">🔗</div>
+          <h2>Your resume link is ready.</h2>
+          <p>Copy the link below — it restores your answers when you open it on any device. Valid for 7 days. <strong>Demo mode:</strong> no email was sent; the link lives only in your clipboard from here.</p>
+          <label>Resume link<textarea data-hc-progress-link readonly rows="3" style="width:100%;padding:10px 12px;border:1px solid var(--bos-line,#e6e1d4);border-radius:8px;font:13px monospace"></textarea></label>
+          <div class="hc-modal-actions">
+            <button type="button" class="btn btn-ghost" data-hc-progress-resume-close>Close</button>
+            <button type="button" class="btn btn-primary" data-hc-progress-copy>📋 Copy to clipboard</button>
+          </div>
+          <p class="muted hc-modal-fineprint" data-hc-progress-copy-status></p>
         </div>
       </div>
 
@@ -376,6 +390,37 @@
     exerciseIdx: 0,
     answers: {}
   };
+
+  /* R017 — `?resume=<token>` consumer. Decodes base64 payload from
+     R017's resume-link generator, validates 7d expiry, restores state.
+     Failures are honest: a small panel below the intro tells the user
+     the link was invalid / expired so they can keep going from scratch. */
+  (function () {
+    var m = location.search.match(/[?&]resume=([^&]+)/);
+    if (!m) return;
+    var raw;
+    try { raw = decodeURIComponent(m[1]); } catch (e) { return; }
+    var payload;
+    try { payload = JSON.parse(decodeURIComponent(escape(atob(raw)))); }
+    catch (e) { window.__hcResumeError = 'Couldn\'t read that resume link — it may be corrupted.'; return; }
+    if (!payload || !payload.savedAt || !payload.hcState) {
+      window.__hcResumeError = 'Resume link missing required fields.'; return;
+    }
+    var ageDays = (Date.now() - +new Date(payload.savedAt)) / 86400000;
+    if (ageDays > 7 || ageDays < 0) {
+      window.__hcResumeError = 'Resume link expired (7-day limit). Start fresh — your old answers are gone.'; return;
+    }
+    /* Restore state and stash a flag so the boot can fast-forward. */
+    state = payload.hcState;
+    window.__hcResumed = true;
+    window.__hcResumedEmail = payload.email || null;
+    /* Re-write hc.contact so the rest of the funnel knows about this user. */
+    try {
+      localStorage.setItem('hc.contact', JSON.stringify({
+        email: payload.email, capturedAt: 'resume-link', resumedAt: new Date().toISOString()
+      }));
+    } catch (e) {}
+  })();
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -820,15 +865,71 @@
     try { localStorage.setItem('hc.progressDismissed', '1'); } catch (e) {}
     document.querySelector('[data-hc-progress-modal]').setAttribute('hidden', '');
   });
+  /* R017 — generate a base64 `?resume=<token>` link from current state. */
+  function makeResumeToken(email, savedAtIso) {
+    var payload = { email: email, savedAt: savedAtIso, hcState: state };
+    try { return btoa(unescape(encodeURIComponent(JSON.stringify(payload)))); }
+    catch (e) { return null; }
+  }
+  function makeResumeUrl(email) {
+    var savedAt = new Date().toISOString();
+    var token = makeResumeToken(email, savedAt);
+    if (!token) return null;
+    var base = location.origin + location.pathname;
+    return base + '?resume=' + encodeURIComponent(token);
+  }
+  function appendLeadFromHcSave(email, name) {
+    try {
+      var leads = JSON.parse(localStorage.getItem('bos.leads') || '[]') || [];
+      leads.push({
+        id: 'L' + Date.now().toString(36),
+        email: email, name: name || '',
+        source: 'hc-progress-nudge',
+        capturedAt: new Date().toISOString()
+      });
+      localStorage.setItem('bos.leads', JSON.stringify(leads));
+    } catch (e) {}
+  }
   document.querySelector('[data-hc-progress-form]').addEventListener('submit', function (ev) {
     ev.preventDefault();
     var fd = new FormData(ev.target);
+    var email = (fd.get('email') || '').toString().trim();
+    var name  = (fd.get('name')  || '').toString().trim();
+    var contact = (fd.get('contact') || '').toString().trim();
+    if (!email) return;
     try {
       localStorage.setItem('hc.contact', JSON.stringify({
-        name: fd.get('name'), contact: fd.get('contact'), capturedAt: 'progress-save'
+        name: name, email: email, contact: contact, capturedAt: 'progress-save'
       }));
     } catch (e) {}
+    appendLeadFromHcSave(email, name);
+    if (window.Activity && typeof window.Activity.log === 'function') {
+      window.Activity.log('hc.shared', { source: 'hc-progress-nudge', method: 'resume-link', name: name });
+    }
+    var url = makeResumeUrl(email);
+    var ta = document.querySelector('[data-hc-progress-link]');
+    if (ta) ta.value = url || '(could not generate — copy your URL manually)';
+    document.querySelector('[data-hc-progress-shell]').setAttribute('hidden', '');
+    document.querySelector('[data-hc-progress-result]').removeAttribute('hidden');
+  });
+  /* Copy-to-clipboard + close handlers for the resume-link panel. */
+  document.querySelector('[data-hc-progress-copy]').addEventListener('click', function () {
+    var ta = document.querySelector('[data-hc-progress-link]');
+    var status = document.querySelector('[data-hc-progress-copy-status]');
+    if (!ta) return;
+    try {
+      ta.select(); document.execCommand('copy');
+      if (navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(function () {});
+      if (status) { status.textContent = '✓ Copied. Paste into your other device\'s browser.'; setTimeout(function () { status.textContent = ''; }, 4000); }
+    } catch (e) {
+      if (status) status.textContent = 'Couldn\'t copy automatically — select the text manually and copy.';
+    }
+  });
+  document.querySelector('[data-hc-progress-resume-close]').addEventListener('click', function () {
     document.querySelector('[data-hc-progress-modal]').setAttribute('hidden', '');
+    /* Reset modal to form view in case it pops again. */
+    document.querySelector('[data-hc-progress-shell]').removeAttribute('hidden');
+    document.querySelector('[data-hc-progress-result]').setAttribute('hidden', '');
   });
 
   function nextStepOrArea() {
@@ -935,6 +1036,45 @@
       show('intro');
     }
   });
+
+  /* R017 — resume-link finalisation. Runs once on script tail. If
+     `?resume=` succeeded earlier, fast-forward to the saved step.
+     If it failed, render an honest banner above the intro card. */
+  (function () {
+    if (window.__hcResumeError) {
+      var intro = document.querySelector('[data-step="intro"]');
+      if (!intro) return;
+      var bn = document.createElement('div');
+      bn.style.cssText = 'background:rgba(208,89,89,0.1);border:1px solid #d05959;color:#d05959;padding:12px 16px;border-radius:10px;margin:0 0 20px;font-size:14px';
+      bn.textContent = '⚠ ' + window.__hcResumeError;
+      intro.insertBefore(bn, intro.firstChild);
+      return;
+    }
+    if (!window.__hcResumed) return;
+    /* Re-paint per saved state.step. */
+    try {
+      if (state.step === 'overview' || state.step === 'tiers') {
+        show('overview'); renderOverview();
+      } else if (state.step === 'exercise') {
+        show('exercise'); renderStep();
+      } else if (state.step === 'results') {
+        show('building');
+        setTimeout(function () { buildResults(); show('results'); paintResultsExtras && paintResultsExtras(); }, 400);
+      } else if (state.step === 'gate') {
+        show('gate');
+      } else {
+        show(state.step);
+      }
+      /* Honest little banner so the user knows resume worked. */
+      var stage = document.querySelector('[data-step="' + state.step + '"]');
+      if (stage) {
+        var bn = document.createElement('div');
+        bn.style.cssText = 'background:rgba(120,160,90,0.1);border:1px solid #5a7a3a;color:#5a7a3a;padding:10px 14px;border-radius:8px;margin:0 0 18px;font-size:13px';
+        bn.textContent = '✓ Resumed' + (window.__hcResumedEmail ? ' · ' + window.__hcResumedEmail : '') + '. Picking up where you left off.';
+        stage.insertBefore(bn, stage.firstChild);
+      }
+    } catch (e) {}
+  })();
 
   /* ─── R010: HC → Incubator handoff bridge ─────────────────────────
      On click of the "Continue your journey →" CTA, seed Incubator state
