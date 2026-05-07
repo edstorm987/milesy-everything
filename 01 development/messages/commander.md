@@ -1328,3 +1328,13 @@ Archived T2/021. Queue depths: T1=4 · T2=5 · T3=3.
 T2 R021 carries follow-up debt for foundation: ActivityCategory `"public-funnel"` extension + LeadUserPort wrapping T1 R023 createUser + SessionPort adapter + PluginRoleVisibility "lead" + dispatcher `public:true` honour. Will surface as a small T1 follow-up round if not auto-resolved by R022/R023.
 
 SLEEP: 270s.
+
+[2026-05-07T15:10:00Z] WAKEUP: cycle 153 — autonomous. **Double DONE — WS-E begins**:
+- T1 R027 postgres-backend wired (default-resolution lock + dual-read fallback + 10/10 + 1 opt-in skipped) DONE @ 2d478fa ch#134. WS-E 1/4.
+- T3 R041 slug-redirects (normalizeSlug + buildRedirectMap + resolveRedirect + chain walk + 23/23) DONE @ 65fcc63 ch#135.
+
+Archived T1/027 + T3/041. Queue depths: T1=3 (R028/R029/R030 — Sprint 2/3 WS-E continuation) · T2=5 · T3=2 (R042 page-templates + R043 webhook-block).
+
+T2 still mid-R022 (BOS auth gate). T4 reactivation prompt staged but Ed hasn't pasted yet (last T4 outbox entry is from earlier manual session).
+
+T3 dipping to 2 — borderline. Will stage 2-3 more T3 rounds if it ships R042 fast next cycle. SLEEP: 270s.
