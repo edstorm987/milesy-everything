@@ -135,9 +135,9 @@ Goal: WS-B/C complete; WS-D started; WS-E half. Ship-gate 7/9.
   ~~WS-E R029 env secrets policy~~ #142 +
   ~~WS-E R030 observability~~ #144 — Sprint 2 T1 complete 2026-05-07.
 - T2: ~~WS-B R023 rank-my-website plugin~~ #141 +
-  ~~WS-D R024 SMTP outbound~~ #144 — both DONE 2026-05-07
-  (pulled from Sprint 2 by queue order). R025 (Stripe basic) +
-  R026 (GA4 readonly) up next.
+  ~~WS-D R024 SMTP outbound~~ #144 +
+  ~~WS-D R025 Stripe events~~ #145 — DONE 2026-05-07
+  (pulled from Sprint 2 by queue order). R026 (GA4 readonly) up next.
 - T3: R040 editor live-preview iframe + R041 published-only redirect
   helper.
 - T4: AquaOasis demo brand pack; iframe→React rewrites if time.
