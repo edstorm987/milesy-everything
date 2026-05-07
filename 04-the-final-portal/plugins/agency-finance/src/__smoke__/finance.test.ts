@@ -291,3 +291,197 @@ describe("agency-finance smoke", () => {
     assert.ok(eventNames.includes("category.created"));
   });
 });
+
+// ─── R007: Payments / Plans / P&L ────────────────────────────────────────
+
+describe("agency-finance R007 — Payments / Plans / P&L", () => {
+  function freshContainer() {
+    const w = buildWorld();
+    const c = containerWithDeps({
+      agencyId: AGENCY_ID,
+      storage: w.storage,
+      tenant: w.tenant,
+      user: w.user,
+      activity: w.activity,
+      events: w.events,
+      pluginInstalls: w.pluginInstalls,
+    });
+    return { w, c };
+  }
+
+  async function makeInvoice(c: ReturnType<typeof containerWithDeps>, total: number): Promise<string> {
+    const inv = await c.invoices.create({
+      clientId: CLIENT_ID,
+      issuedAt: Date.now(),
+      dueAt: Date.now() + 7 * 86_400_000,
+      lineItems: [{ description: "Service", quantity: 1, unitCents: total }],
+      currency: "gbp",
+    }, ACTOR);
+    await c.invoices.update(inv.id, { status: "sent" }, ACTOR);
+    return inv.id;
+  }
+
+  test("R007-1: PaymentService.record stores ciphertext-free payload + emits agency-finance.payment.recorded", async () => {
+    const { w, c } = freshContainer();
+    const invId = await makeInvoice(c, 5_000);
+    const result = await c.payments.record(ACTOR, {
+      invoiceId: invId, amountCents: 5_000, currency: "gbp", method: "bank-transfer",
+    });
+    assert.equal(result.payment.amountCents, 5_000);
+    assert.equal(result.payment.clientId, CLIENT_ID);
+    assert.ok(w.inspect.events.some(e => e.name === "agency-finance.payment.recorded"));
+  });
+
+  test("R007-2: payment >= total settles the invoice (status -> paid)", async () => {
+    const { c } = freshContainer();
+    const invId = await makeInvoice(c, 4_200);
+    const r = await c.payments.record(ACTOR, {
+      invoiceId: invId, amountCents: 4_200, currency: "gbp", method: "stripe",
+    });
+    assert.equal(r.settled, true);
+    assert.equal(r.invoice.status, "paid");
+  });
+
+  test("R007-3: partial payments don't settle; second payment crossing total does", async () => {
+    const { c } = freshContainer();
+    const invId = await makeInvoice(c, 10_000);
+    const r1 = await c.payments.record(ACTOR, {
+      invoiceId: invId, amountCents: 4_000, currency: "gbp", method: "manual",
+    });
+    assert.equal(r1.settled, false);
+    assert.equal(r1.invoice.status, "sent");
+    const r2 = await c.payments.record(ACTOR, {
+      invoiceId: invId, amountCents: 6_500, currency: "gbp", method: "manual",
+    });
+    assert.equal(r2.settled, true);
+    assert.equal(r2.invoice.status, "paid");
+  });
+
+  test("R007-4: payment currency mismatch rejects", async () => {
+    const { c } = freshContainer();
+    const invId = await makeInvoice(c, 5_000);
+    await assert.rejects(
+      () => c.payments.record(ACTOR, { invoiceId: invId, amountCents: 5_000, currency: "usd", method: "manual" }),
+      /currency must match/,
+    );
+  });
+
+  test("R007-5: PlanService CRUD + assignClient moves a client between plans", async () => {
+    const { c } = freshContainer();
+    const a = await c.plans.create(ACTOR, { tier: "growth", label: "Growth", monthlyAmountCents: 50_000 });
+    const b = await c.plans.create(ACTOR, { tier: "scale", label: "Scale", monthlyAmountCents: 150_000 });
+    await c.plans.assignClient(ACTOR, CLIENT_ID, a.id);
+    let aFresh = await c.plans.get(a.id);
+    assert.deepEqual(aFresh?.clientIds, [CLIENT_ID]);
+    await c.plans.assignClient(ACTOR, CLIENT_ID, b.id);
+    aFresh = await c.plans.get(a.id);
+    const bFresh = await c.plans.get(b.id);
+    assert.deepEqual(aFresh?.clientIds, []);
+    assert.deepEqual(bFresh?.clientIds, [CLIENT_ID]);
+    // Unassign:
+    await c.plans.assignClient(ACTOR, CLIENT_ID, null);
+    const bAfter = await c.plans.get(b.id);
+    assert.deepEqual(bAfter?.clientIds, []);
+    assert.equal(await c.plans.getForClient(CLIENT_ID), null);
+  });
+
+  test("R007-6: PlanService rejects invalid input (empty label, negative monthly)", async () => {
+    const { c } = freshContainer();
+    await assert.rejects(() => c.plans.create(ACTOR, { tier: "starter", label: "", monthlyAmountCents: 1_000 }));
+    await assert.rejects(() => c.plans.create(ACTOR, { tier: "starter", label: "x", monthlyAmountCents: -1 }));
+  });
+
+  test("R007-7: founderSnapshot honesty contract — empty world returns hasData:false, all zeroes", async () => {
+    const { c } = freshContainer();
+    const snap = await c.pnl.founderSnapshot(Date.now());
+    assert.equal(snap.hasData, false);
+    assert.equal(snap.mrrCents, 0);
+    assert.equal(snap.arrCents, 0);
+    assert.equal(snap.activeClients, 0);
+    assert.equal(snap.churnRate, 0);
+    assert.equal(snap.topClients.length, 0);
+  });
+
+  test("R007-8: founderSnapshot — MRR = sum(plan.monthlyAmountCents × clientIds.length); ARR = MRR × 12", async () => {
+    const { c } = freshContainer();
+    const growth = await c.plans.create(ACTOR, { tier: "growth", label: "G", monthlyAmountCents: 50_000 });
+    await c.plans.assignClient(ACTOR, "client_a", growth.id);
+    await c.plans.assignClient(ACTOR, "client_b", growth.id);
+    const snap = await c.pnl.founderSnapshot(Date.now());
+    assert.equal(snap.hasData, true);
+    assert.equal(snap.mrrCents, 100_000);
+    assert.equal(snap.arrCents, 1_200_000);
+    assert.equal(snap.activeClients, 2);
+  });
+
+  test("R007-9: founderSnapshot.topClients ranks by lifetime payment sum", async () => {
+    const { c } = freshContainer();
+    // Two clients, two invoices each at varying payment totals.
+    const inv1 = await c.invoices.create({
+      clientId: CLIENT_ID, issuedAt: Date.now(), dueAt: Date.now() + 7 * 86_400_000,
+      lineItems: [{ description: "A", quantity: 1, unitCents: 200_000 }],
+      currency: "gbp",
+    }, ACTOR);
+    await c.invoices.update(inv1.id, { status: "sent" }, ACTOR);
+    await c.payments.record(ACTOR, { invoiceId: inv1.id, amountCents: 200_000, currency: "gbp", method: "stripe" });
+
+    const inv2 = await c.invoices.create({
+      clientId: CLIENT_ID, issuedAt: Date.now(), dueAt: Date.now() + 7 * 86_400_000,
+      lineItems: [{ description: "B", quantity: 1, unitCents: 50_000 }],
+      currency: "gbp",
+    }, ACTOR);
+    await c.invoices.update(inv2.id, { status: "sent" }, ACTOR);
+    await c.payments.record(ACTOR, { invoiceId: inv2.id, amountCents: 50_000, currency: "gbp", method: "stripe" });
+
+    const snap = await c.pnl.founderSnapshot(Date.now());
+    assert.equal(snap.topClients.length, 1);
+    assert.equal(snap.topClients[0]?.clientId, CLIENT_ID);
+    assert.equal(snap.topClients[0]?.lifetimeCents, 250_000);
+  });
+
+  test("R007-10: trailingMonths returns 12 contiguous months ending in ref month", async () => {
+    const { c } = freshContainer();
+    const refNow = Date.UTC(2026, 5, 15); // Jun 2026 (month 6)
+    const months = await c.pnl.trailingMonths(refNow, 12);
+    assert.equal(months.length, 12);
+    // Last entry is the ref month.
+    assert.equal(months[11]?.year, 2026);
+    assert.equal(months[11]?.month, 6);
+    // First entry is 11 months earlier → Jul 2025.
+    assert.equal(months[0]?.year, 2025);
+    assert.equal(months[0]?.month, 7);
+    // All zero-net (no data seeded).
+    assert.ok(months.every(m => m.revenueCents === 0 && m.expensesCents === 0 && m.netCents === 0));
+  });
+
+  test("R007-11: lockInRows surfaces clients on lock-in plans + paid status from notes/externalRef heuristic", async () => {
+    const { c } = freshContainer();
+    const lockPlan = await c.plans.create(ACTOR, {
+      tier: "scale", label: "Scale 12mo", monthlyAmountCents: 150_000,
+      lockInMonths: 12, lockInFeeCents: 100_000,
+    });
+    const noLockPlan = await c.plans.create(ACTOR, {
+      tier: "starter", label: "Free trial", monthlyAmountCents: 0,
+    });
+    await c.plans.assignClient(ACTOR, CLIENT_ID, lockPlan.id);
+    await c.plans.assignClient(ACTOR, "client_unlocked", noLockPlan.id);
+
+    // Issue + pay a lock-in invoice tagged by externalRef prefix.
+    const inv = await c.invoices.create({
+      clientId: CLIENT_ID, issuedAt: Date.now(), dueAt: Date.now() + 7 * 86_400_000,
+      lineItems: [{ description: "Lock-in fee", quantity: 1, unitCents: 100_000 }],
+      currency: "gbp",
+    }, ACTOR);
+    await c.invoices.update(inv.id, { status: "sent" }, ACTOR);
+    await c.payments.record(ACTOR, {
+      invoiceId: inv.id, amountCents: 100_000, currency: "gbp", method: "stripe",
+      externalRef: "lockin_acme_2026",
+    });
+
+    const rows = await c.pnl.lockInRows();
+    assert.equal(rows.length, 1, "only the locked client surfaces");
+    assert.equal(rows[0]?.clientId, CLIENT_ID);
+    assert.equal(rows[0]?.paid, true);
+    assert.equal(rows[0]?.paidCents, 100_000);
+  });
+});

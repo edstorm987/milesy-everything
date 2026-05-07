@@ -1829,3 +1829,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       12/12, services + weekly availability + slot generator with
       buffer + capacity > 1 group sessions + ICS confirmation email +
       CRM merge on completion; storefront `booking-form` block).
+- [x] T2 R007 — `@aqua/plugin-agency-finance` extended (chapter #78,
+      smoke 20/20: 11 new R007 cases over Payment + Plan + PnL +
+      lock-in + honesty contract; 4 new admin pages; 7 new API
+      routes; default landing flipped to FounderDashboardPage).

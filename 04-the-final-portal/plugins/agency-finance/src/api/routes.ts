@@ -18,6 +18,15 @@ import {
   updateExpenseHandler,
   updateInvoiceHandler,
 } from "./handlers";
+import {
+  assignPlanHandler,
+  createPaymentHandler,
+  createPlanHandler,
+  listPaymentsHandler,
+  listPlansHandler,
+  pnlSummaryHandler,
+  updatePlanHandler,
+} from "./handlers-r007";
 
 const AGENCY_ADMINS = ["agency-owner", "agency-manager"] as const;
 const AGENCY_VIEWERS = ["agency-owner", "agency-manager", "agency-staff"] as const;
@@ -45,4 +54,13 @@ export const ROUTES: PluginApiRoute[] = [
 
   // Report
   { path: "report", methods: ["GET"], handler: reportHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+
+  // R007 — Payments / Plans / P&L
+  { path: "payments", methods: ["GET"], handler: listPaymentsHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "payments/create", methods: ["POST"], handler: createPaymentHandler, visibleToRoles: [...AGENCY_ADMINS] },
+  { path: "plans", methods: ["GET"], handler: listPlansHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "plans/create", methods: ["POST"], handler: createPlanHandler, visibleToRoles: [...AGENCY_ADMINS] },
+  { path: "plans/update", methods: ["PATCH"], handler: updatePlanHandler, visibleToRoles: [...AGENCY_ADMINS] },
+  { path: "plans/assign", methods: ["POST"], handler: assignPlanHandler, visibleToRoles: [...AGENCY_ADMINS] },
+  { path: "pnl", methods: ["GET"], handler: pnlSummaryHandler, visibleToRoles: [...AGENCY_ADMINS] },
 ];

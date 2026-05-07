@@ -164,3 +164,113 @@ export interface RevenueSnapshot {
   expensesByCategory: Array<{ categoryId: string; categoryName: string; amountCents: number; count: number }>;
   monthly: Array<{ year: number; month: number; paidCents: number; expenseCents: number }>;
 }
+
+// ─── R007 additions: Payment + Plan + P&L (founder dashboard) ────────────
+
+export type PaymentMethod = "stripe" | "bank-transfer" | "cash" | "manual" | "other";
+
+// Payment is a money-in event tied to an Invoice. v1 supports a single
+// payment per invoice (full settlement); the storage layout permits
+// multiple records per invoice for partial-payment R+1.
+export interface Payment {
+  id: string;
+  agencyId: AgencyId;
+  invoiceId: string;
+  clientId: ClientId;
+  amountCents: number;
+  currency: Currency;
+  method: PaymentMethod;
+  paidAt: number;
+  notes?: string;
+  externalRef?: string;       // Stripe charge / bank reference
+  createdAt: number;
+}
+
+export interface CreatePaymentInput {
+  invoiceId: string;
+  amountCents: number;
+  currency: Currency;
+  method: PaymentMethod;
+  paidAt?: number;            // defaults to now()
+  notes?: string;
+  externalRef?: string;
+}
+
+export type PlanTier = "starter" | "growth" | "scale" | "custom";
+
+export interface Plan {
+  id: string;
+  agencyId: AgencyId;
+  tier: PlanTier;
+  label: string;
+  monthlyAmountCents: number;
+  currency: Currency;
+  // Lock-in: 0 = month-to-month. Months > 0 imply a one-time lock-in fee
+  // (tracked on the assigned client's metadata.lockInPaid by T1 R002).
+  lockInMonths: number;
+  lockInFeeCents: number;
+  // Clients currently assigned to this plan. v1: a client can only
+  // belong to ONE plan; reassignment moves the id between arrays.
+  clientIds: ClientId[];
+  active: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface CreatePlanInput {
+  tier: PlanTier;
+  label: string;
+  monthlyAmountCents: number;
+  currency?: Currency;
+  lockInMonths?: number;
+  lockInFeeCents?: number;
+  active?: boolean;
+}
+
+export interface UpdatePlanPatch {
+  label?: string;
+  monthlyAmountCents?: number;
+  lockInMonths?: number;
+  lockInFeeCents?: number;
+  active?: boolean;
+}
+
+// ─── P&L / founder dashboard ─────────────────────────────────────────────
+
+export interface PnLMonth {
+  year: number;
+  month: number;             // 1-12
+  revenueCents: number;      // payments received within the month
+  expensesCents: number;     // expenses incurred within the month
+  netCents: number;
+}
+
+export interface FounderSnapshot {
+  currency: Currency;
+  // Monthly Recurring Revenue: sum of monthlyAmountCents for assigned
+  // active plans (not based on payments — true MRR view).
+  mrrCents: number;
+  arrCents: number;          // mrr × 12
+  // Active client count: clients assigned to any active plan.
+  activeClients: number;
+  // Churn = clients_lost_in_window / clients_at_window_start.
+  // Returned 0 when window has zero starting clients (avoids NaN).
+  churnRate: number;
+  churnedClientIds: ClientId[];
+  // Top clients by lifetime revenue (sum of payments).
+  topClients: Array<{ clientId: ClientId; lifetimeCents: number }>;
+  // 12 trailing months ending in the snapshot's "now" month.
+  trailingMonths: PnLMonth[];
+  // Honesty contract — true when the snapshot has zero invoices AND
+  // zero plans; the dashboard renders an empty-state instead of
+  // fabricated numbers.
+  hasData: boolean;
+}
+
+export interface PaymentFilter {
+  invoiceId?: string;
+  clientId?: ClientId;
+  fromPaidAt?: number;
+  toPaidAt?: number;
+  method?: PaymentMethod;
+}
