@@ -41,7 +41,7 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
 ### To do — T2 (plugins)
 
 - [x] **R018 — `@aqua/plugin-onboarding-checklist`** (existing queue). MASTER #126.
-- [ ] **R019 — `@aqua/plugin-client-reports`** (existing queue).
+- [x] **R019 — `@aqua/plugin-client-reports`** (existing queue). MASTER #127.
 - [ ] **R020 — `@aqua/plugin-feedback-loops`** (existing queue).
 - [ ] **R021 — `@aqua/plugin-public-funnel`** (WS-B R021). HC
       completion → `lead` user → auto-signin → BOS.
