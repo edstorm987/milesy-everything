@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — My Company Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="company.html"></nav>
+      <div class="bos-side-user">
+        <div class="av" data-bos-initial>JL</div>
+        <div>
+          <div class="bos-side-user-name" data-bos-name>Jordan Lee</div>
+          <div class="bos-side-user-biz muted" data-bos-business>Northbeam Apparel</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="bos-main">
+
+      <header class="bos-topbar">
+        <div>
+          <div class="muted bos-topbar-eyebrow">Run · Company HQ</div>
+          <h1>My Company Profile.</h1>
+          <p class="muted bos-topbar-sub">The single source of truth about your business. Mission, offer, brand, suppliers, team. Everything we (and your future hires) need in one place.</p>
+        </div>
+        <div class="bos-topbar-actions">
+          <button class="btn btn-secondary" data-bos-edit-toggle>✎ Edit</button>
+          <button class="btn btn-primary" data-bos-save hidden>Save changes</button>
+        </div>
+      </header>
+
+      <section class="bos-section bos-cp-grid">
+        <div class="bos-cp-main">
+
+          <div class="bos-cp-card">
+            <div class="bos-cp-card-head">
+              <span class="eyebrow">The 30-second answer</span>
+              <h2>What we do, who for.</h2>
+            </div>
+            <div class="bos-cp-fields">
+              <label>One-line description<input type="text" data-bos-cp="oneliner" placeholder="We help [who] do [what] without [pain]." disabled value="" /></label>
+              <label>Tagline<input type="text" data-bos-cp="tagline" placeholder="The short, brand-y version." disabled value="" /></label>
+              <label>Mission<textarea data-bos-cp="mission" rows="3" placeholder="Why does this business exist?" disabled></textarea></label>
+              <label>Unique selling point<textarea data-bos-cp="usp" rows="3" placeholder="What can you say that competitors can't?" disabled></textarea></label>
+            </div>
+          </div>
+
+          <div class="bos-cp-card">
+            <div class="bos-cp-card-head">
+              <span class="eyebrow">Customer</span>
+              <h2>Who you serve.</h2>
+            </div>
+            <div class="bos-cp-fields">
+              <label>Primary customer<input type="text" data-bos-cp="customer" placeholder="e.g. Independent salon owners, 5-15 chairs, £200k-£600k/yr" disabled /></label>
+              <label>Their core problem<textarea data-bos-cp="problem" rows="2" disabled></textarea></label>
+              <label>Service area<input type="text" data-bos-cp="area" placeholder="Local · National · Global" disabled /></label>
+            </div>
+          </div>
+
+          <div class="bos-cp-card">
+            <div class="bos-cp-card-head">
+              <span class="eyebrow">Offer architecture</span>
+              <h2>What you sell.</h2>
+            </div>
+            <div class="bos-cp-fields">
+              <label>Lead-in offer<input type="text" data-bos-cp="lead-offer" placeholder="The cheap or free first thing." disabled /></label>
+              <label>Flagship offer<input type="text" data-bos-cp="flagship" placeholder="Your bread-and-butter." disabled /></label>
+              <label>Premium offer<input type="text" data-bos-cp="premium" placeholder="The big-ticket version." disabled /></label>
+              <label>Average order / project value<input type="text" data-bos-cp="aov" placeholder="£" disabled /></label>
+            </div>
+          </div>
+
+          <div class="bos-cp-card">
+            <div class="bos-cp-card-head">
+              <span class="eyebrow">Brand</span>
+              <h2>How you look &amp; sound.</h2>
+            </div>
+            <div class="bos-cp-fields">
+              <label>Tone of voice<input type="text" data-bos-cp="tone" placeholder="e.g. Direct · warm · zero fluff" disabled /></label>
+              <label>Primary colour<input type="text" data-bos-cp="colour-1" placeholder="#FF6B35" disabled /></label>
+              <label>Secondary colour<input type="text" data-bos-cp="colour-2" placeholder="#FFB800" disabled /></label>
+              <label>Logo / brand assets folder<input type="text" data-bos-cp="brand-folder" placeholder="Drive / Dropbox link" disabled /></label>
+            </div>
+          </div>
+
+        </div>
+
+        <aside class="bos-cp-side">
+          <div class="bos-cp-card">
+            <div class="bos-cp-card-head"><h3>Founder</h3></div>
+            <div class="bos-cp-fields">
+              <label>Name<input type="text" data-bos-cp="founder-name" disabled /></label>
+              <label>Role<input type="text" data-bos-cp="founder-role" placeholder="Founder · CEO · Director" disabled /></label>
+              <label>Email<input type="email" data-bos-cp="founder-email" disabled /></label>
+              <label>Mobile<input type="tel" data-bos-cp="founder-mobile" disabled /></label>
+            </div>
+          </div>
+
+          <div class="bos-cp-card">
+            <div class="bos-cp-card-head"><h3>Team</h3></div>
+            <ul class="bos-cp-list" data-bos-team>
+              <li class="bos-cp-empty">No team members yet — add your first person on Edit.</li>
+            </ul>
+            <button class="btn btn-secondary bos-cp-add-row" data-bos-add="team" hidden>+ Add person</button>
+          </div>
+
+          <div class="bos-cp-card">
+            <div class="bos-cp-card-head"><h3>Suppliers &amp; partners</h3></div>
+            <ul class="bos-cp-list" data-bos-suppliers>
+              <li class="bos-cp-empty">No suppliers logged yet.</li>
+            </ul>
+            <button class="btn btn-secondary bos-cp-add-row" data-bos-add="suppliers" hidden>+ Add supplier</button>
+          </div>
+
+          <div class="bos-cp-card">
+            <div class="bos-cp-card-head"><h3>Critical accounts</h3></div>
+            <p class="muted" style="font-size:13px">Where to find the keys. Don't put passwords here — link to your password manager instead.</p>
+            <ul class="bos-cp-list" data-bos-accounts>
+              <li class="bos-cp-empty">No accounts logged yet.</li>
+            </ul>
+            <button class="btn btn-secondary bos-cp-add-row" data-bos-add="accounts" hidden>+ Add account</button>
+          </div>
+        </aside>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="bos.js"></script>
+  <script>
+    /* Company-profile inline editor — everything persists to localStorage. */
+    var KEY = 'bos.company';
+    function loadCp() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+    function saveCp(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
+
+    var data = loadCp();
+    if (!data.team)      data.team = [];
+    if (!data.suppliers) data.suppliers = [];
+    if (!data.accounts)  data.accounts = [];
+
+    document.querySelectorAll('[data-bos-cp]').forEach(function (el) {
+      var k = el.getAttribute('data-bos-cp');
+      if (data[k] != null) el.value = data[k];
+      el.addEventListener('input', function () { data[k] = el.value; saveCp(data); });
+    });
+
+    function renderList(name) {
+      var ul = document.querySelector('[data-bos-' + name + ']');
+      var items = data[name] || [];
+      if (!items.length) {
+        ul.innerHTML = '<li class="bos-cp-empty">Empty.</li>';
+        return;
+      }
+      ul.innerHTML = items.map(function (item, i) {
+        return '<li class="bos-cp-row">'
+          + '<input type="text" value="' + (item.label || '').replace(/"/g, '&quot;') + '" data-bos-list="' + name + '" data-bos-list-i="' + i + '" data-bos-list-k="label" placeholder="Name" />'
+          + '<input type="text" value="' + (item.detail || '').replace(/"/g, '&quot;') + '" data-bos-list="' + name + '" data-bos-list-i="' + i + '" data-bos-list-k="detail" placeholder="Role / role / link" />'
+          + '<button class="bos-cp-row-del" data-bos-list-del="' + name + '" data-bos-list-i="' + i + '">✕</button>'
+          + '</li>';
+      }).join('');
+      ul.querySelectorAll('input').forEach(function (inp) {
+        inp.addEventListener('input', function () {
+          var n = inp.getAttribute('data-bos-list');
+          var i = parseInt(inp.getAttribute('data-bos-list-i'), 10);
+          var k = inp.getAttribute('data-bos-list-k');
+          data[n][i][k] = inp.value;
+          saveCp(data);
+        });
+      });
+      ul.querySelectorAll('[data-bos-list-del]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var n = b.getAttribute('data-bos-list-del');
+          var i = parseInt(b.getAttribute('data-bos-list-i'), 10);
+          data[n].splice(i, 1); saveCp(data); renderList(n);
+        });
+      });
+    }
+    ['team', 'suppliers', 'accounts'].forEach(renderList);
+
+    document.querySelectorAll('[data-bos-add]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var n = b.getAttribute('data-bos-add');
+        data[n].push({ label: '', detail: '' });
+        saveCp(data); renderList(n);
+      });
+    });
+
+    var editing = false;
+    document.querySelector('[data-bos-edit-toggle]').addEventListener('click', function () {
+      editing = !editing;
+      document.querySelectorAll('[data-bos-cp]').forEach(function (el) { el.disabled = !editing; });
+      document.querySelectorAll('[data-bos-add]').forEach(function (el) { el.hidden = !editing; });
+      document.body.classList.toggle('bos-cp-editing', editing);
+      document.querySelector('[data-bos-edit-toggle]').textContent = editing ? '✓ Done' : '✎ Edit';
+    });
+  </script>
+
+</body>
+</html>

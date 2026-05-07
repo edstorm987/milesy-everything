@@ -194,6 +194,54 @@
     document.querySelectorAll('[data-bos-niche-tagline]').forEach(function (el) { el.textContent = nm.tagline; });
   }
 
+  /* ─── Auto sidebar nav (Run / Learn / Premium / Add-ons / Help / Aqua) ─── */
+  function buildSidebarNav(activePath) {
+    var page = activePath || (location.pathname.split('/').pop() || 'app.html');
+    function link(href, icon, label, extra) {
+      var act = href === page ? ' class="active"' : '';
+      return '<a href="' + href + '"' + act + '><span class="ico">' + icon + '</span> ' + label + (extra || '') + '</a>';
+    }
+    var html = '';
+    html += '<div class="bos-side-section">'
+         +    '<div class="bos-side-label">Run</div>'
+         +    link('app.html',      '◆', 'Dashboard')
+         +    link('company.html',  '🏢', 'Company Profile')
+         +    link('trackers.html', '📊', 'Trackers &amp; KPIs')
+         +    link('tasks.html',    '✓', 'Tasks')
+         +    link('docs.html',     '📄', 'Documents')
+         + '</div>';
+    html += '<div class="bos-side-section">'
+         +    '<div class="bos-side-label" data-bos-os-label>Learn</div>'
+         +    link('database.html', '◇', 'Modules')
+         +    link('module.html',   '📖', 'Guides')
+         +    link('../lead magnet app/index.html?from=bos', '⌕', 'Assessments')
+         + '</div>';
+    html += '<div class="bos-side-section">'
+         +    '<div class="bos-side-label">Premium</div>'
+         +    '<a href="roadmap.html" class="bos-roadmap-link' + ('roadmap.html' === page ? ' active' : '') + '"><span class="ico">🗺</span> My Custom Roadmap <span class="bos-locked-tag bos-roadmap-tag">Pro</span></a>'
+         + '</div>';
+    html += '<div class="bos-side-section" data-bos-tools-slot></div>';
+    html += '<div class="bos-side-section">'
+         +    '<div class="bos-side-label">Get help</div>'
+         +    '<a href="mailto:hello@milesymedia.co"><span class="ico">✉</span> Message us</a>'
+         +    '<a href="tel:+441234567890"><span class="ico">📞</span> Book a free call</a>'
+         + '</div>';
+    html += '<div class="bos-side-section bos-aqua-section bos-aqua-locked" data-bos-aqua>'
+         +    '<div class="bos-side-label">Agency portal</div>'
+         +    '<a href="#" class="bos-locked"><span class="ico">🔒</span> Aqua portal <span class="bos-locked-tag">Upgrade</span></a>'
+         +    '<p class="bos-side-foot">Once you upgrade, the full agency portal layers in here.</p>'
+         + '</div>';
+    return html;
+  }
+
+  function mountAutoSidebar() {
+    var slots = document.querySelectorAll('[data-bos-auto-nav]');
+    slots.forEach(function (slot) {
+      var active = slot.getAttribute('data-bos-active');
+      slot.innerHTML = buildSidebarNav(active);
+    });
+  }
+
   /* ─── Sidebar adapts to mode ─────────────── */
   function applyMode() {
     var mode = getMode();
@@ -451,6 +499,7 @@
 
   /* ─── Boot ───────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
+    mountAutoSidebar();
     hydrateUser();
     applyMode();
     tickStreak();
