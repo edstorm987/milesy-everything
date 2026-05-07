@@ -9,6 +9,25 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 008 — Per-client client-tasks kanban tab** — DONE.
+      Goal A: NEW `_KanbanTabClient.tsx` client component on per-client
+      Kanban tab. Boots via `/api/portal/kanban/boards?clientId=`,
+      finds + auto-creates `templateId==="client-tasks"` scope:"client"
+      board, fetches cards, groups by columnId, sorts by order.
+      Replaces dashed-placeholder kanban tab card. Goal B: Backlog
+      column hosts pinned quick-add form (`+ New task` input + Add)
+      POSTing `/boards/cards`; native HTML5 drag/drop on cards POSTs
+      `/boards/cards/move` to delegate. Goal C: "Waiting On Client"
+      column gets amber palette + amber `{N} waiting on client` chip
+      in the tab header when count >0 (auto-email deferred T2 R009
+      per prompt). Q-ASSUMED: auto-create on first tab mount (not
+      tied to advancePhase event yet — needs foundation event-bus
+      hook); chip lives in tab header (foundation can't SSR-fetch
+      plugin storage); native HTML5 drag (touch fallback R+1).
+      Goal D: smoke `§ Client tasks kanban` (3 — kanban tab 200 +
+      testid + boards?clientId 200). Chapter
+      `04-client-tasks-kanban.md`; MASTER row #83; tsc clean. HARD
+      BOUNDARY honoured.
 - [x] **T1 007 — Effective-role resolver in chrome** — DONE.
       Goal A: NEW `lib/server/effectiveRole.ts` — `effectiveRole(session)`
       maps session.role enum → agency-hr DEFAULT_ROLES seed

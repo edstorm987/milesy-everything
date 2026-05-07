@@ -23,6 +23,7 @@ import { OverviewTabs, TABS, type TabId } from "./_OverviewTabs";
 import { ToolsPicker, type PickerPlugin } from "./_ToolsPicker";
 import { BuildPortalWizard, type WizardPlugin } from "./_BuildPortalWizard";
 import { ClientSopsTab } from "./_ClientSopsTab";
+import { KanbanTabClient } from "./_KanbanTabClient";
 import { assertSopsAccess, familiesForStage, SopsAccessError } from "@/lib/server/sopsAccess";
 import { RequirePermission } from "@/lib/server/RequirePermission";
 import { OnboardingDashboardPanel, type OnboardingPhase } from "./_OnboardingDashboardPanel";
@@ -340,17 +341,7 @@ export default async function ClientHome({
       )}
 
       {tab === "kanban" && (
-        <section className="rounded-xl border border-dashed border-black/15 bg-white/60 p-6">
-          <h2 className="text-lg font-medium text-black/90">Kanban</h2>
-          <p className="mt-1 text-sm text-black/60">
-            T2&apos;s kanban plugin will surface here when shipped. For now, the phase board lives under fulfillment.
-          </p>
-          <div className="mt-3">
-            <Link href={`/portal/clients/${client.id}/fulfillment`} className="text-sm text-[var(--brand-primary)] hover:underline">
-              Open fulfillment phase board →
-            </Link>
-          </div>
-        </section>
+        <KanbanTabClient clientId={client.id} clientName={client.name} />
       )}
 
       {tab === "finance" && (

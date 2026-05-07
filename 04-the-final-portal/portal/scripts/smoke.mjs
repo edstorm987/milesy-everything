@@ -226,6 +226,17 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Client tasks kanban");
+  if (clientId) {
+    const k = await go("GET", `/portal/clients/${clientId}?tab=kanban`);
+    record("client kanban tab 200", k.status === 200);
+    const kbody = k.status === 200 ? await k.text() : "";
+    record("kanban tab carries client-tasks-kanban testid", kbody.includes("client-tasks-kanban"));
+  }
+  // Boards endpoint scoped to client returns boards (auto-create on tab mount happens client-side).
+  const boardsClient = await go("GET", `/api/portal/kanban/boards?clientId=${clientId}`);
+  record("kanban boards (client scope) 200", boardsClient.status === 200);
+
   console.log("\n§ Effective role");
   // Smoke runs as agency-owner via /demo bootstrap → Founder POV.
   // Agency home renders for Founder; Tools + Finance tabs allowed.
