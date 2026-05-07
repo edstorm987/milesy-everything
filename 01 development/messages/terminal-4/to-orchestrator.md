@@ -61,3 +61,24 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T08:50:00Z] WAKE-EMPTY: no new inbox + Ed last shipped at 31d1764. Idling (1/3).
 [2026-05-07T09:15:00Z] DONE: Ed prompt — HC results were BS (fake £/month + made-up percentages even with zero answers). Three honest fixes: (1) No-data state — if user skips to results without answering anything, page says "We don't know enough about you yet"; leak cards "—"; quick wins blank w/ hint; section nav offers each topic as start-here. (2) Money is now a range not a point: "Likely upside: £low–£high/month" computed from headroom × confidence × sector multiplier; less coverage → narrower claim, not padded. (3) Per-topic data only when answered — leak cards "—" w/ "answer the X topic" hint when topic skipped; sub-headline now explicit "These are self-reported answers, not pulled from your live data". New transparency block on results: "🧮 How we got this number" expander explaining the three inputs in plain English + "🔌 What we'd verify against" listing real connectors (Search Console / GMB Insights / Lighthouse / GA4 / Stripe / QuickBooks / SERP tracker) linking to marketplace, setting honest expectation free=self-report, Pro=measured.
 [2026-05-07T09:15:30Z] COMMIT: 3a2a633 "T4 — HC results: honest, no fabricated numbers"
+
+[2026-05-07T09:40:00Z] HANDOFF · context offload — full T4 state into the context tree.
+
+Per Ed's request, dumping every durable T4 decision into MASTER-indexed chapters so you (orchestrator) and any future session have the full picture. Six chapters under `01 development/context/prior research/`:
+
+- **04-milesy-ecosystem-progress.md** (chapter #66) — the master snapshot: three apps, one origin (`:3033`), full file tree, the funnel, free vs Pro sidebar, what works free, what's Pro-locked, marketplace 9-add-on table, admin, full localStorage schema, cross-cutting decisions, cross-refs.
+- **04-business-os-plugin-handoff.md** (chapter #67) — the future-state architecture for `@aqua/plugin-business-os` extraction: portal-plugin shape, localStorage→Postgres migration table, gating contract becoming entitlement checks, 3 open Qs (pricing, migration UX, niche packs).
+- **04-hc-results-honesty.md** (chapter #68) — the no-fabricated-numbers ruling: no-data state, range-not-point money maths (`headroom × confidence × £1500-£5000`), per-topic-only leak cards, transparency block listing real-data connectors (Search Console / GMB / Lighthouse / GA4 / Stripe·QuickBooks / SERP rank tracker).
+- **04-admin-questions-editor.md** (chapter #69) — extracted AREAS to shared `hc-questions.js` (`window.HC_AREAS`); lead-magnet reads localStorage override first; admin tree editor (area→tier→steps) with type-aware fields drives live HC; throwaway prompt() password gate.
+- **04-free-vs-pro-gating.md** (chapter #70) — `bos.mode` switches whole UX; free = 6 curated sidebar items + Request-a-feature alt-axis; Pro lockup pattern via bos.js maybeProLock(); page intros for transparency.
+- **04-open-followups.md** (chapter #71) — catch-all: production rewrite Q-FLAG (chief commander/T6 needs to add rewrites for /health-check.html + /lead magnet app/ + /business-os app/); real connectors not wired (Lighthouse via PSI API recommended first build); 15+ locked module rows still need lessons written; niche packs only labels; recurring shared-.git/index mesh hazard; branding/SVG-sanitiser/HC-progress-email all open.
+
+All six rows added to `01 development/context/MASTER.md` (rows 66-71).
+
+Plus existing T4-scoped artefacts: `04-the-final-portal/milesymedia website/lead magnet app/DELIVERY-PLAN.md` (Phase 1-5 delivery plan with 4 Qs for Ed); `01 development/ed-dropbox/` (Ed's screenshot/Notion-export/branding drop folder w/ README).
+
+Latest commits in T4 scope: `3a2a633` (HC honesty), `31d1764` (admin editor live-HC bridge + logo upload + admin gate), `bcde843` (unified host + branding + nudges + admin scaffold), `37a0410` (free/Pro split + Request-a-feature + HC-driven home), `5ae8772` (cut-the-complexity simplification pass).
+
+Net: T4 has shipped a working three-app ecosystem (milesy site + HC + BOS) at the lead-magnet tier. Ready to be picked up by anyone — full architecture spec is in chapter #66 with the rest cross-referenced.
+
+[2026-05-07T09:40:30Z] COMMIT pending (chapters + MASTER rows).
