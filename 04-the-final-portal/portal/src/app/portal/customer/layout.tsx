@@ -38,6 +38,22 @@ export default async function CustomerLayout({ children }: { children: ReactNode
   const h = await headers();
   const currentPath = h.get("x-invoke-path") ?? h.get("x-pathname") ?? "/portal/customer";
 
+  // R019 Goal D — iframe embed mode strips Sidebar + Topbar so the
+  // customer portal renders flush inside the client website's iframe.
+  // Cookie set by /demo?embed=1 (R013) and the foundation /embed/<slug>/customer
+  // route (R016). Brand kit still injected so iframe inherits client styling.
+  const embed = h.get("cookie")?.includes("lk_demo_embed=1") ?? false;
+  if (embed) {
+    return (
+      <>
+        <ThemeInjector brand={client.brand} scope="customer" />
+        <main id="main-content" data-testid="portal-customer-embed" className="min-h-screen px-4 py-4">
+          <ErrorBoundary label="customer (embed)">{children}</ErrorBoundary>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <ThemeInjector brand={client.brand} scope="customer" />

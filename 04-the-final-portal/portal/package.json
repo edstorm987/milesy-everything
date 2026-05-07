@@ -19,6 +19,7 @@
     "smoke:auth-oauth": "tsx --test scripts/smoke-auth-oauth.test.ts",
     "smoke:auth-magic": "tsx --test scripts/smoke-auth-magic.test.ts",
     "smoke:portal-role-brandkit": "tsx --test scripts/smoke-portal-role-brandkit.test.ts",
+    "smoke:end-customer-portal": "tsx --test scripts/smoke-end-customer-portal.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {
