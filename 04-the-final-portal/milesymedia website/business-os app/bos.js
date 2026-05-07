@@ -206,9 +206,10 @@
          +    '<div class="bos-side-label">Run</div>'
          +    link('app.html',      '◆', 'Dashboard')
          +    link('company.html',  '🏢', 'Company Profile')
+         +    link('leads.html',    '⚑', 'Leads &amp; Clients HQ')
          +    link('trackers.html', '📊', 'Trackers &amp; KPIs')
          +    link('tasks.html',    '✓', 'Tasks')
-         +    link('docs.html',     '📄', 'Documents')
+         +    link('docs.html',     '📄', 'Documents &amp; SOPs')
          + '</div>';
     html += '<div class="bos-side-section">'
          +    '<div class="bos-side-label" data-bos-os-label>Learn</div>'
@@ -223,6 +224,7 @@
     html += '<div class="bos-side-section" data-bos-tools-slot></div>';
     html += '<div class="bos-side-section">'
          +    '<div class="bos-side-label">Get help</div>'
+         +    link('help.html', '👋', 'Need Some Help?')
          +    '<a href="mailto:hello@milesymedia.co"><span class="ico">✉</span> Message us</a>'
          +    '<a href="tel:+441234567890"><span class="ico">📞</span> Book a free call</a>'
          + '</div>';

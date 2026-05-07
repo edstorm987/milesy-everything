@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Leads &amp; Clients HQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bos-body">
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="leads.html"></nav>
+      <div class="bos-side-user">
+        <div class="av" data-bos-initial>JL</div>
+        <div>
+          <div class="bos-side-user-name" data-bos-name>Jordan Lee</div>
+          <div class="bos-side-user-biz muted" data-bos-business>Northbeam Apparel</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="bos-main">
+
+      <header class="bos-topbar">
+        <div>
+          <div class="muted bos-topbar-eyebrow">Run · Pipeline</div>
+          <h1>Leads &amp; Clients HQ.</h1>
+          <p class="muted bos-topbar-sub">Every enquiry, every stage, every quid in the pipeline. Drag-free kanban — click a card to move it.</p>
+        </div>
+        <div class="bos-topbar-actions">
+          <button class="btn btn-primary" data-bos-lead-add>+ New lead</button>
+        </div>
+      </header>
+
+      <!-- Pipeline summary strip -->
+      <div class="bos-leads-summary" data-bos-leads-summary></div>
+
+      <!-- Kanban -->
+      <section class="bos-section">
+        <div class="bos-leads-kanban" data-bos-leads-kanban></div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="bos.js"></script>
+  <script>
+    var KEY = 'bos.leads';
+    var STAGES = [
+      { id: 'unsorted',  label: 'Unsorted (manual review)',     tone: 'warn' },
+      { id: 'new',       label: 'New enquiry',                  tone: 'good' },
+      { id: 'responded', label: 'Responded · awaiting reply',   tone: 'info' },
+      { id: 'qualified', label: 'Qualified · proposal next',    tone: 'good' },
+      { id: 'won',       label: 'Won · invoiced',               tone: 'won'  },
+      { id: 'spam',      label: 'Spammer / not relevant',       tone: 'bad'  }
+    ];
+    function load() {
+      var raw = localStorage.getItem(KEY);
+      if (raw) { try { return JSON.parse(raw); } catch (e) {} }
+      return seed();
+    }
+    function seed() {
+      return [
+        { id: 1,  name: 'Daisy Crane',           source: 'main website form', value: 100, stage: 'new'       },
+        { id: 2,  name: 'Marianne Tames-Demauras',source: 'main website form', value: 100, stage: 'new'       },
+        { id: 3,  name: 'Lochlann Mcbride',      source: 'main website form', value: 100, stage: 'new'       },
+        { id: 4,  name: 'Hannah Spooner',        source: 'chat widget',       value: 100, stage: 'unsorted'  },
+        { id: 5,  name: 'louise dyer',           source: 'chat widget',       value: 100, stage: 'unsorted'  },
+        { id: 6,  name: 'Paul McBride',          source: 'main website form', value: 100, stage: 'new'       },
+        { id: 7,  name: 'Rob Mason',             source: 'main website form', value: 100, stage: 'unsorted'  },
+        { id: 8,  name: 'Fiona Aalders',         source: 'main website form', value: 100, stage: 'unsorted'  },
+        { id: 9,  name: 'Laura Woods',           source: 'main website form', value: 100, stage: 'responded' },
+        { id: 10, name: 'Ed Hallam',             source: 'health check',      value: 250, stage: 'qualified' },
+        { id: 11, name: 'Pop Ledger',            source: 'referral',          value: 1500,stage: 'won'       }
+      ];
+    }
+    function save(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
+    var leads = load();
+
+    function render() {
+      // Summary strip
+      var sumEl = document.querySelector('[data-bos-leads-summary]');
+      sumEl.innerHTML = STAGES.map(function (s) {
+        var stageLeads = leads.filter(function (l) { return l.stage === s.id; });
+        var count = stageLeads.length;
+        var value = stageLeads.reduce(function (sum, l) { return sum + (l.value || 0); }, 0);
+        return '<div class="bos-leads-stat bos-leads-stat-' + s.tone + '">'
+          + '<div class="bos-leads-stat-label">' + s.label + '</div>'
+          + '<div class="bos-leads-stat-row"><span>' + count + '</span> · £' + value.toLocaleString() + '</div>'
+          + '</div>';
+      }).join('');
+
+      // Kanban
+      var k = document.querySelector('[data-bos-leads-kanban]');
+      k.innerHTML = STAGES.map(function (s) {
+        var stageLeads = leads.filter(function (l) { return l.stage === s.id; });
+        return '<div class="bos-leads-col bos-leads-col-' + s.tone + '">'
+          + '<div class="bos-leads-col-head">'
+          +   '<h3>' + s.label + '</h3>'
+          +   '<span class="bos-kanban-count">' + stageLeads.length + '</span>'
+          + '</div>'
+          + '<ul class="bos-leads-list">'
+          + (stageLeads.length ? stageLeads.map(function (l) {
+              return '<li class="bos-lead-card">'
+                + '<div class="bos-lead-card-head">'
+                +   '<strong>' + l.name + '</strong>'
+                +   '<button class="bos-lead-del" data-bos-lead-del="' + l.id + '" aria-label="Delete">✕</button>'
+                + '</div>'
+                + '<div class="bos-lead-meta"><span class="muted">Source:</span> ' + l.source + '</div>'
+                + '<div class="bos-lead-meta"><span class="muted">Value:</span> £' + l.value.toLocaleString() + '</div>'
+                + '<div class="bos-lead-actions">'
+                +   '<button class="bos-lead-icon" title="Call">📞</button>'
+                +   '<button class="bos-lead-icon" title="Message">💬</button>'
+                +   '<button class="bos-lead-icon" title="Note">📝</button>'
+                +   '<button class="bos-lead-icon" title="Tag">🏷</button>'
+                +   '<select data-bos-lead-move="' + l.id + '" class="bos-lead-move-select">'
+                +     STAGES.map(function (x) { return '<option value="' + x.id + '"' + (x.id === l.stage ? ' selected' : '') + '>→ ' + x.label.split(' ')[0] + '</option>'; }).join('')
+                +   '</select>'
+                + '</div>'
+                + '</li>';
+            }).join('') : '<li class="bos-cp-empty">Empty.</li>')
+          + '</ul>'
+          + '</div>';
+      }).join('');
+
+      document.querySelectorAll('[data-bos-lead-move]').forEach(function (sel) {
+        sel.addEventListener('change', function () {
+          var id = parseInt(sel.getAttribute('data-bos-lead-move'), 10);
+          var l = leads.find(function (x) { return x.id === id; });
+          if (l) { l.stage = sel.value; save(leads); render(); }
+        });
+      });
+      document.querySelectorAll('[data-bos-lead-del]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = parseInt(b.getAttribute('data-bos-lead-del'), 10);
+          leads = leads.filter(function (x) { return x.id !== id; });
+          save(leads); render();
+        });
+      });
+    }
+
+    document.querySelector('[data-bos-lead-add]').addEventListener('click', function () {
+      var name = prompt('Lead name?'); if (!name) return;
+      var source = prompt('Source?', 'main website form') || 'manual';
+      var value = parseFloat(prompt('Value (£)?', '100') || '100');
+      var stage = prompt('Stage (unsorted / new / responded / qualified / won / spam)?', 'new') || 'new';
+      leads.unshift({ id: Date.now(), name: name, source: source, value: value, stage: stage });
+      save(leads); render();
+    });
+
+    render();
+  </script>
+
+</body>
+</html>
