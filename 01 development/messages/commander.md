@@ -438,3 +438,9 @@ Actions:
 Each queue now has minimum 2-3 staged ahead of the active round. Will keep at 3-ahead going forward — every wake check queue depth + add more as ones ship.
 
 [2026-05-07T01:18:00Z] PLAN: cycle 32 — Ed: routers should "after DONE check next file rather than sleep". Updated all 3 routers' step 7 to chain immediately after DONE: pull → re-list queue → if new lowest exists, start step 4 with it (back-to-back in same /loop fire); only sleep when archive pending or queue empty. Combined with 270s commander cadence + 3-deep queues, chains stay tight. Re-paste needed for terminals to pick up new routing behavior. Cycle 32 commit `0650856` also absorbed T1's in-flight Employee HQ work (`RoleMatrixClient.tsx` + ~200 LOC) — verifying T1 002 progress next wake.
+
+[2026-05-07T01:25:00Z] WAKEUP: cycle 33 — Ed: "remember to archive everything as well so they don't auto sleep". Right.
+- T2 002 (SOP shelf) DONE @ `ed53377` 14:40Z but archived only NOW — 3-wake lag. Apologized in T2 inbox.
+- T3 002 already archived (T3 003 in flight).
+- T1 002 (Employee HQ) STARTED, in flight with 3 Q-ASSUMEDs (EmployeeProfile inline / NDA via metadata / opt-in permissionGuard). All sound — no REPLY needed.
+- Resolved a self-merge conflict on T1-router.md (auto-stash collision from cycle 32's parallel edits).

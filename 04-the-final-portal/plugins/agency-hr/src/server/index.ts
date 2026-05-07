@@ -5,6 +5,7 @@
 export { StaffService } from "./staff";
 export { DepartmentService, DEFAULT_DEPARTMENTS } from "./departments";
 export { LeaveService } from "./leave";
+export { RoleService, DEFAULT_ROLES, roleHasPermission, permissionGuard } from "./roles";
 
 export type {
   ActivityLogPort,
@@ -38,6 +39,7 @@ import type {
 import { StaffService } from "./staff";
 import { DepartmentService } from "./departments";
 import { LeaveService } from "./leave";
+import { RoleService } from "./roles";
 
 // ─── Container ────────────────────────────────────────────────────────────
 
@@ -54,11 +56,13 @@ export interface AgencyHrContainer {
   staff: StaffService;
   departments: DepartmentService;
   leave: LeaveService;
+  roles: RoleService;
 }
 
 export function buildAgencyHrContainer(deps: AgencyHrDeps): AgencyHrContainer {
   const staff = new StaffService(deps.agencyId, deps.storage, deps.activity, deps.events);
   const departments = new DepartmentService(deps.agencyId, deps.storage, deps.activity, deps.events);
   const leave = new LeaveService(deps.agencyId, deps.storage, deps.activity, deps.events, staff);
-  return { staff, departments, leave };
+  const roles = new RoleService(deps.agencyId, deps.storage, deps.activity, deps.events);
+  return { staff, departments, leave, roles };
 }

@@ -46,12 +46,13 @@ If a change you'd like to make crosses these, log Q-BLOCKED and wait.
    the active prompt's filename (so commander knows which file to
    archive). **Do NOT move the file yourself** — commander archives.
 7. **Immediately after DONE — chain to next round, do NOT sleep yet**:
-   `git pull --rebase --autostash` again, re-list the queue. If a NEW
-   lowest-numbered file has appeared (commander archived fast), start at
-   step 4 with that new file — chain rounds back-to-back in the same /loop
-   fire. Only sleep if previous round is still lowest (log
-   `WAKE-PENDING-ARCHIVE`) or queue is empty. Cadence is 270s and
-   commander archives within ~270s, so chaining usually wins.
+   `git pull --rebase --autostash` again, then re-list the queue. If a
+   new lowest-numbered file has appeared (commander archived fast),
+   start at step 4 with that new file — chain rounds back-to-back in
+   the same /loop fire. If your previous round is still the lowest
+   (commander hasn't archived), log `WAKE-PENDING-ARCHIVE` and THEN
+   sleep — next wake retries the chain. Cadence is 270s and commander
+   archives within ~270s of your DONE, so chaining usually wins.
 8. If the queue is empty (no `*.md` files), log `WAKE-EMPTY` in your
    outbox. After **10 consecutive empty wakes**, end the loop per
    discipline; Ed re-pastes this router when there's more work.

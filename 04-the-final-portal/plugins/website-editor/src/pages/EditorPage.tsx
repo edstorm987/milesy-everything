@@ -107,7 +107,12 @@ function VisualEditorPageInner() {
   const [publishOpen, setPublishOpen] = useState(false);
   const [generateOpen, setGenerateOpen] = useState(false);
   const [aiAvailable, setAiAvailable] = useState(false);
-  const [livePreviewOpen, setLivePreviewOpen] = useState(false);
+  // R003 — per-page open-state persisted in localStorage; `lastSaveAt`
+  // bumps trigger iframe auto-refresh on save.
+  const [lastSaveAt, setLastSaveAt] = useState(0);
+  const [livePreviewOpen, setLivePreviewOpen] = useLivePreviewOpenState(
+    target.kind === "page" ? target.id : null,
+  );
   const [newPageOpen, setNewPageOpen] = useState(false);
   const [newFunnelOpen, setNewFunnelOpen] = useState(false);
   const [pageSettingsId, setPageSettingsId] = useState<string | null>(null);
