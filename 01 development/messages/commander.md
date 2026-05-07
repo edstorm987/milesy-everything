@@ -354,3 +354,12 @@ TASKs dropped in T1/T2/T3/T5/T6 inboxes pointing at the new prompts. Ed restarts
 - NOTE dropped in T1 inbox: 4 concrete fold-ins (sidebar / phase picker / add-client fields / brand voice).
 - NOTE dropped in T2 inbox: kanban template column labels (Aqua-real, not generic).
 - Active prompt set after this cycle: T1 agency-shell, T2 kanban, T3 editor-deeplink, T4 milesymedia (Ed-driven), T6 production-gate. Down from 6 → 5; will be effectively 3-running per Ed's "3 terminals" call (T1 + T2 + T3, with T6 deferred until ready to deploy).
+
+[2026-05-06T23:55:00Z] PLAN: cycle 26b — Ed asked for a deeper Aqua-internals scrape. Re-read the vault more thoroughly (Backend / Service HQ / Sales HUB / Standards / Communication SOP / 90-day social plan) AND the most-evolved prior-iteration agency surface in `03 old portal/.../eds-old-portal-idea-fixed/src/components/`. Massively expanded `04-aqua-internals-reference.md` (#59):
+- §3 NEW: full **old-portal agency-side surface inventory** — every view + modal that existed before, mapped to v1-status (in flight / shipped / deferred / out-of-scope). Most-evolved prior shape captured as the wishlist.
+- §9 NEW: **Employee HQ spec** — Ed wants this; deferred to its own round. Domain + surfaces + permission model + SOP-tag access gate.
+- §9c NEW: **SOP shelf taxonomy** — five tag families from Aqua HQ (Sales / Service / Leads / Standards / Mastery).
+- §10 NEW: 90-day social media plan starter for agency-marketing plugin.
+- §11 NEW: Founder Todos — ship as kanban board template (§6 founder-todos) gated to Founder role.
+- §12 NEW: explicit **v1 vs deferred vs out-of-scope** list — clears the noise.
+Did NOT drop new NOTEs in T1/T2 inboxes — the prior NOTE (cycle 26) already pointed at the chapter, and they're working from it. Terminals will pick up the deeper detail on next read.
