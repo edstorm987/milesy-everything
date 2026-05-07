@@ -118,8 +118,9 @@ Goal: WS-B/C complete; WS-D started; WS-E half. Ship-gate 7/9.
 
 - T1: ~~WS-C R026 Topbar agency switcher~~ #133 +
   ~~WS-E R027 Postgres backend~~ #134 +
-  ~~WS-E R028 durable HMAC nonces~~ #138 — all DONE 2026-05-07.
-  R029 + R030 next.
+  ~~WS-E R028 durable HMAC nonces~~ #138 +
+  ~~WS-E R029 env secrets policy~~ #142 — DONE 2026-05-07.
+  R030 next.
 - T2: ~~WS-B R023 rank-my-website plugin~~ chapter #141 — DONE
   2026-05-07 (pulled from Sprint 2 by queue order). WS-D R024 SMTP
   outbound up next.
