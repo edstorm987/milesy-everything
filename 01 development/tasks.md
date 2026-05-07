@@ -9,6 +9,23 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 011 — Per-client Finance tab** — DONE.
+      Goal A: NEW `_FinanceTabClient.tsx` header strip — Plan tier
+      chip + lock-in pill (£100 paid / Unpaid) + Stripe quick-link
+      from metadata. Goals B+C: invoices table fetched from
+      `/api/portal/agency-finance/invoices?clientId=` w/ empty-state
+      `Connect billing →` CTA; 12-month paid-total sparkline (SVG,
+      240×40, 12 bars) when PAID invoices exist — chapter #68
+      honesty CTA + italic "we don't fabricate MRR" copy when zero.
+      Goal D: `+ Manual invoice` inline form posting to plugin
+      `/invoices` endpoint (single-line-item GBP payload). Goal E:
+      smoke `§ Finance tab` (5 — tab 200 + testid + Plan strip +
+      12-month strip + invoices fetch 200). R7 RequirePermission
+      `finance.view` wrapper kept. Q-ASSUMED: GBP default; server
+      gates POST on AGENCY_ADMINS (no double-gate on finance.edit);
+      paid-only sparkline labelled honestly as "12-month paid
+      total" not strict MRR. Chapter `04-finance-tab.md`; MASTER row
+      #86; tsc clean. HARD BOUNDARY honoured.
 - [x] **T1 010 — Per-client Files tab (v0 paste-link)** — DONE.
       T2 R010 plugin not shipped yet → fallback path per prompt:
       operator-pasted Drive/Dropbox/Notion URLs stored on

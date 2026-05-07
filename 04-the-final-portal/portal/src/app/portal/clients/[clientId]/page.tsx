@@ -26,6 +26,7 @@ import { ClientSopsTab } from "./_ClientSopsTab";
 import { KanbanTabClient } from "./_KanbanTabClient";
 import { CommsRow } from "./_CommsRow";
 import { FilesTabClient, type FileCategory } from "./_FilesTabClient";
+import { FinanceTabClient } from "./_FinanceTabClient";
 import { assertSopsAccess, familiesForStage, SopsAccessError } from "@/lib/server/sopsAccess";
 import { RequirePermission } from "@/lib/server/RequirePermission";
 import { OnboardingDashboardPanel, type OnboardingPhase } from "./_OnboardingDashboardPanel";
@@ -360,17 +361,14 @@ export default async function ClientHome({
 
       {tab === "finance" && (
         <RequirePermission session={session} requires={["finance.view"]}>
-        <section className="rounded-xl border border-black/10 bg-white p-6">
-          <h2 className="text-lg font-medium text-black/90">Finance</h2>
-          <p className="mt-1 text-sm text-black/60">
-            Per-client rollup from agency-finance.
-          </p>
-          <div className="mt-4">
-            <Link href={`/portal/agency/agency-finance?clientId=${client.id}`} className="rounded-md border border-black/15 px-4 py-2 text-sm hover:bg-black/5">
-              Open agency-finance →
-            </Link>
-          </div>
-        </section>
+          <FinanceTabClient
+            clientId={client.id}
+            initial={{
+              planTier: meta.planTier,
+              lockInPaid: meta.lockInPaid,
+              stripeLink: meta.stripeLink,
+            }}
+          />
         </RequirePermission>
       )}
 

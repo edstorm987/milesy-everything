@@ -226,6 +226,19 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Finance tab");
+  if (clientId) {
+    const fin = await go("GET", `/portal/clients/${clientId}?tab=finance`);
+    record("client finance tab 200", fin.status === 200);
+    const fbody = fin.status === 200 ? await fin.text() : "";
+    record("finance tab carries client-finance-tab testid", fbody.includes("client-finance-tab"));
+    record("finance header shows Plan strip", fbody.includes(">Plan<"));
+    record("finance shows 12-month strip header", fbody.includes("12-month paid total"));
+  }
+  // Invoices endpoint reachable scoped to client (returns array even when empty).
+  const inv = await go("GET", `/api/portal/agency-finance/invoices?clientId=${clientId}`);
+  record("agency-finance invoices?clientId 200", inv.status === 200, `status=${inv.status}`);
+
   console.log("\n§ Files tab");
   if (clientId) {
     const f = await go("GET", `/portal/clients/${clientId}?tab=files`);
