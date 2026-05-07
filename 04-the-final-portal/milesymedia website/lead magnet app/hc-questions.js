@@ -38,6 +38,9 @@ window.HC_AREAS = [
                 { label: 'On the page somewhere — had to look', score: 60 },
                 { label: 'Page 2 or further', score: 30 },
                 { label: "I couldn't see myself at all", score: 10 } ] },
+            { type: 'text', prompt: "What would you Google to find a business like yours?",
+              body: "Even just two or three phrases. (We'll use these to build your real keyword list — your customer's vocabulary, not ours.)",
+              skipIf: function (slot) { return slot.raw[4] !== 3; } },
             { type: 'lever-calc', prompt: 'So what could that be costing you?',
               body: "These are <strong>your</strong> numbers — your typical customer value, your guess at how many extra enquiries ranking first would bring you in a year. We just multiply.",
               ltvDefault: 1000, enqDefault: 10 },
@@ -49,7 +52,11 @@ window.HC_AREAS = [
               options: [
                 { label: 'Yes — and I keep it updated', score: 90, tag: 'gmb-good' },
                 { label: 'Yes — but I never touch it', score: 50, tag: 'gmb-stale' },
-                { label: "No / I'm not sure", score: 15, tag: 'gmb-missing' } ] }
+                { label: "No / I'm not sure", score: 15, tag: 'gmb-missing' } ] },
+            { type: 'mental-note', tag: 'gmb-claim',
+              prompt: 'Quick one.',
+              label: "Yes — I'd like to claim my Google Business Profile (free, ~15 min, big lever).",
+              skipIf: function (slot) { return slot.raw[8] !== 2; } }
           ]
         },
         intermediate: {
@@ -104,7 +111,7 @@ window.HC_AREAS = [
       },
       quickwins: function (slot) {
         var wins = [];
-        var gmbStep = slot.tier === 'beginner' ? 7 : slot.tier === 'intermediate' ? 2 : null;
+        var gmbStep = slot.tier === 'beginner' ? 8 : slot.tier === 'intermediate' ? 2 : null;
         if (gmbStep != null) {
           var raw = slot.raw[gmbStep];
           var tier = AREAS.find(function(a){return a.id==='seo';}).tiers[slot.tier];
@@ -154,26 +161,66 @@ window.HC_AREAS = [
           label: 'Just show me', time: '~3 min',
           summary: 'A 5-second test of your own site.',
           exercise: [
+            // Step 0 — presence gate
+            { type: 'choice', prompt: 'First — do you actually have a website?',
+              scoring: false,
+              options: [
+                { label: 'Yes — it\'s live', score: 0, tag: 'site-yes' },
+                { label: 'Building one / it\'s halfway', score: 0, tag: 'site-wip' },
+                { label: "No — we don't have one", score: 0, tag: 'site-no' } ] },
+
+            // ── YES branch (5-sec test arc) — steps 1..4 ──
             { type: 'task', title: 'The 5-second test',
               body: 'Drop your homepage URL below. We\'ll show it for <strong>5 seconds</strong>, then dim it — answer based on your first impression only.',
               embed: { kind: 'site', editable: true, placeholder: 'https://yourbusiness.co.uk', timer: 5 },
-              done: 'Done' },
+              done: 'Done',
+              skipIf: function (slot) { return slot.raw[0] !== 0; } },
             { type: 'choice', prompt: 'In one breath — could a stranger tell what you sell?',
+              skipIf: function (slot) { return slot.raw[0] !== 0; },
               options: [
                 { label: 'Yes, instantly', score: 90 },
                 { label: 'Probably, with a squint', score: 55 },
                 { label: 'No — they\'d have to read', score: 25 },
                 { label: 'No idea', score: 10 } ] },
             { type: 'choice', prompt: 'Was the next thing to do (call, book, buy) obvious?',
+              skipIf: function (slot) { return slot.raw[0] !== 0; },
               options: [
                 { label: 'Big button, hard to miss', score: 90, tag: 'cta-clear' },
                 { label: 'Somewhere — they\'d find it', score: 55, tag: 'cta-weak' },
                 { label: 'Honestly no', score: 20, tag: 'cta-missing' } ] },
             { type: 'choice', prompt: 'Did the site feel trustworthy?',
+              skipIf: function (slot) { return slot.raw[0] !== 0; },
               options: [
                 { label: 'Yes — looks current', score: 85 },
                 { label: 'Bit dated but OK', score: 55, tag: 'site-dated' },
-                { label: 'It looks neglected', score: 25, tag: 'site-dated' } ] }
+                { label: 'It looks neglected', score: 25, tag: 'site-dated' } ] },
+
+            // ── NO branch (no website) — steps 5..7 ──
+            { type: 'reveal', title: "OK — that's actually the most common starting point.",
+              body: "There's no judgement here. We'll skip the on-site critique and look at what a website would be worth to you instead.",
+              skipIf: function (slot) { return slot.raw[0] !== 2; } },
+            { type: 'lever-calc', prompt: "What might not having one be costing you?",
+              body: "If a website brought in just a couple of extra enquiries a month, what would that be worth across a year? <strong>Your numbers.</strong>",
+              ltvDefault: 1000, enqDefault: 24,
+              skipIf: function (slot) { return slot.raw[0] !== 2; } },
+            { type: 'mental-note', tag: 'site-missing',
+              prompt: 'Gut check.',
+              label: "Yes — not having a website is probably losing me trust and leads.",
+              skipIf: function (slot) { return slot.raw[0] !== 2; } },
+
+            // ── BUILDING branch — steps 8..9 ──
+            { type: 'choice', prompt: "What's the actual blocker to finishing it?",
+              scoring: false,
+              skipIf: function (slot) { return slot.raw[0] !== 1; },
+              options: [
+                { label: "I don't know what to write / what it should say", score: 0, tag: 'site-wip-copy' },
+                { label: "Time — the half-built version's been there for months", score: 0, tag: 'site-wip-time' },
+                { label: "I'm stuck on design / look-and-feel", score: 0, tag: 'site-wip-design' },
+                { label: "I'm waiting on someone else (dev / agency)", score: 0, tag: 'site-wip-dep' } ] },
+            { type: 'mental-note', tag: 'site-wip',
+              prompt: 'Gut check.',
+              label: "Yes — every month it stays half-built is a month I'm not getting found.",
+              skipIf: function (slot) { return slot.raw[0] !== 1; } }
           ]
         },
         intermediate: {
@@ -211,8 +258,22 @@ window.HC_AREAS = [
       },
       quickwins: function (slot) {
         var wins = [];
-        var ctaStep = slot.tier === 'beginner' ? 2 : null;
-        if (ctaStep != null) {
+        var hasSite = slot.tier === 'beginner' ? slot.raw[0] === 0 : true;
+        var noSite  = slot.tier === 'beginner' && slot.raw[0] === 2;
+        if (noSite) {
+          wins.push({
+            title: 'Get a real website live — even a one-pager',
+            why: "Right now your only shop window is your Google profile and word-of-mouth. A simple, honest one-pager turns curious searches into bookings.",
+            actions: [
+              { label: 'Read the one-pager starter guide', type: 'guide', href: 'https://milesymedia.co/blog/one-pager-starter' },
+              { label: "Build it for me", type: 'doitforme' },
+              { label: "Talk it through", type: 'callus' }
+            ]
+          });
+          return wins;
+        }
+        var ctaStep = slot.tier === 'beginner' ? 3 : null;
+        if (ctaStep != null && hasSite) {
           var tier = AREAS.find(function(a){return a.id==='site';}).tiers[slot.tier];
           var tag = slot.raw[ctaStep] != null ? tier.exercise[ctaStep].options[slot.raw[ctaStep]].tag : null;
           if (tag === 'cta-missing' || tag === 'cta-weak') {
@@ -227,14 +288,16 @@ window.HC_AREAS = [
             });
           }
         }
-        wins.push({
-          title: "5-second test your site every quarter",
-          why: "First impressions don't get a second chance. A 5-second test is the cheapest UX research you'll ever run.",
-          actions: [
-            { label: 'Read the 5-second-test guide', type: 'guide', href: 'https://milesymedia.co/blog/5-second-test' },
-            { label: "Run one for me", type: 'doitforme' }
-          ]
-        });
+        if (hasSite) {
+          wins.push({
+            title: "5-second test your site every quarter",
+            why: "First impressions don't get a second chance. A 5-second test is the cheapest UX research you'll ever run.",
+            actions: [
+              { label: 'Read the 5-second-test guide', type: 'guide', href: 'https://milesymedia.co/blog/5-second-test' },
+              { label: "Run one for me", type: 'doitforme' }
+            ]
+          });
+        }
         return wins;
       }
     },

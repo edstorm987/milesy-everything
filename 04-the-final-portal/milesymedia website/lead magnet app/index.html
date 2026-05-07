@@ -802,12 +802,12 @@
     var next = $("[data-hc-action='step-next']");
     var back = $("[data-hc-action='step-back']");
     next.disabled = !stepIsAnswered(step, raw);
-    var lastStep = state.exerciseIdx === currentTier().exercise.length - 1;
+    var lastStep = isLastActive(state.exerciseIdx);
     var lastArea = state.areaIdx === AREAS.length - 1;
     next.textContent = (lastStep && lastArea) ? 'See my results →'
                      : lastStep ? 'Next topic →'
                      : 'Next →';
-    back.disabled = state.exerciseIdx === 0;
+    back.disabled = prevActiveIdx(state.exerciseIdx) < 0;
   }
 
   function updateProgress() {
@@ -1143,10 +1143,34 @@
     document.querySelector('[data-hc-progress-result]').setAttribute('hidden', '');
   });
 
+  /* skipIf engine — find next/prev step that isn't conditionally skipped */
+  function isSkipped(stepIdx, slot) {
+    var ex = currentTier().exercise;
+    var s = ex[stepIdx];
+    if (!s || typeof s.skipIf !== 'function') return false;
+    try { return !!s.skipIf(slot); } catch (e) { return false; }
+  }
+  function nextActiveIdx(fromIdx) {
+    var ex = currentTier().exercise;
+    var slot = ensureAnswerSlot();
+    var i = fromIdx + 1;
+    while (i < ex.length && isSkipped(i, slot)) i++;
+    return i; // may === ex.length, meaning end-of-area
+  }
+  function prevActiveIdx(fromIdx) {
+    var slot = ensureAnswerSlot();
+    var i = fromIdx - 1;
+    while (i >= 0 && isSkipped(i, slot)) i--;
+    return i; // may be -1
+  }
+  function isLastActive(stepIdx) {
+    return nextActiveIdx(stepIdx) >= currentTier().exercise.length;
+  }
+
   function nextStepOrArea() {
-    if (state.exerciseIdx < currentTier().exercise.length - 1) {
-      state.exerciseIdx++; renderStep();
-      // After rendering the new step, see if we should pop the save prompt.
+    var nxt = nextActiveIdx(state.exerciseIdx);
+    if (nxt < currentTier().exercise.length) {
+      state.exerciseIdx = nxt; renderStep();
       if (state.exerciseIdx >= 4) maybeShowProgressModal();
     } else {
       if (state.areaIdx < AREAS.length - 1) {
@@ -1233,7 +1257,7 @@
     var a = t.getAttribute('data-hc-action');
     if (a === 'start')           { show('gate'); }
     else if (a === 'open-tiers') { show('tiers'); renderTiers(); }
-    else if (a === 'step-back')  { if (state.exerciseIdx > 0) { state.exerciseIdx--; renderStep(); } }
+    else if (a === 'step-back')  { var pv = prevActiveIdx(state.exerciseIdx); if (pv >= 0) { state.exerciseIdx = pv; renderStep(); } }
     else if (a === 'step-next')  { nextStepOrArea(); }
     else if (a === 'skip-area')  {
       if (state.areaIdx < AREAS.length - 1) { state.areaIdx++; startArea(); }
