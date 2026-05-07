@@ -1,28 +1,66 @@
 import "server-only";
-// T4 unify-3 — founder seed.
+// Founder seed (T1 R024 — chapter `04-founder-password-rotation.md`).
 //
-// On first server boot (empty users store), provisions a default
-// "Milesy Media" agency plus the agency-owner user Ed uses to log in.
-// Idempotent: subsequent calls noop.
+// Earlier (chapter #122 unify-3) this module hardcoded a 3-char dev
+// password and bypassed `validatePassword` via a direct `mutate`. R024 ships
+// the ship-gate fix: founder credentials live in env, the seed honours
+// `validatePassword`, and production refuses to start with weak or
+// default values.
 //
-// Bypasses `validatePassword` (which rejects passwords < 8 chars) so
-// the documented dev login `edwardhallam07@gmail.com / 123` works
-// without a longer ceremony. This is a dev-mode convenience, not a
-// production policy — change FOUNDER_PASSWORD before any public
-// deploy.
+// Behaviour:
+//
+//   - `FOUNDER_EMAIL` — defaults to `edwardhallam07@gmail.com` for
+//     dev convenience. Required to differ from default in production.
+//   - `FOUNDER_PASSWORD` — no default. Missing → log a warning + skip
+//     the seed (rather than create an unauthenticated founder).
+//   - `FOUNDER_AGENCY_NAME` — defaults to "Milesy Media".
+//   - Production guard: when `NODE_ENV === "production"`, refuse to
+//     seed when password length < 12 OR email is the dev default.
+//     Throws — fail-closed startup error rather than silent insecure
+//     seed.
 
-import crypto from "node:crypto";
-import { ensureHydrated, getState, mutate } from "@/server/storage";
+import { ensureHydrated } from "@/server/storage";
 import { bootstrapAgency } from "@/server/agencyBootstrap";
 import { getAgencyBySlug } from "@/server/tenants";
-import { hashPassword, getUser } from "@/server/users";
-import type { ServerUser } from "@/server/types";
+import { createUser, getUser } from "@/server/users";
 
 export const FOUNDER_AGENCY_SLUG = "milesymedia";
-export const FOUNDER_AGENCY_NAME = "Milesy Media";
-export const FOUNDER_EMAIL = "edwardhallam07@gmail.com";
-export const FOUNDER_PASSWORD = "123";
+export const DEFAULT_FOUNDER_EMAIL = "edwardhallam07@gmail.com";
+export const DEFAULT_FOUNDER_AGENCY_NAME = "Milesy Media";
 export const FOUNDER_NAME = "Ed Hallam";
+
+export const FOUNDER_EMAIL = (process.env.FOUNDER_EMAIL ?? DEFAULT_FOUNDER_EMAIL).trim();
+
+function readFounderAgencyName(): string {
+  const v = process.env.FOUNDER_AGENCY_NAME;
+  return v && v.trim() ? v.trim() : DEFAULT_FOUNDER_AGENCY_NAME;
+}
+
+interface PolicyCheck {
+  ok: boolean;
+  reason?: string;
+}
+
+// Exported for the smoke. Pure — takes explicit inputs so the test
+// can drive every branch without process.env mutation.
+export function checkFounderPolicy(input: {
+  email: string;
+  password: string | undefined;
+  nodeEnv: string | undefined;
+}): PolicyCheck {
+  if (!input.password) {
+    return { ok: false, reason: "FOUNDER_PASSWORD not set — skipping founder seed." };
+  }
+  if (input.nodeEnv === "production") {
+    if (input.password.length < 12) {
+      return { ok: false, reason: "FOUNDER_PASSWORD must be ≥12 chars in production." };
+    }
+    if (input.email.trim().toLowerCase() === DEFAULT_FOUNDER_EMAIL) {
+      return { ok: false, reason: "FOUNDER_EMAIL is the dev default — set a real address before deploying." };
+    }
+  }
+  return { ok: true };
+}
 
 let seedPromise: Promise<void> | null = null;
 
@@ -34,43 +72,52 @@ export function seedFounder(): Promise<void> {
 async function run(): Promise<void> {
   await ensureHydrated();
 
-  // Idempotent: if the founder user already exists, we're done. We key
-  // off this specific user (not "any user") so seeding still kicks in
-  // when other seeds have run but the founder hasn't.
   if (getUser(FOUNDER_EMAIL)) return;
 
-  // Provision (or reuse) the Milesy Media agency.
+  const password = process.env.FOUNDER_PASSWORD;
+  const policy = checkFounderPolicy({
+    email: FOUNDER_EMAIL,
+    password,
+    nodeEnv: process.env.NODE_ENV,
+  });
+  if (!policy.ok) {
+    if (process.env.NODE_ENV === "production") {
+      // Fail-closed in production — never silent-skip when the operator
+      // intended to seed and got it wrong.
+      throw new Error(`[founderSeed] ${policy.reason}`);
+    }
+    // Dev / test: warn + skip. Operators sign in with their own
+    // signed-up agency instead.
+    // eslint-disable-next-line no-console
+    console.warn(`[founderSeed] ${policy.reason}`);
+    return;
+  }
+
+  const agencyName = readFounderAgencyName();
+
   let agency = getAgencyBySlug(FOUNDER_AGENCY_SLUG);
   if (!agency) {
     const result = await bootstrapAgency({
-      name: FOUNDER_AGENCY_NAME,
+      name: agencyName,
       slug: FOUNDER_AGENCY_SLUG,
       ownerEmail: FOUNDER_EMAIL,
     });
     agency = result.agency;
   }
 
-  // Inject the founder user directly via mutate so we can keep the
-  // documented `123` password without satisfying `validatePassword`.
-  const now = Date.now();
-  const user: ServerUser = {
-    id: `usr_${crypto.randomBytes(8).toString("hex")}`,
-    email: FOUNDER_EMAIL.toLowerCase(),
-    name: FOUNDER_NAME,
-    passwordHash: hashPassword(FOUNDER_PASSWORD),
+  // No more direct-mutate bypass. createUser runs validatePassword,
+  // hashes, and emits user.signed_up — same path signup uses.
+  createUser({
+    email: FOUNDER_EMAIL,
+    password: password!,
     role: "agency-owner",
     agencyId: agency.id,
-    emailVerifiedAt: now,
-    createdAt: now,
-    updatedAt: now,
-  };
-  mutate(state => {
-    state.users[user.email] = user;
+    name: FOUNDER_NAME,
   });
 }
 
-// Test helper — purely for `scripts/smoke-founder-seed.test.ts` to
-// reset the module-level cache between invocations. Not for prod use.
+// Test helper — purely for the smoke to reset the module-level cache
+// between invocations. Not for prod use.
 export function _resetFounderSeedForTests(): void {
   seedPromise = null;
 }

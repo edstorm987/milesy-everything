@@ -92,7 +92,7 @@ Two layers — keep them straight.
 Set via Vercel dashboard (Project → Settings → Environment Variables)
 **or** `vercel env add` from the CLI. Never commit values to the repo.
 
-The full list lives in `04-the-final-portal/portal/.env.example`.
+The full list lives in `04-the-final-portal/milesymedia-website/.env.example`.
 The required ones for a production deploy of the **shared portal**:
 
 | Var | Required? | Notes |
@@ -101,6 +101,9 @@ The required ones for a production deploy of the **shared portal**:
 | `DATABASE_URL` | YES | Postgres URL (`?sslmode=require` for cloud providers) |
 | `NEXT_PUBLIC_PORTAL_BASE_URL` | YES | The deployed origin — e.g. `https://milesymedia.com` |
 | `NEXT_PUBLIC_PORTAL_SECURITY` | YES | `strict` (any non-developer environment) |
+| `FOUNDER_EMAIL` | YES (T1 R024) | Real founder address. Production refuses seed when this equals the dev default `edwardhallam07@gmail.com`. **Rotate before public flip** — chapter #124 ship gate. |
+| `FOUNDER_PASSWORD` | YES (T1 R024) | ≥12 chars in production. Missing → seed throws fail-closed. **Rotate before public flip**; never reuse the dev password. |
+| `FOUNDER_AGENCY_NAME` | optional | Defaults to `Milesy Media`. Override for niche-agency deploys (e.g. `AquaOasis Web`). |
 | `VERCEL_TOKEN` | optional | Domain-attach via Vercel REST API. Without it: manual-DNS path |
 | `VERCEL_TEAM_ID` | optional | When the token has multi-team access |
 | `SENTRY_DSN` | optional | Server error capture |
