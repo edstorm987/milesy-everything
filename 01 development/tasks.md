@@ -9,6 +9,26 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 016 — `/embed/[clientSlug]/[variant]` foundation route** — DONE.
+      Goal A: NEW `app/embed/[clientSlug]/[variant]/page.tsx` server
+      component — slug→client scan, isPortalRole validation, brand
+      kit via ThemeInjector, server-rendered minimal block walker
+      (Q-ASSUMED: full BlockRenderer is R+1 since "use client" +
+      registry hydration). Authed path uses `getActivePortalVariant`
+      via `makeCtx(websiteEditorInstall).storage`. Goal B: NEW
+      `portal/middleware.ts` (`runtime:"nodejs"`) matching
+      `/embed/:slug/:variant` → calls NEW
+      `lib/server/embedAllowResolver.ts:resolveEmbedAllowList(slug)`
+      reading `getEmbedAllowList` from website-editor storage; emits
+      `Content-Security-Policy: frame-ancestors <origins-or-'none'>`.
+      Fail-closed default. Goal C: auth fallback uses R9
+      `<LoginForm embedded clientId>` (testid="embed-login"). Goal
+      D: postMessage bridge inline script emits aqua:auth-ok +
+      aqua:height-changed (ResizeObserver) + aqua:navigate (link
+      capture). Goal E: smoke `§ Embed route` (5 — page 200 + CSP
+      header + body testid + unknown-slug 'none' + invalid variant
+      404). Chapter `04-embed-foundation-route.md`; MASTER row #91;
+      tsc clean. HARD BOUNDARY honoured.
 - [x] **T1 015 — PortalRole widening + BrandKit absorption** — DONE.
       Goal A: `PortalRole` widened additively (4→8 roles) — added
       `customer | member | start-here | other` per chapter §15g; NEW

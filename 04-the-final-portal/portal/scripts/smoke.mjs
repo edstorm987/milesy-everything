@@ -284,6 +284,26 @@ async function main() {
   // Reset embed cookie for downstream blocks.
   await go("GET", "/demo?source=stitch-smoke");
 
+  console.log("\n§ Embed route");
+  // Embed surface scoped by client slug + portal variant. Demo seed
+  // ships `luv-and-ker-demo` as Felicia's mirror — use it as the slug.
+  const embedRes = await go("GET", "/embed/luv-and-ker-demo/account");
+  record("embed page status (200 or login redirect-likely)", embedRes.status === 200, `status=${embedRes.status}`);
+  // Header CSP frame-ancestors set by middleware.
+  const csp = embedRes.headers.get("content-security-policy") ?? "";
+  record("embed CSP frame-ancestors header present", /frame-ancestors/.test(csp), `csp=${csp}`);
+  // Body carries the embed-surface or embed-login testid.
+  const ebody = embedRes.status === 200 ? await embedRes.text() : "";
+  record("embed body shows embed-surface or embed-login",
+    ebody.includes("embed-surface") || ebody.includes("embed-login"));
+  // Unknown slug → CSP defaults to 'none'.
+  const unknown = await go("GET", "/embed/no-such-client/account");
+  const unknownCsp = unknown.headers.get("content-security-policy") ?? "";
+  record("unknown slug → frame-ancestors 'none'", /frame-ancestors\s+'none'/.test(unknownCsp));
+  // Invalid variant → 404.
+  const badVariant = await go("GET", "/embed/luv-and-ker-demo/not-a-role");
+  record("invalid variant 404", badVariant.status === 404);
+
   console.log("\n§ Phase transitions");
   // Founder-only button — smoke runs as agency-owner via /demo bootstrap.
   if (clientId) {
