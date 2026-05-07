@@ -17,7 +17,6 @@ import {
   DEMO_CLIENT_EMAIL,
   DEMO_CUSTOMER_EMAIL,
 } from "@/lib/server/demoSeed";
-import { ensureHydrated } from "@/server/storage";
 import { getUser } from "@/server/users";
 import { issueSession, sessionCookie } from "@/lib/server/auth";
 import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
@@ -27,7 +26,9 @@ type Persona = "founder" | "demo-owner" | "demo-client" | "demo-customer";
 
 async function signInAs(persona: Persona) {
   "use server";
-  await ensureHydrated();
+  // ensureHydrated() runs inside seedFounder/seedDemoAgency — don't
+  // double-call here. Both seeds memoize after first run, so repeat
+  // POV clicks short-circuit (~10× faster than re-walking installs).
 
   let email: string;
   let isDemo = false;
