@@ -165,3 +165,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 
 [2026-05-07T14:11:00Z] COMMIT eb26fb5 (R008 — clean, 7 files).
 [2026-05-07T14:11:30Z] WAKE-PENDING-ARCHIVE 008-marketing-site-overhaul.md. Sleeping; next wake chains into 009-founder-admin-polish.
+
+[2026-05-07T14:16:00Z] WAKE-PENDING-ARCHIVE 008-marketing-site-overhaul.md (2). Sleeping again.
