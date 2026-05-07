@@ -30,6 +30,10 @@ interface Props {
   // Fires when operator clicks "Save named version" — host prompts
   // for a label + POSTs `/pages/versions` with body.label set.
   onSaveNamed: (label: string) => Promise<void> | void;
+  // R034 — Fires when operator clicks "Diff" on a row. Host opens
+  // VersionDiffPanel comparing the chosen version against the
+  // current draft tree (or against another version it tracks).
+  onDiff?: (versionId: string) => void;
   // Optional override for tests / SSR — defaults to the live API.
   fetchImpl?: typeof fetch;
 }
@@ -41,7 +45,7 @@ function fmt(ts: number): string {
   });
 }
 
-export default function VersionsDropdown({ pageId, onPreview, onRestore, onSaveNamed, fetchImpl }: Props) {
+export default function VersionsDropdown({ pageId, onPreview, onRestore, onSaveNamed, onDiff, fetchImpl }: Props) {
   const [open, setOpen] = useState(false);
   const [versions, setVersions] = useState<VersionRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -164,7 +168,7 @@ export default function VersionsDropdown({ pageId, onPreview, onRestore, onSaveN
                 ★ Named
               </p>
               {named.map(v => (
-                <VersionRowEl key={v.id} v={v} onPreview={onPreview} onRestore={onRestore} />
+                <VersionRowEl key={v.id} v={v} onPreview={onPreview} onRestore={onRestore} onDiff={onDiff} />
               ))}
             </div>
           )}
@@ -174,7 +178,7 @@ export default function VersionsDropdown({ pageId, onPreview, onRestore, onSaveN
                 Auto-saves
               </p>
               {autosaves.map(v => (
-                <VersionRowEl key={v.id} v={v} onPreview={onPreview} onRestore={onRestore} />
+                <VersionRowEl key={v.id} v={v} onPreview={onPreview} onRestore={onRestore} onDiff={onDiff} />
               ))}
             </div>
           )}
@@ -184,7 +188,7 @@ export default function VersionsDropdown({ pageId, onPreview, onRestore, onSaveN
   );
 }
 
-function VersionRowEl({ v, onPreview, onRestore }: { v: VersionRow; onPreview: (id: string) => void; onRestore: (id: string) => void }) {
+function VersionRowEl({ v, onPreview, onRestore, onDiff }: { v: VersionRow; onPreview: (id: string) => void; onRestore: (id: string) => void; onDiff?: (id: string) => void }) {
   return (
     <div role="menuitem"
       data-version-id={v.id}
@@ -201,6 +205,18 @@ function VersionRowEl({ v, onPreview, onRestore }: { v: VersionRow; onPreview: (
           {fmt(v.ts)} · {v.savedBy}
         </p>
       </div>
+      {onDiff && (
+        <button onClick={() => onDiff(v.id)} data-action="diff"
+          title="Diff vs current"
+          style={{
+            fontSize: 10, padding: "2px 6px",
+            background: "rgba(251,191,36,0.15)",
+            color: "#fcd34d",
+            border: "1px solid rgba(251,191,36,0.25)",
+            borderRadius: "var(--brand-radius-sm, 4px)",
+            cursor: "pointer",
+          }}>Diff</button>
+      )}
       <button onClick={() => onPreview(v.id)}
         style={{
           fontSize: 10, padding: "2px 6px",

@@ -93,3 +93,15 @@ Read `01 development/terminal-prompts/queues/README.md` for the full discipline.
 [2026-05-07T00:42:00Z] REPLY: 001 round shipped + archived to `old prompts/`. Your queue now has only `002-*` active — next /loop fire reads it and starts @aqua/plugin-sops SOP shelf. Beautiful work shipping the queue's first round under the new architecture.
 
 [2026-05-07T01:25:00Z] REPLY: 002 archived @ this commit. Sorry for the 3-wake lag — commander cadence has been tightened to 270s now so future archives hit within one wake. Your queue lowest is now 003-activity-inbox.md — chain into it on next wake.
+
+[2026-05-07T11:10:00Z] NOTE — WEBSITE HANDS-OFF (Ed directive)
+Ed is now driving T4 manually on the Milesy website. **Do NOT touch any file under `04-the-final-portal/milesymedia website/`** for the foreseeable future, regardless of what your queue prompts may suggest. This reinforces your existing HARD BOUNDARY but is now an active-conflict zone.
+
+If a queue prompt requires editing milesymedia website/ files, log Q-BLOCKED instead of Q-ASSUMED — commander will rewrite the prompt or defer the round. No "I'll just touch one file" exceptions.
+
+Your territory is unchanged otherwise:
+- T1 → portal/ (foundation/agency-shell)
+- T2 → plugins/ (agency + customer plugins)
+- T3 → plugins/website-editor/ (block engine + editor)
+
+Carry on.
