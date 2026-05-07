@@ -5,11 +5,13 @@
 // per honesty contract — no fabrication.
 
 import { useEffect, useState } from "react";
+import { describeActivityChip } from "@/lib/chrome/activityCategoryStyle";
 
 interface InboxEntry {
   id: string;
   ts: number;
   category: string;
+  action?: string;
   message: string;
   actorEmail?: string;
   clientId?: string;
@@ -76,22 +78,47 @@ export function AgencyActivityFeed() {
           <p className="text-sm italic text-black/55">No activity yet today.</p>
         ) : (
           <ul className="flex flex-col gap-1.5">
-            {items.map(e => (
-              <li
-                key={e.id}
-                className="flex items-baseline justify-between gap-3 border-b border-black/5 pb-1.5 last:border-0"
-              >
-                <span className="min-w-0 flex-1 text-sm text-black/80">
-                  <span className="rounded-full bg-black/[0.04] px-1.5 py-px text-[10px] uppercase tracking-wide text-black/55">
-                    {e.category}
-                  </span>{" "}
-                  {e.message}
-                </span>
-                <span className="shrink-0 text-[11px] text-black/45">
-                  {formatRelative(e.ts)}
-                </span>
-              </li>
-            ))}
+            {items.map(e => {
+              const chip = describeActivityChip(e as Parameters<typeof describeActivityChip>[0]);
+              const warn = chip.severity === "warn";
+              const err = chip.severity === "error";
+              return (
+                <li
+                  key={e.id}
+                  data-severity={chip.severity}
+                  className={
+                    "flex items-baseline justify-between gap-3 border-b pb-1.5 last:border-0 " +
+                    (err
+                      ? "border-l-2 border-l-red-600 border-b-red-200 pl-2"
+                      : warn
+                        ? "border-l-2 border-l-amber-500 border-b-amber-100 pl-2"
+                        : "border-black/5")
+                  }
+                >
+                  <span className="min-w-0 flex-1 text-sm text-black/80">
+                    <span
+                      className="inline-flex items-center gap-1 rounded-full px-1.5 py-px text-[10px] uppercase tracking-wide"
+                      style={{
+                        background: chip.category.color + "1a",
+                        color: chip.category.color,
+                        border: `1px solid ${chip.category.color}55`,
+                      }}
+                      aria-label={`Category: ${chip.category.label}`}
+                    >
+                      <span aria-hidden>{chip.category.icon}</span>
+                      {chip.category.label}
+                    </span>{" "}
+                    {(warn || err) && (
+                      <span aria-label="High-severity event" className="mr-1">🔔</span>
+                    )}
+                    {e.message}
+                  </span>
+                  <span className="shrink-0 text-[11px] text-black/45">
+                    {formatRelative(e.ts)}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

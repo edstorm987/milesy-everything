@@ -1,9 +1,10 @@
 "use client";
 // Top-level error boundary (T1 R030 — chapter `04-observability.md`).
 //
-// Catches render errors anywhere in the App Router tree. Reports to
-// Sentry via `captureError` (lazy-loaded; safe when DSN unset) and
-// renders a fallback UI with a reset action.
+// Catches render errors anywhere in the App Router tree. Renders a
+// fallback UI with a reset action. Browser-side Sentry capture (when
+// added) installs via @sentry/nextjs's own client config — we don't
+// pull the server observability module into the client bundle.
 
 import { useEffect } from "react";
 
@@ -14,11 +15,11 @@ interface Props {
 
 export default function GlobalError({ error, reset }: Props) {
   useEffect(() => {
-    // Lazy-import so the client bundle doesn't pull observability into
-    // every page. Safe: `captureError` no-ops when Sentry isn't loaded.
-    void import("@/lib/server/observability").then(({ captureError }) => {
-      captureError(error, { extra: { digest: error.digest, surface: "app/error.tsx" } });
-    }).catch(() => { /* observability is best-effort */ });
+    // Best-effort browser-side log; Sentry browser SDK (when installed)
+    // auto-captures unhandled errors itself.
+    if (typeof console !== "undefined") {
+      console.error("[app/error.tsx]", error.digest ?? "", error);
+    }
   }, [error]);
 
   return (

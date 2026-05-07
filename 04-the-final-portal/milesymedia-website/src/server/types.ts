@@ -264,8 +264,17 @@ export type ActivityCategory =
   | "finance"       // T2 agency-finance
   | "marketing"     // T2 agency-marketing
   | "crm"           // T2 client-crm
-  | "public-funnel" // T2 public-funnel (R032 promotion)
-  | "bos-auth-gate" // T2 bos-auth-gate (R032 promotion)
+  | "public-funnel"  // T2 public-funnel (R032 promotion)
+  | "bos-auth-gate"  // T2 bos-auth-gate (R032 promotion)
+  | "payroll"        // T2 R015 (R033 batch)
+  | "integrations"   // T2 R016 (R033 batch)
+  | "support"        // T2 R017 (R033 batch)
+  | "onboarding"     // T2 R018 (R033 batch)
+  | "reports"        // T2 R019 (R033 batch)
+  | "feedback"       // T2 R020 (R033 batch)
+  | "team-resources" // T2 R014 (R033 batch)
+  | "resources"      // T2 R013 (R033 batch)
+  | "files"          // T2 R010 (R033 batch)
   | "settings"
   | "system";
 

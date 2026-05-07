@@ -31,6 +31,7 @@
     "smoke:observability": "tsx --test scripts/smoke-observability.test.ts",
     "smoke:bos-middleware-integration": "tsx --test scripts/smoke-bos-middleware-integration.test.ts",
     "smoke:public-funnel-port-adapters": "tsx --test scripts/smoke-public-funnel-port-adapters.test.ts",
+    "smoke:activity-category-batch": "tsx --test scripts/smoke-activity-category-batch.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

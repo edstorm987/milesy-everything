@@ -158,8 +158,9 @@ Goal: WS-B/C complete; WS-D started; WS-E half. Ship-gate 7/9.
   ~~WS-E R029 env secrets policy~~ #142 +
   ~~WS-E R030 observability~~ #144 +
   ~~R031 BOS middleware integration~~ #147 +
-  ~~R032 public-funnel/BOS port adapters + dispatcher public:true~~ #150 —
-  Sprint 2 T1 + cross-plugin glue complete 2026-05-07.
+  ~~R032 public-funnel/BOS port adapters + dispatcher public:true~~ #150 +
+  ~~R033 ActivityCategory enum batch + chip styling~~ #153 —
+  Sprint 2 T1 + cross-plugin glue ALL complete 2026-05-07.
 - T2: ~~WS-B R023 rank-my-website plugin~~ #141 +
   ~~WS-D R024 SMTP outbound~~ #144 +
   ~~WS-D R025 Stripe events~~ #145 +
