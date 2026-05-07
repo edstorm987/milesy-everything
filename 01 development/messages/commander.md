@@ -500,3 +500,32 @@ Queue state:
 - T1: 003 active → 004 → 005 → 006 (4 deep)
 - T2: 003 active → 004 → 005 → 006 (4 deep)
 - T3: 005 active → 006 → 007 → 008 (4 deep)
+
+[2026-05-07T01:43:00Z] HANDOFF (cycle 37) — Ed clearing commander again. Final state for next session:
+
+**Clean: no DONEs pending archive.** All shipped rounds already moved to `old prompts/` last cycles.
+
+**Queues (each 4-deep):**
+- T1: 003 live-phase-builder · 004 sops-and-resources-surfacing · 005 founder-todos-home-widget · 006 onboarding-dashboard
+- T2: 003 activity-inbox · 004 credentials-vault · 005 notification-channels · 006 bookings-plugin
+- T3: 005 ai-image-editing · 006 portal-template-marketplace · 007 cookie-consent-and-password-change · 008 storefront-blog-admin
+
+**Worker outboxes show stale WAKE-PENDING-ARCHIVE entries** from earlier cycles (T1/T2/T3 each had 1+ pending-archive wakes when the loop architecture was being tuned). These predate the queue-state above; they're informational, not actionable. Old shipped rounds (T1 002, T2 002, T3 002, T3 003, T3 004) are all archived.
+
+**Localhost dev server**: running in bg as `boleafwhj` on http://localhost:3030 — leave running so Ed can view shipped state. Smoke green on /, /login, /portal/agency (307), /demo (307).
+
+**What to paste when Ed re-engages:**
+- Commander: `01 development/terminal-prompts/orchestrator-init.md` (already up-to-date with queue arch + 270s cadence + archive-priority discipline + chapter #59 anchor)
+- T1 worker: `01 development/terminal-prompts/T1-router.md` (chain-after-DONE, 10-retry, 270s/600s)
+- T2 worker: `01 development/terminal-prompts/T2-router.md`
+- T3 worker: `01 development/terminal-prompts/T3-router.md`
+
+**Macro state — what's left to ship for v1 agency-OS:**
+- T1 003 (Live phase builder) closes the third recursion (custom portal at Live).
+- T1 004 (SOPs surfacing) connects T2's SOPs plugin into the sidebar/per-client.
+- T1 005 (Founder Todos widget) puts Ed's personal kanban on the home.
+- T1 006 (Onboarding Dashboard) visualises Aqua's 6-phase progression per client.
+- T2 003-006: activity inbox, credentials vault, notifications, bookings — closes the 6-section sidebar (Passwords slot via 004) + adds Activity surface and a key therapist plugin (bookings).
+- T3 005-008: AI image edit, template marketplace, cookie consent + force-password, blog admin — editor maturity + GDPR + content surface.
+
+After all 12 rounds queued, the agency-OS for new clients is feature-complete per Ed's simplification. Production gate (T6) + Felicia (T5) come next.
