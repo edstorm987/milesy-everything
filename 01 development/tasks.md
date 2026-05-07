@@ -53,9 +53,11 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       `/business-os`. Idempotent on canonical email; emits
       `public-funnel.lead.captured` (first time) + `.hc.completed`
       (every time, w/ bucket). 13/13 smoke. Chapter #132.
-- [ ] **R022 — `@aqua/plugin-bos-auth-gate`** (WS-B R022). Wraps
-      `/business-os/*` with auth check; reads user state from
-      foundation storage.
+- [x] **R022 — `@aqua/plugin-bos-auth-gate`** (WS-B R022). Pure
+      `evaluate` decision engine + `me` endpoint; helpers
+      `matchesBosPath` / `isBosAsset` / `buildLoginRedirect`. Soft-
+      gate via `NEXT_PUBLIC_DEV_BYPASS`. T1 wires foundation
+      middleware. 16/16 smoke. Chapter #137. WS-B Sprint-1 done.
 
 ### To do — T3 (website-editor)
 
