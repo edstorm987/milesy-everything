@@ -21,12 +21,8 @@
 import type { SessionPayload, ServerUser } from "@/server/types";
 import { getClient } from "@/server/tenants";
 
-// Accept a permissive role string so we can check for "lead" before
-// R023 lands it in the union.
-type RoleLike = SessionPayload["role"] | "lead";
-
 interface ResolveInput {
-  role: RoleLike;
+  role: SessionPayload["role"];
   clientId?: string | null;
 }
 
@@ -45,9 +41,9 @@ export function resolvePostLoginPath(
   // Prefer the user record (fresher; survives session staleness) and
   // fall back to the session payload.
   const src: ResolveInput | null = user
-    ? { role: user.role as RoleLike, clientId: user.clientId ?? null }
+    ? { role: user.role, clientId: user.clientId ?? null }
     : session
-      ? { role: session.role as RoleLike, clientId: session.clientId ?? null }
+      ? { role: session.role, clientId: session.clientId ?? null }
       : null;
   if (!src) return "/login";
 
