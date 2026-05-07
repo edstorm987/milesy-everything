@@ -22,6 +22,8 @@ import { listPlugins } from "@/plugins/_registry";
 import { OverviewTabs, TABS, type TabId } from "./_OverviewTabs";
 import { ToolsPicker, type PickerPlugin } from "./_ToolsPicker";
 import { BuildPortalWizard, type WizardPlugin } from "./_BuildPortalWizard";
+import { ClientSopsTab } from "./_ClientSopsTab";
+import { assertSopsAccess, familiesForStage, SopsAccessError } from "@/lib/server/sopsAccess";
 
 // Phases that materialise into a per-client custom portal (architecture
 // extension ch.19b). `aqua-mastery` is the Aqua-flavoured Live; `live`
@@ -339,6 +341,25 @@ export default async function ClientHome({
           </div>
         </section>
       )}
+
+      {tab === "sops" && (() => {
+        try {
+          assertSopsAccess(session, undefined);
+        } catch (err) {
+          if (err instanceof SopsAccessError) {
+            return (
+              <section className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-800">
+                403 — {err.message}
+              </section>
+            );
+          }
+          throw err;
+        }
+        const families = familiesForStage(client.stage);
+        return (
+          <ClientSopsTab families={families} phaseLabel={phaseLabel(client.stage)} />
+        );
+      })()}
 
       {tab === "tools" && (
         <section className="flex flex-col gap-4">

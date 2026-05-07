@@ -13,6 +13,7 @@ export const TABS = [
   { id: "kanban",   label: "Kanban"   },
   { id: "finance",  label: "Finance"  },
   { id: "assets",   label: "Assets"   },
+  { id: "sops",     label: "SOPs"     },
   { id: "tools",    label: "Tools"    },
 ] as const;
 

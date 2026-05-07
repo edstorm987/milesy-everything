@@ -226,6 +226,20 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ SOPs surfacing");
+  // SOPs list endpoint is reachable (sops plugin installed in seed-demo).
+  const sopsList = await go("GET", "/api/portal/sops/list");
+  record("sops list 200", sopsList.status === 200, `status=${sopsList.status}`);
+  // Per-client SOPs sub-tab renders for an agency-role session.
+  // (smoke runs as agency-owner via /demo bootstrap → Founder fallback passes.)
+  if (clientId) {
+    const sopsTab = await go("GET", `/portal/clients/${clientId}?tab=sops`);
+    record("client sops tab 200", sopsTab.status === 200, `status=${sopsTab.status}`);
+    const sopsBody = sopsTab.status === 200 ? await sopsTab.text() : "";
+    record("client sops tab shows family heading", sopsBody.includes("SOPs for"));
+    record("client sops tab links to agency shelf", sopsBody.includes("/portal/agency/sops"));
+  }
+
   console.log("\n§ Live phase gateway");
   // Create a fresh aqua-mastery (Live) client and verify the per-client
   // header surfaces the Live badge + the "Build custom portal" CTA.

@@ -8,7 +8,9 @@
 // keeps the lower-discoverability plugins one click away.
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const AQUA_HQ: { id: string; label: string; href: string; hint: string }[] = [
   { id: "leads",      label: "Leads & Clients HQ",       href: "/portal/agency",                    hint: "Pipeline + per-client CRM cards." },
@@ -30,6 +32,21 @@ const MORE_TOOLS: { id: string; label: string; href: string }[] = [
 
 export function AgencyToolsBallpark() {
   const [moreOpen, setMoreOpen] = useState(false);
+  const [recentSops, setRecentSops] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/portal/sops/list", { method: "GET" })
+      .then(r => r.ok ? r.json() as Promise<{ ok: boolean; sops?: { updatedAt: number }[] }> : null)
+      .then(data => {
+        if (cancelled || !data?.sops) return;
+        const cutoff = Date.now() - ONE_WEEK_MS;
+        setRecentSops(data.sops.filter(s => s.updatedAt >= cutoff).length);
+      })
+      .catch(() => { /* sops plugin may not be installed; degrade silently */ });
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <>
       <section aria-labelledby="nav-aqua-hq" className="border-t border-black/10 pt-4">
@@ -45,9 +62,17 @@ export function AgencyToolsBallpark() {
               <Link
                 href={s.href}
                 title={s.hint}
-                className="block rounded-md px-2 py-1.5 text-sm text-black/75 hover:bg-black/5"
+                className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm text-black/75 hover:bg-black/5"
               >
-                {s.label}
+                <span className="truncate">{s.label}</span>
+                {s.id === "sops" && recentSops !== null && recentSops > 0 && (
+                  <span
+                    aria-label={`${recentSops} SOP${recentSops === 1 ? "" : "s"} updated this week`}
+                    className="shrink-0 rounded-full bg-emerald-100 px-1.5 py-px text-[10px] font-medium uppercase tracking-wide text-emerald-800"
+                  >
+                    {recentSops} new
+                  </span>
+                )}
               </Link>
             </li>
           ))}

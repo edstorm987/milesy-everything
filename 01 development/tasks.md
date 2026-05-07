@@ -9,6 +9,25 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 004 — SOPs + Resources surfacing** — DONE.
+      Goal A: `AgencyToolsBallpark` fetches `/api/portal/sops/list` on
+      mount, renders emerald "{N} new" chip on the "SOPs, Docs &
+      Templates" row when ≥1 SOP updated within 7d (silent if plugin
+      not installed). Goal B: NEW `sops` tab between `assets` and
+      `tools` on per-client overview; NEW `_ClientSopsTab.tsx` fans
+      out per-family fetches via `?tag=<family>&status=published`,
+      read-only links to `/portal/agency/sops/read/<slug>` + "Open
+      SOPs shelf →" anchor. Goal C: NEW `lib/server/sopsAccess.ts`
+      with `assertSopsAccess(session, family?)` Founder-fallback gate
+      (agency-* roles pass v1; client/end-customer 403) +
+      `familiesForStage(stage)` phase→family mapping. 403 panel
+      surfaces inline on gate throw. Q-ASSUMED: foundation→
+      `RoleService` lookup deferred R+1 (no employee-role resolver
+      yet); v1 keys off `session.role` per prompt's Founder default.
+      Goal D: smoke `§ SOPs surfacing` block (list 200 + per-client
+      `?tab=sops` 200 + family heading + agency-shelf link). Chapter
+      `04-agency-shell-sops.md`; MASTER row #77; tsc clean. HARD
+      BOUNDARY honoured (sops plugin untouched).
 - [x] **T1 003 — Live phase custom portal builder gateway** — DONE.
       Goal A: Live detection (`aqua-mastery` ∪ legacy `live`) +
       `node:fs.existsSync` check on `clients/<slug>/`; header gains
