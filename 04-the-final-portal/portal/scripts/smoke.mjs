@@ -226,6 +226,17 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Founder todos widget");
+  // Smoke runs as agency-owner via /demo bootstrap → Founder POV.
+  const homeFounder = await go("GET", "/portal/agency");
+  record("agency home 200 (founder)", homeFounder.status === 200);
+  const homeFounderBody = homeFounder.status === 200 ? await homeFounder.text() : "";
+  record("home shows Today's Quests", homeFounderBody.includes("Today's Quests"));
+  record("home shows founder-todos widget testid", homeFounderBody.includes("founder-todos-widget"));
+  // Boards endpoint with founder role surfaces the founder-todos board (auto-create if missing).
+  const boardsList = await go("GET", "/api/portal/kanban/boards?role=founder");
+  record("kanban boards 200", boardsList.status === 200);
+
   console.log("\n§ SOPs surfacing");
   // SOPs list endpoint is reachable (sops plugin installed in seed-demo).
   const sopsList = await go("GET", "/api/portal/sops/list");

@@ -15,6 +15,7 @@ import { listInstalledFor } from "@/server/pluginInstalls";
 import { listActivity } from "@/server/activity";
 import { phaseLabel } from "@/server/phases";
 import { NewClientButton } from "./_NewClientButton";
+import { FounderTodosWidget } from "./_FounderTodosWidget";
 
 function formatRelative(ts: number): string {
   const delta = Date.now() - ts;
@@ -58,6 +59,8 @@ export default async function AgencyHome() {
         </div>
         {clients.length > 0 && <NewClientButton />}
       </section>
+
+      <FounderTodosWidget isFounder={session.role === "agency-owner"} />
 
       {clients.length === 0 ? (
         <section className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-black/15 bg-white/50 px-6 py-16 text-center">

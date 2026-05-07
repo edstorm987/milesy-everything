@@ -9,6 +9,23 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 005 — Founder Todos home widget** — DONE.
+      Goal A: NEW `_FounderTodosWidget.tsx` client component on
+      `/portal/agency` home (above clients grid). Boots via
+      `/api/portal/kanban/boards?role=founder`, finds
+      `templateId==="founder-todos"`, auto-creates if absent, fetches
+      cards filtered to Today + This Week columns, shows 5 most
+      recent. Inline `+ Add quest to Today` POSTs to `/boards/cards`
+      with Today columnId. Click → `/portal/agency/kanban/boards/<id>#card-<id>`.
+      Returns null for non-Founder (zero-space). Goal B: mythos copy
+      (`Today's Quests` · `No quests today. Forge one.` ·
+      `+ Add quest to Today` · `Open board →`). Q-ASSUMED:
+      founder=agency-owner; auto-create board on first founder mount
+      (kanban server still enforces role/scope guards). Goal C: smoke
+      `§ Founder todos widget` (home 200 founder POV + "Today's
+      Quests" + testid + boards endpoint 200). Chapter
+      `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
+      HARD BOUNDARY honoured.
 - [x] **T4 R003 — Phase-aware BOS deep-linking from Incubator** — DONE.
       `bos.deepLink` (consumed-once JSON `{section,lessonId,ts}` w/ 30s
       TTL) + `bos.returnFromPhase` + `bos.returnFromPhasePage` storage
