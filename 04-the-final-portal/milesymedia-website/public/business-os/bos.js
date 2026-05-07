@@ -342,7 +342,37 @@
     document.querySelectorAll('[data-bos-niche-tagline]').forEach(function (el) { el.textContent = nm.tagline; });
   }
 
-  /* ─── Auto sidebar nav (Run / Learn / Premium / Add-ons / Help / Aqua) ─── */
+  /* ─── Setup / Incubator phase tracking (chapter #159) ────
+     `bos.incubatorComplete` is the single graduation flag — true
+     once the user finishes the last Incubator phase. The static
+     incubator app at `/business-os/incubator/` writes per-phase
+     advances to `incubator.phaseAdvanced` ({id:true} map) via
+     lib/phase-advance.js. Sidebar reads that map for the checklist;
+     `isIncubatorComplete()` graduates the user back to the main
+     BOS dashboard. Five canonical phases per chapter #66 — Mastery
+     is the final orientation step (no lesson gate, just a
+     "graduate" CTA on the Incubator index). */
+  var INCUBATOR_PHASES = [
+    { id: 'epic-intro',    label: 'Epic Intro',    icon: '🌅', href: '/business-os/incubator/phase-1-epic-intro.html' },
+    { id: 'blueprint',     label: 'Blueprint',     icon: '📐', href: '/business-os/incubator/phase-2-blueprint.html' },
+    { id: 'diagnostics',   label: 'Diagnostics',   icon: '🔬', href: '/business-os/incubator/phase-3-diagnostics.html' },
+    { id: 'brand-builder', label: 'Brand Builder', icon: '🎨', href: '/business-os/incubator/phase-4-brand-builder.html' },
+    { id: 'mastery',       label: 'Traffic & Mastery', icon: '🏛', href: '/business-os/incubator/index.html' }
+  ];
+  function isIncubatorComplete() {
+    try { return localStorage.getItem('bos.incubatorComplete') === 'true'; } catch (e) { return false; }
+  }
+  function setIncubatorComplete(v) {
+    try { localStorage.setItem('bos.incubatorComplete', v ? 'true' : 'false'); } catch (e) {}
+  }
+  function isPhaseDone(id) {
+    try {
+      var adv = JSON.parse(localStorage.getItem('incubator.phaseAdvanced') || '{}') || {};
+      return !!adv[id];
+    } catch (e) { return false; }
+  }
+
+  /* ─── Auto sidebar nav (Setup / Run / Learn / Premium / Add-ons / Help / Aqua) ─── */
   function buildSidebarNav(activePath) {
     var page = activePath || (location.pathname.split('/').pop() || 'app.html');
     function link(href, icon, label, extra) {
@@ -352,6 +382,24 @@
     var html = '';
     var mode = getMode();
     var isPro = mode === 'customer';
+
+    /* Setup section — Incubator-as-onboarding (chapter #159). */
+    var setupComplete = isIncubatorComplete();
+    var phaseRows = INCUBATOR_PHASES.map(function (p) {
+      var done = setupComplete || isPhaseDone(p.id);
+      return '<a href="' + p.href + '" class="bos-side-phase' + (done ? ' is-done' : '') + '">'
+           +   '<span class="ico">' + (done ? '✓' : p.icon) + '</span> ' + p.label
+           + '</a>';
+    }).join('');
+    html += '<div class="bos-side-section bos-side-setup">'
+         +    '<div class="bos-side-label">Setup'
+         +      (setupComplete ? ' <span class="bos-setup-pill">Complete ✓</span>' : '')
+         +    '</div>'
+         +    '<a href="/business-os/incubator" class="bos-side-setup-head">'
+         +      '<span class="ico">🏛</span> The Incubator'
+         +    '</a>'
+         +    phaseRows
+         + '</div>';
 
     html += '<div class="bos-side-section">'
          +    '<div class="bos-side-label">My business</div>'
@@ -971,6 +1019,11 @@
     getEntitlement: getEntitlement, isPro: isPro,
     getNiche: getNiche, nicheMeta: nicheMeta,
     getProgress: getProgress, gainXP: gainXP, unlockAchievement: unlockAchievement,
-    renderMarketplace: renderMarketplace
+    renderMarketplace: renderMarketplace,
+    /* Chapter #159 — Incubator-inside-BOS setup phase. */
+    INCUBATOR_PHASES: INCUBATOR_PHASES,
+    isIncubatorComplete: isIncubatorComplete,
+    setIncubatorComplete: setIncubatorComplete,
+    isPhaseDone: isPhaseDone
   };
 })();

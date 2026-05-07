@@ -1,27 +1,21 @@
-// T4 unify-fix — Incubator route wrapped in SiteShell, same iframe
-// pattern as /health-check. Marketing chrome wraps the existing
-// static Incubator app at public/incubator/index.html.
+// T4 R009 (chapter #159) — Incubator is now the setup phase of
+// Business OS. The canonical path is `/business-os/incubator` and
+// the static app continues to live at `public/incubator/` (exposed
+// via a next.config rewrite). This route stays in place so any
+// inbound links to `/incubator` redirect cleanly to the canonical
+// BOS-namespaced URL — no SiteShell wrap, no iframe, just a 307.
 //
-// Future round: rebuild as a real React surface that shares the
-// brand-kit tokens directly, alongside Phase pages.
+// Prior shape (chapter #123 fix-6) iframed the static app inside
+// SiteShell. That wrapper is retired now that the Incubator lives
+// inside BOS — the static app already has its own header/footer
+// and the BOS "back to website" pill replaces marketing chrome.
 
-import { SiteShell } from "@/components/SiteShell";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "The Opulence Incubator · Milesy Media",
 };
 
 export default function IncubatorPage() {
-  return (
-    <SiteShell>
-      <main className="mm-hc-frame-shell">
-        <iframe
-          src="/incubator/index.html"
-          title="Milesy Media Incubator"
-          className="mm-hc-frame"
-          loading="lazy"
-        />
-      </main>
-    </SiteShell>
-  );
+  redirect("/business-os/incubator");
 }

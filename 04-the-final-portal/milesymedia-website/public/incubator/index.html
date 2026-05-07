@@ -14,6 +14,12 @@
 <body data-mobile-checked="2026-05-07">
 
   <div class="inc-cover" data-variant="forest"></div>
+  <!-- Chapter #159 — Incubator lives inside Business OS as the
+       setup flow. This pill is the escape hatch back to the BOS
+       dashboard for users who already graduated, or mid-setup users
+       who want to peek. The dashboard's setup-gate will bounce them
+       back unless bos.incubatorComplete=true. -->
+  <a href="/business-os/app.html?skipSetup=1" class="inc-back-to-bos" style="position:fixed;top:16px;right:16px;z-index:50;padding:8px 14px;font-size:13px;border:1px solid #C9A76A;border-radius:999px;background:rgba(15,15,15,0.7);color:#D4B888;text-decoration:none;backdrop-filter:blur(6px)">← Business OS</a>
   <div class="inc-page">
     <!-- R018 print-only header -->
     <div data-print-only class="print-header" style="display:none">
@@ -106,6 +112,40 @@
         </div>
       </a>
     </div>
+
+    <!-- Chapter #159 — graduation CTA. The Incubator is the BOS
+         setup phase; once the four lesson-gated phases are done the
+         user marks setup complete and is bounced to the BOS
+         dashboard. Hidden until Brand Builder is advanced. -->
+    <section class="inc-graduate" data-inc-graduate hidden style="margin:24px 0;padding:20px;border:1px solid #C9A76A;border-radius:14px;background:rgba(201,167,106,0.08);text-align:center">
+      <div style="font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:#8E7340;margin-bottom:8px">Final step</div>
+      <h2 style="margin:0 0 8px;font-family:'Playfair Display',serif">You're ready to graduate.</h2>
+      <p style="margin:0 0 16px;color:#5a5a5a">Your setup is complete. Mark the Incubator finished and unlock the full Business OS dashboard.</p>
+      <button type="button" class="inc-btn" data-inc-graduate-cta style="padding:12px 22px;font-size:14px">Graduate to Business OS →</button>
+    </section>
+    <script>
+      (function () {
+        function readAdv() {
+          try { return JSON.parse(localStorage.getItem('incubator.phaseAdvanced') || '{}') || {}; }
+          catch (e) { return {}; }
+        }
+        function paint() {
+          var adv = readAdv();
+          var ready = !!adv['brand-builder'];
+          var sec = document.querySelector('[data-inc-graduate]');
+          if (!sec) return;
+          if (ready) sec.removeAttribute('hidden'); else sec.setAttribute('hidden', '');
+        }
+        document.addEventListener('DOMContentLoaded', paint);
+        document.addEventListener('incubator:phase-complete', paint);
+        document.addEventListener('click', function (ev) {
+          var btn = ev.target && ev.target.closest && ev.target.closest('[data-inc-graduate-cta]');
+          if (!btn) return;
+          try { localStorage.setItem('bos.incubatorComplete', 'true'); } catch (e) {}
+          location.href = '/business-os/app.html?graduated=1';
+        });
+      })();
+    </script>
 
     <hr class="inc-divider" />
 

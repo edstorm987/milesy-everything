@@ -168,7 +168,12 @@
         if (niche !== 'generic') p.achievements.push('niche-locked');
         localStorage.setItem('bos.progress', JSON.stringify(p));
       } catch (e) {}
-      window.location.href = 'app.html';
+      // Chapter #159 — Incubator is the BOS setup phase. New signups
+      // route through it; returning users with bos.incubatorComplete
+      // skip straight to the dashboard.
+      var done = false;
+      try { done = localStorage.getItem('bos.incubatorComplete') === 'true'; } catch (e) {}
+      window.location.href = done ? 'app.html' : '/business-os/incubator';
     });
 
     // Dev bypass — seeds a demo user and jumps to the app. Visible
@@ -196,8 +201,11 @@
             { name: 'Retention',   icon: '✉', score: 45, status: 'bad' }
           ]
         }));
+        // Chapter #159 — dev bypass goes straight to dashboard, so
+        // mark setup complete to skip the gate redirect in app.html.
+        localStorage.setItem('bos.incubatorComplete', 'true');
       } catch (e) {}
-      window.location.href = 'app.html';
+      window.location.href = 'app.html?skipSetup=1';
     });
   </script>
 

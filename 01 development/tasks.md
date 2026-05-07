@@ -105,6 +105,17 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
       T4 R008 wired the React rewrite + completion endpoint; verify
       lead really appears in leads pipeline post-R037 foundation glue.
 
+### Done — T4 R009 (chapter #159, 2026-05-07)
+
+- [x] **T4 R009 — Incubator-inside-BOS wire-in.** Incubator is now
+      the BOS setup flow per Ed: *"the incubator lives inside
+      business its like to get you setup for it effectively."*
+      Canonical `/business-os/incubator` (rewrite to existing
+      `public/incubator/`); `/incubator` redirects. Setup-gate in
+      `app.html` bounces pre-graduation users to the incubator;
+      `bos.incubatorComplete` flips on Brand Builder graduate CTA;
+      sidebar Setup section + 5-phase checklist + complete pill.
+
 ### Open Sprint-2.5 items (no queue file yet)
 
 - [ ] "Sign in as employee" persona on `/dev/pov` — code was added

@@ -8,6 +8,30 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/business-os/styles.css" />
+  <script>
+    // Chapter #159 — Incubator-as-BOS-setup gate. On first dashboard
+    // load, if the user hasn't completed the Incubator (and isn't
+    // returning here via ?graduated=1 from the final phase), bounce
+    // them to /business-os/incubator. Skip when already complete or
+    // when the URL flags an explicit override (?skipSetup=1) so dev
+    // bypass + commander tooling still reach the dashboard. Inline +
+    // sync so it runs before the Welcome header paints.
+    (function () {
+      try {
+        var qs = new URLSearchParams(location.search);
+        if (qs.get('skipSetup') === '1') return;
+        if (qs.get('graduated') === '1') {
+          localStorage.setItem('bos.incubatorComplete', 'true');
+          return;
+        }
+        if (localStorage.getItem('bos.incubatorComplete') === 'true') return;
+        // Only gate signed-in users. If there's no bos.user yet the
+        // index.html auth wall handles routing — don't double-redirect.
+        if (!localStorage.getItem('bos.user')) return;
+        location.replace('/business-os/incubator');
+      } catch (e) { /* swallow — fall through to dashboard */ }
+    })();
+  </script>
 </head>
 <body class="bos-body" data-mobile-checked="2026-05-07">
 
@@ -35,9 +59,21 @@
 
       <header class="bos-home-greet">
         <h1 data-bos-greet>Welcome.</h1>
+        <!-- Chapter #159 — graduation pill, painted when bos.incubatorComplete=true. -->
+        <span class="bos-setup-complete-pill" data-bos-setup-complete hidden>Setup complete ✓</span>
         <p class="muted bos-home-tagline" data-bos-niche-tagline>A solid generic operating system.</p>
         <button class="bos-home-customise" data-bos-brand-open>✎ Customise — make it yours</button>
       </header>
+      <script>
+        (function () {
+          try {
+            if (localStorage.getItem('bos.incubatorComplete') === 'true') {
+              var p = document.querySelector('[data-bos-setup-complete]');
+              if (p) p.removeAttribute('hidden');
+            }
+          } catch (e) {}
+        })();
+      </script>
 
       <!-- Single big "next move" card -->
       <section class="bos-home-next" data-bos-home-next>
