@@ -103,3 +103,6 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 [2026-05-07T11:25:30Z] MESH-HAZARD: T1 commander-cycle commit `a15b653` ("T1 R4: DONE entry — SOPs surfacing") absorbed all 12 of my working-tree files into a T1-attributed commit before I could stage my own commit. Files are on origin/main intact (verified via `git show --stat HEAD`). MASTER row #77 was NOT in that absorbed commit (the upstream MASTER pulled overwrote my appended line during rebase) — re-appending now in a separate T4-attributed commit so the index row exists. Same shared-`.git/index` mesh hazard documented in chapter #71. No work lost.
 
 [2026-05-07T11:26:00Z] COMMIT pending (MASTER #77 + this DONE/MESH-HAZARD outbox entries).
+
+[2026-05-07T11:28:00Z] COMMIT 0fd9c98 (MASTER #77 + DONE/MESH-HAZARD outbox). Files shipped earlier in absorbed a15b653.
+[2026-05-07T11:28:30Z] WAKE-PENDING-ARCHIVE 001-incubator-phase-portal.md still active in queue (commander hasn't archived). Queue now also lists 002 (per-phase pages) · 003 (BOS deep-link) · 004 (niche copy packs) · 005 (HC-driven recommendations). Sleeping; next wake retries the chain.
