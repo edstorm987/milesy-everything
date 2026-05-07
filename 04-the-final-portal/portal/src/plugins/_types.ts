@@ -193,7 +193,38 @@ export interface EventBusPort {
 // `PortalRole` is the variant surface — which client-portal page a
 // variant belongs to. Distinct from user `Role`. T3 owns canonical at
 // `@aqua/plugin-website-editor/types`; mirrored here for now.
-export type PortalRole = "login" | "affiliates" | "orders" | "account";
+//
+// T1 R15 widened the union (chapter §15g) — `customer` (end-customer
+// landing for storefront tenants), `member` (gated members area),
+// `start-here` (post-signup orientation surface), `other` (catch-all
+// for tenant-specific custom variants). Existing roles preserved.
+export type PortalRole =
+  | "login"
+  | "affiliates"
+  | "orders"
+  | "account"
+  | "customer"
+  | "member"
+  | "start-here"
+  | "other";
+
+export const PORTAL_ROLES: readonly PortalRole[] = [
+  "login", "affiliates", "orders", "account",
+  "customer", "member", "start-here", "other",
+] as const;
+
+// Runtime validator — throws on unknown PortalRole strings. Used by
+// foundation routes that receive a portalRole from request bodies.
+export function assertPortalRole(v: unknown): PortalRole {
+  if (typeof v === "string" && (PORTAL_ROLES as readonly string[]).includes(v)) {
+    return v as PortalRole;
+  }
+  throw new Error(`Invalid PortalRole: ${JSON.stringify(v)}`);
+}
+
+export function isPortalRole(v: unknown): v is PortalRole {
+  return typeof v === "string" && (PORTAL_ROLES as readonly string[]).includes(v);
+}
 
 export interface PortalVariantPort {
   applyStarterVariant(args: {

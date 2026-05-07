@@ -9,6 +9,22 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 015 — PortalRole widening + BrandKit absorption** — DONE.
+      Goal A: `PortalRole` widened additively (4→8 roles) — added
+      `customer | member | start-here | other` per chapter §15g; NEW
+      `PORTAL_ROLES`, `assertPortalRole`, `isPortalRole`. Goals B+C:
+      `BrandKit` absorbed 7 new optional fields (`bgElevated`, `text`,
+      `textMuted`, `border`, `radiusSm`, `radiusMd`, `radiusLg`);
+      `brandToCss` now emits up to 16 namespaced `--brand-*` vars
+      (each only when field set; chapter #68 honesty — no fabricated
+      defaults). Removed `import "server-only"` from brandKit.ts so
+      smoke can import. Goal D: portalVariantAdapter casts `role as
+      never` at T3 plugin call boundary; new roles fail as safe
+      "unknown variantId" until T3 syncs their published PortalRole.
+      Goal E: NEW `smoke-portal-role-brandkit.test.ts` (8 tests, 8/8
+      pass via `npm run smoke:portal-role-brandkit` ~700ms). Goal F:
+      chapter `04-portal-role-and-brandkit-widening.md`; MASTER row
+      #90; tsc clean. HARD BOUNDARY honoured.
 - [x] **T1 014 — "+ New client" Incubator template toggle** — DONE.
       Goal A: `_NewClientButton.tsx` modal gains `useIncubator`
       checkbox (amber callout, `data-testid="incubator-toggle"`)

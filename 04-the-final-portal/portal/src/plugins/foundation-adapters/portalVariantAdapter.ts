@@ -47,8 +47,13 @@ export const portalVariantAdapter: PortalVariantPort = {
     }
 
     const storage = makePluginStorage(install.id) as T3PluginStorage;
+    // T1 R15 — foundation `PortalRole` is wider than T3's published
+    // type today (4 → 8 roles). Cast at the boundary; if `role` is one
+    // of the new entries (`customer`/`member`/`start-here`/`other`)
+    // the plugin will return `ok:false: unknown variantId` since no
+    // starter tree is registered for it yet — safe failure mode.
     const result = await t3ApplyStarterVariant(
-      { agencyId, clientId, role, variantId, actor },
+      { agencyId, clientId, role: role as never, variantId, actor },
       storage,
     );
 

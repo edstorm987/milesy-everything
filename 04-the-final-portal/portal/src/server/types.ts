@@ -21,6 +21,15 @@ export interface BrandKit {
   fontBody?: string;
   borderRadius?: string;         // e.g. "12px"
   customCSS?: string;            // raw CSS injected at the page root
+  // T1 R15 — extended kit absorbed from T3 R011 so per-tenant layouts
+  // emit a full 16-var surface. All optional; vars only emit when set.
+  bgElevated?: string;           // panel / card surface colour
+  text?: string;                 // primary text colour
+  textMuted?: string;            // secondary / hint text
+  border?: string;               // hairline / divider colour
+  radiusSm?: string;             // tight radii (chips, badges)
+  radiusMd?: string;             // standard inputs / buttons
+  radiusLg?: string;             // hero / card surfaces
 }
 
 export interface Agency {
