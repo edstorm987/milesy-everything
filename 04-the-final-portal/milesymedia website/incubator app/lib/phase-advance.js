@@ -127,6 +127,14 @@
     if (window.Activity && typeof window.Activity.log === 'function') {
       window.Activity.log('incubator.phase-advanced', { from: phaseId, to: next });
     }
+    if (window.Notify && typeof window.Notify.push === 'function') {
+      var nextLbl = next ? phaseLabel(next) : 'completed all phases';
+      window.Notify.push('phase',
+        'You completed ' + phaseLabel(phaseId) + '!',
+        next ? 'Onwards to ' + nextLbl + '. Check the new lessons available for this phase.' : 'All phases done. Onwards.',
+        { ctaHref: next ? '../incubator app/' + (function (id) { return ({'epic-intro':'phase-1-epic-intro.html','blueprint':'phase-2-blueprint.html','diagnostics':'phase-3-diagnostics.html','brand-builder':'phase-4-brand-builder.html'})[id]; })(next) : '../incubator app/index.html' }
+      );
+    }
     fireConfetti();
     showToast(next ? 'Phase complete → ' + phaseLabel(next) : 'All phases complete. Onwards.');
   }

@@ -159,6 +159,31 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R022 — BOS notifications inbox** — DONE.
+      NEW `incubator app/lib/notify.js` (~85L) exposes
+      `window.Notify.{KINDS, push, list, markRead, markAllRead,
+      unreadCount, metaFor}` w/ 5-kind registry (phase/lesson/
+      marketplace/founder/system) + notify:new/:read CustomEvents +
+      BOSStorage mirror when R012 loaded. NEW `business-os app/
+      inbox.html` (~140L) — filter chips (All + 5 kinds + Unread-
+      only) + Mark-all-read + per-row click-marks-read + Open CTA +
+      honest empty state. Bell icon `mountBellIcon()` in bos.js boot
+      — lazy-mounted, path-aware href, stacks 130px-left of cart
+      icon when both visible, hidden on inbox.html itself, repaints
+      on notify events. **Auto-emitters**: R006 phase-advance fires
+      `phase` w/ next-phase CTA; 9 marketplace detail pages fire
+      `marketplace` w/ cart CTA on Add-to-plan (notify.js script tag
+      added explicitly to all 9); admin Overview gained NEW Founder
+      broadcast form fires `founder` w/ from='Founder'. CSS
+      `.bos-inbox-*` (~50L) — 3px left-border per kind (phase=green/
+      lesson=blue/marketplace=gold/founder=violet/system=grey),
+      unread = gold-tint bg + dot, hover gold border. print.css
+      hides `[data-bos-bell]`. Smoke: 4 URLs 200; full add→push→
+      bell→click→read→bell-drops verified; phase + admin broadcast
+      push correctly. R+1: lesson kind hook in module.html; system
+      kind for R011 trial-expiry; server-side fan-out via email-
+      sender plugin. NEW chapter `04-bos-notifications-inbox.md` +
+      MASTER #98.
 - [x] **T4 R021 — BOS calendar surface** — DONE.
       NEW `business-os app/calendar.html` (~250L) — month-grid
       calendar tab in BOS aggregating existing `bos.tasks[]` (with

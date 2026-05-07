@@ -3213,3 +3213,46 @@ body.bos-cp-editing .bos-cp-fields textarea {
   .bos-cal-shell { grid-template-columns: 1fr; }
   .bos-cal-drawer { position: static; max-height: none; }
 }
+
+/* ─── R022 Notifications inbox ─── */
+.bos-inbox-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 18px;
+  align-items: center;
+}
+.bos-inbox-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.bos-inbox-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-left: 3px solid #888;
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+.bos-inbox-row:hover { border-color: #C9A76A; }
+.bos-inbox-row.is-unread { background: rgba(201,167,106,0.06); border-left-color: #C9A76A; }
+.bos-inbox-row--phase       { border-left-color: #5a7a3a; }
+.bos-inbox-row--lesson      { border-left-color: #4a6e8e; }
+.bos-inbox-row--marketplace { border-left-color: #C9A76A; }
+.bos-inbox-row--founder     { border-left-color: #a48ed1; }
+.bos-inbox-row--system      { border-left-color: #888; }
+.bos-inbox-icon { font-size: 22px; line-height: 1; text-align: center; }
+.bos-inbox-title { font-weight: 600; font-size: 15px; }
+.bos-inbox-text { color: var(--text-mute, #555); font-size: 14px; margin-top: 2px; }
+.bos-inbox-meta { font-size: 12px; margin-top: 4px; }
+.bos-inbox-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: #C9A76A; margin-left: 6px; vertical-align: middle;
+}
+.bos-inbox-cta {
+  font-size: 13px; color: #8E7340; text-decoration: none; padding: 4px 10px;
+  border: 1px solid #C9A76A; border-radius: 999px;
+}
+.bos-inbox-cta:hover { background: rgba(201,167,106,0.1); }
+.bos-inbox-empty { padding: 28px; text-align: center; color: var(--text-mute, #555); font-style: italic; }

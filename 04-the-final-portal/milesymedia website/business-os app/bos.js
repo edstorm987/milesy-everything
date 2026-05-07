@@ -490,6 +490,38 @@
     document.head.appendChild(s);
   }
 
+  /* R022 — lazy-load Notify lib + mount bell icon top-right when
+     bos.notifications has unread entries. Mirror-pattern of cart icon. */
+  function ensureNotifyLoaded() {
+    if (document.querySelector('script[data-bos-notify]')) return;
+    var s = document.createElement('script');
+    s.setAttribute('data-bos-notify', '');
+    s.src = '../incubator app/lib/notify.js';
+    document.head.appendChild(s);
+  }
+  function mountBellIcon() {
+    if (/inbox\.html$/.test(location.pathname)) return; // not on inbox itself
+    if (document.querySelector('[data-bos-bell]')) return;
+    /* Re-render whenever the count could have changed. */
+    function paint() {
+      var n = (window.Notify && window.Notify.unreadCount && window.Notify.unreadCount()) || 0;
+      var existing = document.querySelector('[data-bos-bell]');
+      if (n <= 0) { if (existing) existing.remove(); return; }
+      var pill = existing || document.createElement('a');
+      pill.setAttribute('data-bos-bell', '');
+      pill.href = (location.pathname.indexOf('/marketplace/') !== -1 ? '../inbox.html' : 'inbox.html');
+      /* Stack to the LEFT of the cart icon when both visible. */
+      pill.style.cssText = 'position:fixed;top:14px;right:' + (document.querySelector('[data-bos-cart-icon]') ? 130 : 18) + 'px;z-index:9988;background:#0F0F0F;color:#D4B888;border:1px solid #C9A76A;padding:8px 14px;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none;box-shadow:0 6px 16px rgba(0,0,0,0.3);';
+      pill.innerHTML = '🔔 ' + n + ' unread →';
+      if (!existing) document.body.appendChild(pill);
+    }
+    /* Wait briefly for Notify to load if not present yet. */
+    if (!window.Notify) { setTimeout(mountBellIcon, 120); return; }
+    paint();
+    document.addEventListener('notify:new', paint);
+    document.addEventListener('notify:read', paint);
+  }
+
   /* R012 — Lazy-load multi-business storage shim + switcher UI.
      Both live under the Incubator's lib/ folder (single source of truth
      across BOS + Incubator). Switcher auto-mounts into `.bos-sidebar`. */
@@ -911,10 +943,12 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     ensureSwitcherLoaded();
+    ensureNotifyLoaded();
     mountPreviewBanner();
     mountIncubatorStrip();
     mountTrialBanner();
     mountCartIcon();
+    mountBellIcon();
     mountAutoSidebar();
     hydrateUser();
     applyBranding();

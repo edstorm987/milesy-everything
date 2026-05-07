@@ -60,6 +60,23 @@
       </div>
 
       <div class="bos-notion-slot" style="margin-top:16px">
+        <div class="bos-notion-slot-icon">📣</div>
+        <div style="flex:1">
+          <h3>Founder broadcast</h3>
+          <p class="muted">Push a message into every BOS user's inbox (this device — once email-sender plugs in, R+1 replicates server-side).</p>
+          <form data-admin-broadcast style="margin-top:12px;display:grid;gap:10px">
+            <input type="text" name="title" placeholder="Title (e.g. New cohort opens 2026-06-01)" required style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px" />
+            <textarea name="body" placeholder="Body — keep it short, link goes below" rows="3" style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;font:inherit"></textarea>
+            <input type="url" name="ctaHref" placeholder="Optional link (https://…)" style="padding:8px 12px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px" />
+            <div style="display:flex;gap:10px;align-items:center">
+              <button type="submit" class="btn btn-primary">Push to inbox</button>
+              <span class="muted" data-admin-broadcast-status></span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="bos-notion-slot" style="margin-top:16px">
         <div class="bos-notion-slot-icon">🎯</div>
         <div style="flex:1">
           <h3>Incubator niche pack</h3>
@@ -166,6 +183,7 @@
   </main>
 
   <script src="../incubator app/lib/storage.js"></script>
+  <script src="../incubator app/lib/notify.js"></script>
   <script src="../lead magnet app/hc-questions.js"></script>
   <script>
     /* ─── Admin gate ──────────────────────────── */
@@ -733,6 +751,26 @@
         var rep = document.querySelector('[data-admin-tab="reports"]');
         if (rep) rep.click();
         setTimeout(function () { paintMeta(); window.print(); }, 60);
+      });
+    })();
+
+    /* R022 — Founder broadcast handler. Pushes a notification of
+       kind=founder into the local bos.notifications[]. R+1: once
+       email-sender plugin lands, this also fans out server-side. */
+    (function () {
+      var form = document.querySelector('[data-admin-broadcast]');
+      if (!form) return;
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var fd = new FormData(ev.target);
+        var title = (fd.get('title') || '').toString().trim();
+        var body = (fd.get('body') || '').toString().trim();
+        var ctaHref = (fd.get('ctaHref') || '').toString().trim() || null;
+        if (!title || !window.Notify) return;
+        window.Notify.push('founder', title, body, { ctaHref: ctaHref, from: 'Founder' });
+        var status = document.querySelector('[data-admin-broadcast-status]');
+        if (status) { status.textContent = '✓ Pushed to inbox.'; setTimeout(function () { status.textContent = ''; }, 3500); }
+        ev.target.reset();
       });
     })();
   </script>
