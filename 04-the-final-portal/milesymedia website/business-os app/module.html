@@ -48,6 +48,10 @@
         <h3>Done with this lesson — what's next?</h3>
         <p class="muted">Pick how you want to act on it. There's no wrong answer — but there is a wrong "I'll think about it later".</p>
         <div class="hc-actions" data-bos-lesson-cta></div>
+        <div style="margin-top:14px">
+          <button type="button" class="btn btn-secondary" data-bos-mark-lesson-done>✓ Mark this lesson done</button>
+          <span class="muted" data-bos-lesson-done-status style="margin-left:10px;font-size:13px"></span>
+        </div>
       </div>
 
     </main>
@@ -95,6 +99,31 @@
         + nextHtml
         + '<a href="tel:+441234567890" class="btn btn-secondary">📞 Want me to walk you through?</a>'
         + '<a href="mailto:hello@milesymedia.co?subject=' + encodeURIComponent('Help me apply: ' + lesson.title.replace(/<[^>]+>/g, '')) + '" class="btn btn-primary">⚡ Help me apply this</a>';
+
+      /* Mark-done writes bos.lessonProgress[id]=true. Read by the
+         Incubator phase-advance helper (R006). */
+      var doneBtn = document.querySelector('[data-bos-mark-lesson-done]');
+      var status = document.querySelector('[data-bos-lesson-done-status]');
+      function readLessonMap() {
+        try { return JSON.parse(localStorage.getItem('bos.lessonProgress') || '{}') || {}; } catch (e) { return {}; }
+      }
+      function paintDone() {
+        var m = readLessonMap();
+        if (m[id]) {
+          doneBtn.textContent = '✓ Done — undo';
+          status.textContent = 'Marked done. Counts toward your phase advance.';
+        } else {
+          doneBtn.textContent = '✓ Mark this lesson done';
+          status.textContent = '';
+        }
+      }
+      paintDone();
+      doneBtn.addEventListener('click', function () {
+        var m = readLessonMap();
+        if (m[id]) { delete m[id]; } else { m[id] = true; }
+        try { localStorage.setItem('bos.lessonProgress', JSON.stringify(m)); } catch (e) {}
+        paintDone();
+      });
     });
   </script>
 

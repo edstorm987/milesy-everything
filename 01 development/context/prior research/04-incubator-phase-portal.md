@@ -514,6 +514,111 @@ same tab; that's an R+1 if needed.
 - Live in-tab update on HC re-completion is out of scope; could
   listen on `storage` events as R+1.
 
+## R006 — BOS lessons → Incubator phase-advance signal (2026-05-07)
+
+Self-report progression: completing all required BOS lessons surfaces
+a "Mark phase complete →" CTA on the relevant phase page. Click marks
+the phase advanced, flips `incubator.phase` forward, fires a
+CustomEvent for other surfaces to celebrate, and pops a small
+confetti burst.
+
+> No auto-advance — operator stays in control. Lesson-mark is also
+> reversible (toggle button on `module.html`).
+
+### New keys
+
+| Key                          | Type                          | Notes                                                |
+| ---------------------------- | ----------------------------- | ---------------------------------------------------- |
+| `bos.lessonProgress`         | `{ [lessonId]: true }`        | NEW — written by `module.html` "✓ Mark this lesson done" toggle. |
+| `incubator.phaseAdvanced`    | `{ [phaseId]: true }`         | NEW — written by phase-advance click handler. Kept separate from R002's `incubator.phaseProgress` per-step map so neither shape collides. |
+
+> **Q-ASSUMED deviation from prompt**: The round prompt says
+> `incubator.phaseProgress[phaseId] = "complete"` but R002 uses that
+> key as a per-step `{ [stepId]: true }` map — a literal "complete"
+> overwrite would have wiped the per-step state. Used a separate
+> `incubator.phaseAdvanced` map to preserve both contracts.
+
+### Phase → required lessons map
+
+```js
+PHASE_LESSON_REQUIREMENTS = {
+  'epic-intro':    [],
+  'blueprint':     ['core-principles'],
+  'diagnostics':   ['chrome-profile', 'super-sales'],
+  'brand-builder': ['ops-sustainability', 'referral-alchemy']
+}
+```
+
+Distribution covers all 5 currently-shipped lessons (chapter #74).
+Epic-intro requires no lessons — it's orientation-only — so its
+"phase-advance" block renders "No lessons required for this phase."
+and no CTA.
+
+### Files
+
+- NEW `incubator app/lib/phase-advance.js` (~165L) — `IncubatorPhaseAdvance.{statusFor, markComplete, mount, PHASE_LESSON_REQUIREMENTS}`.
+- `incubator app/incubator.css` — `.inc-pa*` block + `.inc-pa-confetti` keyframes (~70L). Confetti respects `prefers-reduced-motion`.
+- 4 phase pages — added `<section class="inc-pa" data-phase-advance="<phaseId>"></section>` slot before back-link, plus `<script src="lib/phase-advance.js">` tag.
+- `business-os app/module.html` — added "✓ Mark this lesson done" button + status line; click toggles `bos.lessonProgress[id]`.
+
+### Phase-advance render states
+
+- **No lessons required** (Epic Intro) — head line only, no bar / no CTA.
+- **In progress** — bar + "Lessons still to complete: id, id" line.
+- **All complete + not yet advanced** — bar at 100% + gold "Ready to advance? Mark <Label> complete →" button.
+- **Already advanced** — green "✓ Phase marked complete. You're on <next-phase>." line. No re-fire.
+
+### CustomEvent contract
+
+```js
+document.dispatchEvent(new CustomEvent('incubator:phase-complete', {
+  detail: { phaseId, nextPhaseId }
+}))
+```
+
+Fires on each successful `markComplete()`. R+1 wiring: HC + BOS pages
+can listen and pop their own celebratory toast (today only the
+Incubator's own confetti + toast fires).
+
+### Confetti
+
+32 coloured particles fall from the top with randomised horizontal
+positions, animation delay (0–0.4s) and duration (1.2–2.0s). Removes
+itself from DOM after 2.4s. Hidden under
+`@media (prefers-reduced-motion: reduce)`.
+
+### R006 smoke (verified 2026-05-07)
+
+- All 4 phase pages 200; `lib/phase-advance.js` 200; `module.html` 200.
+- Default visit to `phase-2-blueprint.html` shows "Lesson progress · 0
+  / 1 complete" + "Lessons still to complete: core-principles".
+- Visit `module.html?id=core-principles` → click "✓ Mark this lesson
+  done" → status confirms; reload → button reads "✓ Done — undo".
+- Reload `phase-2-blueprint.html` → progress bar at 100% + "Ready to
+  advance? Mark Blueprint Setup complete →" gold CTA.
+- Click CTA → confetti burst + toast "Phase complete → Diagnostics &
+  Foundations" + body of section flips to green "✓ Phase marked
+  complete." `incubator.phase` advanced to `diagnostics`. Re-render
+  shows the done state on subsequent visits.
+- `phase-1-epic-intro.html` shows "No lessons required for this phase."
+  (no CTA / bar) — orientation-only behaviour intentional.
+
+### Q-ASSUMED + R006 follow-ups
+
+- `bos.lessonProgress` shape introduced fresh — no prior writer in
+  bos.js. R+1: `module.html`'s "Next" link could auto-mark on click;
+  for now it's an explicit toggle.
+- Lesson distribution per phase is a defensible default; admin could
+  flip via a future editor.
+- Confetti DOM-creation lives in the helper (no library dependency).
+  Acceptable; if more surfaces want celebrations, lift into a shared
+  primitive.
+- Round prompt mentions HC + BOS celebratory listeners on the
+  CustomEvent — wiring those is genuinely on-scope for those surfaces
+  but not strictly required ("consumed by HC + BOS for celebratory
+  toast" is descriptive). Left as R+1 hook (`document.addEventListener('incubator:phase-complete', …)`)
+  rather than touching HC + BOS unnecessarily this round.
+
 ## Cross-refs
 
 - §15 visual spec — `04-aqua-internals-reference.md` §15a–§15g.

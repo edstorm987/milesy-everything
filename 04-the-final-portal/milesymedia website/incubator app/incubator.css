@@ -504,6 +504,70 @@ a:hover { color: var(--inc-gold); }
 }
 .inc-hc-rec-cta:hover { color: var(--inc-gold); border-bottom-color: var(--inc-gold); }
 
+/* ─── Phase-advance via lessons (R006) ─── */
+.inc-pa {
+  background: var(--inc-card);
+  border: 1px solid var(--inc-line);
+  border-radius: var(--inc-radius);
+  padding: 18px 20px;
+  margin: 18px 0;
+}
+.inc-pa-head {
+  font-size: 14px;
+  color: var(--inc-muted);
+  margin-bottom: 10px;
+}
+.inc-pa-bar {
+  width: 100%;
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.inc-pa-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--inc-gold-soft), var(--inc-gold));
+  transition: width 0.4s ease;
+}
+.inc-pa-cta { display: inline-block; }
+.inc-pa-done {
+  color: #b3d28a;
+  font-size: 14px;
+}
+.inc-pa-missing {
+  color: var(--inc-muted);
+  font-size: 13px;
+}
+
+/* Confetti — small, respectful per round prompt */
+.inc-pa-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9998;
+}
+.inc-pa-confetti span {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0.9;
+  animation: inc-pa-fall linear forwards;
+}
+@keyframes inc-pa-fall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inc-pa-confetti { display: none; }
+}
+
 /* ─── Tiny header strip ─── */
 .inc-toprail {
   display: flex;

@@ -48,6 +48,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R006 — BOS lessons → Incubator phase-advance signal** — DONE.
+      Self-report progression (no auto-advance per prompt). NEW
+      `incubator app/lib/phase-advance.js` (~165L) carries
+      PHASE_LESSON_REQUIREMENTS map distributing 5 shipped lessons
+      across phases (Epic Intro orientation-only; Blueprint →
+      core-principles; Diagnostics → chrome-profile + super-sales;
+      Brand Builder → ops-sustainability + referral-alchemy). NEW
+      `bos.lessonProgress` written by new "✓ Mark this lesson done"
+      toggle button on `module.html`. NEW `incubator.phaseAdvanced`
+      map (Q-ASSUMED separate from R002 phaseProgress to preserve
+      both contracts — prompt's literal "complete" overwrite would
+      have wiped per-step state). Phase pages render 4 states
+      (no-lessons / in-progress + missing list / 100% gold CTA /
+      advanced green-done). Click advances `incubator.phase`,
+      dispatches `CustomEvent('incubator:phase-complete', {detail})`,
+      fires confetti (32 particles, respects prefers-reduced-motion),
+      shows toast. `.inc-pa*` CSS block (~70L). Smoke: 6 touched URLs
+      all 200. Chapter R006 section + MASTER #82.
 - [x] **T4 R005 — HC-driven Incubator next-action recommendations** — DONE.
       NEW `incubator app/lib/recommend.js` (~165L) exposes pure
       `IncubatorRecommend.fromHC(hc)` + DOM `mount()`. TOPIC_MAP keyed
