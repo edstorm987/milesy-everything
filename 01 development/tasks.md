@@ -178,6 +178,30 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R027 — Per-business analytics dashboard** — DONE.
+      NEW `business-os app/analytics.html` (~220L) — in-BOS analytics
+      surface (own data only, no cross-business). Period chip nav
+      (7d/30d=default/all) + 5 KPI tiles: 📚 Lessons N/22 w/ gold-
+      gradient bar · 🏛 Phase progress 4-dot timeline (advanced=green,
+      current=gold pulsing halo + scale animation, future=outlined
+      grey) · 🩺 HC trend (avg score + weakest topic + honest
+      "Single snapshot — re-run HC to track delta over time" since
+      bos.healthCheck stores only latest; explicit "No HC on file"
+      state w/ run-link) · 📊 Activity events / period (top-3 kinds
+      list) · 🔔 Notifications read-rate / period (gold-bar). Auto-
+      repaint on activity:logged + notify:new/:read. **Honesty
+      contract layered**: red-tinted "n<7 indicative" small-n pills
+      (analytics uses red vs R009 admin gold to be louder), HC
+      snapshot caveat instead of fab delta, "No HC" explicit state
+      never fab zero. CSS `.bos-an-*` block (~80L) — 2-col tile
+      grid (1col<760px), Playfair big numbers + gradient bars,
+      pulsing-halo phase dots (1.4s scale animation), top-3 chip
+      list. Smoke: analytics 200; empty + populated states both
+      verified end-to-end. Q-ASSUMED: HC history not yet stored
+      (R+1 push to bos.hcHistory[] for real delta); lessons total
+      hardcoded 22 (R+1 read from BOS_LESSONS keys); cross-biz +
+      external analytics out per prompt. NEW chapter `04-bos-
+      analytics-dashboard.md` + MASTER #103.
 - [x] **T4 R026 — Mobile-responsive audit across all surfaces** — DONE.
       Top 15 mobile issues fixed across 3 stylesheets (~115L total)
       at 390px + 768px breakpoints: marketing nav reflow + hero

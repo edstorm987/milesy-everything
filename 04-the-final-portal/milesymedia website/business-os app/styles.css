@@ -3382,3 +3382,97 @@ body.bos-cp-editing .bos-cp-fields textarea {
     min-height: 36px;
   }
 }
+
+/* ─── R027 Analytics dashboard ─── */
+.bos-an-period { display: flex; gap: 6px; }
+.bos-an-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+@media (max-width: 760px) { .bos-an-grid { grid-template-columns: 1fr; } }
+.bos-an-tile {
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+.bos-an-lbl {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-mute, #555);
+  margin-bottom: 6px;
+}
+.bos-an-num {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 4px 0 10px;
+}
+.bos-an-num--muted { color: var(--text-mute, #888); }
+.bos-an-sub { font-size: 13px; }
+.bos-an-bar {
+  height: 6px;
+  background: #ececec;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.bos-an-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8E7340, #C9A76A);
+  transition: width 0.4s ease;
+}
+.bos-an-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.bos-an-pill-warn {
+  background: rgba(208, 89, 89, 0.1);
+  border: 1px solid rgba(208, 89, 89, 0.4);
+  color: #d05959;
+}
+.bos-an-list { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 6px; font-size: 14px; }
+.bos-an-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--bos-card-2, #f5f1e8);
+  border-radius: 6px;
+}
+.bos-an-list li > strong { margin-left: auto; }
+.bos-an-list li > span { font-size: 16px; }
+
+.bos-an-phases {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+.bos-an-dot {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-mute, #555);
+}
+.bos-an-dot > span {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ccc;
+  margin: 0 auto 4px;
+  border: 2px solid transparent;
+}
+.bos-an-dot.is-current > span { background: #C9A76A; box-shadow: 0 0 0 4px rgba(201,167,106,0.2); animation: bos-an-pulse 1.4s ease-in-out infinite; }
+.bos-an-dot.is-done > span    { background: #5a7a3a; }
+.bos-an-dot.is-future > span  { background: transparent; border-color: #ccc; }
+@keyframes bos-an-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
