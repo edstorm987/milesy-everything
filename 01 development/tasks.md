@@ -2450,3 +2450,8 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       completion + StatusBoard manual checks + Incident lifecycle
       with idempotent resolution + HealthPage honesty empty state +
       8 default seed tasks).
+- [x] T2 R010 — `@aqua/plugin-client-files` shipped (chapter #105,
+      smoke 12/12, NEW client-scoped per-client file vault: inline
+      base64 <2MB + external-ref hook for T6 S3 wiring; 5 categories;
+      visibleToClient ACL; rotating share-link tokens via reverse
+      index).
