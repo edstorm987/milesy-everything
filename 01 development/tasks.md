@@ -48,6 +48,23 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R005 — HC-driven Incubator next-action recommendations** — DONE.
+      NEW `incubator app/lib/recommend.js` (~165L) exposes pure
+      `IncubatorRecommend.fromHC(hc)` + DOM `mount()`. TOPIC_MAP keyed
+      by 5 HC area names (Visibility & Search → core-principles
+      lesson, Your Website → super-sales, Where Customers Come From →
+      phase-3-diagnostics, My Business → phase-2-blueprint, Keeping
+      Them → referral-alchemy). Filters topics where `score==null`
+      (the contract — only answered surface), sorts ascending, takes
+      top-3, severity tiers critical/warn/mild (30/55 boundaries),
+      adds "Talk to a human" whatsapp row when worst score <30. Three
+      explicit states: empty (no HC), partial (null-score honesty
+      sub-line), full (3 ranked rec rows). Root `index.html` gains
+      `<section data-hc-recommend>` slot + lib/recommend.js script
+      tag. `.inc-hc-strip*` CSS block (~95L) added with severity-
+      coloured left borders. Smoke: root + lib/recommend.js both 200.
+      Honesty contract preserved — no extrapolation, no fab numbers.
+      Chapter R005 section + MASTER #81.
 - [x] **T4 R004 — Niche-specific Incubator copy packs** — DONE.
       Closed chapter #71 niche-pack follow-up. NEW
       `incubator app/copy-packs/` with 4 packs (agency default,

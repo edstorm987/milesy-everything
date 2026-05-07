@@ -401,6 +401,109 @@ a:hover { color: var(--inc-gold); }
   text-decoration-color: var(--inc-gold-soft);
 }
 
+/* ─── HC-driven recommendations strip (R005) ─── */
+.inc-hc-strip {
+  background: linear-gradient(180deg, #0F0F0F, #0a0a0a);
+  border: 1px solid var(--inc-line);
+  border-radius: var(--inc-radius);
+  padding: 22px 24px;
+  margin: 28px 0;
+}
+.inc-hc-strip-empty {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+.inc-hc-strip-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+.inc-hc-strip-empty strong {
+  display: block;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 20px;
+  color: var(--inc-accent);
+  margin-bottom: 6px;
+}
+.inc-hc-strip-sub {
+  color: var(--inc-muted);
+  font-size: 14px;
+  margin: 6px 0 14px;
+}
+.inc-hc-strip-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.inc-hc-relink {
+  color: var(--inc-muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.inc-hc-relink:hover { color: var(--inc-accent); }
+.inc-hc-recs {
+  display: grid;
+  gap: 12px;
+}
+.inc-hc-rec {
+  background: var(--inc-card-2);
+  border: 1px solid var(--inc-line);
+  border-left: 4px solid var(--inc-gold-soft);
+  border-radius: var(--inc-radius-sm);
+  padding: 14px 16px;
+}
+.inc-hc-rec--critical { border-left-color: #d05959; }
+.inc-hc-rec--warn     { border-left-color: var(--inc-gold); }
+.inc-hc-rec--mild     { border-left-color: #5a7a3a; }
+.inc-hc-rec-topic {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--inc-muted);
+  margin-bottom: 6px;
+}
+.inc-hc-rec-icon { font-size: 16px; }
+.inc-hc-score {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(201, 167, 106, 0.12);
+  color: var(--inc-accent);
+}
+.inc-hc-sev-pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #1a1a1a;
+  color: var(--inc-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.inc-hc-rec-headline {
+  font-size: 16px;
+  color: var(--inc-text);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.inc-hc-rec-action {
+  font-size: 14px;
+  color: var(--inc-muted);
+  margin-bottom: 10px;
+}
+.inc-hc-rec-cta {
+  display: inline-block;
+  font-size: 14px;
+  color: var(--inc-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--inc-gold-soft);
+  padding-bottom: 1px;
+}
+.inc-hc-rec-cta:hover { color: var(--inc-gold); border-bottom-color: var(--inc-gold); }
+
 /* ─── Tiny header strip ─── */
 .inc-toprail {
   display: flex;

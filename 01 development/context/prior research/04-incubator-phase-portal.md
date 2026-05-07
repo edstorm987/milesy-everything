@@ -422,6 +422,98 @@ window.IncubatorCopy.listNiches();  // ['agency','skincare',…]
   referral-alchemy`). Locked module ids could ship later when those
   lessons exist (chapter #71 follow-up).
 
+## R005 — HC-driven next-action recommendations (2026-05-07)
+
+Per honesty contract (chapter #68): HC results map to specific
+Incubator-surface next moves. Root page now renders a "Your next move
+— based on your Health Check" strip when HC has at least one answered
+topic. Empty / partial states are explicit.
+
+### Files
+
+- NEW `incubator app/lib/recommend.js` — pure `IncubatorRecommend.fromHC(hc)` + DOM `mount()`.
+- `incubator app/incubator.css` — `.inc-hc-strip*` block (~95 lines).
+- `incubator app/index.html` — `<section class="inc-hc-strip" data-hc-recommend>` slot + `<script src="lib/recommend.js">` tag.
+
+### HC topic → recommendation map
+
+`recommend.js` carries a `TOPIC_MAP` keyed by the 5 HC area names (per
+the lead-magnet `persistToBOS()` shape):
+
+| HC topic                       | leakHeadline                            | deepLinkTo (lesson / phase / human) |
+| ------------------------------ | --------------------------------------- | ----------------------------------- |
+| `Visibility & Search`          | hard to find when people search         | lesson · core-principles            |
+| `Your Website`                 | landing but not converting              | lesson · super-sales                |
+| `Where Customers Come From`    | channel-dependent                       | phase · phase-3-diagnostics         |
+| `My Business`                  | foundations need shoring up             | phase · phase-2-blueprint           |
+| `Keeping Them`                 | customers leave after first sale        | lesson · referral-alchemy           |
+
+If the worst score is `< 30`, an extra **Talk to a human** row is
+appended (whatsapp link). Each rec gets a `severity` ∈
+`critical|warn|mild` (boundaries 30 / 55) which colours the left
+border + drives the "Biggest leak / Worth fixing soon / Mild" pill.
+
+### Pure function contract
+
+```js
+window.IncubatorRecommend.fromHC(hc) → [
+  { topic, icon, score, severity, leakHeadline, suggestedAction, deepLinkTo: { kind, label, href } },
+  …
+]
+```
+
+Honest behaviour:
+
+- Topics with `score == null` are filtered out (the contract).
+- Sorted ascending by score (lowest = biggest leak).
+- Top 3 + optional human-CTA row.
+- `null` HC or zero answered topics → empty array → explicit empty
+  state in the strip ("No Health Check on file yet — Run the 12-min HC").
+
+### Strip rendering
+
+- **Empty** — single card with 🩺 icon + "Run the Health Check →" CTA.
+- **Partial** — header sub-line "N topic(s) still unanswered.
+  Recommendations only cover what you answered — that's the honesty
+  contract." Visible when `hc.topics` contains any null-score entry.
+- **Full** — head row "Your next move — based on your Health Check"
+  + "Re-run the HC ↗" link, then the rec rows.
+
+Each rec row: topic chip (icon + name + score pill + severity pill),
+leak headline, suggested action, single CTA (`→` for in-portal,
+opens new tab for human).
+
+### Auto-update behaviour
+
+`mount()` runs at DOMContentLoaded — every visit to the root page
+re-reads `bos.healthCheck` and re-renders, so re-running the HC is
+reflected immediately on next page load. No live-update inside the
+same tab; that's an R+1 if needed.
+
+### R005 smoke (verified 2026-05-07)
+
+- Root page returns 200; `lib/recommend.js` returns 200.
+- Default visit (no HC) → strip shows "No Health Check on file yet"
+  empty state with Run-the-HC CTA.
+- Setting `bos.healthCheck` with a `topics:[…]` payload (some
+  null-score, some scored) → strip renders 3 ranked recs by ascending
+  score + partial-state sub-line listing unanswered count.
+- Worst-score < 30 → adds the "Talk to a human" row with whatsapp
+  link.
+
+### Q-ASSUMED + R005 follow-ups
+
+- `TOPIC_MAP` matches the 5 area names emitted by the lead-magnet's
+  `persistToBOS()` (`Visibility & Search` / `Your Website` /
+  `Where Customers Come From` / `My Business` / `Keeping Them`). If
+  admin's questions editor (chapter #69) renames an area, recs for
+  that topic will fall through (filtered by `Boolean()`); R+1 should
+  surface "no map for X — patch TOPIC_MAP".
+- Severity boundaries (30 / 55) are gut-feel; could be tuned once
+  there's enough HC data to calibrate.
+- Live in-tab update on HC re-completion is out of scope; could
+  listen on `storage` events as R+1.
+
 ## Cross-refs
 
 - §15 visual spec — `04-aqua-internals-reference.md` §15a–§15g.
