@@ -156,13 +156,25 @@ export function isLeadRole(role: Role): boolean {
 
 // ─── Server-side users ────────────────────────────────────────────────────
 
+// R025 schema version. The migration runner walks the users map and
+// rewrites legacy single-agency rows into multi-agency shape (agencyIds
+// derived from `agencyId`). Bumped on schema changes that the runner
+// can detect + repair idempotently.
+export const USER_SCHEMA_V = 2;
+
 export interface ServerUser {
   id: string;
   email: string;
   name: string;
   passwordHash: string;          // scrypt$N$r$p$<salt-hex>$<derived-hex>
   role: Role;
-  agencyId: string;              // every user belongs to one agency
+  // R025: every user can now belong to multiple agencies (master/satellite
+  // pattern from chapter #123). The legacy `agencyId` field is kept as a
+  // mirror so 56+ existing callsites keep working; new code reads
+  // `agencyIds` and treats `agencyId` as "the user's primary / current
+  // agency". Lead role carries `agencyIds: []` (global tenant).
+  agencyIds: string[];
+  agencyId: string;              // legacy mirror — = agencyIds[0] (or LEAD_AGENCY_ID for leads)
   clientId?: string;             // set for client-* roles + freelancer + end-customer
   mustChangePassword?: boolean;
   emailVerifiedAt?: number;       // R020: epoch ms when verification token redeemed
