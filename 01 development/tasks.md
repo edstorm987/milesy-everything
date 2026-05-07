@@ -599,6 +599,32 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R017 — Block library polish (5 new blocks)** — DONE.
+      Audit pass: registry already has 70+ ids (chapter-07
+      floor of 58 over-shot). R017 fills 5 high-utility gaps
+      with full Live renderers, sensible default trees, brand-
+      kit CSS-var driven chrome (R011 surface):
+      `feature-comparison` (▦) — pricing tier table with
+      bool→✓/— cells + highlighted column; `team-grid` (👥) —
+      avatar + name/role/bio/socials, initial-fallback
+      avatar; `breadcrumb` (›) — explicit-or-auto items,
+      aria-current=page on last; `process-steps` (①) —
+      numbered with icon override, horizontal/vertical
+      layouts; `share-buttons` (↗) — Twitter/LinkedIn/
+      Facebook intent URLs + clipboard Copy with 1.5s
+      flash. NEW `__smoke__/r017-block-library-polish.test.ts`
+      39/39 (registry, per-block contract, theme-overlay var
+      presence). package.json test chain extended. tsc-clean.
+      Chapter `04-block-library-polish.md` + MASTER row #98.
+      Q-ASSUMED: 5 picked by gut + grep (audit doc not
+      needed — registry over-shoots chapter floor); array-
+      prop editors in properties sidebar deferred (same R+1
+      batch as R009/R006); breadcrumb auto-segments by `/`
+      (sitemap lookup R+1); no animation choreography (out
+      of scope). Deferred: visual array-prop editors,
+      featured-block surface in TemplateGallery, breadcrumb
+      structured data, share-count integration, process-steps
+      progress indicator.
 - [x] **T3 R016 — Marketplace + template gallery polish** — DONE.
       Polishes R006 marketplace. Goal A: NEW
       `TemplateCategory` union + `categoryForTags` helper +

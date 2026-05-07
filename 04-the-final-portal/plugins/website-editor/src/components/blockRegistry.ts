@@ -30,6 +30,11 @@ import CookieConsentBlock from "./blocks/CookieConsentBlock";
 import BlogFeedBlock from "./blocks/BlogFeedBlock";
 import BlogPostBlock from "./blocks/BlogPostBlock";
 import FormEmbedBlock from "./blocks/FormEmbedBlock";
+import FeatureComparisonBlock from "./blocks/FeatureComparisonBlock";
+import TeamGridBlock from "./blocks/TeamGridBlock";
+import BreadcrumbBlock from "./blocks/BreadcrumbBlock";
+import ProcessStepsBlock from "./blocks/ProcessStepsBlock";
+import ShareButtonsBlock from "./blocks/ShareButtonsBlock";
 import BeforeAfterBlock from "./blocks/BeforeAfterBlock";
 import BookingWidgetBlock from "./blocks/BookingWidgetBlock";
 import ButtonBlock from "./blocks/ButtonBlock";
@@ -299,6 +304,93 @@ export const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
       ] },
       { key: "dismissible", label: "Dismissible", type: "boolean", default: true },
       { key: "sticky", label: "Stick to top", type: "boolean", default: false },
+    ],
+  },
+  "feature-comparison": {
+    type: "feature-comparison", label: "Feature comparison", icon: "▦", category: "content", isContainer: false,
+    Component: FeatureComparisonBlock,
+    defaultProps: {
+      heading: "Compare plans",
+      subheading: "Pick the tier that matches your stage.",
+      columns: [
+        { id: "starter", label: "Starter", ctaLabel: "Choose", ctaHref: "#starter" },
+        { id: "growth", label: "Growth", ctaLabel: "Choose", ctaHref: "#growth", highlighted: true },
+        { id: "scale", label: "Scale", ctaLabel: "Talk to us", ctaHref: "#scale" },
+      ],
+      rows: [
+        { feature: "Active clients",        values: { starter: "Up to 5", growth: "Up to 25", scale: "Unlimited" } },
+        { feature: "Storage",               values: { starter: "10 GB", growth: "100 GB", scale: "1 TB" } },
+        { feature: "Custom domain",         values: { starter: false, growth: true, scale: true } },
+        { feature: "AI page builder",       values: { starter: false, growth: true, scale: true } },
+        { feature: "Priority support",      values: { starter: false, growth: false, scale: true } },
+      ],
+    },
+    fields: [
+      { key: "heading", label: "Heading", type: "text" },
+      { key: "subheading", label: "Subheading", type: "textarea" },
+    ],
+  },
+  "team-grid": {
+    type: "team-grid", label: "Team grid", icon: "👥", category: "content", isContainer: false,
+    Component: TeamGridBlock,
+    defaultProps: {
+      heading: "Meet the team",
+      columns: 3,
+      members: [
+        { name: "Felicia", role: "Founder", bio: "Crafting brands rooted in honesty and care." },
+        { name: "Member two", role: "Strategist", bio: "Where systems meet sales." },
+        { name: "Member three", role: "Designer", bio: "Aesthetic discipline; brand-kit driven." },
+      ],
+    },
+    fields: [
+      { key: "heading", label: "Heading", type: "text" },
+      { key: "subheading", label: "Subheading", type: "textarea" },
+      { key: "columns", label: "Columns", type: "number", default: 3 },
+    ],
+  },
+  breadcrumb: {
+    type: "breadcrumb", label: "Breadcrumb", icon: "›", category: "content", isContainer: false,
+    Component: BreadcrumbBlock,
+    defaultProps: {
+      separator: "›",
+      homeLabel: "Home",
+    },
+    fields: [
+      { key: "separator", label: "Separator", type: "text", default: "›" },
+      { key: "homeLabel", label: "Home label", type: "text", default: "Home" },
+    ],
+  },
+  "process-steps": {
+    type: "process-steps", label: "Process steps", icon: "①", category: "content", isContainer: false,
+    Component: ProcessStepsBlock,
+    defaultProps: {
+      heading: "How it works",
+      layout: "horizontal",
+      steps: [
+        { title: "Discover", description: "We learn about your story, your offer, your audience." },
+        { title: "Design",   description: "We craft the system: brand, site, sales pages." },
+        { title: "Deliver",  description: "We launch, measure, refine — together." },
+      ],
+    },
+    fields: [
+      { key: "heading", label: "Heading", type: "text" },
+      { key: "subheading", label: "Subheading", type: "textarea" },
+      { key: "layout", label: "Layout", type: "select", default: "horizontal", options: [
+        { value: "horizontal", label: "Horizontal" }, { value: "vertical", label: "Vertical" },
+      ] },
+    ],
+  },
+  "share-buttons": {
+    type: "share-buttons", label: "Share buttons", icon: "↗", category: "content", isContainer: false,
+    Component: ShareButtonsBlock,
+    defaultProps: {
+      heading: "Share this:",
+      networks: ["twitter", "linkedin", "facebook", "copy"],
+    },
+    fields: [
+      { key: "heading", label: "Heading", type: "text", default: "Share this:" },
+      { key: "url", label: "URL (blank → current page)", type: "url" },
+      { key: "text", label: "Share text (Twitter)", type: "text" },
     ],
   },
   "form-embed": {
