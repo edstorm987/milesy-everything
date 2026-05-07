@@ -945,3 +945,19 @@ footer {
   /* Touch-target floor on every primary-ish button. */
   .btn { min-height: 44px; }
 }
+
+/* T4 unify-fix — Health Check (and future quiz tools) embedded
+   inside SiteShell. iframe fills viewport minus nav/footer. */
+.mm-hc-frame-shell {
+  width: 100%;
+  background: #0a0a0a;
+  margin: 0;
+  padding: 0;
+}
+.mm-hc-frame {
+  display: block;
+  width: 100%;
+  min-height: calc(100vh - 56px - 64px - 80px); /* viewport − stickybar − nav − footer */
+  border: 0;
+  background: #0a0a0a;
+}

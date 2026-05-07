@@ -54,8 +54,9 @@ const nextConfig: NextConfig = {
         { source: "/for-coaching",    destination: "/_marketing/for-coaching.html" },
         { source: "/for-fitness",     destination: "/_marketing/for-fitness.html" },
         { source: "/for-agencies",    destination: "/_marketing/for-agencies.html" },
-        // Static-app directory paths → their index.html.
-        { source: "/health-check",    destination: "/health-check/index.html" },
+        // Static-app directory paths → their index.html. /health-check
+        // is now owned by app/health-check/page.tsx (SiteShell wrap)
+        // so the rewrite for it is gone.
         { source: "/business-os",     destination: "/business-os/index.html" },
         { source: "/incubator",       destination: "/incubator/index.html" },
       ],
