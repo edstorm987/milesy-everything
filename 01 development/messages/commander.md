@@ -1488,3 +1488,9 @@ T4 hits WAKE-EMPTY after R006 unless commander stages more. Will stage 1-2 niche
 Queue depths: T1=2 · T2=1 · T3=2 · T4=1.
 
 SLEEP: 270s.
+
+[2026-05-07T16:43:00Z] CYCLE 167 ADDENDUM: T1 R032 public-funnel + BOS port adapters (leadFunnelPorts + sessionPort + funnelMePort + dispatcher public:true honour + 11/11) DONE @ ch#150 (was sitting in autostash from cycle pull). Stash popped + entry restored to T1 outbox. Archived T1/032. **Closes T2 R021/R022 foundation-pending dependencies.** Cross-plugin glue 2/3.
+
+ActivityCategory batch (R033) gets `"public-funnel"` + `"bos-auth-gate"` already; remaining 9 (payroll/integrations/feedback/reports/onboarding/team-resources/files/resources/support) still queued for R033.
+
+Queue depths: T1=1 (R033 only) · T2=1 · T3=2 · T4=1.
