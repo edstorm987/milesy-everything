@@ -238,10 +238,10 @@ End of Sprint 3 = ship gate — see chapter #124.
 - **Founder password ≠ `"123"`** before any production flip
   (chapter #122 + chapter #124 ship gate). T1 R024 enforced via
   env-only seed + prod fail-closed guard.
-- **Deploy runbook** at `runbooks/deploy.md` is **STALE post-
-  unification** — env table refreshed (T1 R024) but §3-§5 still
-  reference the deleted `portal/` folder + `_milesy/` copy step.
-  Full rewrite in T6 R001 when reactivated.
+- **Deploy runbook** at `runbooks/deploy.md` — full rewrite SHIPPED
+  in T6 R001 (chapter #163). One-project-no-copy-steps shape;
+  STALE banner gone; obsolete `portal/` + `_milesy/` + `build-portal.mjs`
+  references dropped; new entries for #129/#134/#138/#142/#144/#150/#160.
 - **Founder seed env vars** — `FOUNDER_EMAIL` (real address, not
   default) + `FOUNDER_PASSWORD` (≥12 chars) + `FOUNDER_AGENCY_NAME`
   (defaults "Milesy Media"). All other prod env in chapter #142

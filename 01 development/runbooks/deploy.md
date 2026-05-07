@@ -1,87 +1,37 @@
-# Deploy runbook — Aqua portal + per-client portals
+# Deploy runbook — Aqua portal (milesymedia-website)
 
-> ⚠️ **STALE post-unification (2026-05-07).** This runbook references
-> the deleted `04-the-final-portal/portal/` folder and the obsolete
-> `_milesy/` static-copy step. Refresh during WS-E (chapter #124
-> Sprint 2 / 3) before any production deploy. Current architecture:
-> single Next.js root at `04-the-final-portal/milesymedia-website/`;
-> marketing under `public/_marketing/`; HC + BOS + Incubator under
-> `public/health-check/`, `public/business-os/`, `public/incubator/`.
-> The `prepare-milesy.mjs` copy script no longer exists — Vercel
-> just builds `milesymedia-website/` directly. Per-client portals
-> at `04-the-final-portal/clients/<slug>/` are unchanged. Until this
-> is rewritten, treat the §3-§5 sections as historical reference.
+> Deploy `04-the-final-portal/milesymedia-website/` to Vercel. Single
+> project. No copy steps.
 
----
+Post-unification (chapter #122) there is one Next.js app. Marketing
+(`public/_marketing/`), Health Check (`public/health-check/`),
+Business OS (`public/business-os/`), and Incubator
+(`public/incubator/`) all live under the website's `public/`. The
+old `04-the-final-portal/portal/` folder + `scripts/build-portal.mjs`
++ `_milesy/` copy step are gone. Per-client portals at
+`04-the-final-portal/clients/<slug>/` are deferred behind T5 (chapter
+#124 WS-F).
 
-
-> Operator-facing runbook for shipping `04-the-final-portal/` to Vercel.
-> Authored by T6 in R2 on top of T6 R1's monorepo wiring (commits
-> `359b476` / `ef2e82f` / `6045568`) and T1 R8's stitch
-> (`04-milesymedia-portal-stitch.md`).
-
-This is the canonical "how do we ship" document. If it disagrees with
-a chapter, the chapter is wrong — patch it. If it disagrees with
-reality, reality wins; patch this.
-
-## At a glance
-
-| What | Where | Vercel project |
-|------|-------|----------------|
-| Shared Aqua portal + milesymedia front door | `04-the-final-portal/portal/` (build copies milesymedia static into `public/_milesy/`) | one project — `aqua-portal` (placeholder name) |
-| Per-Live-client portal | `04-the-final-portal/clients/<slug>/` | one project per Live client — e.g. `client-luv-and-ker` |
-
-Two things that are NOT deployed here:
-
-- `02 felicias aqua portal work/` and `03 old portal/` — reference codebases. Excluded via `.vercelignore`.
-- `01 development/` — process artefacts, never deployed.
-
-## 0. Vercel CLI bootstrap
-
-Run once per machine:
-
-```bash
-npm install -g vercel              # the CLI
-vercel login                       # opens a browser, picks the account
-vercel switch <team-slug>          # if the account has multiple teams
-```
-
-If you already have `vercel` installed but it's old: `npm i -g vercel@latest`.
+If this runbook disagrees with reality, reality wins — patch this.
+If it disagrees with a chapter, the chapter is wrong — patch it.
 
 ## 1. Pre-deploy checklist
 
-Run these before EVERY deploy. Each one is 5–60 seconds; do all of
-them. Do NOT skip.
+Run these before every deploy. None of them takes more than ~60s.
 
 ```bash
 cd ~/Desktop/ker-v3
 git pull --rebase --autostash
-git status                         # clean tree
+git status                         # tree must be clean
 ```
 
 ```bash
-cd '04-the-final-portal/portal'
+cd '04-the-final-portal/milesymedia-website'
 npx tsc --noEmit                   # must be clean
 npm run smoke                      # must pass — exit 0
 ```
 
-For each plugin you've changed:
-
-```bash
-cd '04-the-final-portal/plugins/<plugin-id>'
-npx tsc --noEmit
-npm run smoke
-```
-
-For the per-client portal you're shipping:
-
-```bash
-cd '04-the-final-portal/clients/<slug>'
-npx tsc --noEmit
-npm run dev                        # smoke a few routes locally
-```
-
-If any step fails, **stop**. Do not deploy a broken build.
+If either step fails, **stop**. Do not deploy a broken build.
 
 ## 2. Environment variables
 
@@ -90,222 +40,200 @@ Two layers — keep them straight.
 ### 2a. Per-deployment env (Vercel project env)
 
 Set via Vercel dashboard (Project → Settings → Environment Variables)
-**or** `vercel env add` from the CLI. Never commit values to the repo.
-
-The full list lives in `04-the-final-portal/milesymedia-website/.env.example`.
-The required ones for a production deploy of the **shared portal**:
+or `vercel env add` from the CLI. Never commit values to the repo.
+Canonical list: `04-the-final-portal/milesymedia-website/.env.example`.
 
 | Var | Required? | Notes |
 |-----|-----------|-------|
-| `PORTAL_SESSION_SECRET` | YES | `openssl rand -base64 48` — paste the output |
-| `DATABASE_URL` | YES | Postgres URL (`?sslmode=require` for cloud providers) |
-| `NEXT_PUBLIC_PORTAL_BASE_URL` | YES | The deployed origin — e.g. `https://milesymedia.com` |
-| `NEXT_PUBLIC_PORTAL_SECURITY` | YES | `strict` (any non-developer environment) |
-| `FOUNDER_EMAIL` | YES (T1 R024) | Real founder address. Production refuses seed when this equals the dev default `edwardhallam07@gmail.com`. **Rotate before public flip** — chapter #124 ship gate. |
-| `FOUNDER_PASSWORD` | YES (T1 R024) | ≥12 chars in production. Missing → seed throws fail-closed. **Rotate before public flip**; never reuse the dev password. |
-| `FOUNDER_AGENCY_NAME` | optional | Defaults to `Milesy Media`. Override for niche-agency deploys (e.g. `AquaOasis Web`). |
-| `VERCEL_TOKEN` | optional | Domain-attach via Vercel REST API. Without it: manual-DNS path |
-| `VERCEL_TEAM_ID` | optional | When the token has multi-team access |
-| `SENTRY_DSN` | optional | Server error capture |
-| `SENTRY_ENVIRONMENT` | optional | Tag (`production` / `staging`); default = `NODE_ENV` |
-| `SENTRY_TRACES_SAMPLE_RATE` | optional | 0–1, default 0 |
-| `NEXT_PUBLIC_SENTRY_DSN` | optional | Browser capture |
-| `PORTAL_BACKEND` | optional | `file` / `kv` / `postgres`. With `DATABASE_URL` set + this unset, defaults to `postgres`. |
-| `GOOGLE_OAUTH_CLIENT_ID` | optional (T1 R9) | Google Cloud Console → APIs & Services → Credentials → Create OAuth 2.0 Client ID (Web application). Login still works without; just hides the "Continue with Google" button. Same STALE-rewrite caveat as elsewhere — full rewrite at T6 R001. |
-| `GOOGLE_OAUTH_CLIENT_SECRET` | optional (T1 R9) | Paired with the Client ID. BOTH must be set for the button to render + the start/callback routes to come alive (else 404). Login still works without. |
-| `GOOGLE_OAUTH_REDIRECT_URI` | optional (T1 R9) | Defaults to `<NEXT_PUBLIC_PORTAL_BASE_URL>/api/auth/oauth/google/callback`. Override only when the deploy origin differs from the one registered with Google. Authorised redirect URI in Google Console MUST match exactly. |
+| `PORTAL_SESSION_SECRET` | YES | ≥32 chars. Generate via `openssl rand -base64 48` and paste. HMAC key for `lk_session_v1` cookie + magic-link/reset/nonce HMAC (chapter #138). |
+| `DATABASE_URL` | YES | Postgres URL — append `?sslmode=require` for Neon / Supabase / Vercel Postgres (chapter #134). |
+| `NEXT_PUBLIC_PORTAL_BASE_URL` | YES | Public origin — `https://milesymedia.com` in prod. Used by embed back-link, OAuth redirect derivation, password-reset email URLs. |
+| `NEXT_PUBLIC_PORTAL_SECURITY` | YES | `strict` in any non-developer environment. |
+| `FOUNDER_EMAIL` | YES | Real founder address. Production refuses seed when this equals the dev default `edwardhallam07@gmail.com` (chapter #129 fail-closed guard). Rotate before public flip — chapter #124 ship gate. |
+| `FOUNDER_PASSWORD` | YES | ≥12 chars in production. Definitely not `123`. Missing → seed throws fail-closed in prod (chapter #129). Rotate before public flip; never reuse the dev password. |
+| `FOUNDER_AGENCY_NAME` | optional | Defaults to `Milesy Media`. Override only for niche-agency deploys (e.g. `AquaOasis Web`). |
+| `PORTAL_BACKEND` | optional | `file` / `kv` / `postgres`. Auto-derives to `postgres` when `DATABASE_URL` is set (chapter #134). Set explicitly only to override the auto-derive (e.g. force `kv`). |
 
-### 2b. Per-install plugin config
-
-NOT in env. Stripe / Postmark / etc. live on `pluginInstalls[*].config`
-in the database, surfaced via each plugin's admin Settings page.
-Do NOT add provider creds to env — they don't scale across tenants.
-
-If you're moving creds from a non-Aqua source (e.g. a previous Stripe
-dashboard for an existing client), open the relevant plugin's
-Settings page in the portal and paste them there.
-
-### 2c. Per-client portal env
-
-Each per-Live-client Vercel project has its OWN env block. The
-template lives at `scripts/templates/client.env.example`. Required:
+Optional / observability / integrations:
 
 | Var | Notes |
 |-----|-------|
-| `NEXT_PUBLIC_AGENCY_ID` | Static — pinned at deploy time |
-| `NEXT_PUBLIC_CLIENT_ID` | Static |
-| `NEXT_PUBLIC_PORTAL_SLUG` | Static — matches the folder name under `clients/` |
-| `NEXT_PUBLIC_PORTAL_BASE_URL` | Pointer back to the shared portal — e.g. `https://milesymedia.com` |
+| `SENTRY_DSN` | Server-side error capture (chapter #144). No-op when unset. |
+| `SENTRY_ENVIRONMENT` | Tag (`production` / `staging`); defaults to `NODE_ENV`. |
+| `SENTRY_TRACES_SAMPLE_RATE` | 0.0–1.0, default 0. |
+| `NEXT_PUBLIC_SENTRY_DSN` | Browser capture; unset = no-op. |
+| `GOOGLE_OAUTH_CLIENT_ID` | Google Cloud Console → Credentials → OAuth 2.0 Client ID (Web application). All three OAuth vars unset → "Continue with Google" hidden + start/callback routes 404; password + magic-link login still work (chapter #150). |
+| `GOOGLE_OAUTH_CLIENT_SECRET` | Paired with the Client ID. Both required for the button to render. |
+| `GOOGLE_OAUTH_REDIRECT_URI` | Defaults to `<NEXT_PUBLIC_PORTAL_BASE_URL>/api/auth/oauth/google/callback`. Must match the URI registered in Google Console exactly. |
+| `VERCEL_TOKEN` | Required by `@aqua/plugin-domains` for custom-domain attach via Vercel REST. Without it: manual-DNS path (§6d). |
+| `VERCEL_TEAM_ID` | When the token has multi-team access. |
 
-Per-client portals do NOT carry Stripe / Postmark creds. They proxy
-API calls to the shared portal, which reads each tenant's
-`install.config` and dispatches.
+Dev-only (do **not** set in production):
 
-### 2d. Local dev
+| Var | Notes |
+|-----|-------|
+| `NEXT_PUBLIC_DEV_BYPASS` | `1` bypasses `/portal/*` auth on the dev server. Production: leave unset. |
 
-For local dev, copy `.env.example` → `.env.local` and fill in:
+Env policy: every server-readable key flows through `lib/server/env.ts`
+allow-list + typed accessors in `lib/server/secrets.ts` (chapter
+#142). Adding a new env var means appending to both surfaces.
+
+### 2b. Per-install plugin config
+
+NOT in env. Stripe per-client, Postmark per-agency, SMTP creds
+(chapter #144 outbound), GA4 measurement IDs (chapter #149), and
+similar provider creds live on `pluginInstalls[*].config` in the
+database. Surface via each plugin's admin Settings page. Do not add
+provider creds to env — they don't scale across tenants.
+
+### 2c. Local dev
+
+Copy `.env.example` → `.env.local` and fill in:
 
 ```bash
-cd '04-the-final-portal/portal'
+cd '04-the-final-portal/milesymedia-website'
 cp .env.example .env.local
 $EDITOR .env.local
 ```
 
-The dev defaults work without any env: `PORTAL_BACKEND=file`,
-sessions sign with a fixed dev secret, observability is no-op.
-Set `PORTAL_SESSION_SECRET` if you want sessions to survive across
-restarts.
+Defaults work without env: `PORTAL_BACKEND=file`, sessions sign with a
+fixed dev secret, observability is no-op. Set `PORTAL_SESSION_SECRET`
+if you want sessions to survive across restarts.
 
-## 3. Deploy — shared portal
+## 3. First deploy + promote
 
-### 3a. First deploy (one-time)
-
-```bash
-cd ~/Desktop/ker-v3
-node scripts/deploy-vercel.mjs --target=portal
-```
-
-This script invokes `vercel link` interactively the first time.
-Pick the right team + create or link to the existing `aqua-portal`
-project.
-
-The script then runs `vercel deploy` in preview mode (NOT prod).
-The output prints the preview URL — visit it, smoke the surface
-(see §5 below), then promote to prod.
-
-### 3b. Promote to production
+### 3a. Vercel CLI bootstrap (one-time per machine)
 
 ```bash
-node scripts/deploy-vercel.mjs --target=portal --prod
+npm install -g vercel        # or: npm i -g vercel@latest
+vercel login                 # browser → pick the account
+vercel switch <team-slug>    # if multi-team
 ```
 
-That's it. Vercel runs:
+### 3b. Link the project (one-time)
 
-1. `node scripts/build-portal.mjs` — copies `04-the-final-portal/milesymedia website/*` into `04-the-final-portal/portal/public/_milesy/`, then `npm install` + `next build` inside the portal folder.
-2. Outputs at `04-the-final-portal/portal/.next` (per root `vercel.json`).
-3. Edge rewrites map `/`, `/index.html`, `/login.html`, `/admin.html`, `/styles.css` → `/_milesy/<file>` so the milesymedia front door wins at root paths.
-4. Every Aqua portal handler keeps its native route (`/login`, `/embed/login`, `/demo`, `/portal/*`, `/api/*`).
-
-### 3c. Subsequent deploys
-
-After the first link, `node scripts/deploy-vercel.mjs --target=portal --prod`
-just deploys. Vercel's git integration (if set up) also auto-deploys
-on push to `main`.
-
-## 4. Deploy — per-client portal
-
-Each Live client's portal is its OWN Vercel project. Repeat per client.
-
-### 4a. First-time link
+The Vercel project root is `04-the-final-portal/milesymedia-website/`.
 
 ```bash
-cd ~/Desktop/ker-v3
-node scripts/deploy-vercel.mjs --target=clients/<slug>
+cd '04-the-final-portal/milesymedia-website'
+vercel link                  # interactive — pick team, create project
 ```
 
-Interactive `vercel link` runs once — pick the right team + create
-a new project (recommended name: `client-<slug>`). Vercel auto-detects
-Next.js framework from the client folder's `package.json`.
+Vercel auto-detects Next.js. No build script wrapping needed (the
+old `scripts/build-portal.mjs` is gone — Vercel runs `next build`
+directly per `package.json`).
 
-### 4b. Set the per-client env
-
-In the Vercel dashboard for the new project:
-
-```
-NEXT_PUBLIC_AGENCY_ID         <agency id from shared portal>
-NEXT_PUBLIC_CLIENT_ID         <client id from shared portal>
-NEXT_PUBLIC_PORTAL_SLUG       <slug — matches folder name>
-NEXT_PUBLIC_PORTAL_BASE_URL   https://milesymedia.com
-```
-
-Optionally also: `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`,
-`SENTRY_ENVIRONMENT`.
-
-### 4c. Promote to production
+### 3c. Preview deploy + smoke
 
 ```bash
-node scripts/deploy-vercel.mjs --target=clients/<slug> --prod
+vercel deploy                # outputs a preview URL
 ```
 
-### 4d. Attach the custom domain
+Smoke the preview URL against §5 below. If everything passes, promote.
 
-See §6 (custom domain runbook).
-
-## 5. Post-deploy verification
-
-Visit each surface and smoke it.
-
-### Shared portal
-
-```
-GET https://milesymedia.com/                  → 200 (milesymedia static)
-GET https://milesymedia.com/login.html        → 200 (static)
-GET https://milesymedia.com/styles.css        → 200 text/css
-GET https://milesymedia.com/login             → 200 (Next.js login)
-GET https://milesymedia.com/embed/login       → 200
-GET https://milesymedia.com/demo              → 307 → /portal/agency  + Set-Cookie isDemo:true
-GET https://milesymedia.com/portal/agency     → 200 after sign-in
-GET https://milesymedia.com/api/auth/me       → 200 / 401 depending on session
-```
-
-Curl one-liners:
+### 3d. Promote to production
 
 ```bash
-curl -sI https://milesymedia.com/ | head -1                       # HTTP/2 200
-curl -s  https://milesymedia.com/styles.css | head -3
-curl -sI https://milesymedia.com/login | head -1                  # HTTP/2 200
-curl -sIL https://milesymedia.com/demo | head                     # follow redirect
+vercel deploy --prod
 ```
 
-### Per-client portal
+That's it. Subsequent deploys re-run `vercel deploy --prod`. Vercel's
+git integration (if attached) also auto-deploys on push to `main`.
+
+## 4. Per-client portals (deferred until T5 ships)
+
+Lands when T5 R001–R003 ship Felicia (Luv & Ker) at
+`04-the-final-portal/clients/luv-and-ker/` (chapter #124 WS-F). The
+shape: each Live client gets its own Vercel project rooted at
+`clients/<slug>/`, env carries `NEXT_PUBLIC_AGENCY_ID` /
+`NEXT_PUBLIC_CLIENT_ID` / `NEXT_PUBLIC_PORTAL_SLUG` /
+`NEXT_PUBLIC_PORTAL_BASE_URL`, API calls proxy back to the shared
+portal. Custom domain attach is handled by `@aqua/plugin-domains`
+(§6) once T6 R004 activates the plugin.
+
+This section will be filled in at T6 R005 (post-T5-ship).
+
+## 5. Post-deploy verification — smoke routes
+
+Hit each surface against the deploy URL (preview before promote, prod
+after). Per chapter #124 ship-gate item #9:
+
+```
+GET /                                       → 200 marketing home
+GET /for-skincare                           → 200 niche page
+GET /for-coaching                           → 200
+GET /for-fitness                            → 200
+GET /for-agencies                           → 200
+GET /health-check                           → 200 HC entry
+GET /business-os                            → 200 BOS entry
+GET /business-os/incubator                  → 200 (chapter #159 R009)
+GET /incubator                              → 307 → /business-os/incubator
+GET /login                                  → 200
+GET /login/forgot                           → 200 (chapter #160)
+GET /login/reset?token=…                    → 200 (force-dynamic; see §9)
+GET /signup                                 → 200
+GET /signup/agency                          → 200
+GET /demo                                   → 307 → /portal/agency + Set-Cookie isDemo:true
+GET /dev/pov                                → 200 (dev-only personas)
+GET /portal/agency                          → 200 (after sign-in) / 401 anon
+GET /portal/agency/pipelines/<slug>         → 200 after sign-in (chapter #156 R034)
+GET /portal/account                         → 200 after sign-in
+GET /portal/account/preferences             → 200 (chapter #155 R036)
+GET /portal/account/permissions             → 200 (commander stub)
+GET /embed/<slug>/<variant>                 → 200
+GET /api/auth/me                            → 200 / 401
+GET /healthz                                → 200 JSON
+GET /healthz/full                           → 200 JSON (chapter #144 R030)
+```
+
+Curl one-liners for the cheap subset:
 
 ```bash
-curl -sI https://luvandker.com/                     # HTTP/2 200
-curl -sI https://luvandker.com/api/auth/me          # proxies to shared portal
+BASE=https://milesymedia.com
+curl -sI $BASE/                | head -1   # HTTP/2 200
+curl -sI $BASE/login           | head -1   # HTTP/2 200
+curl -sI $BASE/healthz         | head -1   # HTTP/2 200
+curl -s  $BASE/healthz/full    | head -c 200
+curl -sIL $BASE/demo           | head      # follow redirect
+curl -sIL $BASE/incubator      | head      # 307 → /business-os/incubator
 ```
 
-### Observability (when SENTRY_DSN is set)
+Observability check (when `SENTRY_DSN` set): trigger a controlled
+500 against an admin-only route with bad payload, confirm the event
+in Sentry within ~30s. Vercel Web Analytics page-views appear in the
+project dashboard within ~30s too.
 
-1. Trigger a controlled error (e.g. an admin-only route with bad
-   payload) and check the Sentry project for the event.
-2. Open Vercel project → Web Analytics — page-view should appear
-   within ~30s.
-
-## 6. Custom domain runbook
+## 6. Custom-domain runbook
 
 For each Live client whose portal ships under a custom domain.
+`@aqua/plugin-domains` activation is T6 R004's territory; the plumbing
+below already exists in the plugin and is reachable once activated.
 
 ### 6a. One-time per Vercel team
 
-1. **Generate a Vercel token** — <https://vercel.com/account/tokens>
-   with domain-attach access scoped to the team that owns the
-   per-client projects.
-2. **Set `VERCEL_TOKEN`** as env on the **shared portal** Vercel
-   project (where the `@aqua/plugin-domains` plugin runs).
-   Optionally set `VERCEL_TEAM_ID` for multi-team tokens.
-3. **Re-deploy** the shared portal so the env loads into the
-   serverless function bundle.
+1. Generate a Vercel token at <https://vercel.com/account/tokens>
+   with domain-attach scope on the team that owns per-client projects.
+2. Set `VERCEL_TOKEN` (and optionally `VERCEL_TEAM_ID`) on the
+   shared milesymedia-website Vercel project.
+3. Re-deploy so the env loads into the serverless function bundle.
 
 ### 6b. Per-client domain attach (UI path)
 
-1. Sign in as agency owner, navigate to `/portal/agency/domains`.
+1. Sign in as agency owner → `/portal/agency/domains`.
 2. Click "Attach a new domain". Enter:
-   - Hostname (e.g. `luvandker.com`)
-   - Vercel project id (Vercel dashboard → per-client project →
-     Settings → General → "Project ID" `prj_...`)
-   - Optional: Vercel team id
-3. The plugin calls Vercel REST + records the response. Vercel
-   returns DNS records the operator must add at the registrar
-   (typically a TXT for verification + an A or CNAME for routing).
-4. **Operator copies DNS records** to the registrar (Cloudflare /
+   - Hostname (e.g. `luvandker.com`).
+   - Vercel project id (`prj_…` from per-client project Settings).
+   - Optional: Vercel team id.
+3. Plugin calls Vercel REST + records the response. Vercel returns
+   DNS records the operator must add at the registrar (typically a
+   verification TXT + an A or CNAME).
+4. Operator copies DNS records to the registrar (Cloudflare /
    Namecheap / GoDaddy / etc).
-5. **The plugin auto-polls** Vercel every 30s up to 5 minutes —
-   status badge flips `pending` → `verified` once DNS propagates.
-6. After 5 minutes, polling stops; click "Re-check verify" to retry.
+5. Plugin auto-polls Vercel every 30s up to 5 minutes — status badge
+   flips `pending` → `verified` once DNS propagates.
+6. After 5 minutes polling stops; click "Re-check verify" to retry.
 
 ### 6c. Per-client domain attach (CLI path)
-
-For scripting / batch operations:
 
 ```bash
 VERCEL_TOKEN=<token> \
@@ -314,48 +242,29 @@ VERCEL_TEAM_ID=team_xxxxxxxxxxxxxxxx \
 node scripts/attach-domain.mjs --hostname=luvandker.com
 ```
 
-Output prints the DNS records the operator must add. Run again with
-`--verify` to re-check verification:
+`--verify` re-checks; `--remove` detaches.
 
-```bash
-VERCEL_TOKEN=<token> VERCEL_PROJECT_ID=prj_xxx \
-node scripts/attach-domain.mjs --hostname=luvandker.com --verify
-```
-
-Or remove:
-
-```bash
-VERCEL_TOKEN=<token> VERCEL_PROJECT_ID=prj_xxx \
-node scripts/attach-domain.mjs --hostname=luvandker.com --remove
-```
-
-### 6d. Without VERCEL_TOKEN (manual path)
-
-If the token isn't configured yet, the plugin still records the
-hostname locally and shows the operator which Vercel project the
-domain is meant for. Manual steps:
+### 6d. Without `VERCEL_TOKEN` (manual path)
 
 ```bash
 cd '04-the-final-portal/clients/<slug>'
-vercel domains add <hostname>             # interactive — auth needed
+vercel domains add <hostname>            # interactive
 # Vercel prints DNS records — copy to registrar
-vercel domains verify <hostname>          # once DNS propagates
+vercel domains verify <hostname>         # once DNS propagates
 ```
 
-The plugin's local record stays in `pending` until `VERCEL_TOKEN` is
-set + a verify re-checks via the UI or `attach-domain.mjs --verify`.
+The plugin's local record stays `pending` until `VERCEL_TOKEN` is set
+and a verify re-checks via the UI or `attach-domain.mjs --verify`.
 
 ## 7. Rollback
 
 ### 7a. Vercel rollback (preferred)
 
-Vercel keeps every deployment. To roll back:
+Vercel keeps every deployment.
 
 1. Vercel dashboard → Project → Deployments.
 2. Find the last known-good deployment.
-3. Click the `…` menu → **Promote to Production**.
-
-Done. No git activity needed.
+3. `…` menu → **Promote to Production**.
 
 CLI equivalent:
 
@@ -363,7 +272,7 @@ CLI equivalent:
 vercel rollback <deployment-url> --prod
 ```
 
-### 7b. Git rollback (when the bad code is the issue)
+### 7b. Git revert (when the bad code must be in main's history)
 
 ```bash
 git pull --rebase
@@ -371,144 +280,127 @@ git revert <bad-sha> --no-edit
 git push
 ```
 
-Vercel auto-deploys the revert. Only do this when the rollback
-must be tracked in main's history (e.g. a security fix with a
-follow-up patch coming).
+Vercel auto-deploys the revert. Use this when the rollback must be
+tracked in main (e.g. a security fix with a follow-up patch coming).
 
-### 7c. Database rollback (Postgres backend)
+### 7c. Postgres PITR (accidental data writes — chapter #134)
 
-The Postgres schema is single-row JSONB (per T1 R7's `04-foundation-round7-postgres.md`).
-A bad write to the blob is reversible:
+The Postgres backend is single-row JSONB at `portal_kv.__portal_state__`.
 
-1. Vercel dashboard → Postgres → query `SELECT value, updated_at FROM portal_kv WHERE key = '__portal_state__';`
-2. The previous row is captured in your provider's PITR window
-   (Neon: 24h; Supabase: 7d depending on plan; Vercel Postgres:
-   varies). Restore from PITR via the provider's UI.
-3. Re-deploy the shared portal so cached state hydrates from the
-   restored row.
+1. Vercel dashboard → Postgres → check the bad row:
+   `SELECT updated_at, length(value::text) FROM portal_kv WHERE key = '__portal_state__';`
+2. Restore from the provider's PITR window via its UI:
+   - Neon: 24h on free, longer on paid.
+   - Supabase: 7d depending on plan.
+   - Vercel Postgres: provider-dependent.
+3. Re-deploy the milesymedia-website project so cached state hydrates
+   from the restored row.
 
 ### 7d. Custom-domain rollback
 
-A bad domain attach can be removed via the UI ("Remove" button) or
-CLI (`scripts/attach-domain.mjs --hostname=... --remove`). Vercel
-de-attaches the domain from the project; DNS at the registrar can
-stay (Vercel will reject traffic until re-attached).
+A bad attach can be removed via the UI ("Remove" button) or
+`scripts/attach-domain.mjs --remove`. Vercel detaches the domain;
+DNS at the registrar can stay (Vercel will reject traffic until
+re-attached).
 
-## 8. Cron — nightly demo reset + backups + healthcheck (R3)
+## 8. Crons (commented-out — flip via T6 R003)
 
-Three cron jobs, all wired through the root `vercel.json` `crons`
-block (Vercel runs each at the schedule under the project's
-production deployment). The endpoints exist; the cron block itself
-stays commented-out until Ed is ready to flip it on, since each
-firing counts toward Vercel cron quota.
+Three cron jobs exist as routes already; the `vercel.json` block is
+commented-out until Ed flips it on (each firing counts toward Vercel
+cron quota).
 
 ```jsonc
-// add to root vercel.json (uncomment to enable)
+// add to root vercel.json (uncomment to enable — T6 R003)
 {
   "crons": [
-    // Demo reset — daily 04:00 UTC. T1 R4 chapter §5.
+    // Demo reset — daily 04:00 UTC.
     { "path": "/api/dev/seed-demo?reset=1", "schedule": "0 4 * * *" },
 
-    // Healthcheck — hourly. Pings every deployment target's
-    // /healthz and appends a sample to the ops plugin's UptimeStore
-    // so the MonitoringPage uptime panel reflects real samples.
+    // Healthcheck — hourly. Pings every target's /healthz and
+    // appends a sample to the ops plugin's UptimeStore.
     { "path": "/api/portal/ops/healthcheck", "schedule": "0 * * * *" },
 
     // Postgres backup — daily 03:30 UTC. Calls the same flow as
-    // `scripts/backup-postgres.mjs` (R3, §8a below) via a thin
-    // server route so the cron doesn't need shell access.
+    // scripts/backup-postgres.mjs via a thin server route.
     { "path": "/api/portal/ops/backup", "schedule": "30 3 * * *" }
   ]
 }
 ```
 
 Auth: each cron path gates on `NEXT_PUBLIC_DEV_BYPASS=1` for the
-cron's environment OR a service token. R3 ships the endpoints +
-script; quota wiring is Ed's call.
+cron's environment OR a service token. Quota wiring is T6 R003.
 
-### 8a. Postgres backup — `scripts/backup-postgres.mjs` (R3)
+### 8a. Postgres backup — `scripts/backup-postgres.mjs`
 
 Local-first, externally schedulable. Runs `pg_dump` against
-`DATABASE_URL`, gzips the dump, writes `backups/aqua-portal-<ts>.sql.gz`,
-and prunes any snapshot older than `BACKUP_RETENTION_DAYS` (default 30).
+`DATABASE_URL`, gzips the dump, writes
+`backups/aqua-portal-<ts>.sql.gz`, prunes snapshots older than
+`BACKUP_RETENTION_DAYS` (default 30).
 
 ```bash
-# run manually
 DATABASE_URL=postgres://... node scripts/backup-postgres.mjs
 
-# override paths / retention
 BACKUP_DIR=/var/backups/aqua \
   BACKUP_RETENTION_DAYS=60 \
   DATABASE_URL=... \
   node scripts/backup-postgres.mjs
 ```
 
-Exit codes: `0` ok / `1` no DATABASE_URL / `2` pg_dump failed.
+Exit codes: `0` ok / `1` no DATABASE_URL / `2` pg_dump failed. Restore:
+`gunzip -c backups/aqua-portal-<ts>.sql.gz | psql "$DATABASE_URL"`.
 
-External destinations (`BACKUP_DEST=s3://bucket/path` or
-`BACKUP_DEST=vercel-blob`) are stubbed in v1 — script logs intent
-but the upload itself lands in R4 once each provider's creds are
-chosen. Local-disk snapshots work standalone today.
-
-Cron wiring options:
-- **Vercel cron + thin route** (preferred once `/api/portal/ops/backup`
-  lands): one source of truth in vercel.json. Route shells out to
-  `scripts/backup-postgres.mjs`. Quota: 1 firing/day.
-- **External scheduler** (Render cron, GitHub Actions on schedule,
-  or Ed's laptop launchd) running the script directly — useful
-  when DATABASE_URL points to a host the Vercel function can't
-  reach (e.g. private network).
-
-Restore: `gunzip -c backups/aqua-portal-<ts>.sql.gz | psql "$DATABASE_URL"`.
-Test the restore against a sandbox DB at least once per quarter so
-the snapshots aren't write-only — see runbook §11 (parked).
+External destinations (`BACKUP_DEST=s3://…` or `vercel-blob`) are
+stubbed; uploads land alongside the cron flip.
 
 ## 9. Troubleshooting
 
-### Build fails with "Cannot find module '@aqua/plugin-X'"
+### Build fails: `Cannot find module '@aqua/plugin-X'`
 
-Cause: workspace plugin folder isn't being copied into the build
-context. Check:
+Cause: workspace plugin folder excluded from the build context.
+Check:
+
 - `.vercelignore` doesn't exclude `04-the-final-portal/plugins/`.
 - The plugin's `package.json` exists.
-- The plugin folder isn't in a `.gitignore`.
+- The plugin folder isn't `.gitignore`d.
 
-### Build fails with "Module not found: pg"
+### Build fails: `Module not found: pg`
 
-Cause: `DATABASE_URL` is set but `pg` isn't installed in
-`04-the-final-portal/portal/`. Fix:
+Cause: `DATABASE_URL` is set but `pg` isn't a dep of
+`milesymedia-website`. Fix:
 
 ```bash
-cd '04-the-final-portal/portal'
+cd '04-the-final-portal/milesymedia-website'
 npm install pg @types/pg
 git add package.json package-lock.json
 git commit -m "deps: pg for Postgres backend"
 git push
 ```
 
-### Shared portal returns 500 on `/`
+### Custom-domain attach: `vercel-token-not-configured`
 
-Cause: milesymedia static files didn't get copied into `public/_milesy/`.
-Check the build log for `▶ Copy milesymedia static → portal/public/_milesy/`.
-If absent, `scripts/build-portal.mjs` didn't run.
+Cause: `VERCEL_TOKEN` unset on the milesymedia-website Vercel project.
+Fix: set it (+ optionally `VERCEL_TEAM_ID`) and re-deploy.
 
-### Custom-domain attach returns "vercel-token-not-configured"
+### Prerender error on `/login` in production (chapter #129)
 
-Cause: `VERCEL_TOKEN` env is unset on the shared portal's Vercel
-project. Fix: set it + re-deploy.
+Cause: `FOUNDER_PASSWORD` missing in prod → `founderSeed` throws
+fail-closed at boot, taking the route render with it. Fix: set
+`FOUNDER_PASSWORD` (≥12 chars) and `FOUNDER_EMAIL` (not the dev
+default) on the Vercel project, redeploy.
 
-### Per-client portal renders but API calls 502
+### `useSearchParams() should be wrapped in a suspense boundary` on `/login/reset` (chapter #160)
 
-Cause: `NEXT_PUBLIC_PORTAL_BASE_URL` on the per-client project
-points at an unreachable shared portal. Fix: confirm the URL is
-correct (and reachable from the per-client project's region).
+Cause: `/login/reset/page.tsx` reads `?token=` via `useSearchParams`
+which forces CSR-bailout at build time. Fix: ensure the page exports
+`export const dynamic = "force-dynamic"` (chapter #160 R038 ships
+this; if a future round regresses it, the build will surface the
+identical CSR-bailout error).
 
 ## 10. Glossary
 
 | Term | Meaning |
 |------|---------|
-| Shared portal | The Aqua portal Next.js app at `04-the-final-portal/portal/`. One per Vercel team. Hosts agency + pre-Live clients + Live-client editor. |
-| Per-client portal | Each Live client's branded portal at `04-the-final-portal/clients/<slug>/`. One Vercel project per client. |
-| Milesymedia front door | Static marketing pages at `04-the-final-portal/milesymedia website/`. Bundled into the shared portal's public/ at build time. |
-| Foundation pending | Plumbing the foundation needs to add to wire a plugin: workspace dep + transpilePackages + side-effect-import + `_registry.ts` append + `ActivityCategory` extension. |
+| milesymedia-website | The single Next.js host at `04-the-final-portal/milesymedia-website/`. Marketing + HC + BOS + Incubator + portal + API all in one project. |
+| Per-install config | Plugin provider creds (Stripe, Postmark, SMTP, GA4) on `pluginInstalls[*].config` per tenant. NOT env. |
+| Foundation pending | Plumbing the foundation needs to wire a plugin: workspace dep + transpilePackages + side-effect import + `_registry.ts` append + `ActivityCategory` extension. |
 | Pool model | Architecture §1 — every row carries `agencyId` (+ `clientId` for client rows). One Postgres serves every tenant. |
