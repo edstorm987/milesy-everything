@@ -19,6 +19,16 @@ If it disagrees with a chapter, the chapter is wrong — patch it.
 
 Run these before every deploy. None of them takes more than ~60s.
 
+**0. CI is green on the latest commit** (T6 R002 / chapter #165).
+Open <https://github.com/edsworld27/ker-v3/actions/workflows/ci.yml>
+and confirm the run for the commit you're about to deploy is green
+(`tsc-and-smoke-portal` + every `tsc-and-smoke-plugins` matrix leg).
+Vercel does not block on CI; this manual gate + the local checks
+below are what enforce "no broken deploys". When branch protection
+on `main` is wired (operator-side GitHub action), the manual check
+becomes redundant — keep it documented anyway as the belt to the
+suspenders.
+
 ```bash
 cd ~/Desktop/ker-v3
 git pull --rebase --autostash
@@ -129,7 +139,15 @@ directly per `package.json`).
 vercel deploy                # outputs a preview URL
 ```
 
-Smoke the preview URL against §5 below. If everything passes, promote.
+Smoke the preview URL against §5 below. Scripted subset:
+
+```bash
+cd '04-the-final-portal/milesymedia-website'
+node scripts/post-deploy-smoke.mjs --url=https://<preview>.vercel.app
+# exit 0 = all pass; 1 = any fail (chapter #165 — T6 R003).
+```
+
+If everything passes, promote.
 
 ### 3d. Promote to production
 
@@ -303,14 +321,24 @@ A bad attach can be removed via the UI ("Remove" button) or
 DNS at the registrar can stay (Vercel will reject traffic until
 re-attached).
 
-## 8. Crons (commented-out — flip via T6 R003)
+## 8. Crons (staged — flip when Ed approves quota)
 
-Three cron jobs exist as routes already; the `vercel.json` block is
-commented-out until Ed flips it on (each firing counts toward Vercel
-cron quota).
+Root `vercel.json` carries the live deploy config (chapter #163 +
+#165) — `framework`, `regions: ["lhr1"]` (London — Ed-leaning UK
+audience; configurable, swap to `iad1` / `fra1` / etc. by editing
+the array), `buildCommand`, `outputDirectory`, `cleanUrls`,
+`trailingSlash`. JSON has no comments so the staged crons block
+lives in a sibling file: `vercel.crons.example.json` at the repo
+root.
+
+To enable crons (operator action, after Ed approves quota): copy
+the `crons` array from `vercel.crons.example.json` into root
+`vercel.json` (merge with existing keys), commit, redeploy. Each
+firing counts toward Vercel's cron quota.
+
+The three crons (verbatim from `vercel.crons.example.json`):
 
 ```jsonc
-// add to root vercel.json (uncomment to enable — T6 R003)
 {
   "crons": [
     // Demo reset — daily 04:00 UTC.
@@ -327,8 +355,24 @@ cron quota).
 }
 ```
 
+Endpoint readiness (chapter #165 verification):
+
+- `/api/dev/seed-demo` — exists today (`src/app/api/dev/seed-demo/
+  route.ts`).
+- `/api/portal/ops/healthcheck` — routed via the catch-all
+  `/api/portal/[plugin]/[...rest]`; the `@aqua/plugin-ops` plugin
+  registers a `healthcheck` route (POST). Before flipping the cron,
+  confirm it accepts the GET that Vercel's cron invoker issues, or
+  add a thin GET wrapper.
+- `/api/portal/ops/backup` — **endpoint pending; owner: T2 ops
+  plugin**. The local-first backup flow lives in
+  `scripts/backup-postgres.mjs` (§8a); the route that wraps it has
+  not landed yet. Don't enable the backup cron until that route
+  exists.
+
 Auth: each cron path gates on `NEXT_PUBLIC_DEV_BYPASS=1` for the
-cron's environment OR a service token. Quota wiring is T6 R003.
+cron's environment OR a service token. Quota wiring is operator
+action.
 
 ### 8a. Postgres backup — `scripts/backup-postgres.mjs`
 

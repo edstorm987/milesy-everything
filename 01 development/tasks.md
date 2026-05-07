@@ -249,6 +249,14 @@ End of Sprint 3 = ship gate — see chapter #124.
   in T6 R001 (chapter #163). One-project-no-copy-steps shape;
   STALE banner gone; obsolete `portal/` + `_milesy/` + `build-portal.mjs`
   references dropped; new entries for #129/#134/#138/#142/#144/#150/#160.
+  T6 R002 (chapter #165) added §1 step #0 "CI is green on the latest
+  commit" — link to `actions/workflows/ci.yml`. Belt-to-suspenders
+  until branch protection on `main` lands.
+- **CI pipeline** SHIPPED in T6 R002 (chapter #165): `.github/workflows/ci.yml`
+  Node 20 + dynamic plugin matrix; `.github/workflows/deploy-preview.yml`
+  PR Vercel preview (skips cleanly when `VERCEL_TOKEN` unset). Operator
+  needs to: enable branch protection on `main` requiring CI checks +
+  set `VERCEL_TOKEN` repo secret.
 - **Founder seed env vars** — `FOUNDER_EMAIL` (real address, not
   default) + `FOUNDER_PASSWORD` (≥12 chars) + `FOUNDER_AGENCY_NAME`
   (defaults "Milesy Media"). All other prod env in chapter #142

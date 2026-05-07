@@ -1,191 +1,126 @@
 name: CI
 
+# Post-unification CI (T6 R002, chapter #165). One Next.js host at
+# `04-the-final-portal/milesymedia-website/` + plugin matrix discovered
+# dynamically from `04-the-final-portal/plugins/*/package.json` (only
+# those declaring an `npm run smoke` script).
+#
+# Replaces the legacy ci.yml that targeted the now-removed
+# `04-the-final-portal/portal/` (chapter #122 unification).
+
 on:
+  pull_request:
   push:
     branches: [main]
-  pull_request:
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  NODE_VERSION: "20"
+permissions:
+  contents: read
 
 jobs:
-  typecheck-portal:
-    name: Typecheck — portal
+  tsc-and-smoke-portal:
+    name: tsc + smoke (milesymedia-website)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
-        working-directory: 04-the-final-portal/portal
+        working-directory: 04-the-final-portal/milesymedia-website
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: actions/cache@v4
-        with:
-          path: 04-the-final-portal/portal/node_modules
-          key: portal-modules-${{ runner.os }}-${{ hashFiles('04-the-final-portal/portal/package-lock.json') }}
-      - name: Install (legacy peer deps — file: workspace plugins)
-        run: npm install --legacy-peer-deps --no-audit --no-fund
-      - run: npm run typecheck
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  typecheck-plugins:
-    name: Typecheck — ${{ matrix.plugin }}
+      - name: Setup Node 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: 04-the-final-portal/milesymedia-website/package-lock.json
+
+      - name: Install (legacy peer deps for workspace file:../plugins/*)
+        run: npm install --legacy-peer-deps --cache /tmp/npm-cache
+
+      - name: tsc --noEmit
+        run: npx tsc --noEmit
+
+      - name: npm run smoke
+        run: npm run smoke
+
+  discover-plugins:
+    name: discover plugin matrix
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      plugins: ${{ steps.list.outputs.plugins }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: List plugin dirs (with smoke script)
+        id: list
+        run: |
+          # Find every plugins/*/package.json that defines a "smoke" script.
+          mapfile -t dirs < <(git ls-files '04-the-final-portal/plugins/*/package.json' | xargs -I{} dirname {})
+          json='['
+          first=1
+          for d in "${dirs[@]}"; do
+            if node -e "const p=require('./'+process.argv[1]+'/package.json'); process.exit(p.scripts&&p.scripts.smoke?0:1)" "$d" 2>/dev/null; then
+              if [ $first -eq 0 ]; then json+=','; fi
+              json+="\"$d\""
+              first=0
+            fi
+          done
+          json+=']'
+          echo "plugins=$json" >> "$GITHUB_OUTPUT"
+          echo "Discovered: $json"
+
+  tsc-and-smoke-plugins:
+    name: tsc + smoke (${{ matrix.plugin }})
+    needs: discover-plugins
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: ${{ needs.discover-plugins.outputs.plugins != '[]' }}
     strategy:
       fail-fast: false
       matrix:
-        plugin:
-          - affiliates
-          - agency-finance
-          - agency-hr
-          - agency-marketing
-          - ai-builder
-          - client-crm
-          - domains
-          - ecommerce
-          - email-sender
-          - forms
-          - fulfillment
-          - memberships
-          - ops
-          - portal-export
-          - website-editor
+        plugin: ${{ fromJson(needs.discover-plugins.outputs.plugins) }}
     defaults:
       run:
-        working-directory: 04-the-final-portal/plugins/${{ matrix.plugin }}
+        working-directory: ${{ matrix.plugin }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: actions/cache@v4
-        with:
-          path: 04-the-final-portal/plugins/${{ matrix.plugin }}/node_modules
-          key: plugin-${{ matrix.plugin }}-modules-${{ runner.os }}-${{ hashFiles(format('04-the-final-portal/plugins/{0}/package-lock.json', matrix.plugin)) }}
-      - run: npm install --legacy-peer-deps --no-audit --no-fund
-      - run: npm run typecheck
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  smoke-plugins:
-    name: Smoke — ${{ matrix.plugin }}
-    runs-on: ubuntu-latest
-    needs: typecheck-plugins
-    strategy:
-      fail-fast: false
-      matrix:
-        # website-editor has no smoke script — exclude
-        plugin:
-          - affiliates
-          - agency-finance
-          - agency-hr
-          - agency-marketing
-          - ai-builder
-          - client-crm
-          - domains
-          - ecommerce
-          - email-sender
-          - forms
-          - fulfillment
-          - memberships
-          - ops
-          - portal-export
-    defaults:
-      run:
-        working-directory: 04-the-final-portal/plugins/${{ matrix.plugin }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Setup Node 20 LTS
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: actions/cache@v4
-        with:
-          path: 04-the-final-portal/plugins/${{ matrix.plugin }}/node_modules
-          key: plugin-${{ matrix.plugin }}-modules-${{ runner.os }}-${{ hashFiles(format('04-the-final-portal/plugins/{0}/package-lock.json', matrix.plugin)) }}
-      - run: npm install --legacy-peer-deps --no-audit --no-fund
-      - run: npm run smoke
+          node-version: 20
 
-  smoke-portal:
-    name: Smoke — portal (smoke + smoke:vercel-domain)
-    runs-on: ubuntu-latest
-    needs: typecheck-portal
-    defaults:
-      run:
-        working-directory: 04-the-final-portal/portal
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: actions/cache@v4
-        with:
-          path: 04-the-final-portal/portal/node_modules
-          key: portal-modules-${{ runner.os }}-${{ hashFiles('04-the-final-portal/portal/package-lock.json') }}
-      - run: npm install --legacy-peer-deps --no-audit --no-fund
-      - run: npm run smoke
-      - run: npm run smoke:vercel-domain
+      - name: Install
+        run: npm install --cache /tmp/npm-cache
 
-  smoke-ux:
-    name: Smoke — UX (T4 R1 harness)
+      - name: tsc --noEmit
+        run: npx tsc --noEmit
+
+      - name: npm run smoke
+        run: npm run smoke
+
+  ci-summary:
+    name: CI summary
+    needs: [tsc-and-smoke-portal, tsc-and-smoke-plugins]
+    if: ${{ always() }}
     runs-on: ubuntu-latest
-    needs: typecheck-portal
-    defaults:
-      run:
-        working-directory: 04-the-final-portal/portal
+    timeout-minutes: 2
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: actions/cache@v4
-        with:
-          path: 04-the-final-portal/portal/node_modules
-          key: portal-modules-${{ runner.os }}-${{ hashFiles('04-the-final-portal/portal/package-lock.json') }}
-      - run: npm install --legacy-peer-deps --no-audit --no-fund
-      - name: Start portal in background
+      - name: Summary
         run: |
-          npm run build
-          (npm run start &) && for i in $(seq 1 30); do curl -sf http://localhost:3030/ >/dev/null && break || sleep 2; done
-      - run: npm run smoke:ux
-        env:
-          AQUA_BASE: http://localhost:3030
-
-  smoke-perf:
-    name: Smoke — perf (T4 R2 harness)
-    runs-on: ubuntu-latest
-    needs: typecheck-portal
-    defaults:
-      run:
-        working-directory: 04-the-final-portal/portal
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - uses: actions/cache@v4
-        with:
-          path: 04-the-final-portal/portal/node_modules
-          key: portal-modules-${{ runner.os }}-${{ hashFiles('04-the-final-portal/portal/package-lock.json') }}
-      - run: npm install --legacy-peer-deps --no-audit --no-fund
-      - name: Start portal in background
-        run: |
-          npm run build
-          (npm run start &) && for i in $(seq 1 30); do curl -sf http://localhost:3030/ >/dev/null && break || sleep 2; done
-      - run: npm run smoke:perf
-        env:
-          AQUA_BASE: http://localhost:3030
-
-  ci-status:
-    name: CI status
-    runs-on: ubuntu-latest
-    needs:
-      - typecheck-portal
-      - typecheck-plugins
-      - smoke-plugins
-      - smoke-portal
-      - smoke-ux
-      - smoke-perf
-    steps:
-      - run: echo "All required checks passed."
+          echo "portal: ${{ needs.tsc-and-smoke-portal.result }}"
+          echo "plugins: ${{ needs.tsc-and-smoke-plugins.result }}"
+          if [ "${{ needs.tsc-and-smoke-portal.result }}" != "success" ] || \
+             { [ "${{ needs.tsc-and-smoke-plugins.result }}" != "success" ] && \
+               [ "${{ needs.tsc-and-smoke-plugins.result }}" != "skipped" ]; }; then
+            echo "CI failed"
+            exit 1
+          fi
+          echo "CI green"

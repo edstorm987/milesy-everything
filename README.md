@@ -1,5 +1,7 @@
 # ker-v3 — Agency Platform Workspace
 
+![CI](https://github.com/edsworld27/ker-v3/actions/workflows/ci.yml/badge.svg)
+
 Top-level organisation for the agency platform build. Everything is grouped
 into four numbered folders; this README is the orientation page.
 
