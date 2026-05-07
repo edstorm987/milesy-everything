@@ -673,7 +673,7 @@
           +   '<div class="addon-price">' + (owned ? '<span class="bos-installed-tag">Installed</span>' : '<strong>£' + a.price + '</strong><span>/mo</span>') + '</div>'
           +   (owned
               ? '<a href="#" class="btn btn-secondary">Open</a>'
-              : '<a href="mailto:hello@milesymedia.co?subject=Add-on:%20' + encodeURIComponent(a.name) + '" class="btn btn-primary">Add to my OS →</a>')
+              : '<a href="marketplace/' + a.id + '.html" class="btn btn-primary">View details →</a>')
           + '</div>'
           + '</article>';
       }).join('');
@@ -849,10 +849,28 @@
     document.body.insertBefore(bar, document.body.firstChild);
   }
 
+  /* R016 — cart icon top-right when bos.cart.addons.length > 0.
+     Renders a small floating pill linking to cart.html. */
+  function mountCartIcon() {
+    if (document.querySelector('[data-bos-cart-icon]')) return;
+    var cart = null;
+    try { cart = JSON.parse(localStorage.getItem('bos.cart') || 'null'); } catch (e) {}
+    if (!cart || !Array.isArray(cart.addons) || !cart.addons.length) return;
+    /* Don't render on cart page itself (would be redundant). */
+    if (/cart\.html$/.test(location.pathname)) return;
+    var pill = document.createElement('a');
+    pill.setAttribute('data-bos-cart-icon', '');
+    pill.href = (location.pathname.indexOf('/marketplace/') !== -1 ? '../cart.html' : 'cart.html');
+    pill.style.cssText = 'position:fixed;top:14px;right:18px;z-index:9989;background:#C9A76A;color:#1a1208;padding:8px 14px;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none;box-shadow:0 6px 16px rgba(0,0,0,0.3);';
+    pill.innerHTML = '🛒 ' + cart.addons.length + ' add-on' + (cart.addons.length === 1 ? '' : 's') + ' →';
+    document.body.appendChild(pill);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     ensureSwitcherLoaded();
     mountIncubatorStrip();
     mountTrialBanner();
+    mountCartIcon();
     mountAutoSidebar();
     hydrateUser();
     applyBranding();

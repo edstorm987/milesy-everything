@@ -2954,3 +2954,123 @@ body.bos-cp-editing .bos-cp-fields textarea {
 .bos-activity-empty {
   padding: 28px; text-align: center; color: var(--text-mute, #555); font-style: italic;
 }
+
+/* ─── R016 Marketplace detail pages + cart ──────────────────────── */
+
+.bos-mp-detail-head {
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+.bos-mp-detail-icon {
+  font-size: 48px;
+  flex: 0 0 auto;
+  width: 72px; height: 72px;
+  border-radius: 14px;
+  background: var(--bos-card-2, #f5f1e8);
+  display: flex; align-items: center; justify-content: center;
+}
+.bos-mp-detail-head h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  margin: 6px 0 8px;
+}
+.bos-mp-detail-blurb { color: var(--text-mute, #555); font-size: 15px; margin: 0; }
+.bos-mp-detail-price {
+  margin-left: auto;
+  text-align: right;
+  font-size: 28px;
+  font-weight: 700;
+}
+.bos-mp-detail-price span { font-size: 13px; color: var(--text-mute, #555); margin-left: 4px; }
+
+.bos-mp-detail-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 28px;
+  margin-top: 20px;
+}
+.bos-mp-detail-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+.bos-mp-detail-bullets li {
+  padding: 8px 12px;
+  background: var(--bos-card-2, #f5f1e8);
+  border-radius: 8px;
+}
+.bos-mp-detail-diagram {
+  margin-top: 24px;
+  padding: 36px 22px;
+  border: 1px dashed var(--bos-line, #e6e1d4);
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(0,0,0,0.02);
+}
+.bos-mp-diagram-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 16px;
+  color: #8E7340;
+  margin-bottom: 8px;
+}
+.bos-mp-detail-card {
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 14px;
+  padding: 24px 22px;
+  position: sticky;
+  top: 18px;
+}
+.bos-mp-detail-pricelg { font-size: 36px; font-weight: 700; margin-bottom: 4px; }
+.bos-mp-detail-pricelg span { font-size: 14px; color: var(--text-mute, #555); margin-left: 4px; font-weight: 400; }
+.bos-mp-detail-card .btn { width: 100%; margin-top: 10px; }
+
+@media (max-width: 760px) {
+  .bos-mp-detail-grid { grid-template-columns: 1fr; }
+  .bos-mp-detail-card { position: static; }
+}
+
+/* Cart */
+.bos-cart-shell {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 28px;
+  margin-top: 20px;
+}
+.bos-cart-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+}
+.bos-cart-row-body strong { font-size: 15px; }
+.bos-cart-row-price { font-weight: 700; font-size: 16px; }
+.bos-cart-row-price span { font-size: 12px; color: var(--text-mute, #555); margin-left: 2px; font-weight: 400; }
+.bos-cart-summary {
+  background: var(--bos-card, #fff);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 12px;
+  padding: 22px;
+  position: sticky;
+  top: 18px;
+  height: fit-content;
+}
+.bos-cart-summary h3 { font-family: "Playfair Display", Georgia, serif; margin: 0 0 14px; }
+.bos-cart-line { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+.bos-cart-total { font-weight: 700; font-size: 16px; }
+.bos-cart-summary hr { border: 0; border-top: 1px solid var(--bos-line, #e6e1d4); margin: 10px 0; }
+
+@media (max-width: 760px) {
+  .bos-cart-shell { grid-template-columns: 1fr; }
+  .bos-cart-summary { position: static; }
+}

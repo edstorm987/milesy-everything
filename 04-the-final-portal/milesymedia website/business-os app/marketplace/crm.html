@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Client CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body class="bos-body">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+    <aside class="bos-sidebar">
+      <a href="../app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="marketplace.html"></nav>
+    </aside>
+
+    <main class="bos-main bos-mp-detail">
+
+      <a href="../marketplace.html" class="back-link">← All add-ons</a>
+
+      <header class="bos-mp-detail-head">
+        <div class="bos-mp-detail-icon">🗂</div>
+        <div>
+          <span class="eyebrow">Communications</span>
+          <h1>Client CRM</h1>
+          <p class="bos-mp-detail-blurb">Pipelines, notes, tasks, automated follow-ups.</p>
+        </div>
+        <div class="bos-mp-detail-price">
+          <strong>£49</strong><span>/mo</span>
+        </div>
+      </header>
+
+      <div class="bos-callout"><span>📝</span><div><strong>v1 spec — demo flow.</strong> Real Stripe wires later via T6. Adding to plan today writes <code>bos.cart.addons[]</code> in localStorage; nothing is charged.</div></div>
+
+      <section class="bos-mp-detail-grid">
+        <div class="bos-mp-detail-value">
+          <h2>What you get</h2>
+          <ul class="bos-mp-detail-bullets">
+            <li>✓ Per-client timeline (every email / call / doc in one feed)</li>
+            <li>✓ Pipelines per service line with stage probabilities</li>
+            <li>✓ Tasks linked to deals + auto-fired follow-up sequences</li>
+            <li>✓ Lead-scoring from form fills + behavioural triggers</li>
+            <li>✓ Quote builder with template clauses + e-sign</li>
+            <li>✓ Reporting: win-rate, sales-velocity, pipeline value</li>
+          </ul>
+
+          <h2 style="margin-top:28px">Why it matters</h2>
+          <p class="muted">Replace HubSpot's £400/mo plan with the same workflows.</p>
+
+          <div class="bos-mp-detail-diagram" aria-hidden="true">
+            <div class="bos-mp-diagram-title">Client CRM · diagram placeholder</div>
+            <p class="muted">A real screenshot or mini-diagram lands here once the plugin ships. For now it\'s a v1-spec page.</p>
+          </div>
+        </div>
+
+        <aside class="bos-mp-detail-side">
+          <div class="bos-mp-detail-card">
+            <div class="bos-mp-detail-pricelg">£49<span>/month</span></div>
+            <p class="muted">Cancel any time. No setup fee.</p>
+            <button type="button" class="btn btn-primary btn-lg" data-bos-cart-add="crm" data-bos-cart-name="Client CRM" data-bos-cart-price="49">Add to my plan →</button>
+            <a href="mailto:hello@milesymedia.co?subject=Question%20about%20Client%20CRM" class="btn btn-secondary">Talk to a human</a>
+          </div>
+        </aside>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="../../incubator app/lib/storage.js"></script>
+  <script src="../../incubator app/lib/activity.js"></script>
+  <script src="../bos.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      /* R013 marketplace-click activity event per detail-page visit. */
+      if (window.Activity && typeof window.Activity.log === 'function') {
+        window.Activity.log('marketplace.click', { addonId: 'crm', detailPage: true });
+      }
+      /* R016 add-to-cart handler. */
+      document.addEventListener('click', function (ev) {
+        var b = ev.target.closest('[data-bos-cart-add]');
+        if (!b) return;
+        var id = b.getAttribute('data-bos-cart-add');
+        var name = b.getAttribute('data-bos-cart-name');
+        var price = parseInt(b.getAttribute('data-bos-cart-price'), 10) || 0;
+        var cart = JSON.parse(localStorage.getItem('bos.cart') || '{}');
+        if (!Array.isArray(cart.addons)) cart.addons = [];
+        if (cart.addons.some(function (a) { return a.id === id; })) {
+          b.textContent = '✓ Already in cart — view cart →';
+          b.onclick = function () { location.href = '../cart.html'; };
+          return;
+        }
+        cart.addons.push({ id: id, name: name, price: price });
+        cart.updatedAt = new Date().toISOString();
+        localStorage.setItem('bos.cart', JSON.stringify(cart));
+        if (window.Activity) window.Activity.log('marketplace.click', { addonId: id, addedToCart: true, price: price });
+        location.href = '../cart.html';
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -104,6 +104,29 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R016 — Marketplace add-on detail pages + cart** — DONE.
+      9 NEW detail pages under `business-os app/marketplace/<slug>.html`
+      (inbox/website/ecom/fulfil/members/affil/crm/marketing/finance,
+      ~110L each, generated from a single Python template): header w/
+      large icon + price + 1-line blurb + v1-demo callout + 2-col grid
+      ("What you get" 6-bullet chip list + "Why it matters" + dashed-
+      border diagram placeholder | sticky right price card with "Add
+      to my plan →" + "Talk to a human"). NEW `bos.cart={addons:[
+      {id,name,price}], updatedAt}` storage de-duped. NEW `business-
+      os app/cart.html` w/ empty + populated states + sticky right
+      summary (subtotal + Pro base £49 + total + "Continue to
+      checkout →" → R011 upgrade.html). NEW `mountCartIcon()` in
+      bos.js renders floating gold pill top-right when cart non-empty
+      (path-aware href; hidden on cart.html itself). bos.js
+      renderMarketplace CTA changed `mailto:` → "View details →"
+      detail link. R013 Activity fires marketplace.click on detail
+      visit + addedToCart on add. CSS .bos-mp-detail-* + .bos-cart-*
+      (~150L). Honesty contract: every surface v1-demo labelled,
+      localStorage-only. Smoke: 11 URLs 200; full add→cart→remove
+      flow verified end-to-end. R+1: itemise cart at R011 checkout
+      (today Pro trial covers everything all-or-nothing); per-addon
+      entitlement granularity once T6 ships real billing. NEW chapter
+      `04-marketplace-detail-pages.md` + MASTER #92.
 - [x] **T4 R015 — Lessons content gap (10 of 15 locked rows shipped)** — DONE.
       Closes 10 of 17 locked Pro lesson rows from chapter #71 (free
       tier 5→15). 10 lessons added to lessons.js (~50L each: hero +
