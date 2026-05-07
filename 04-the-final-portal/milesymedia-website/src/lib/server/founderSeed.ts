@@ -78,16 +78,17 @@ export function seedFounder(): Promise<void> {
 // `NODE_ENV === "production"` to prevent accidental use; the regular
 // seedFounder is the prod path. Idempotent on email lookup.
 const DEV_FOUNDER_PASSWORD = "dev-founder-2026";
-let devSeedPromise: Promise<void> | null = null;
-
 export function seedFounderForDevBypass(): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     throw new Error(
       "[founderSeed] seedFounderForDevBypass is dev-only — use FOUNDER_PASSWORD env in production.",
     );
   }
-  if (!devSeedPromise) devSeedPromise = devRun();
-  return devSeedPromise;
+  // No memoize: every dev-pov click re-runs the seed so newly added
+  // plugins (or sidebar nav items pointing at not-yet-installed plugins)
+  // get auto-installed even when the dev server has been running for
+  // hours. Each step is idempotent.
+  return devRun();
 }
 
 async function devRun(): Promise<void> {
@@ -103,6 +104,44 @@ async function devRun(): Promise<void> {
       ownerEmail: FOUNDER_EMAIL,
     });
     agency = result.agency;
+  } else {
+    // Agency was created before chapter #156 (or before fulfillment
+    // was core) — re-run core-plugin install + pipeline seed
+    // idempotently so phases exist for client creation, etc.
+    try {
+      const { installCorePluginsForScope } = await import("@/plugins/_runtime");
+      await installCorePluginsForScope({ agencyId: agency.id }, "dev-bypass-rebootstrap");
+      const { seedDefaultPipelines, migrateClientsToFulfilment } = await import("@/server/pipelines");
+      seedDefaultPipelines(agency.id);
+      migrateClientsToFulfilment(agency.id);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn("[founderSeed-dev] core-plugin re-install skipped:", e instanceof Error ? e.message : e);
+    }
+  }
+
+  // Dev-bypass convenience: also install every NON-core plugin that
+  // can run agency-scope, so the master Milesy sidebar (Finance / HR /
+  // SOPs / Inbox / Email / Ops / Domains / Affiliates / Marketing /
+  // Forms / Tasks / etc.) doesn't 404 when Ed clicks around. Idempotent
+  // — `installPlugin` short-circuits when already installed. Production
+  // path is unchanged: real agencies install plugins via the
+  // marketplace.
+  try {
+    const { installPlugin, getInstall } = await import("@/plugins/_runtime");
+    const { listInstallablePlugins } = await import("@/plugins/_registry");
+    for (const plugin of listInstallablePlugins()) {
+      const policy = plugin.scopePolicy ?? "either";
+      if (policy === "client") continue; // client-scope only — needs a clientId
+      if (getInstall({ agencyId: agency.id }, plugin.id)) continue;
+      await installPlugin(plugin.id, {
+        scope: { agencyId: agency.id },
+        installedBy: "dev-bypass-rebootstrap",
+      });
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn("[founderSeed-dev] non-core plugin auto-install skipped:", e instanceof Error ? e.message : e);
   }
 
   let founder = getUser(FOUNDER_EMAIL);

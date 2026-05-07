@@ -42,6 +42,12 @@ export function Sidebar({ panels, tenantLabel, currentPath, mobile = false, extr
       aria-label="Primary navigation"
       data-collapsed="false"
       data-sidebar-mobile={mobile ? "true" : "false"}
+      // Hydration script in <head> reads localStorage + flips
+      // data-collapsed BEFORE React paints, so the rendered HTML
+      // can legitimately differ from server. Suppress the warning
+      // (chapter #153 R035 — `data-collapsed` change is the only
+      // attribute that can drift; nested children stay consistent).
+      suppressHydrationWarning
       className={[
         "shrink-0 bg-white/60 p-4 text-sm",
         // Width is driven by [data-collapsed] (see globals.css). Mobile
