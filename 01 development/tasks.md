@@ -78,6 +78,23 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R003 — videoEmbed + asset upload + LivePreview polish** — DONE.
+      Goal A: NEW `videoEmbed` block — auto-detect provider (vimeo /
+      youtube / loom / raw) via `lib/videoEmbed.ts`; `toEmbedUrl`
+      rewrites to canonical embed URLs with autoplay+muted appendage.
+      Registry 60→61. Aqua-Incubator onboarding `video` → `video-embed`.
+      Goal B: rewrites `api/handlers/assets.ts` (was R1 501 stubs) —
+      real storage round-trip, 8 MiB per file + 64 MiB per client cap,
+      `decodeDataUrlSize` exported helper. AssetPicker uploads now
+      actually land. Goal C: LivePreview "↗ New tab" button +
+      `lastSaveAt` prop (auto-refresh on save) + per-page localStorage
+      open/closed state via `useLivePreviewOpenState(pageId)`. Goal D:
+      NEW `__smoke__/video-and-preview.test.ts` 32 cases. Plugin
+      smoke **199/199** (52 + 25 + 25 + 26 + 39 + 32). tsc clean.
+      Chapter `04-website-editor-round-003.md` + MASTER row #64.
+      Cross-team: T1 swaps inline-dataUrl for CDN adapter when ready
+      (API surface stable). Deferred: drag-drop onto cover-block target,
+      Vimeo Showcase/playlist embeds, LivePreview split mode.
 - [x] **T3 R002 — Aqua Incubator template (Notion-style)** — DONE.
       Goal A: 4 Notion blocks — `icon` extended with image-mode props
       (image/offsetY/label, back-compat with glyph); NEW `property-strip`
