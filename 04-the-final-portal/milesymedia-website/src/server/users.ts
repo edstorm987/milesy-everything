@@ -23,7 +23,7 @@ const SCRYPT_P = 1;
 const SCRYPT_KEYLEN = 32;
 const SCRYPT_SALT_BYTES = 16;
 
-function hashPassword(password: string): string {
+export function hashPassword(password: string): string {
   const salt = crypto.randomBytes(SCRYPT_SALT_BYTES);
   const derived = crypto.scryptSync(password, salt, SCRYPT_KEYLEN, {
     N: SCRYPT_N, r: SCRYPT_R, p: SCRYPT_P,

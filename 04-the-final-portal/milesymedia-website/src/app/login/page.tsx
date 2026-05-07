@@ -2,12 +2,16 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { LoginForm } from "./LoginForm";
 import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
+import { seedFounder } from "@/lib/server/founderSeed";
 
 export const metadata = {
-  title: "Sign in · Aqua portal",
+  title: "Sign in · Milesy Media",
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  // T4 unify-3 — make sure the founder user is seeded before the
+  // form renders, so a fresh `npm run dev` can sign in immediately.
+  await seedFounder();
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-sm">

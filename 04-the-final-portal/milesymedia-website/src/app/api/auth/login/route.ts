@@ -9,6 +9,7 @@
 
 import { NextResponse, type NextRequest } from "next/server";
 import { ensureHydrated } from "@/server/storage";
+import { seedFounder } from "@/lib/server/founderSeed";
 import { issueSession, sessionCookie } from "@/lib/server/auth";
 import { clientIpFromHeaders, rateLimit, isLoginLocked, recordLoginFailure, recordLoginSuccess } from "@/lib/server/rateLimit";
 import { listAgencies, getAgency } from "@/server/tenants";
@@ -25,6 +26,7 @@ interface Body {
 
 export async function POST(req: NextRequest) {
   await ensureHydrated();
+  await seedFounder();
 
   const ip = clientIpFromHeaders(req.headers);
   const limit = rateLimit({ key: `login:${ip}`, max: 10, windowMs: 60_000 });
