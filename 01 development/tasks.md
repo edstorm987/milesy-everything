@@ -1478,3 +1478,6 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 - [x] T2 R004 — `@aqua/plugin-credentials-vault` shipped (chapter
       #75, smoke 10/10, AES-256-GCM at rest, rate-limited reveals,
       sharedWith ACL).
+- [x] T2 R005 — `@aqua/plugin-notifications` shipped (chapter #76,
+      smoke 12/12, 4 pluggable channel drivers email/slack/whatsapp-stub/webhook,
+      cooldown dedup per (userId, eventId)).
