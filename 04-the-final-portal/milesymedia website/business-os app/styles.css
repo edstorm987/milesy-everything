@@ -2298,3 +2298,96 @@ body.bos-cp-editing .bos-cp-fields textarea {
 }
 .bos-page-intro-body p { margin-bottom: 10px; }
 .bos-page-intro-body strong { color: var(--text); }
+
+/* ─── Simplified home page ──────────────────── */
+.bos-home { max-width: 880px; padding: 50px 36px 80px; }
+@media (max-width: 700px) { .bos-home { padding: 30px 18px 60px; } }
+
+.bos-home-greet { margin-bottom: 28px; }
+.bos-home-greet h1 {
+  font-size: clamp(32px, 5vw, 44px); font-weight: 800;
+  letter-spacing: -0.025em; margin-bottom: 6px;
+}
+.bos-home-tagline { font-size: 15px; }
+
+.bos-home-next {
+  background: linear-gradient(135deg, rgba(255,107,53,0.10), rgba(255,184,0,0.06));
+  border: 1px solid rgba(255,107,53,0.25);
+  border-radius: 18px; padding: 32px;
+  margin-bottom: 28px;
+}
+.bos-home-next h2 {
+  font-size: clamp(22px, 3.4vw, 30px); font-weight: 800;
+  letter-spacing: -0.02em; margin: 10px 0 12px;
+}
+.bos-home-next p {
+  color: var(--text-dim); font-size: 16px; line-height: 1.6;
+  margin-bottom: 22px; max-width: 640px;
+}
+
+.bos-home-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  margin-bottom: 36px;
+}
+@media (max-width: 800px) { .bos-home-cards { grid-template-columns: 1fr; } }
+.bos-home-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px;
+  color: var(--text);
+  transition: transform .15s, border-color .15s;
+}
+.bos-home-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.bos-home-card-icon {
+  width: 44px; height: 44px; border-radius: 11px;
+  background: rgba(255,107,53,0.12); color: var(--accent);
+  display: grid; place-items: center; font-size: 20px;
+  margin-bottom: 12px;
+}
+.bos-home-card h3 { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 6px; }
+.bos-home-card p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+.bos-home-progress {
+  padding: 16px 18px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.bos-home-progress-line {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  font-size: 13px; margin-bottom: 8px;
+}
+.bos-home-progress-label { color: var(--text); font-weight: 600; }
+.bos-home-progress-bar {
+  height: 4px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;
+}
+.bos-home-progress-bar > span {
+  display: block; height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width .6s ease;
+}
+
+/* ─── Slim upgrade footer (replaces big band) ── */
+.bos-upgrade-foot {
+  margin-top: 50px; padding: 14px 18px;
+  background: rgba(255,107,53,0.06);
+  border: 1px solid rgba(255,107,53,0.20);
+  border-radius: 10px;
+  font-size: 13px; color: var(--text-dim);
+  text-align: center;
+}
+.bos-upgrade-foot a { color: var(--accent); font-weight: 700; }
+.bos-upgrade-foot a:hover { color: var(--accent-2); }
+
+/* ─── Sidebar tiny links (premium / aqua) ────── */
+.bos-side-tiny { padding: 14px 0 0; border-top: 1px dashed var(--border); }
+.bos-side-tiny-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 8px;
+  font-size: 12px; color: var(--text-mute);
+  transition: color .15s, background .15s;
+}
+.bos-side-tiny-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.bos-side-tiny-link .ico { width: 16px; opacity: 0.75; flex-shrink: 0; }
+.bos-side-tiny-link.bos-locked { opacity: 0.6; }
+
+/* Hide the previous loud upgrade band if it ever renders */
+.bos-upgrade-band { display: none; }

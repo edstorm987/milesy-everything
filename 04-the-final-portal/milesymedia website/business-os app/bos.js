@@ -203,36 +203,29 @@
     }
     var html = '';
     html += '<div class="bos-side-section">'
-         +    '<div class="bos-side-label">Run</div>'
-         +    link('app.html',      '◆', 'Dashboard')
-         +    link('company.html',  '🏢', 'Company Profile')
-         +    link('leads.html',    '⚑', 'Leads &amp; Clients HQ')
-         +    link('trackers.html', '📊', 'Trackers &amp; KPIs')
-         +    link('tasks.html',    '✓', 'Tasks')
-         +    link('docs.html',     '📄', 'Documents &amp; SOPs')
+         +    '<div class="bos-side-label">My business</div>'
+         +    link('app.html',      '🏠', 'Home')
+         +    link('company.html',  '👤', 'About my business')
+         +    link('leads.html',    '👥', 'My customers')
+         +    link('trackers.html', '📈', 'My numbers')
+         +    link('tasks.html',    '✓', 'My to-dos')
+         +    link('docs.html',     '📁', 'My files')
          + '</div>';
     html += '<div class="bos-side-section">'
-         +    '<div class="bos-side-label" data-bos-os-label>Learn</div>'
-         +    link('database.html', '◇', 'Modules')
-         +    link('module.html',   '📖', 'Guides')
-         +    link('../lead magnet app/index.html?from=bos', '⌕', 'Assessments')
-         + '</div>';
-    html += '<div class="bos-side-section">'
-         +    '<div class="bos-side-label">Premium</div>'
-         +    '<a href="roadmap.html" class="bos-roadmap-link' + ('roadmap.html' === page ? ' active' : '') + '"><span class="ico">🗺</span> My Custom Roadmap <span class="bos-locked-tag bos-roadmap-tag">Pro</span></a>'
+         +    '<div class="bos-side-label">Learn</div>'
+         +    link('database.html', '📚', 'Lessons')
+         +    link('../lead magnet app/index.html?from=bos', '🔍', 'Health check')
          + '</div>';
     html += '<div class="bos-side-section" data-bos-tools-slot></div>';
     html += '<div class="bos-side-section">'
          +    '<div class="bos-side-label">Get help</div>'
-         +    link('help.html', '👋', 'Need Some Help?')
-         +    '<a href="#" data-bos-open-ai><span class="ico">🤖</span> Aqua AI</a>'
-         +    '<a href="mailto:hello@milesymedia.co"><span class="ico">✉</span> Message us</a>'
+         +    link('help.html', '👋', 'Need help?')
+         +    '<a href="#" data-bos-open-ai><span class="ico">🤖</span> Ask Aqua AI</a>'
          +    '<a href="tel:+441234567890"><span class="ico">📞</span> Book a free call</a>'
          + '</div>';
-    html += '<div class="bos-side-section bos-aqua-section bos-aqua-locked" data-bos-aqua>'
-         +    '<div class="bos-side-label">Agency portal</div>'
-         +    '<a href="#" class="bos-locked"><span class="ico">🔒</span> Aqua portal <span class="bos-locked-tag">Upgrade</span></a>'
-         +    '<p class="bos-side-foot">Once you upgrade, the full agency portal layers in here.</p>'
+    html += '<div class="bos-side-section bos-side-tiny">'
+         +    '<a href="roadmap.html" class="bos-side-tiny-link' + ('roadmap.html' === page ? ' active' : '') + '"><span class="ico">🗺</span> Custom roadmap <span class="bos-locked-tag bos-roadmap-tag">Pro</span></a>'
+         +    '<a href="#" class="bos-side-tiny-link bos-locked" data-bos-aqua-link><span class="ico">🔒</span> Aqua agency portal</a>'
          + '</div>';
     return html;
   }
@@ -426,6 +419,15 @@
   /* ─── Dev bar ────────────────────────────── */
   function mountDevBar() {
     if (document.querySelector('.bos-dev-bar')) return;
+    /* Only show dev bar when explicitly enabled via ?dev=1 (sticky) or
+       when a previous page already set it. Keeps the user-facing app
+       clean — engineers add ?dev=1 once and the flag persists. */
+    try {
+      var qs = new URLSearchParams(location.search);
+      if (qs.get('dev') === '1') localStorage.setItem('bos.dev', '1');
+      if (qs.get('dev') === '0') localStorage.removeItem('bos.dev');
+      if (localStorage.getItem('bos.dev') !== '1') return;
+    } catch (e) { return; }
     var bar = document.createElement('div');
     bar.className = 'bos-dev-bar';
     var mode = getMode();
@@ -520,18 +522,12 @@
         : '<span class="bos-tier-dot"></span> Free tier · upgrade →';
       topbar.appendChild(pill);
     }
-    /* Page-end upgrade band (free only) */
-    if (mode !== 'customer' && document.querySelector('.bos-main') && !document.querySelector('.bos-upgrade-band')) {
-      var band = document.createElement('section');
-      band.className = 'bos-upgrade-band';
-      band.innerHTML = ''
-        + '<div class="bos-upgrade-band-icon">⚡</div>'
-        + '<div class="bos-upgrade-band-text">'
-        +   '<strong>You\'re on the free tier of Business OS.</strong>'
-        +   '<p>Unlock the full plugin — every add-on, every advanced module, the SOP Hub, unlimited Aqua AI, and the Custom Roadmap. Included with any Milesy retainer, or buy individually in the marketplace.</p>'
-        + '</div>'
-        + '<a href="marketplace.html" class="btn btn-primary">Browse add-ons →</a>';
-      document.querySelector('.bos-main').appendChild(band);
+    /* Slim "what you can add" footer link — every page, free only */
+    if (mode !== 'customer' && document.querySelector('.bos-main') && !document.querySelector('.bos-upgrade-foot')) {
+      var foot = document.createElement('div');
+      foot.className = 'bos-upgrade-foot';
+      foot.innerHTML = 'You\'re on the free tier — <a href="marketplace.html">see what you can add →</a>';
+      document.querySelector('.bos-main').appendChild(foot);
     }
   }
 

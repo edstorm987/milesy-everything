@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Business OS — Dashboard</title>
+  <title>Business OS — Home</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
@@ -20,9 +20,7 @@
         <span class="mark" data-bos-niche-icon>◆</span>
         <span class="brand-name" data-bos-niche-label>Business OS</span>
       </a>
-
       <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="app.html"></nav>
-
       <div class="bos-side-user">
         <div class="av" data-bos-initial>JL</div>
         <div>
@@ -32,256 +30,54 @@
       </div>
     </aside>
 
-    <main class="bos-main">
+    <main class="bos-main bos-home">
 
-      <header class="bos-topbar">
-        <div>
-          <div class="muted bos-topbar-eyebrow" data-bos-niche-tagline>A solid generic operating system.</div>
-          <h1 data-bos-greet>Welcome back, Jordan.</h1>
-        </div>
-        <div class="bos-topbar-actions">
-          <a href="tel:+441234567890" class="btn btn-secondary">📞 Book a call</a>
-          <a href="../lead magnet app/index.html?from=bos" class="btn btn-primary">Run an assessment →</a>
-        </div>
+      <header class="bos-home-greet">
+        <h1 data-bos-greet>Welcome.</h1>
+        <p class="muted bos-home-tagline" data-bos-niche-tagline>A solid generic operating system.</p>
       </header>
 
-      <!-- Gamified progress bar -->
-      <section class="bos-game">
-        <div class="bos-game-level">
-          <div class="bos-game-ring">
-            <span data-bos-level-num>1</span>
-          </div>
-          <div class="bos-game-level-meta">
-            <div class="bos-game-level-name" data-bos-level-name>Apprentice</div>
-            <div class="muted bos-game-xp"><span data-bos-xp>0 XP</span> · <span data-bos-level-pct>250 XP to Owner</span></div>
-            <div class="bos-game-level-bar"><span data-bos-level-bar style="width:0%"></span></div>
-          </div>
-        </div>
-        <div class="bos-game-stats">
-          <div class="bos-game-stat">
-            <div class="bos-game-stat-icon">🔥</div>
-            <div>
-              <div class="bos-game-stat-num"><span data-bos-streak>0</span> day<span class="bos-game-stat-suffix">s</span></div>
-              <div class="muted">Streak</div>
-            </div>
-          </div>
-          <div class="bos-game-stat">
-            <div class="bos-game-stat-icon">⏱</div>
-            <div>
-              <div class="bos-game-stat-num" data-bos-time-saved>0h</div>
-              <div class="muted">Time saved</div>
-            </div>
-          </div>
-          <div class="bos-game-stat">
-            <div class="bos-game-stat-icon">🏆</div>
-            <div>
-              <div class="bos-game-stat-num"><a href="#achievements" style="color:inherit">View</a></div>
-              <div class="muted">Achievements</div>
-            </div>
-          </div>
+      <!-- Single big "next move" card -->
+      <section class="bos-home-next" data-bos-home-next>
+        <span class="eyebrow">Your next move</span>
+        <h2 data-bos-next-title>Take the free Health Check.</h2>
+        <p data-bos-next-body>It takes 12 minutes and unlocks a personalised picture of your business — what's leaking customers, where the quick wins are, what to do this week.</p>
+        <div class="hc-actions">
+          <a class="btn btn-primary btn-lg" data-bos-next-cta href="../lead magnet app/index.html?from=bos">Start the Health Check →</a>
+          <button class="btn btn-secondary btn-lg" data-bos-next-skip hidden>Mark as done</button>
         </div>
       </section>
 
-      <!-- Health-check summary slot -->
-      <section class="bos-section">
-        <div data-bos-healthcheck></div>
+      <!-- Three friendly help cards — that's it -->
+      <section class="bos-home-cards">
+        <a href="database.html" class="bos-home-card">
+          <div class="bos-home-card-icon">📚</div>
+          <h3>Read a quick lesson</h3>
+          <p class="muted">Five short lessons. 10–15 minutes each. Pick whichever bit of your business you want to fix first.</p>
+        </a>
+        <a href="#" data-bos-open-ai class="bos-home-card">
+          <div class="bos-home-card-icon">🤖</div>
+          <h3>Ask the AI</h3>
+          <p class="muted">It knows what's in your portal. Ask anything — "what's my biggest leak?" or "which lesson should I do first?"</p>
+        </a>
+        <a href="tel:+441234567890" class="bos-home-card">
+          <div class="bos-home-card-icon">📞</div>
+          <h3>Talk to a human</h3>
+          <p class="muted">If you're stuck, book a free 30-minute call. We'll work it out together. No sales pitch.</p>
+        </a>
       </section>
 
-      <!-- Hero card -->
-      <section class="bos-hero-card">
-        <div class="bos-hero-card-text">
-          <span class="eyebrow">Your operating system</span>
-          <h2>Build the business you wanted to build.</h2>
-          <p>Assessments to find the leak. Guides to plug it. Templates to ship it. A free assistant to help when you're stuck. And a marketplace of plug-in tools so you only pay for what you use.</p>
-          <div class="hc-actions">
-            <a href="../lead magnet app/index.html" class="btn btn-primary">Start with the Health Check →</a>
-            <a href="marketplace.html" class="btn btn-secondary">Browse add-ons</a>
-          </div>
+      <!-- Slim progress strip — only shows after they've earned something -->
+      <section class="bos-home-progress" data-bos-home-progress hidden>
+        <div class="bos-home-progress-line">
+          <span class="muted bos-home-progress-label">Level <span data-bos-level-num>1</span> · <span data-bos-level-name>Apprentice</span></span>
+          <span class="muted">·</span>
+          <span class="muted"><span data-bos-streak>0</span>-day streak 🔥</span>
+          <span class="muted">·</span>
+          <span class="muted"><span data-bos-time-saved>0h</span> saved</span>
         </div>
-        <div class="bos-hero-card-art" aria-hidden="true">
-          <div class="orb orb-1"></div>
-          <div class="orb orb-2"></div>
-          <div class="orb orb-3"></div>
-          <div class="bos-hero-stat s1"><div class="num">20m</div><div class="lbl">to set up</div></div>
-          <div class="bos-hero-stat s2"><div class="num">9</div><div class="lbl">add-ons live</div></div>
-        </div>
-      </section>
-
-      <!-- Onboarding strip -->
-      <section class="bos-onboard">
-        <div class="bos-onboard-head">
-          <div>
-            <span class="eyebrow">Your next 4 moves</span>
-            <h2>Get your operating system running in 20 minutes.</h2>
-          </div>
-          <div class="bos-onboard-progress">
-            <span data-bos-progress-pct>25%</span>
-            <div class="hc-progress-bar"><span data-bos-progress-fill style="width:25%"></span></div>
-          </div>
-        </div>
-        <div class="bos-onboard-grid">
-          <button class="bos-onboard-card is-done">
-            <div class="bos-onboard-icon">✓</div>
-            <div class="bos-onboard-title">Account created</div>
-            <div class="muted bos-onboard-sub">Welcome aboard.</div>
-          </button>
-          <a href="../lead magnet app/index.html" class="bos-onboard-card">
-            <div class="bos-onboard-icon">⌕</div>
-            <div class="bos-onboard-title">Run the Health Check</div>
-            <div class="muted bos-onboard-sub">~12 min · gives us your baseline.</div>
-          </a>
-          <a href="database.html" class="bos-onboard-card">
-            <div class="bos-onboard-icon">◇</div>
-            <div class="bos-onboard-title">Pick your first module</div>
-            <div class="muted bos-onboard-sub">From the BusinessOS library.</div>
-          </a>
-          <a href="tel:+441234567890" class="bos-onboard-card">
-            <div class="bos-onboard-icon">📞</div>
-            <div class="bos-onboard-title">Book your free call</div>
-            <div class="muted bos-onboard-sub">30 mins. No catch.</div>
-          </a>
-        </div>
-      </section>
-
-      <!-- Table of Contents — every section as a marbled cover card -->
-      <section class="bos-section">
-        <div class="bos-section-head">
-          <div>
-            <span class="eyebrow">Table of contents</span>
-            <h2>Everything in your OS, one click away.</h2>
-          </div>
-        </div>
-        <div class="bos-toc-grid">
-          <a href="company.html" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-1"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">🏢</span><span>My Company Profile</span></div>
-          </a>
-          <a href="leads.html" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-2"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">⚑</span><span>Leads &amp; Clients HQ</span></div>
-          </a>
-          <a href="trackers.html" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-3"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">📊</span><span>Trackers &amp; KPIs</span></div>
-          </a>
-          <a href="tasks.html" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-4"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">✓</span><span>Tasks &amp; To-dos</span></div>
-          </a>
-          <a href="docs.html" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-5"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">📄</span><span>Documents &amp; SOPs</span></div>
-          </a>
-          <a href="database.html" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-6"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">📚</span><span>The Incubator (modules)</span></div>
-          </a>
-          <a href="../lead magnet app/index.html?from=bos" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-7"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">⌕</span><span>Assessments</span></div>
-          </a>
-          <a href="marketplace.html" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-8"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">✨</span><span>Add-ons marketplace</span></div>
-          </a>
-          <a href="roadmap.html" class="bos-toc-card bos-toc-card-pro">
-            <div class="bos-toc-cover bos-cover-9"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">🗺</span><span>My Custom Roadmap</span><span class="bos-locked-tag">Pro</span></div>
-          </a>
-          <a href="help.html" class="bos-toc-card">
-            <div class="bos-toc-cover bos-cover-10"></div>
-            <div class="bos-toc-meta"><span class="bos-toc-icon">👋</span><span>Need some help?</span></div>
-          </a>
-        </div>
-      </section>
-
-      <!-- Featured add-ons strip -->
-      <section class="bos-section bos-addons-strip">
-        <div class="bos-section-head">
-          <div>
-            <span class="eyebrow">Add-ons</span>
-            <h2 data-bos-addons-title>Pick &amp; mix tools to plug into your OS.</h2>
-          </div>
-          <a href="marketplace.html" class="bos-section-link">See all 9 →</a>
-        </div>
-        <div class="bos-addons-grid" data-bos-featured-addons></div>
-      </section>
-
-      <!-- KPI / status -->
-      <section class="bos-section">
-        <div class="bos-section-head"><h2>Your business at a glance</h2></div>
-        <div class="kpi-row">
-          <div class="kpi"><div class="lbl">Assessments completed</div><div class="num">0</div><div class="muted">Take one to populate this card.</div></div>
-          <div class="kpi"><div class="lbl">Modules in progress</div><div class="num">0</div><div class="muted">Pick one from Modules.</div></div>
-          <div class="kpi"><div class="lbl">Guides read</div><div class="num">0</div><div class="muted">Open one from Guides.</div></div>
-          <div class="kpi"><div class="lbl">Calls booked</div><div class="num">0</div><div class="muted">First one's free.</div></div>
-        </div>
-      </section>
-
-      <!-- Featured modules — the Incubator -->
-      <section class="bos-section">
-        <div class="bos-section-head">
-          <div>
-            <span class="eyebrow">The Incubator</span>
-            <h2>Start here. Move in sequence.</h2>
-          </div>
-          <a href="database.html" class="bos-section-link">See full library →</a>
-        </div>
-        <div class="bos-mod-grid">
-          <a href="module.html?id=chrome-profile" class="bos-mod-card">
-            <div class="bos-mod-cat">Step 1 · Foundations</div>
-            <h3>Set up your Chrome profile, hub &amp; storage</h3>
-            <p class="muted">The plumbing first. Bookmarks, extensions, a private hub we can't see, and the file structure your business runs on.</p>
-            <div class="bos-mod-meta"><span>📖 4 lessons</span><span>~40 min</span></div>
-          </a>
-          <a href="module.html?id=core-principles" class="bos-mod-card">
-            <div class="bos-mod-cat">Step 1.5 · Psychology</div>
-            <h3>The core principles</h3>
-            <p class="muted">Subtraction beats addition. Survive then win. Behaviour over goals. Read this before you build anything.</p>
-            <div class="bos-mod-meta"><span>📖 5 lessons</span><span>~12 min</span></div>
-          </a>
-          <a href="module.html?id=super-sales" class="bos-mod-card">
-            <div class="bos-mod-cat">Step 3 · Sales</div>
-            <h3>The Super Sales framework</h3>
-            <p class="muted">Stranger to "send invoice" in seven touches. Offer architecture, SOPs, daily rhythm, the one-page plan.</p>
-            <div class="bos-mod-meta"><span>📖 6 lessons</span><span>~45 min</span></div>
-          </a>
-          <a href="module.html?id=ops-sustainability" class="bos-mod-card">
-            <div class="bos-mod-cat">Step 4 · Operations</div>
-            <h3>Build the engine that runs without you</h3>
-            <p class="muted">Workflows, KPIs, SOPs, sustainability. The work that lets you take a holiday without revenue dropping.</p>
-            <div class="bos-mod-meta"><span>📖 5 lessons</span><span>~50 min</span></div>
-          </a>
-          <a href="module.html?id=referral-alchemy" class="bos-mod-card">
-            <div class="bos-mod-cat">Step 5 · Growth</div>
-            <h3>Client longevity &amp; referral alchemy</h3>
-            <p class="muted">Why a referred customer is 4× more likely to buy and stay — and the system to earn them.</p>
-            <div class="bos-mod-meta"><span>📖 4 lessons</span><span>~40 min</span></div>
-          </a>
-          <a href="module.html" class="bos-mod-card bos-mod-card-locked">
-            <div class="bos-mod-cat">Bonus · Mastery</div>
-            <h3>The Founder's Fortune</h3>
-            <p class="muted">Where time is no longer tied to income. The leverage layer — unlocked once the core tracks are complete.</p>
-            <div class="bos-mod-meta"><span>🔒 Mastery track</span></div>
-          </a>
-        </div>
-      </section>
-
-      <!-- Achievements -->
-      <section class="bos-section" id="achievements">
-        <div class="bos-section-head"><h2>Achievements</h2></div>
-        <div class="bos-ach-grid" data-bos-achievements></div>
-      </section>
-
-      <!-- Notion content slot -->
-      <section class="bos-section">
-        <div class="bos-section-head"><h2>Your Business OS library</h2></div>
-        <div class="bos-notion-slot">
-          <div class="bos-notion-slot-icon">📂</div>
-          <div>
-            <h3>Notion content slot</h3>
-            <p class="muted">Drop your Notion export here (path: <code>business-os app/notion-export/</code>). The library page reads from that folder. Empty for now — placeholder structure shown above.</p>
-          </div>
+        <div class="bos-home-progress-bar">
+          <span data-bos-level-bar style="width:0%"></span>
         </div>
       </section>
 
@@ -290,24 +86,62 @@
 
   <script src="bos.js"></script>
   <script>
-    /* Featured add-ons strip — first 3 from BOS.ADDONS */
+    /* Adapt the "next move" card to where the user actually is.
+       Free-tier journey:
+         1. New user → Take Health Check
+         2. HC done → Add your business name (Company Profile)
+         3. Company filled → Open your first lesson
+         4. Lesson opened → Add your first to-do
+         5. Done → "You're set. Keep going at your own pace."  */
     document.addEventListener('DOMContentLoaded', function () {
-      var grid = document.querySelector('[data-bos-featured-addons]');
-      var mode = window.BOS.getMode();
-      var picks = window.BOS.ADDONS.slice(0, 3);
-      grid.innerHTML = picks.map(function (a) {
-        var owned = mode === 'customer';
-        return '<a href="marketplace.html" class="addon-mini' + (owned ? ' is-owned' : '') + '">'
-          + '<div class="addon-icon">' + a.icon + '</div>'
-          + '<div class="addon-mini-body">'
-          +   '<div class="addon-mini-name">' + a.name + '</div>'
-          +   '<div class="addon-mini-blurb">' + a.blurb + '</div>'
-          + '</div>'
-          + '<div class="addon-mini-cta">' + (owned ? 'Open →' : '£' + a.price + '/mo →') + '</div>'
-          + '</a>';
-      }).join('');
-      var t = document.querySelector('[data-bos-addons-title]');
-      if (mode === 'customer' && t) t.textContent = 'Your installed tools.';
+      var hc = null, company = null, progress = null, tasks = null;
+      try {
+        hc       = JSON.parse(localStorage.getItem('bos.healthCheck') || 'null');
+        company  = JSON.parse(localStorage.getItem('bos.company') || 'null');
+        progress = JSON.parse(localStorage.getItem('bos.progress') || '{}');
+        tasks    = JSON.parse(localStorage.getItem('bos.tasks') || '{}');
+      } catch (e) {}
+
+      var hasHc      = !!hc;
+      var hasCompany = company && (company.oneliner || company['founder-name']);
+      var hasLesson  = (progress.completed && Object.keys(progress.completed).length > 1) || (progress.xp || 0) >= 200;
+      var hasTask    = tasks && ((tasks.today || []).length + (tasks.week || []).length + (tasks.done || []).length) > 0;
+
+      var t = document.querySelector('[data-bos-next-title]');
+      var b = document.querySelector('[data-bos-next-body]');
+      var c = document.querySelector('[data-bos-next-cta]');
+
+      if (!hasHc) {
+        t.textContent = 'Take the free Health Check.';
+        b.textContent = 'It takes 12 minutes and unlocks a personalised picture of your business — what\'s leaking customers, where the quick wins are, what to do this week.';
+        c.textContent = 'Start the Health Check →';
+        c.setAttribute('href', '../lead magnet app/index.html?from=bos');
+      } else if (!hasCompany) {
+        t.textContent = 'Tell us about your business.';
+        b.textContent = 'Two minutes. Just the basics — what you sell, who you serve. We use it to tailor everything else.';
+        c.textContent = 'Open my Company Profile →';
+        c.setAttribute('href', 'company.html');
+      } else if (!hasLesson) {
+        t.textContent = 'Read your first quick-win lesson.';
+        b.textContent = 'Five lessons, 10–15 minutes each. Start with Core Principles — it\'s the one that holds everything else up.';
+        c.textContent = 'Open Core Principles →';
+        c.setAttribute('href', 'module.html?id=core-principles');
+      } else if (!hasTask) {
+        t.textContent = 'Add your first to-do.';
+        b.textContent = 'Pick one thing the lesson made you want to do this week. Write it down. Move it forward.';
+        c.textContent = 'Open my To-dos →';
+        c.setAttribute('href', 'tasks.html');
+      } else {
+        t.textContent = 'You\'re set. Keep going at your own pace.';
+        b.textContent = 'Pick whatever\'s next — another lesson, your numbers, a call with us. The OS is yours.';
+        c.textContent = 'Browse lessons →';
+        c.setAttribute('href', 'database.html');
+      }
+
+      /* Show progress strip if any XP earned */
+      if ((progress.xp || 0) > 0) {
+        document.querySelector('[data-bos-home-progress]').removeAttribute('hidden');
+      }
     });
   </script>
 
