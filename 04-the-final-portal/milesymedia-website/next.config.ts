@@ -105,6 +105,7 @@ const nextConfig: NextConfig = {
     "@aqua/plugin-agency-marketing",
     "@aqua/plugin-client-crm",
     "@aqua/plugin-ecommerce",
+    "@aqua/plugin-email-sender",
     "@aqua/plugin-fulfillment",
     "@aqua/plugin-leads-pipeline",
     "@aqua/plugin-memberships",

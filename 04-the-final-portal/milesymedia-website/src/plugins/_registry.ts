@@ -18,6 +18,7 @@ import { validatePlugin, validateRegistry } from "./_validate";
 import fulfillmentManifest from "@aqua/plugin-fulfillment";
 import websiteEditorManifest from "@aqua/plugin-website-editor";
 import ecommerceManifest from "@aqua/plugin-ecommerce";
+import emailSenderManifest from "@aqua/plugin-email-sender";
 import agencyHrManifest from "@aqua/plugin-agency-hr";
 import membershipsManifest from "@aqua/plugin-memberships";
 import affiliatesManifest from "@aqua/plugin-affiliates";
@@ -39,6 +40,10 @@ import "./foundation-adapters/agencyFinanceFoundation";
 import "./foundation-adapters/agencyMarketingFoundation";
 import "./foundation-adapters/clientCrmFoundation";
 import "./foundation-adapters/publicFunnelFoundation";
+// email-sender registers BEFORE leads-pipeline so leads-pipeline's
+// `emailEnqueuePort` lookup of `isFoundationRegistered()` returns true
+// when its own adapter binds.
+import "./foundation-adapters/emailSenderFoundation";
 import "./foundation-adapters/leadsPipelineFoundation";
 
 // R6 cross-plugin event-bus subscriber registrations. Each plugin's
@@ -62,6 +67,7 @@ const PLUGINS: AquaPlugin[] = [
   fulfillmentManifest as unknown as AquaPlugin,
   websiteEditorManifest as unknown as AquaPlugin,
   ecommerceManifest as unknown as AquaPlugin,
+  emailSenderManifest as unknown as AquaPlugin,
   agencyHrManifest as unknown as AquaPlugin,
   membershipsManifest as unknown as AquaPlugin,
   affiliatesManifest as unknown as AquaPlugin,

@@ -138,6 +138,32 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
       operator checklist (10 steps) in chapter walks Ed through the
       end-to-end happy path once gap 1 + 2 close.
 
+### Done — T1 email-sender foundation registration (chapter #162, 2026-05-07)
+
+- [x] **T1 — email-sender foundation registration (closes ch#161 Gap #3).**
+      `@aqua/plugin-email-sender` (chapter #144) was shipped by T2 R024
+      but never wired into `src/plugins/_registry.ts`, so the
+      `emailEnqueuePort` in `leadsPipelinePorts.ts` (chapter #159) and
+      the forgotten-password route (chapter #160) both threw
+      `[leads-pipeline.emailEnqueuePort] email-sender foundation not
+      registered (foundation-pending)`. **Done — chapter #162**:
+      package.json workspace dep + smoke script · `next.config.ts`
+      transpilePackages · NEW
+      `src/plugins/foundation-adapters/emailSenderFoundation.ts`
+      mirroring publicFunnel + leadsPipeline shape · `_registry.ts`
+      manifest import + PLUGINS append + side-effect import BEFORE
+      `leadsPipelineFoundation` so the order-dependent
+      `isFoundationRegistered()` guard passes. Smoke 8/8 via
+      `npm run smoke:email-sender-foundation` — 6 source-markers + 2
+      runtime (isFoundationRegistered true; emailEnqueuePort no longer
+      throws foundation-pending, reaches the "not installed for agency"
+      guard). `npx tsc --noEmit` clean. **Q-ASSUMED**: drivers default-
+      registry (Postmark + no-op + sendgrid/resend/smtp stubs)
+      sufficient — real provider creds are operator action via the
+      plugin's per-agency Settings page; marketingTemplates wiring with
+      agency-marketing deferred (templateless enqueues — password-reset
+      + leads-pipeline campaigns today — work without it).
+
 ### Done — T4 R009 (chapter #159, 2026-05-07)
 
 - [x] **T4 R009 — Incubator-inside-BOS wire-in.** Incubator is now
