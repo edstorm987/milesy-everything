@@ -644,3 +644,253 @@ footer {
 }
 .mm-trust-row strong { color: var(--text); font-weight: 700; }
 
+
+/* ─── R008 Marketing overhaul — Incubator visual register ─────────── */
+
+/* Sticky thin top bar — persistent HC CTA */
+.mm-stickybar {
+  background: linear-gradient(90deg, #0a0a0a, #1a1208);
+  border-bottom: 1px solid #2A2A2A;
+  color: #D4B888;
+  font-size: 13px;
+  position: sticky;
+  top: 0;
+  z-index: 9990;
+}
+.mm-stickybar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+.mm-stickybar-icon { font-size: 16px; }
+.mm-stickybar-text { flex: 1; color: #C9A76A; }
+.mm-stickybar-text strong { color: #D4B888; }
+.mm-stickybar-cta {
+  background: #C9A76A;
+  color: #1a1208;
+  padding: 6px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.mm-stickybar-cta:hover { background: #D4B888; }
+@media (max-width: 720px) {
+  .mm-stickybar-text { display: none; }
+}
+
+/* Hero — cover-banner variant matching Incubator §15d */
+.mm-hero-cover {
+  position: relative;
+  padding: 96px 0 72px;
+  background: #050402;
+  color: #E9E5DA;
+  overflow: hidden;
+}
+.mm-hero-cover-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.85)),
+    radial-gradient(circle at 30% 30%, #3a2a14 0%, #1a1208 45%, #050402 100%);
+  background-size: cover;
+  z-index: 0;
+}
+.mm-hero-cover-inner { position: relative; z-index: 1; max-width: 880px; }
+.mm-hero-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #C9A76A;
+  margin-bottom: 18px;
+}
+.mm-hero-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 56px;
+  line-height: 1.05;
+  font-weight: 800;
+  margin: 0 0 20px;
+  color: #E9E5DA;
+}
+.mm-hero-title .accent { color: #D4B888; }
+.mm-hero-lead {
+  color: #C9C0AE;
+  font-size: 18px;
+  line-height: 1.55;
+  max-width: 700px;
+  margin: 0 0 28px;
+}
+.mm-hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.mm-hero-footnote {
+  color: #8A8377;
+  font-size: 13px;
+  margin: 12px 0 0;
+}
+.mm-hero-footnote a { color: #D4B888; }
+@media (max-width: 720px) {
+  .mm-hero-title { font-size: 38px; }
+  .mm-hero-cover { padding: 64px 0 48px; }
+}
+
+/* Audiences — 3-card "How it works" */
+.mm-audiences { padding: 88px 0; background: #f9f7f1; }
+.mm-audiences-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 36px;
+}
+.mm-audience {
+  background: #fff;
+  border: 1px solid #e6e1d4;
+  border-radius: 14px;
+  padding: 28px 24px;
+  position: relative;
+}
+.mm-audience-icon { font-size: 28px; margin-bottom: 8px; }
+.mm-audience-tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8E7340;
+  background: rgba(201, 167, 106, 0.12);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+.mm-audience h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  margin: 0 0 12px;
+}
+.mm-audience-list {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: #4a4538;
+}
+.mm-audience-list li {
+  padding: 6px 0 6px 22px;
+  position: relative;
+}
+.mm-audience-list li:before {
+  content: "✦";
+  color: #C9A76A;
+  position: absolute;
+  left: 0;
+  top: 6px;
+}
+@media (max-width: 900px) { .mm-audiences-grid { grid-template-columns: 1fr; } }
+
+/* What Aqua replaces — comparison strip */
+.mm-replaces { padding: 88px 0; background: #0F0F0F; color: #E9E5DA; }
+.mm-replaces .section-head h2,
+.mm-replaces .section-head .eyebrow,
+.mm-replaces .section-head p { color: #E9E5DA; }
+.mm-replaces .section-head .eyebrow { color: #C9A76A; }
+.mm-replaces .section-head p { color: #8A8377; }
+.mm-replaces-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: stretch;
+  margin-top: 32px;
+}
+.mm-replaces-col {
+  background: #161616;
+  border: 1px solid #2A2A2A;
+  border-radius: 14px;
+  padding: 24px;
+}
+.mm-replaces-col--after {
+  border-color: #8E7340;
+  background: linear-gradient(180deg, #1a1208, #0F0F0F);
+}
+.mm-replaces-col-head {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  color: #8A8377;
+}
+.mm-replaces-col-head--after { color: #C9A76A; }
+.mm-replaces-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+.mm-replaces-col li {
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+}
+.mm-replaces-col--after li { background: rgba(201, 167, 106, 0.08); }
+.mm-replaces-arrow {
+  align-self: center;
+  font-size: 32px;
+  color: #C9A76A;
+}
+.mm-replaces-note { margin: 14px 0 18px; font-size: 13px; color: #8A8377; }
+@media (max-width: 760px) {
+  .mm-replaces-grid { grid-template-columns: 1fr; }
+  .mm-replaces-arrow { transform: rotate(90deg); justify-self: center; }
+}
+
+/* Founding clients — testimonials honesty placeholder */
+.mm-founding { padding: 88px 0; background: #f9f7f1; }
+.mm-founding-card {
+  background: #fff;
+  border: 1px solid #e6e1d4;
+  border-radius: 16px;
+  padding: 32px;
+  margin-top: 32px;
+}
+.mm-founding-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.mm-founding-col h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+.mm-founding-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  color: #4a4538;
+}
+.mm-founding-col li {
+  padding: 8px 0 8px 22px;
+  position: relative;
+}
+.mm-founding-col li:before {
+  content: "✓";
+  color: #5a7a3a;
+  position: absolute;
+  left: 0;
+}
+.mm-founding-cta {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e6e1d4;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+@media (max-width: 760px) { .mm-founding-row { grid-template-columns: 1fr; } }

@@ -216,3 +216,44 @@ rewrite addition doesn't change the build output shape).
   hit `/api/dev/seed-demo`. With same-origin in prod the URL becomes
   `https://milesymedia.com/api/dev/seed-demo?reset=1` — Vercel cron
   config gets that exact target.
+
+## Append — R008 marketing site overhaul (2026-05-07)
+
+The marketing static `index.html` was rebuilt for visual parity with
+the Notion-Incubator surface (chapter `04-aqua-internals-reference.md`
+§15d) and structural funnel tightening:
+
+- Hero replaced with `.mm-hero-cover` cover-banner variant — Playfair
+  Display title, gold-marble radial gradient background, primary HC
+  CTA + secondary Demo CTA + secondary "peek inside the Incubator"
+  link. Same dark surface as Incubator pages.
+- NEW `.mm-audiences` 3-card "How it works" section after the hero —
+  Agencies / Business owners / End-customers cards.
+- NEW `.mm-replaces` "What Aqua replaces" comparison strip — 8-tool
+  Before column → Aqua After column (dark surface; visually anchors
+  the platform-vs-stack story).
+- Testimonials rebuilt as `.mm-founding` honesty placeholder per
+  chapter #68 — "Founding clients welcome" with what-you-get +
+  what-we-ask columns + dual CTA (HC + Incubator preview). No
+  fabricated quotes / logos.
+- NEW `.mm-stickybar` thin top bar (sticky, position:sticky top:0,
+  z:9990) added to `index.html` AND `login.html` so the HC CTA is
+  persistent across the marketing site. `admin.html` not touched
+  this round (it's an authed mock — out of scope per honesty).
+- Footer link row gained "Health Check · Incubator" entries before
+  the existing Client portal / Demo / mailto links.
+
+CSS appended to `styles.css` (~250L) under section
+`/* ─── R008 Marketing overhaul — Incubator visual register ─── */`.
+No new top-level paths added → no new vercel rewrites required (the
+new sections are inside existing `index.html`; the only NEW asset
+reference is `incubator app/index.html` which is already served from
+the same origin via the existing static-folder mount).
+
+Stitching contract intact:
+- `data-aqua-action="sign-in"` / `="demo"` rewrite logic at the bottom
+  of `index.html` unchanged → portal-base routing still works.
+- `health-check.html` rewrite shim at the bottom unchanged → prod
+  redirect still works.
+- "Last deployed YYYY-MM-DD" footer line preserved (still 2026-05-04;
+  bump on next deploy).

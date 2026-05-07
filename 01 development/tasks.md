@@ -69,6 +69,21 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R008 — Marketing site overhaul (Incubator visual parity)** — DONE.
+      Marketing index.html rebuilt for visual parity with Incubator
+      surface §15d. NEW `.mm-stickybar` sticky top bar with persistent
+      HC CTA added to index.html + login.html. Hero replaced with
+      `.mm-hero-cover` cover-banner (Playfair 56px, gold-marble bg, HC
+      primary + Demo secondary + Incubator preview link). NEW
+      `.mm-audiences` 3-card section (Agencies/Business owners/End-
+      customers). NEW dark `.mm-replaces` 8-tool→Aqua comparison strip.
+      Testimonials rebuilt as `.mm-founding` honesty placeholder per
+      #68 (no fab quotes — "Founding clients welcome" w/ what-you-get +
+      what-we-ask columns + dual CTA). Footer gained Health Check +
+      Incubator links. styles.css +~250L R008 block (mobile-responsive).
+      Stitching contract intact (no new top-level paths). Smoke:
+      index/login/incubator all 200; mm-* classes 24× in rendered HTML.
+      Stitch chapter R008 append + MASTER #84.
 - [x] **T4 R007 — Aqua AI scripted companion (no API)** — DONE.
       NEW canonical `incubator app/lib/aqua-ai.js` (~245L) — 35-pattern
       keyword router across 6 clusters (phase/stuck/what-next/HC-

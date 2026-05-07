@@ -20,6 +20,15 @@
 </head>
 <body>
 
+  <!-- Sticky thin top bar — persistent HC CTA across the marketing site -->
+  <div class="mm-stickybar">
+    <div class="container mm-stickybar-row">
+      <span class="mm-stickybar-icon">🩺</span>
+      <span class="mm-stickybar-text">Where is your business <strong>quietly leaking</strong> customers?</span>
+      <a href="health-check.html" class="mm-stickybar-cta">Take the free Health Check →</a>
+    </div>
+  </div>
+
   <!-- Navbar -->
   <header class="nav">
     <div class="container nav-row">
@@ -41,29 +50,101 @@
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container hero-grid">
-      <div>
-        <span class="eyebrow">Performance · Brand · Growth</span>
-        <h1>Marketing that <span class="accent">actually moves</span> the needle.</h1>
-        <p class="lead">
-          We're a tight, senior team that builds full-funnel marketing engines for ambitious brands.
-          Strategy, creative, and paid — under one roof, accountable to one number: revenue.
-        </p>
-        <div class="hero-actions">
-          <a href="health-check.html" class="btn btn-primary btn-lg">Take the free health check →</a>
-          <a href="login.html" class="btn btn-secondary btn-lg" data-aqua-action="demo">Try the live demo →</a>
+  <!-- Hero — cover-banner variant, visual parity with the Incubator surface -->
+  <section class="mm-hero-cover">
+    <div class="mm-hero-cover-bg" aria-hidden="true"></div>
+    <div class="container mm-hero-cover-inner">
+      <span class="mm-hero-eyebrow">Where Healing Meets Revolution.</span>
+      <h1 class="mm-hero-title">A platform — and a process — that <span class="accent">moves your business forward</span>.</h1>
+      <p class="mm-hero-lead">
+        Most teams are leaking customers without knowing where. We surface the leaks with a free Health Check, then walk you through a four-phase Incubator that turns the diagnosis into a real, owned operating system.
+      </p>
+      <div class="mm-hero-actions">
+        <a href="health-check.html" class="btn btn-primary btn-lg">Take the free Health Check →</a>
+        <a href="login.html" class="btn btn-secondary btn-lg" data-aqua-action="demo">Try the live demo →</a>
+      </div>
+      <p class="mm-hero-footnote">12 minutes · honest scoring · your data stays yours · <a href="incubator app/index.html">peek inside the Incubator ↗</a></p>
+    </div>
+  </section>
+
+  <!-- How it works — three audiences (NEW R008) -->
+  <section class="mm-audiences">
+    <div class="container">
+      <div class="section-head mm-section-head">
+        <span class="eyebrow">Three audiences. One platform.</span>
+        <h2>The same operating system serves all three sides.</h2>
+        <p>Whether you're an agency running ten clients, a business owner running yours, or the customers buying from one — Aqua is the layer underneath that makes it work.</p>
+      </div>
+      <div class="mm-audiences-grid">
+        <div class="mm-audience">
+          <div class="mm-audience-icon">💼</div>
+          <span class="mm-audience-tag">Agencies</span>
+          <h3>Run a portfolio without burning out.</h3>
+          <p>Multi-client architecture, shared SOPs, plugin ecosystem. One pane of glass for your whole roster. Bring your own clients; their data stays yours.</p>
+          <ul class="mm-audience-list">
+            <li>Per-client portals + agency-wide dashboards</li>
+            <li>Plugin install on demand — Inbox, CRM, Marketing</li>
+            <li>SOPs, kanbans, finances, files — all in one shell</li>
+          </ul>
+        </div>
+        <div class="mm-audience">
+          <div class="mm-audience-icon">🏢</div>
+          <span class="mm-audience-tag">Business owners</span>
+          <h3>Stop juggling ten tools to run one business.</h3>
+          <p>Your Business OS — the operating layer above your CRM, your inbox, your calendar. Lessons, modules, niche packs, and an honest Health Check that drives the rest of the portal.</p>
+          <ul class="mm-audience-list">
+            <li>Free tier: HC + 5 lessons + niche playbook</li>
+            <li>Pro tier: full add-on shelf + custom roadmap</li>
+            <li>The Opulence Incubator — 4-phase onboarding</li>
+          </ul>
+        </div>
+        <div class="mm-audience">
+          <div class="mm-audience-icon">👥</div>
+          <span class="mm-audience-tag">End-customers</span>
+          <h3>The customer experience your business deserves.</h3>
+          <p>Memberships, storefronts, member portals — branded and clean. The customer-facing surfaces your business runs on, designed by the same team that obsesses over your operator surface.</p>
+          <ul class="mm-audience-list">
+            <li>Memberships + drip content + paywall flows</li>
+            <li>Conversion-first storefronts</li>
+            <li>White-labelled per-client portals</li>
+          </ul>
         </div>
       </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="stat-card s1">
-          <div class="num">+312%</div>
-          <div class="lbl">Avg. ROAS lift</div>
+    </div>
+  </section>
+
+  <!-- What Aqua replaces — comparison strip (NEW R008) -->
+  <section class="mm-replaces">
+    <div class="container">
+      <div class="section-head mm-section-head">
+        <span class="eyebrow">One platform · one bill · one team</span>
+        <h2>What Aqua replaces.</h2>
+        <p>The average agency runs 8+ disconnected tools. Each one a subscription. Each one a different login. Each one its own export. Aqua collapses the stack.</p>
+      </div>
+      <div class="mm-replaces-grid">
+        <div class="mm-replaces-col">
+          <div class="mm-replaces-col-head mm-replaces-col-head--before">Before</div>
+          <ul>
+            <li>📥 Helpscout / Front (inbox)</li>
+            <li>🗂 HubSpot / Pipedrive (CRM)</li>
+            <li>🪄 Webflow / Squarespace (sites)</li>
+            <li>🛒 Shopify / WooCommerce (storefront)</li>
+            <li>🎟 Memberstack / Circle (memberships)</li>
+            <li>🤝 Rewardful / FirstPromoter (affiliates)</li>
+            <li>📣 Mailchimp / Klaviyo (email)</li>
+            <li>💷 QuickBooks / Stripe-only (finance)</li>
+          </ul>
         </div>
-        <div class="stat-card s2">
-          <div class="num">$48M</div>
-          <div class="lbl">Tracked revenue</div>
+        <div class="mm-replaces-arrow" aria-hidden="true">→</div>
+        <div class="mm-replaces-col mm-replaces-col--after">
+          <div class="mm-replaces-col-head mm-replaces-col-head--after">With Aqua</div>
+          <ul>
+            <li>◆ <strong>Aqua portal</strong> — everything above, one shell</li>
+            <li>◆ Same login. Same data. Same team.</li>
+            <li>◆ Plugins install on demand — pay only for what you use</li>
+          </ul>
+          <p class="muted mm-replaces-note">Per-client billing, per-tool entitlement. No "all or nothing" lock-in.</p>
+          <a href="health-check.html" class="btn btn-primary">Start with the Health Check →</a>
         </div>
       </div>
     </div>
@@ -226,27 +307,40 @@
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <section id="testimonials">
+  <!-- Testimonials — honesty placeholder per chapter #68. Real client
+       quotes drop in here once shipped; until then we lead with the
+       founding-cohort offer rather than fabricate social proof. -->
+  <section id="testimonials" class="mm-founding">
     <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Don't take our word</span>
-        <h2>Founders who shipped with us.</h2>
+      <div class="section-head mm-section-head">
+        <span class="eyebrow">Founding cohort · Welcome</span>
+        <h2>Founding clients welcome.</h2>
+        <p>We're shipping the platform with the first cohort right now — every client is a co-author of how this evolves. No fabricated logos, no stock testimonials. If you want a seat in that room, the door's open.</p>
       </div>
-      <div class="quote-grid">
-        <div class="quote">
-          <p>"Milesy rebuilt our entire paid funnel in 30 days. CAC dropped 41% in the first quarter and we 2.6×'d our ad spend with confidence."</p>
-          <div class="who">
-            <div class="av">JL</div>
-            <div><strong>Jordan Lee</strong><small>Co-founder, Northbeam Apparel</small></div>
+      <div class="mm-founding-card">
+        <div class="mm-founding-row">
+          <div class="mm-founding-col">
+            <h3>What you get as a founding client</h3>
+            <ul>
+              <li>Founder pricing — locked for life of the cohort</li>
+              <li>Direct line to the build team (no support-tier gatekeeping)</li>
+              <li>First call on every new add-on / niche pack</li>
+              <li>Your business shapes the roadmap</li>
+            </ul>
+          </div>
+          <div class="mm-founding-col">
+            <h3>What we ask in return</h3>
+            <ul>
+              <li>Honest feedback when something doesn't work</li>
+              <li>Show up for the strategy review</li>
+              <li>Ship one thing, then the next — no perfectionism</li>
+              <li>An eventual real testimonial (when it's earned)</li>
+            </ul>
           </div>
         </div>
-        <div class="quote">
-          <p>"We've worked with five agencies. Milesy is the first one that actually understood the business — not just the channels. The reporting alone changed how we make decisions."</p>
-          <div class="who">
-            <div class="av">SR</div>
-            <div><strong>Sara Reyes</strong><small>CMO, Heliogen Skincare</small></div>
-          </div>
+        <div class="mm-founding-cta">
+          <a href="health-check.html" class="btn btn-primary btn-lg">Start with the Health Check →</a>
+          <a href="incubator app/index.html" class="btn btn-secondary btn-lg">Peek inside the Incubator →</a>
         </div>
       </div>
     </div>
@@ -257,8 +351,8 @@
     <div class="container">
       <span class="eyebrow">Get started</span>
       <h2>Ready when you are.</h2>
-      <p>Take our free 2-minute Digital Health Check. We'll score six pillars of your marketing and surface the three highest-leverage moves you could make this quarter — even if you don't hire us.</p>
-      <a href="health-check.html" class="btn btn-primary btn-lg">Take the free health check →</a>
+      <p>Take the free 12-minute Health Check. It scores five honest pillars of your business and surfaces the three highest-leverage moves you could make this quarter — even if you don't hire us. No fabricated numbers; only what you answered.</p>
+      <a href="health-check.html" class="btn btn-primary btn-lg">Take the free Health Check →</a>
     </div>
   </section>
 
@@ -267,6 +361,8 @@
     <div class="container foot-row">
       <span>© 2026 Milesy Media · All rights reserved. <span style="opacity:0.4">· Last deployed 2026-05-04</span></span>
       <span>
+        <a href="health-check.html">Health Check</a> ·
+        <a href="incubator app/index.html">Incubator</a> ·
         <a href="login.html" data-aqua-action="sign-in">Client portal</a> ·
         <a href="login.html" data-aqua-action="demo">Demo</a> ·
         <a href="mailto:hello@milesymedia.co">hello@milesymedia.co</a>
