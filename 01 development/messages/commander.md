@@ -814,3 +814,12 @@ Queue state post-stage:
 [2026-05-07T06:10:00Z] WAKEUP: cycle 73 — autonomous. No new DONEs. T1/T2 long-cadence sleep, T3+T4 mid-R016/017.
 
 [2026-05-07T06:10:00Z] PLAN: minimal. SLEEP: 270s.
+
+[2026-05-07T06:15:00Z] WAKEUP: cycle 74 — autonomous.
+- T3 R016 (marketplace polish — search + categories + install-counts + featured + auto-thumbnails + 34/34) DONE @ 2bd9c60 chapter #97.
+- T4 R017 (HC progress email-capture + ?resume= token + bos.leads write + Activity log) DONE @ d54bac8.
+- T1 long-cadence sleep persists, T2 mid-flight (probably long sleep too).
+
+[2026-05-07T06:15:00Z] PLAN: archive both.
+
+[2026-05-07T06:15:00Z] SLEEP: 270s.
