@@ -1004,6 +1004,38 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R029 — Custom CSS / head injection per variant** — DONE.
+      EditorPage already carries customCss/customHead. NEW
+      `lib/customCode.ts` with `validateCustomCode(value, "css"
+      |"head")` (UTF-8 byte cap via TextEncoder + script gate
+      both kinds + head-only iframe + javascript:-URI gates) +
+      `buildCustomCodeHead({ brandCss?, customCss?, customHead? })`
+      that emits single `<style data-aqua="custom-code">` with
+      brand-kit vars + operator CSS in cascade order, head
+      fragment as separate marked block. Caps: CSS 8 KiB / head
+      4 KiB. NEW `api/handlers/customCode.ts` + 2 routes (GET
+      preload with caps surfaced; POST validates each then
+      patches; 400 with reason embedded on validation failure).
+      Foundation host wires `buildCustomCodeHead({ brandCss:
+      extendedBrandToStyleString(client.brand) /*R011*/, ...page
+      })` into `<head>`. NEW `__smoke__/r029-custom-css.test.ts`
+      32/32 (caps; CSS valid/too-large/script/iframe-selector-OK/
+      multi-byte; head valid/too-large/script/iframe/javascript:
+      + sneaky onclick + uppercase; buildCustomCodeHead brand-
+      only/brand+custom-cascade-order/head-fragment-marker/
+      empty→empty; HTTP GET+caps/POST 200×3/400×4/404×2/missing-
+      siteId 400). package.json test chain extended. tsc-clean.
+      Chapter `04-custom-css.md` + MASTER row #110.
+      Q-ASSUMED: regex validator not full HTML parser (R+1);
+      per-block custom CSS out of scope (operator uses class
+      selectors); JavaScript injection rejected outright;
+      javascript:-URI gate covers attribute vectors not every
+      CSS-import exploit (browser CSP defense); editor "Custom
+      code" tab UI host-composition; render helper assumes
+      R011's extendedBrandToStyleString. Deferred: full HTML
+      parser, "Custom code" editor tab UI, CSS linter
+      integration, per-block custom CSS via customSelector,
+      auto-format/minify on save, cache-bust CDN hook.
 - [x] **T3 R028 — Save block group as reusable component** — DONE.
       NEW `server/components.ts`: `ComponentRecord` + CRUD +
       `expandComponentRefs(blocks, components, depth?=0)` (deep-

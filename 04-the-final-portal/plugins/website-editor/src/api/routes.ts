@@ -96,6 +96,7 @@ import {
   handleUpdateComponent,
   handleDeleteComponent,
 } from "./handlers/components";
+import { handleGetCustomCode, handleSetCustomCode } from "./handlers/customCode";
 import {
   handleListBlogPosts,
   handleGetBlogPost,
@@ -230,4 +231,8 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/components", methods: ["POST"], handler: handleCreateComponent },
   { path: "/components", methods: ["PATCH"], handler: handleUpdateComponent },
   { path: "/components", methods: ["DELETE"], handler: handleDeleteComponent },
+
+  // Custom code (R029) — per-variant CSS + head fragment.
+  { path: "/pages/custom-code", methods: ["GET"], handler: handleGetCustomCode },
+  { path: "/pages/custom-code", methods: ["POST"], handler: handleSetCustomCode },
 ];
