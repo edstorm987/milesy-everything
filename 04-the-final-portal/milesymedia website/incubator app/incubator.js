@@ -33,6 +33,15 @@
   set(KEY_ACTIVE, '1');
   if (!get(KEY_STARTED, null)) set(KEY_STARTED, new Date().toISOString());
 
+  /* R010 — record last-visited phase page for the "Pick up where you
+     left off" pill on root. Phase pages match `phase-N-…html`. */
+  (function () {
+    var page = (location.pathname.split('/').pop() || '');
+    if (/^phase-\d+/.test(page)) {
+      try { localStorage.setItem('incubator.lastVisitedPhasePage', page); } catch (e) {}
+    }
+  })();
+
   /* ─── ?phase= dev override (mirrors BOS ?dev=1) ─── */
   function applyQueryPhase() {
     var m = location.search.match(/[?&]phase=([a-z\-]+)/);

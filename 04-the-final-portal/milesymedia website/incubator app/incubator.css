@@ -751,6 +751,70 @@ a:hover { color: var(--inc-gold); }
 .inc-ai-foot a { color: var(--inc-muted); }
 .inc-ai-foot a:hover { color: var(--inc-accent); }
 
+/* ─── Welcome / resume banner (R010) ─── */
+.inc-welcome { margin: 18px 0 0; }
+.inc-welcome-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  background: linear-gradient(180deg, #1a1208, #0F0F0F);
+  border: 1px solid var(--inc-gold-soft);
+  border-radius: var(--inc-radius);
+  padding: 20px 22px;
+  text-decoration: none;
+  color: var(--inc-text);
+}
+.inc-welcome-card--resume {
+  background: linear-gradient(180deg, #0F1420, #0a0f18);
+  border-color: #4a6e8e;
+  cursor: pointer;
+}
+.inc-welcome-icon { font-size: 28px; line-height: 1; flex: 0 0 auto; }
+.inc-welcome-body { flex: 1; }
+.inc-welcome-greet {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  color: var(--inc-accent);
+  margin-bottom: 4px;
+}
+.inc-welcome-card--resume .inc-welcome-greet { color: #9ec5e8; }
+.inc-welcome-lead {
+  margin: 6px 0 14px;
+  color: var(--inc-text);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.inc-welcome-card--resume .inc-welcome-lead { margin-bottom: 0; }
+.inc-welcome-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.inc-welcome-dismiss {
+  background: transparent;
+  color: var(--inc-muted);
+  border: 1px solid var(--inc-line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.inc-welcome-dismiss:hover { color: var(--inc-text); border-color: var(--inc-gold-soft); }
+.inc-welcome-cta {
+  align-self: center;
+  color: #9ec5e8;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.inc-chip-resume {
+  background: rgba(80, 130, 180, 0.18);
+  border-color: #4a6e8e;
+  color: #9ec5e8;
+}
+
 /* ─── Tiny header strip ─── */
 .inc-toprail {
   display: flex;

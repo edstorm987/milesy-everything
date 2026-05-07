@@ -19,6 +19,10 @@
 
   <div class="inc-cover" data-variant="forest"></div>
   <div class="inc-page">
+    <!-- R010 first-visit / returning-visitor banner. inc-welcome.js
+         renders into either slot based on incubator.welcomedAt + lastVisitedPhasePage. -->
+    <section class="inc-welcome" data-inc-welcome hidden></section>
+
     <div class="inc-icon">🏛</div>
     <h1 class="inc-title">THE OPULENCE INCUBATOR 3.0</h1>
     <p class="inc-caption" data-niche-tagline>Your Onboarding Control Panel — Please Follow Each Step in Order.</p>
@@ -136,6 +140,7 @@
 
   <script src="copy-packs/all.js"></script>
   <script src="lib/recommend.js"></script>
+  <script src="lib/welcome.js"></script>
   <script src="lib/aqua-ai.js"></script>
   <script src="lib/aqua-ai-ui.js"></script>
   <script src="incubator.js"></script>

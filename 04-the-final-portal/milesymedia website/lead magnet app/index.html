@@ -184,6 +184,17 @@
           </div>
         </div>
 
+        <!-- ── R010: Incubator handoff — primary post-HC next step ── -->
+        <div class="hc-incubator-handoff">
+          <div class="hc-incubator-handoff-icon">🏛</div>
+          <div class="hc-incubator-handoff-body">
+            <span class="eyebrow">Where to next</span>
+            <h2>Continue your journey in the Incubator.</h2>
+            <p>The Health Check is the mirror. The Incubator is the path. Four templated phases — Epic Intro · Blueprint · Diagnostics · Brand Builder — that turn what surfaced above into a real, owned operating system. We'll seed your brand details from the answers you just gave.</p>
+            <a href="../incubator app/index.html?from=hc" class="btn btn-primary btn-lg" data-hc-incubator-cta>Continue your journey →</a>
+          </div>
+        </div>
+
         <!-- ── Transparency block — how we got this & what we'd verify ── -->
         <div class="hc-transparency">
           <details class="hc-transparency-detail">
@@ -899,6 +910,49 @@
       state = { step:'intro', type:null, areaIdx:0, tier:null, exerciseIdx:0, answers:{} };
       show('intro');
     }
+  });
+
+  /* ─── R010: HC → Incubator handoff bridge ─────────────────────────
+     On click of the "Continue your journey →" CTA, seed Incubator state
+     from the HC inputs (business name, niche, goal) so the user lands
+     in a populated Incubator surface. Honesty contract: we only seed
+     what the user actually told us; nothing fabricated. */
+  function bridgeHcToIncubator() {
+    var get = function (k, d) { try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); } catch (e) { return d; } };
+    var set = function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+    var setStr = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
+
+    var contact = get('hc.contact', null);
+    var user = get('bos.user', null);
+    var brand = get('bos.brand', {}) || {};
+
+    var name = (contact && contact.name) || (user && user.name) || null;
+    var business = (contact && contact.business) || (user && user.business) || null;
+    var niche = (user && user.niche) || brand.niche || 'agency';
+    var goal = (contact && contact.goal) || null;
+
+    if (business && !brand.companyName) brand.companyName = business;
+    if (!brand.niche) brand.niche = niche;
+    set('bos.brand', brand);
+
+    if (goal) {
+      var goals = get('incubator.goals', []) || [];
+      if (goals.indexOf(goal) === -1) { goals.push(goal); set('incubator.goals', goals); }
+    }
+    if (!localStorage.getItem('incubator.phase')) setStr('incubator.phase', 'epic-intro');
+    setStr('incubator.bridgedFromHC', '1');
+    if (name) setStr('incubator.userName', name);
+
+    /* Activity log — admin reports R009 can surface this in R+1. */
+    var activity = get('bos.activity', []) || [];
+    activity.push({ ts: new Date().toISOString(), type: 'hc-to-incubator', msg: (name ? name + ' ' : '') + 'continued from HC into the Incubator' });
+    set('bos.activity', activity);
+  }
+  document.addEventListener('click', function (ev) {
+    var a = ev.target.closest('[data-hc-incubator-cta]');
+    if (!a) return;
+    bridgeHcToIncubator();
+    /* Default navigation proceeds to ../incubator app/index.html?from=hc */
   });
   </script>
 

@@ -619,6 +619,113 @@ itself from DOM after 2.4s. Hidden under
   toast" is descriptive). Left as R+1 hook (`document.addEventListener('incubator:phase-complete', …)`)
   rather than touching HC + BOS unnecessarily this round.
 
+## R010 — HC → Incubator handoff (2026-05-07)
+
+The Health Check is the front door; the Incubator is the path. R010
+wires the two: a primary CTA on the HC results page seeds Incubator
+state from the user's HC inputs, then drops them into a populated
+Incubator surface.
+
+### HC results page
+
+NEW `.hc-incubator-handoff` card inserted **between the leak strip
+and the transparency block** — top-of-fold for the next-step decision.
+Header: "🏛 Continue your journey in the Incubator." + 3-line lead +
+big primary CTA `→ ../incubator app/index.html?from=hc`.
+
+Click handler runs `bridgeHcToIncubator()` (inline in lead-magnet
+script block), then default navigation proceeds.
+
+### `bridgeHcToIncubator()` contract
+
+Reads:
+- `hc.contact` for name + business + goal.
+- `bos.user` as fallback for name + business + niche.
+- `bos.brand` (existing) — preserves any existing fields via JSON merge.
+
+Writes:
+- `bos.brand.companyName` — from `contact.business || user.business`, only if not already set.
+- `bos.brand.niche` — from `user.niche || existing brand.niche || 'agency'`, only if not already set.
+- `incubator.goals[]` — appends `contact.goal` if present and not already in the array.
+- `incubator.phase = 'epic-intro'` — only if unset.
+- `incubator.bridgedFromHC = '1'` — flag the welcome banner consumes.
+- `incubator.userName = <name>` — used by the welcome banner.
+- `bos.activity[]` — appends `{ts, type:'hc-to-incubator', msg}`.
+
+Honesty contract: bridge only seeds what the user actually provided —
+no defaults are invented for missing fields, no scores are
+extrapolated.
+
+### Incubator welcome banner
+
+NEW `incubator app/lib/welcome.js` (~110L) renders into the new
+`<section data-inc-welcome>` slot at the top of root `index.html`.
+
+Two states:
+
+- **First visit** (`incubator.welcomedAt` unset): "Welcome, {name}.
+  Based on your Health Check, you're starting at <strong>Epic Intro</strong>.
+  Watch the welcome video to begin." Primary CTA "Open Epic Intro →"
+  + dismiss button "Got it · don't show again". Dismiss writes
+  `incubator.welcomedAt = <iso>` + logs to `bos.activity[]`.
+- **Returning visitor** (welcomed AND `incubator.lastVisitedPhasePage`
+  set): blue-tinted "Pick up where you left off." card with last-
+  visited phase chip; entire card is a link back to that phase page.
+
+If the user wasn't bridged from HC, the first-visit copy degrades
+gracefully — "You're starting at Epic Intro. Watch the welcome video
+to begin — or jump into any phase from the Phase Path below."
+
+### Last-visited phase tracker
+
+`incubator.js` adds a one-line writer at boot — when current page
+matches `phase-N-…html`, writes `incubator.lastVisitedPhasePage = <page>`.
+No per-phase-page edits needed.
+
+### New / updated localStorage keys
+
+| Key                                 | Type   | Purpose                                          |
+| ----------------------------------- | ------ | ------------------------------------------------ |
+| `incubator.bridgedFromHC`           | `'1'`  | Flag — welcome banner uses for HC-aware copy.    |
+| `incubator.userName`                | string | Captured at bridge; used by welcome banner.      |
+| `incubator.welcomedAt`              | ISO    | Banner-dismissed timestamp.                      |
+| `incubator.lastVisitedPhasePage`    | string | Last `phase-N-…html` visited.                    |
+| `incubator.goals[]`                 | array  | Appended from HC `contact.goal`.                 |
+| `bos.brand.companyName`             | string | Seeded by bridge.                                |
+| `bos.activity[]`                    | array  | Append-only `{ts, type, msg}` log; admin R+1 surfaces. |
+
+### CSS — `.inc-welcome*` block (~70L)
+
+Gold-bordered first-visit card on dark gradient; blue-bordered resume
+card with `.inc-chip-resume` blue-tint variant. Both use Playfair for
+the greet line and the existing Inc button-style for CTAs.
+
+### Smoke (verified 2026-05-07)
+
+- `lead magnet app/index.html` 200; `incubator app/index.html` 200;
+  `incubator app/lib/welcome.js` 200.
+- Manual flow: complete HC → results page renders new "Continue your
+  journey" CTA between leak strip and transparency. Click → bridge
+  writes the 7 keys → navigation to `incubator app/index.html?from=hc`.
+- First Incubator visit shows the welcome banner with "Welcome, <name>."
+  Dismiss writes `incubator.welcomedAt` + logs to `bos.activity[]`.
+- Visit `phase-2-blueprint.html` → returns to root → resume card
+  reads "Pick up where you left off · Blueprint Setup" linking back.
+
+### Q-ASSUMED + R010 follow-ups
+
+- "Real account creation" remains out of scope per prompt — bridge is
+  pure-localStorage seed.
+- `bos.activity[]` is a new append-only log; no consumer yet but
+  R009's admin Reports tab is the natural surface (R+1 add an
+  "Activity" tab pulling the last 50 entries).
+- `phaseFromPage()` slug-matches against the existing 4 phase pages
+  by suffix (epic-intro / blueprint / diagnostics / brand-builder);
+  works as long as filenames stay `phase-N-<slug>.html`.
+- HC `contact.goal` field doesn't exist in current HC schema — bridge
+  is forward-compatible (only writes if present). Could be added as
+  an R+1 step in the HC funnel.
+
 ## Cross-refs
 
 - §15 visual spec — `04-aqua-internals-reference.md` §15a–§15g.

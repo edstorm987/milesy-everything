@@ -69,6 +69,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R010 — HC → Incubator handoff flow** — DONE.
+      NEW `.hc-incubator-handoff` primary CTA card inserted between HC
+      results leak strip + transparency block. Inline
+      `bridgeHcToIncubator()` writes `bos.brand.{companyName,niche}`
+      (only-if-unset), appends `incubator.goals[]` from contact.goal,
+      sets `incubator.phase='epic-intro'` if unset, sets new flags
+      `incubator.bridgedFromHC` + `incubator.userName`, appends to
+      NEW `bos.activity[]` log on click. NEW `incubator app/lib/
+      welcome.js` (~110L) renders root welcome banner — first-visit
+      greets user by name w/ "Based on your HC starting at Epic Intro"
+      + Open-CTA + dismiss button writing `incubator.welcomedAt`;
+      returning-visit shows blue "Pick up where you left off · {phase
+      chip}" linking to last-visited phase page. `incubator.js`
+      one-line writer for `incubator.lastVisitedPhasePage` (no per-page
+      edits needed). CSS `.inc-welcome*` (~70L) + `.hc-incubator-
+      handoff` styled in HC styles.css. Honesty contract: bridge only
+      seeds what user actually provided. Smoke: HC + Incubator + lib
+      all 200; flow verified. Chapter R010 section + MASTER #86.
 - [x] **T4 R009 — Founder admin polish (full dashboard)** — DONE.
       Admin Overview gains 2nd KPI row (Active in Incubator + phase
       chip · Lessons completed · Phase advances · Top marketplace

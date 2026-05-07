@@ -945,3 +945,30 @@ footer {
 
 /* Empty leak-card placeholder when topic not answered */
 .leak-card .leak-num:has-text('—') { opacity: 0.6; }
+
+/* ─── R010: HC → Incubator handoff card ─── */
+.hc-incubator-handoff {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  background: linear-gradient(180deg, #1a1208, #0F0F0F);
+  border: 1px solid #C9A76A;
+  border-radius: 16px;
+  padding: 28px 30px;
+  margin: 28px 0;
+  color: #E9E5DA;
+}
+.hc-incubator-handoff-icon { font-size: 38px; line-height: 1; flex: 0 0 auto; }
+.hc-incubator-handoff-body { flex: 1; }
+.hc-incubator-handoff-body .eyebrow { color: #C9A76A; }
+.hc-incubator-handoff-body h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  margin: 4px 0 10px;
+  font-size: 28px;
+  color: #D4B888;
+}
+.hc-incubator-handoff-body p { color: #C9C0AE; line-height: 1.55; margin: 0 0 18px; }
+@media (max-width: 720px) {
+  .hc-incubator-handoff { flex-direction: column; padding: 22px; }
+  .hc-incubator-handoff-body h2 { font-size: 22px; }
+}
