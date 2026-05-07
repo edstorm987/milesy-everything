@@ -163,3 +163,4 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T07:50:00Z] COMMIT: pending — staging R014 explicit-path bundle.
 [2026-05-07T07:51:00Z] COMMIT: e890a6d "T3 R014: SEO meta + favicon + sitemap.xml + robots.txt + OG card SVG generator + 33/33 smoke". 12 files clean. Pushed.
 [2026-05-07T07:51:00Z] DONE: queue file `014-seo-meta-favicon.md` — round shipped. website-editor smoke 33/33 + tsc-clean. Chapter `04-seo-meta.md` + MASTER row #95 + tasks.md row added. Cross-team Q-FOLLOWUP: T1 lands `/favicon-default-{32,180,192}.png` + `.ico` static fallback assets so the deriveFaviconUrls fallback path renders. Q-ASSUMED: SEO sidebar visual deferred; SVG OG cards (raster R+1 via sharp); structured data stays free-form `schemaJsonLd`. Commander may archive 014; queue still has 015-016.
+[2026-05-07T07:52:00Z] WAKE-PENDING-ARCHIVE: 014 still lowest. Sleeping 600s.
