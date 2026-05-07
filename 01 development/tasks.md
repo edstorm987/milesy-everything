@@ -104,6 +104,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R015 — Lessons content gap (10 of 15 locked rows shipped)** — DONE.
+      Closes 10 of 17 locked Pro lesson rows from chapter #71 (free
+      tier 5→15). 10 lessons added to lessons.js (~50L each: hero +
+      lead + outline + 5-section body + callout + practical prompt +
+      NEW `phases:[…]` tag for R006 integration): private-hub /
+      storage-drives / tech-stack / domain-email / gbp / offer-
+      architecture / sales-sops / clarity-page / workflows / kpis.
+      Honesty contract: every body opens with "📝 v1 draft. The
+      60-minute version. Deeper Pro Mastery lives in the retainer
+      cohort." Specific scope notes per lesson (e.g. gbp surface
+      changes ~quarterly, kpis defers per-niche modelling to niche
+      packs). database.html: 10 rows unlocked (lock pattern → live
+      module.html?id=<id> + green Open CTA), intro rewritten naming
+      the 7 remaining locked rows (4.3/4.5/5.1/5.3/5.4/5.5/5.6).
+      Smoke: all 10 URLs 200; registry has 15 lesson records. R+1:
+      swap R006's hardcoded PHASE_LESSON_REQUIREMENTS for derived
+      view from `phases` field; ship remaining 7 in R016+. NEW
+      chapter `04-lessons-content-gap.md` + MASTER #91.
 - [x] **T4 R014 — Niche-specific landing pages** — DONE.
       4 NEW pages under `milesymedia website/`: for-skincare.html 🌿
       · for-coaching.html ✍️ · for-agencies.html 💼 · for-fitness.html

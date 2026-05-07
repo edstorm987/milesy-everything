@@ -308,5 +308,335 @@ window.BOS_LESSONS = {
       + '</ul>'
       + '<div class="bos-callout bos-callout-warn"><span>⚠️</span><div>Track this in writing. Verbal "I\'ll sort you out" promises die a death. A simple referral CRM (or even a Notion table) keeps trust intact.</div></div>'
       + '<p>Run this for 12 months and 25-40% of new revenue will come through referrals. For free. While you sleep.</p>'
+  },
+
+  /* ─── 1.2 — Duplicate your private hub (R015) ─────────── */
+  'private-hub': {
+    id: 'private-hub', track: 'Foundations', step: '1.2', icon: '🗂',
+    title: 'Duplicate your private hub.',
+    lead: "Your own private workspace — separate from anything we can see. Where decisions get drafted before they go to clients, and where the long thinking lives.",
+    progress: { current: 2, total: 4, pct: 50 },
+    phases: ['epic-intro', 'blueprint'],
+    outline: [
+      { id: 'why',   title: 'Why a private hub' },
+      { id: 'what',  title: "What's in the template" },
+      { id: 'fork',  title: 'Forking your copy' },
+      { id: 'first', title: 'Your first three pages' }
+    ],
+    next: { href: 'module.html?id=storage-drives', label: 'Step 1.3 — Storage drives setup →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> The 60-minute version. Deeper Pro Mastery lives in the retainer cohort.</div></div>'
+      + '<h2 id="why">Why a private hub</h2>'
+      + '<p>The portal is your shop window — clients see surfaces, dashboards, deliverables. The private hub is the workshop behind it. Half-formed ideas, draft proposals, the messy version of every framework before it cleans up.</p>'
+      + '<p>Without one, half-thoughts live in DMs and disappear when the chat scrolls. You re-think the same problem six times because the prior thinking has no home.</p>'
+      + '<h2 id="what">What\'s in the template</h2>'
+      + '<ul>'
+      + '  <li><strong>Decision log</strong> — every meaningful "we chose X over Y because Z".</li>'
+      + '  <li><strong>Drafts shelf</strong> — proposals, emails, copy, in their messy state.</li>'
+      + '  <li><strong>Reading list</strong> — what to read this quarter; what you read last quarter.</li>'
+      + '  <li><strong>Quarterly review</strong> — three numbers, three lessons, three changes.</li>'
+      + '</ul>'
+      + '<h2 id="fork">Forking your copy</h2>'
+      + '<p>Open the template link in your welcome email. Click <em>Duplicate</em>. Move it to your own workspace. Don\'t rename anything yet — use the structure for two weeks before you customise.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> open the duplicated hub now, fill in <em>Decision log entry #1</em> with the most recent business decision you made.</div></div>'
+      + '<h2 id="first">Your first three pages</h2>'
+      + '<p>Don\'t try to populate everything. Three pages in week one:</p>'
+      + '<ol>'
+      + '  <li>One <em>Decision log</em> entry from the past 30 days.</li>'
+      + '  <li>One <em>Draft</em> — anything you\'re writing right now.</li>'
+      + '  <li>One <em>Reading list</em> entry — what you\'re reading this week.</li>'
+      + '</ol>'
+      + '<p>By week two it\'ll feel like home. By month three you won\'t remember how you operated without it.</p>'
+  },
+
+  /* ─── 1.3 — Storage drives setup (R015) ─────────── */
+  'storage-drives': {
+    id: 'storage-drives', track: 'Foundations', step: '1.3', icon: '💾',
+    title: 'Storage drives setup.',
+    lead: "Where your files live, how they're named, who can see what. Boring; load-bearing.",
+    progress: { current: 3, total: 4, pct: 75 },
+    phases: ['epic-intro', 'blueprint'],
+    outline: [
+      { id: 'why',     title: 'Why a folder convention' },
+      { id: 'tree',    title: 'The base tree' },
+      { id: 'naming',  title: 'Naming convention' },
+      { id: 'access',  title: 'Access tiers' }
+    ],
+    next: { href: 'module.html?id=tech-stack', label: 'Step 1.4 — Tech & software list →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Covers the 80% — Pro Mastery deepens with retention policy + audit logs.</div></div>'
+      + '<h2 id="why">Why a folder convention</h2>'
+      + '<p>Most businesses fail at file storage the same way: someone uploads a v2-final-final-actual-FINAL.docx and the next person can\'t find it. The cost isn\'t the lost time — it\'s the trust hit when a client asks "did you send me the latest?" and you\'re not sure.</p>'
+      + '<h2 id="tree">The base tree</h2>'
+      + '<p>Three top-level folders, no exceptions:</p>'
+      + '<ul>'
+      + '  <li><code>00 Operations</code> — internal SOPs, contracts, finance, legal.</li>'
+      + '  <li><code>10 Clients</code> — one folder per client, sub-foldered by year.</li>'
+      + '  <li><code>20 Marketing</code> — the public-facing assets, by campaign.</li>'
+      + '</ul>'
+      + '<p>The numeric prefixes keep them sorted in any drive UI. Add new top-level only in 10s (30 / 40 / 50…), not arbitrary names.</p>'
+      + '<h2 id="naming">Naming convention</h2>'
+      + '<p>Every file: <code>YYYY-MM-DD · client · doc-type · short-description.ext</code>. Example: <code>2026-05-07 · luv-and-ker · proposal · brand-refresh.pdf</code>.</p>'
+      + '<div class="bos-callout bos-callout-warn"><span>⚠️</span><div>No "v2" / "final" / "FINAL" in filenames. The date is the version. Period.</div></div>'
+      + '<h2 id="access">Access tiers</h2>'
+      + '<p>Three tiers: <strong>owner-only</strong> (finance, legal, employee details) · <strong>team</strong> (everything operational) · <strong>client-shared</strong> (their docs, their drafts, their finals).</p>'
+      + '<p><strong>Practical prompt:</strong> spend 30 minutes today on the <em>Operations</em> folder only. Get one folder right. The rest will follow the convention naturally.</p>'
+  },
+
+  /* ─── 1.4 — Tech & software list (R015) ─────────── */
+  'tech-stack': {
+    id: 'tech-stack', track: 'Foundations', step: '1.4', icon: '🧪',
+    title: 'Tech & software list.',
+    lead: "The tools we strongly recommend. Pick what you need to start; resist the rest until you've earned the right to add complexity.",
+    progress: { current: 4, total: 4, pct: 100 },
+    phases: ['blueprint'],
+    outline: [
+      { id: 'rule',     title: 'The fewer-tools rule' },
+      { id: 'core',     title: 'Core stack — non-negotiable' },
+      { id: 'add',      title: 'Add-ons by stage' },
+      { id: 'avoid',    title: 'What to avoid' }
+    ],
+    next: { href: 'module.html?id=core-principles', label: 'Step 1.5 — Core principles →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Stack picks reflect 2026 best-of; revisited each cohort.</div></div>'
+      + '<h2 id="rule">The fewer-tools rule</h2>'
+      + '<p>Every new tool adds a login, an integration risk, a monthly bill, a SaaS update to ignore. The right answer is almost always "later". Add a tool only when the problem is real and the workaround is worse than the bill.</p>'
+      + '<h2 id="core">Core stack — non-negotiable</h2>'
+      + '<ul>'
+      + '  <li><strong>Aqua portal</strong> — your operating layer.</li>'
+      + '  <li><strong>Email + calendar</strong> — Google Workspace or M365. Pick one.</li>'
+      + '  <li><strong>Storage drive</strong> — Google Drive or OneDrive. Match your email choice.</li>'
+      + '  <li><strong>Password manager</strong> — 1Password or Bitwarden. Personal-paid, not free.</li>'
+      + '  <li><strong>Comms</strong> — WhatsApp Business for clients; one channel. Slack only when you have a team.</li>'
+      + '</ul>'
+      + '<h2 id="add">Add-ons by stage</h2>'
+      + '<p><strong>Solo &lt; £5k MRR:</strong> nothing extra. Aqua + email + storage is the whole stack.</p>'
+      + '<p><strong>Solo £5-15k MRR:</strong> add an inbox plugin (Aqua marketplace), a CRM if leads exceed memory.</p>'
+      + '<p><strong>£15k+ MRR or first hire:</strong> add Loom for async, a real bookkeeper (not software), an SOP shelf you actually maintain.</p>'
+      + '<h2 id="avoid">What to avoid</h2>'
+      + '<ul>'
+      + '  <li>Anything pitched as "the only tool you\'ll ever need" — they all become tools you eventually leave.</li>'
+      + '  <li>Per-seat tools you can\'t afford at 5 seats.</li>'
+      + '  <li>Free-tier-only tools that lock data export. Pay or stay out.</li>'
+      + '</ul>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> list every paid tool you currently use. Cancel two this month. Most teams find £80-£300/mo of slack within 20 minutes.</div></div>'
+  },
+
+  /* ─── 2.1 — Domain & email (R015) ─────────── */
+  'domain-email': {
+    id: 'domain-email', track: 'Brand & presence', step: '2.1', icon: '📧',
+    title: 'Domain & email.',
+    lead: "A real address. A clean inbox. The basics done right — surprisingly fixable, surprisingly often broken.",
+    progress: { current: 1, total: 5, pct: 20 },
+    phases: ['blueprint', 'diagnostics'],
+    outline: [
+      { id: 'pick',    title: 'Picking the domain' },
+      { id: 'mail',    title: 'Setting up email' },
+      { id: 'spf',     title: 'SPF / DKIM / DMARC — non-negotiable' },
+      { id: 'inbox',   title: 'Inbox-zero rituals' }
+    ],
+    next: { href: 'module.html?id=gbp', label: 'Step 2.2 — Google Business Profile →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Auth records covered at the recipe level; deeper deliverability lives in retainer.</div></div>'
+      + '<h2 id="pick">Picking the domain</h2>'
+      + '<p>Three rules. Short (≤16 chars). Pronounceable on the phone. Owned by you (not your designer, not your hosting account).</p>'
+      + '<p>If your obvious .com is gone: take the .co or the brand+location.com. Don\'t take a hyphenated workaround — they spell badly and forward poorly.</p>'
+      + '<h2 id="mail">Setting up email</h2>'
+      + '<p>Two addresses minimum: <code>you@yours</code> and <code>hello@yours</code>. The first is for humans; the second is for forms / bookings / receipts. Never give clients the form-side address.</p>'
+      + '<h2 id="spf">SPF / DKIM / DMARC — non-negotiable</h2>'
+      + '<p>If your domain doesn\'t have these three DNS records, your invoices land in spam. Period. Aqua\'s onboarding pack ships a 10-minute walk-through; do it on day one.</p>'
+      + '<div class="bos-callout bos-callout-warn"><span>⚠️</span><div>Test with mail-tester.com after setup. Anything below 9/10 means a config gap.</div></div>'
+      + '<h2 id="inbox">Inbox-zero rituals</h2>'
+      + '<p>Three folders: <code>Action</code> · <code>Waiting</code> · <code>Reference</code>. Everything else gets archived (one shortcut). Inbox is the conveyor belt; it doesn\'t store.</p>'
+      + '<p><strong>Practical prompt:</strong> archive everything older than 30 days right now. The world won\'t end.</p>'
+  },
+
+  /* ─── 2.2 — Google Business Profile (R015) ─────────── */
+  'gbp': {
+    id: 'gbp', track: 'Brand & presence', step: '2.2', icon: '📍',
+    title: 'Google Business Profile.',
+    lead: "Claim it, optimise it, post weekly. The free local-search lever almost no one fully pulls.",
+    progress: { current: 2, total: 5, pct: 40 },
+    phases: ['diagnostics'],
+    outline: [
+      { id: 'claim',     title: 'Claim or transfer' },
+      { id: 'optim',     title: 'Optimise the profile' },
+      { id: 'photos',    title: 'Photos that earn the click' },
+      { id: 'posts',     title: 'Weekly posts (the lever)' },
+      { id: 'reviews',   title: 'Review system' }
+    ],
+    next: { href: 'module.html?id=core-principles', label: 'Continue → Core principles' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Google updates this surface ~quarterly; check the Aqua weekly bulletin for changes.</div></div>'
+      + '<h2 id="claim">Claim or transfer</h2>'
+      + '<p>Search your business name on Google Maps. If a profile exists you don\'t control: claim it (Google sends a postcard or video verification). If nothing exists: create from scratch via business.google.com.</p>'
+      + '<h2 id="optim">Optimise the profile</h2>'
+      + '<p>Fields that move the needle: <strong>category</strong> (primary + 1-2 secondary, exact-match), <strong>service area</strong> (postcodes/cities), <strong>hours</strong> (including holiday hours — Google demotes profiles with stale hours), <strong>services</strong> (every distinct service as its own item — drives impression diversity).</p>'
+      + '<h2 id="photos">Photos that earn the click</h2>'
+      + '<p>20 photos minimum. Mix: 5 exterior, 5 interior, 5 of work-in-progress / product, 5 of team / behind-the-scenes. Replace 5 every quarter — Google rewards profiles that feel alive.</p>'
+      + '<h2 id="posts">Weekly posts (the lever)</h2>'
+      + '<p>The single biggest under-pulled lever: GBP Posts. Once a week. 100-200 chars + photo + CTA. Keep them in a Notion table so they\'re drafted ahead.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> draft 4 posts now. Schedule one per week for the next month.</div></div>'
+      + '<h2 id="reviews">Review system</h2>'
+      + '<p>Ask every happy client. Use a short link (<code>g.page/r/yourID</code>). Reply to every review within 48h — both 5-star and the rare 1-star. Replies are a ranking signal.</p>'
+  },
+
+  /* ─── 3.1 — Offer architecture (R015) ─────────── */
+  'offer-architecture': {
+    id: 'offer-architecture', track: 'Sales & marketing', step: '3.1', icon: '🏛',
+    title: 'Your offer architecture.',
+    lead: "One front-door offer. One flagship. One upsell. Stop trying to sell everything to everyone.",
+    progress: { current: 1, total: 8, pct: 13 },
+    phases: ['diagnostics', 'brand-builder'],
+    outline: [
+      { id: 'why',      title: 'Why three offers' },
+      { id: 'front',    title: 'Front-door offer' },
+      { id: 'flag',     title: 'Flagship' },
+      { id: 'upsell',   title: 'Upsell / continuity' },
+      { id: 'price',    title: 'Pricing the stack' }
+    ],
+    next: { href: 'module.html?id=super-sales', label: 'Step 3.5 — Super Sales framework →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Pricing logic kept directional; per-niche modelling lives in Pro Mastery.</div></div>'
+      + '<h2 id="why">Why three offers</h2>'
+      + '<p>One is too few — no on-ramp for the curious. Five is too many — every choice multiplies the sales conversation. Three sits at the cognitive sweet-spot: a way in, a way home, a way to keep showing up.</p>'
+      + '<h2 id="front">Front-door offer</h2>'
+      + '<p>Cheap (or free), fast, finite. Designed to make the buyer say "this person actually knows what they\'re doing" inside 24 hours. Examples: a £49 audit · a free 12-min health check · a £10 starter kit.</p>'
+      + '<h2 id="flag">Flagship</h2>'
+      + '<p>Where 70% of revenue should come from. Big enough to matter; structured enough to deliver consistently. The thing you can describe in one sentence and price without negotiation.</p>'
+      + '<h2 id="upsell">Upsell / continuity</h2>'
+      + '<p>The "what next" after the flagship lands. Retainer, membership, advanced cohort, supply contract — anything that earns recurring revenue without re-selling.</p>'
+      + '<h2 id="price">Pricing the stack</h2>'
+      + '<p>Loose ratio: front-door ≤ 5% of flagship · flagship at the price you quote without flinching · upsell at 30-50% of flagship per recurring period.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> write your three offers in one sentence each. If any takes more than one sentence, it\'s not ready.</div></div>'
+  },
+
+  /* ─── 3.6 — SOPs for the sales process (R015) ─────────── */
+  'sales-sops': {
+    id: 'sales-sops', track: 'Sales & marketing', step: '3.6', icon: '📋',
+    title: 'SOPs for the sales process.',
+    lead: "Documented, repeatable, hand-off-able. The system survives without you.",
+    progress: { current: 6, total: 8, pct: 75 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'why',     title: 'Why SOP the sales motion' },
+      { id: 'core',    title: 'The five SOPs every business needs' },
+      { id: 'tmpl',    title: 'SOP template' },
+      { id: 'review',  title: 'Quarterly review ritual' }
+    ],
+    next: { href: 'module.html?id=clarity-page', label: 'Step 3.8 — Clarity, the one-page plan →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Templates included; per-niche variants in Pro Mastery.</div></div>'
+      + '<h2 id="why">Why SOP the sales motion</h2>'
+      + '<p>The instinct is to SOP delivery first. That\'s the wrong half. If sales is in your head, your business doesn\'t scale; it just stretches. Document sales first; delivery is downstream.</p>'
+      + '<h2 id="core">The five SOPs every business needs</h2>'
+      + '<ol>'
+      + '  <li><strong>Discovery call</strong> — opening, agenda, framework, close.</li>'
+      + '  <li><strong>Proposal</strong> — what to send, when, with what attachments.</li>'
+      + '  <li><strong>Follow-up</strong> — the 7-touch sequence after a proposal.</li>'
+      + '  <li><strong>Onboarding</strong> — what fires automatically once a deal closes.</li>'
+      + '  <li><strong>Closed-lost retro</strong> — a 5-min written reflection on every loss.</li>'
+      + '</ol>'
+      + '<h2 id="tmpl">SOP template</h2>'
+      + '<p>Every SOP: <em>Trigger</em> → <em>Owner</em> → <em>Steps</em> → <em>Tools</em> → <em>Definition of done</em>. One page max. If it\'s longer, it\'s a workflow, not an SOP.</p>'
+      + '<h2 id="review">Quarterly review ritual</h2>'
+      + '<p>Every quarter, walk each SOP. Ask: <em>did anyone not follow it? why?</em> Most edits surface from real friction, not theory. The SOP shelf evolves with your business or it dies.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> write the Discovery Call SOP this week. One page. Use it on the next call. Edit after.</div></div>'
+  },
+
+  /* ─── 3.8 — Clarity, the one-page plan (R015) ─────────── */
+  'clarity-page': {
+    id: 'clarity-page', track: 'Sales & marketing', step: '3.8', icon: '📄',
+    title: 'Clarity — the one-page plan.',
+    lead: "The quarterly page that keeps you on the right priorities. One page. Re-read every Monday.",
+    progress: { current: 8, total: 8, pct: 100 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'why',      title: 'Why one page' },
+      { id: 'shape',    title: 'The five blocks' },
+      { id: 'cadence',  title: 'Cadence of review' },
+      { id: 'kill',     title: 'The kill list' }
+    ],
+    next: { href: 'module.html?id=workflows', label: 'Step 4.1 — Workflows that don\'t break →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Template provided; quarterly facilitator session in Pro Mastery.</div></div>'
+      + '<h2 id="why">Why one page</h2>'
+      + '<p>Multi-page strategy decks die on shelves. One page survives because you can re-read it on a Monday morning in 90 seconds. Anything you can\'t fit on a page, you don\'t actually believe yet.</p>'
+      + '<h2 id="shape">The five blocks</h2>'
+      + '<ol>'
+      + '  <li><strong>Why</strong> — the one sentence that justifies your business this quarter.</li>'
+      + '  <li><strong>Three big bets</strong> — initiatives, not tasks. Each ships or doesn\'t.</li>'
+      + '  <li><strong>Three numbers</strong> — leading indicators, not vanity. Same three all quarter.</li>'
+      + '  <li><strong>Three risks</strong> — what kills the quarter if it goes wrong. Mitigations next to each.</li>'
+      + '  <li><strong>Kill list</strong> — what we deliberately stopped doing.</li>'
+      + '</ol>'
+      + '<h2 id="cadence">Cadence of review</h2>'
+      + '<p>Weekly Monday: re-read; tweak the bets if needed. Monthly: review numbers; honest Δ. Quarterly: rewrite the page.</p>'
+      + '<h2 id="kill">The kill list</h2>'
+      + '<p>The block most teams skip. What did you say no to this quarter? Naming it makes future no\'s easier; un-named no\'s drift back into the work.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> draft this quarter\'s page in 25 minutes. Don\'t aim for done; aim for "good enough to share with one person".</div></div>'
+  },
+
+  /* ─── 4.1 — Workflows that don't break (R015) ─────────── */
+  'workflows': {
+    id: 'workflows', track: 'Operations', step: '4.1', icon: '⚙️',
+    title: 'Workflows that don\'t break.',
+    lead: "From request to delivered, every step documented. The work runs itself.",
+    progress: { current: 1, total: 5, pct: 20 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'shape',    title: 'Workflow vs SOP' },
+      { id: 'map',      title: 'Mapping the path' },
+      { id: 'auto',     title: 'What to automate first' },
+      { id: 'breaks',   title: 'Designing for break-points' }
+    ],
+    next: { href: 'module.html?id=kpis', label: 'Step 4.2 — KPIs that actually matter →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Patterns covered; tool-specific automation walk-throughs in Pro Mastery.</div></div>'
+      + '<h2 id="shape">Workflow vs SOP</h2>'
+      + '<p>An SOP is a one-page how-to for a single procedure. A workflow is the chain — multiple SOPs stitched together with triggers, hand-offs, and waiting periods. SOPs document tasks; workflows document journeys.</p>'
+      + '<h2 id="map">Mapping the path</h2>'
+      + '<p>For each core deliverable, draw the path on paper: trigger → step → step → hand-off → step → done. Don\'t go digital until the paper version is honest.</p>'
+      + '<h2 id="auto">What to automate first</h2>'
+      + '<p>Three rules: (1) automate the boring, not the human; (2) automate the high-volume, not the high-stakes; (3) automate the well-understood, not the experimental. Aqua\'s automation marketplace is honest about what each plugin actually replaces.</p>'
+      + '<h2 id="breaks">Designing for break-points</h2>'
+      + '<p>Every workflow has a 2-3 step where it breaks under load. Find yours by asking: <em>where do client emails pile up?</em> Add an explicit "buffer" step there, not more automation.</p>'
+      + '<div class="bos-callout bos-callout-warn"><span>⚠️</span><div>Most workflow failures aren\'t automation failures — they\'re hand-off failures. Document who picks up after each step.</div></div>'
+      + '<p><strong>Practical prompt:</strong> map your most-frequent client deliverable on a single page this week. Show it to one team member. Ask where it\'s wrong.</p>'
+  },
+
+  /* ─── 4.2 — KPIs that actually matter (R015) ─────────── */
+  'kpis': {
+    id: 'kpis', track: 'Operations', step: '4.2', icon: '📊',
+    title: 'KPIs that actually matter.',
+    lead: "Five numbers. Reviewed weekly. The signal you steer by.",
+    progress: { current: 2, total: 5, pct: 40 },
+    phases: ['brand-builder'],
+    outline: [
+      { id: 'why',     title: 'Why five — and only five' },
+      { id: 'pick',    title: 'Picking the five' },
+      { id: 'leading', title: 'Leading vs lagging' },
+      { id: 'ritual',  title: 'Weekly review ritual' }
+    ],
+    next: { href: 'module.html?id=ops-sustainability', label: 'Step 4.4 — Operations & Sustainability →' },
+    body: ''
+      + '<div class="bos-callout"><span>📝</span><div><strong>v1 draft.</strong> Per-niche KPI sets ship inside the niche packs (R004); Pro Mastery layers benchmarking.</div></div>'
+      + '<h2 id="why">Why five — and only five</h2>'
+      + '<p>Pick fifteen and you\'ll review none. Pick three and you\'ll miss leading indicators. Five is the cap that survives a busy week — small enough to remember, big enough to triangulate.</p>'
+      + '<h2 id="pick">Picking the five</h2>'
+      + '<p>Cover four buckets, one tie-breaker:</p>'
+      + '<ol>'
+      + '  <li><strong>Demand</strong> — leads / week (or impressions / discovery searches).</li>'
+      + '  <li><strong>Conversion</strong> — close rate or trial-to-member.</li>'
+      + '  <li><strong>Money</strong> — MRR or revenue / week.</li>'
+      + '  <li><strong>Retention</strong> — churn / repeat-purchase / NPS.</li>'
+      + '  <li><strong>Tie-breaker</strong> — the one number that decides where time goes <em>this</em> quarter.</li>'
+      + '</ol>'
+      + '<h2 id="leading">Leading vs lagging</h2>'
+      + '<p>Revenue is lagging — by the time it moves, the cause is months back. Pair every lagging number with a leading one (revenue ↔ proposals sent; churn ↔ login frequency). The leading numbers tell you what\'s about to happen.</p>'
+      + '<h2 id="ritual">Weekly review ritual</h2>'
+      + '<p>Same time every week. 25 minutes. For each number: <em>where it is</em> · <em>where it should be</em> · <em>one action this week</em>. Write the action down. Re-read last week\'s action first.</p>'
+      + '<div class="bos-callout bos-callout-good"><span>✓</span><div><strong>Practical prompt:</strong> name your five numbers today. Write them on a post-it. Review them next Monday at the same time.</div></div>'
   }
+
 };
