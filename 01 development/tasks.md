@@ -760,6 +760,30 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R021 — Undo/redo history** — DONE.
+      Snapshot-based ring buffer capped at 50. NEW
+      `lib/editorHistory.ts` pure state machine
+      (createHistory/pushSnapshot/undo/redo/jumpTo/
+      canUndo/canRedo/undoActionLabel/redoActionLabel) —
+      pushSnapshot truncates redo-tail past cursor + capacity-
+      trims oldest, lands at head. NEW `lib/useEditorHistory.ts`
+      React hook wraps machine in useState, resets on pageId
+      change. NEW `HistoryToolbar.tsx` Undo/Redo icon buttons
+      with action-label tooltips + History dropdown listing
+      last 20 with click-to-jump (current cursor highlighted).
+      ⌘Z/⌘⇧Z bindings already in R018 (host routes binding id
+      to history.undo/redo). NEW `__smoke__/r021-undo-redo.test.ts`
+      36/36 (state machine + redo-tail truncation + capacity
+      trim + toolbar SSR with disabled-state titles).
+      package.json test chain extended. tsc-clean. Chapter
+      `04-undo-redo.md` + MASTER row #102.
+      Q-ASSUMED: in-memory only (R+1: cross-session via
+      localStorage + diff snapshots); per-block history out of
+      scope; pushSnapshot stores whole tree (immer-style sharing
+      R+1); renderThumb is host's responsibility; jumpTo on
+      absolute index, dropdown maps local→real. Deferred:
+      cross-session persistence, structural sharing, per-snapshot
+      thumbnail capture, branching history, snapshot collapse.
 - [x] **T3 R020 — Code mode JSON tree editor** — DONE.
       Closes chapter 06 Live/Block/Code triplet — Live+Block
       were shipped, Code was missing. NEW `lib/blockTreeJson.ts`

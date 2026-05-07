@@ -196,3 +196,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T11:09:00Z] COMMIT: 76a6a10 "T3 R020: Code mode JSON tree editor — parseBlockTreeJson + compareTrees + CodeModePanel split-view + 24/24 smoke". 8 files clean. Pushed.
 [2026-05-07T11:09:00Z] DONE: queue file `020-code-mode-fallback.md` — round shipped. website-editor smoke 24/24 + tsc-clean. Chapter `04-code-mode.md` + MASTER row #101 + tasks.md row added. Cross-team: host editor mounts CodeModePanel into Code-mode tab; passes existing renderPreview callback. Q-ASSUMED: JSON.parse line/col best-effort; diff view out-of-scope (single firstDifferenceAt in confirm modal); schema validation structural not registry-level. Commander may archive 020; queue grew with 021-024 staged.
 [2026-05-07T11:10:00Z] WAKE-PENDING-ARCHIVE: 020 still lowest. Sleeping 600s.
+[2026-05-07T11:30:00Z] STARTED: queue file `021-undo-redo-history.md` — `useEditorHistory` hook (ring buffer of 50), HistoryToolbar (Undo/Redo buttons + tooltip), HistoryDropdown (last 20 snapshots), smoke + chapter.
+[2026-05-07T11:50:00Z] COMMIT: pending — staging R021 explicit-path bundle.
