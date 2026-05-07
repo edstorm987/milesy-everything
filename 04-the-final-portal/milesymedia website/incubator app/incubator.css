@@ -1072,3 +1072,36 @@ body[data-incubator-niche="fitness"] .inc-chip {
   font-weight: 800;
   margin-right: 8px;
 }
+
+/* ─── R026 Mobile-responsive audit fixes ─── */
+@media (max-width: 480px) {
+  .inc-toprail { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 14px; font-size: 12px; }
+  .inc-page { padding: 0 14px 64px; }
+  .inc-cover { height: 180px; margin: 0 -14px; }
+  .inc-title { font-size: 28px; }
+  .inc-grid-label { font-size: 18px; }
+  .inc-card-cover { height: 90px; }
+  .inc-card-emoji { font-size: 22px; }
+  .inc-card-label { font-size: 14px; }
+
+  /* Welcome banner stacks. */
+  .inc-welcome-card { flex-direction: column; align-items: flex-start; padding: 16px 18px; }
+  .inc-welcome-cta { align-self: flex-end; }
+
+  /* HC strip recs stack tighter. */
+  .inc-hc-rec-headline { font-size: 15px; }
+  .inc-hc-rec-action { font-size: 13px; }
+
+  /* Aqua AI panel: full-width on tiny phones. */
+  .inc-ai-panel { width: 100%; max-width: 100%; }
+  .inc-ai-launcher-orb { width: 18px; height: 18px; line-height: 18px; font-size: 11px; }
+  .inc-ai-launcher { padding: 10px 14px; font-size: 13px; }
+
+  /* Phase-progress checklist labels need space. */
+  .inc-checks label { gap: 10px; padding: 10px 4px; font-size: 13px; }
+}
+
+@media (max-width: 768px) {
+  .inc-page { padding-bottom: 80px; }
+  .inc-grid { gap: 14px; }
+}

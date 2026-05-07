@@ -178,6 +178,27 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R026 — Mobile-responsive audit across all surfaces** — DONE.
+      Top 15 mobile issues fixed across 3 stylesheets (~115L total)
+      at 390px + 768px breakpoints: marketing nav reflow + hero
+      stack + section padding · BOS KPI 1-col + section-head column
+      + upgrade ribbon repositioned + cart stack + inbox row stack
+      + settings tabs h-scroll + Aqua AI panel full-width + calendar
+      cells smaller + marketplace detail header stack + settings
+      preview drops below · Incubator toprail column + cover smaller
+      + title shrink + welcome stack + AI launcher smaller +
+      checklist labels reflow. Touch-target floor ≥36px on btn/chip/
+      tab/day/row-cta (44px primary on marketing). **Audit-trail
+      attribute** `data-mobile-checked="2026-05-07"` added to 30
+      `<body>` tags via Python loop: marketing (8) + lead-magnet (1)
+      + Incubator (9) + BOS (12). Marketplace 9 detail pages share
+      body w/ marketplace.html (R+1 individual tag if needed). All
+      CSS blocks are deltas — removing returns to baseline. Smoke:
+      8 representative URLs 200; grep confirms 30 tagged. Q-ASSUMED:
+      real-headless-browser forensic audit R+1 (Playwright once
+      harness lands); native shells + tablet-distinct out per
+      prompt. NEW chapter `04-mobile-responsive-audit.md` + MASTER
+      #102.
 - [x] **T4 R025 — Lessons content gap final close (final 7)** — DONE.
       Closes chapter #71 lessons gap entirely. R015 shipped 10 + R025
       ships final 7 = **22/22 lessons live**, no locked rows. Final 7

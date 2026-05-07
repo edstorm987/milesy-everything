@@ -921,3 +921,27 @@ footer {
   font-size: 14px;
 }
 .nav-dropdown-menu a:hover { background: rgba(201,167,106,0.12); color: #8E7340; }
+
+/* ─── R026 Mobile-responsive audit fixes ─── */
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .nav-row { flex-wrap: wrap; gap: 10px; }
+  .nav-cta { width: 100%; display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav-cta .btn { flex: 1; text-align: center; min-height: 36px; }
+
+  /* Hero typography breathes. */
+  .mm-hero-title { font-size: 32px; line-height: 1.1; }
+  .mm-hero-cover { padding: 48px 0 36px; }
+  .mm-hero-actions { flex-direction: column; gap: 8px; }
+  .mm-hero-actions .btn { width: 100%; }
+
+  /* Audiences + replaces + founding 1-col already collapsed at 760-880; tighten padding here. */
+  .mm-audiences, .mm-replaces, .mm-founding { padding: 56px 0; }
+  .section-head h2 { font-size: 24px; }
+
+  /* Sticky bar text mostly hidden under 720px already; ensure CTA fills well. */
+  .mm-stickybar-cta { font-size: 12px; padding: 6px 10px; }
+
+  /* Touch-target floor on every primary-ish button. */
+  .btn { min-height: 44px; }
+}

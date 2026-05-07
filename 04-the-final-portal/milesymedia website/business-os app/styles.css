@@ -3316,3 +3316,69 @@ body.bos-cp-editing .bos-cp-fields textarea {
   .bos-set-grid { grid-template-columns: 1fr; }
   .bos-set-data-row { flex-direction: column; align-items: stretch; }
 }
+
+/* ─── R026 Mobile-responsive audit fixes ─────────────────────────── */
+/* Targets the worst issues identified at 390px / 768px. Each block
+   is a delta on top of the baseline rules above, so removing this
+   block returns to pre-R026 behaviour. */
+
+@media (max-width: 480px) {
+  /* Section heads + page padding tighter on small screens. */
+  .bos-section-head { flex-direction: column; align-items: stretch; gap: 12px; }
+  .bos-section-head > div + div { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bos-main { padding: 16px 14px; }
+
+  /* KPI row: 1 col under 480px so numbers don't crush. */
+  .kpi-row { grid-template-columns: 1fr; }
+  .kpi { padding: 14px 16px; }
+  .kpi .num { font-size: 24px; }
+
+  /* Upgrade tiers: gold ribbon shouldn't overflow the card. */
+  .bos-upgrade-tier-ribbon { right: 8px; font-size: 10px; padding: 3px 8px; }
+  .bos-upgrade-tier { padding: 22px 18px; }
+
+  /* Cart row collapses to a stacked layout. */
+  .bos-cart-row { grid-template-columns: 1fr; gap: 8px; align-items: flex-start; }
+  .bos-cart-row .btn { width: 100%; }
+
+  /* Activity timeline: no left padding starvation. */
+  .bos-activity-row { padding: 12px 8px; }
+
+  /* Inbox row: stack icon over body on tiny screens. */
+  .bos-inbox-row { grid-template-columns: 32px 1fr; gap: 10px; }
+  .bos-inbox-cta { grid-column: 1 / -1; justify-self: flex-start; }
+
+  /* Settings tabs scroll horizontally rather than wrap chaotically. */
+  .bos-set-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .bos-set-tab { white-space: nowrap; flex-shrink: 0; }
+
+  /* Aqua AI panel: full-width on mobile (was 380px → could leave a sliver). */
+  .bos-ai-panel { width: 100% !important; }
+
+  /* Calendar: fewer dots + smaller cells. */
+  .bos-cal-day { min-height: 52px; padding: 4px 6px; }
+  .bos-cal-day-num { font-size: 12px; }
+  .bos-cal-dot { width: 6px; height: 6px; }
+  .bos-cal-month-head { font-size: 18px; }
+
+  /* Marketplace detail: header stacks. */
+  .bos-mp-detail-head { flex-direction: column; gap: 14px; }
+  .bos-mp-detail-price { margin-left: 0; text-align: left; font-size: 24px; }
+
+  /* Settings profile preview drops below form. */
+  .bos-set-grid { grid-template-columns: 1fr; }
+}
+
+/* iPad-tier — 768px-ish. Keep two-column where possible; trim padding. */
+@media (max-width: 768px) {
+  .bos-shell { padding: 12px; }
+  .bos-main { padding: 18px 16px; }
+  .bos-section-head h1 { font-size: 24px; }
+}
+
+/* Touch-target floor: every clickable pill / button hits ≥36px. */
+@media (max-width: 480px) {
+  .btn, .bos-chip, .bos-set-tab, .bos-cal-day, .bos-row-cta {
+    min-height: 36px;
+  }
+}
