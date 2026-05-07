@@ -225,6 +225,7 @@
     html += '<div class="bos-side-section">'
          +    '<div class="bos-side-label">Get help</div>'
          +    link('help.html', '👋', 'Need Some Help?')
+         +    '<a href="#" data-bos-open-ai><span class="ico">🤖</span> Aqua AI</a>'
          +    '<a href="mailto:hello@milesymedia.co"><span class="ico">✉</span> Message us</a>'
          +    '<a href="tel:+441234567890"><span class="ico">📞</span> Book a free call</a>'
          + '</div>';
@@ -346,6 +347,12 @@
     document.body.appendChild(panel);
 
     btn.addEventListener('click', function () { panel.classList.toggle('is-open'); paintAi(); });
+    document.addEventListener('click', function (ev) {
+      if (ev.target.closest('[data-bos-open-ai]')) {
+        ev.preventDefault();
+        panel.classList.add('is-open'); paintAi();
+      }
+    });
     panel.querySelector('.bos-ai-close').addEventListener('click', function () { panel.classList.remove('is-open'); });
     panel.querySelector('[data-bos-ai-form]').addEventListener('submit', function (ev) {
       ev.preventDefault();
@@ -499,6 +506,35 @@
     drawer.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', close); });
   }
 
+  /* ─── Free-tier badge + upgrade footer ───── */
+  function mountTierUI() {
+    var mode = getMode();
+    /* Topbar tier pill */
+    var topbar = document.querySelector('.bos-topbar');
+    if (topbar && !topbar.querySelector('.bos-tier-pill')) {
+      var pill = document.createElement('a');
+      pill.className = 'bos-tier-pill bos-tier-pill-' + mode;
+      pill.href = mode === 'customer' ? 'app.html' : 'marketplace.html';
+      pill.innerHTML = mode === 'customer'
+        ? '<span class="bos-tier-dot"></span> Pro · all add-ons active'
+        : '<span class="bos-tier-dot"></span> Free tier · upgrade →';
+      topbar.appendChild(pill);
+    }
+    /* Page-end upgrade band (free only) */
+    if (mode !== 'customer' && document.querySelector('.bos-main') && !document.querySelector('.bos-upgrade-band')) {
+      var band = document.createElement('section');
+      band.className = 'bos-upgrade-band';
+      band.innerHTML = ''
+        + '<div class="bos-upgrade-band-icon">⚡</div>'
+        + '<div class="bos-upgrade-band-text">'
+        +   '<strong>You\'re on the free tier of Business OS.</strong>'
+        +   '<p>Unlock the full plugin — every add-on, every advanced module, the SOP Hub, unlimited Aqua AI, and the Custom Roadmap. Included with any Milesy retainer, or buy individually in the marketplace.</p>'
+        + '</div>'
+        + '<a href="marketplace.html" class="btn btn-primary">Browse add-ons →</a>';
+      document.querySelector('.bos-main').appendChild(band);
+    }
+  }
+
   /* ─── Boot ───────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
     mountAutoSidebar();
@@ -508,6 +544,7 @@
     paintProgress();
     paintHealthCheck();
     mountMobileNav();
+    mountTierUI();
     mountDevBar();
     mountAi();
   });

@@ -2220,3 +2220,81 @@ body.bos-cp-editing .bos-cp-fields textarea {
 }
 .bos-help-action strong { font-size: 14px; display: block; margin-bottom: 2px; }
 .bos-help-action p { font-size: 12px; margin: 0; line-height: 1.5; }
+
+/* ─── Tier pill on topbar ─────────────────────── */
+.bos-tier-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+  border: 1px solid var(--border-2);
+  background: rgba(255,255,255,0.03); color: var(--text-dim);
+  transition: border-color .15s, color .15s, background .15s;
+  align-self: center;
+}
+.bos-tier-pill:hover { border-color: var(--accent); color: var(--text); background: rgba(255,107,53,0.08); }
+.bos-tier-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-2);
+  box-shadow: 0 0 0 4px rgba(255,184,0,0.15);
+}
+.bos-tier-pill-customer .bos-tier-dot { background: var(--good); box-shadow: 0 0 0 4px rgba(52,211,153,0.15); }
+.bos-tier-pill-customer { color: var(--good); border-color: rgba(52,211,153,0.30); }
+
+@media (max-width: 720px) {
+  .bos-tier-pill { font-size: 11px; padding: 6px 11px; }
+}
+
+/* ─── Upgrade band (free tier) ────────────────── */
+.bos-upgrade-band {
+  display: grid; grid-template-columns: 56px 1fr auto; gap: 22px; align-items: center;
+  margin-top: 50px; padding: 26px;
+  background: linear-gradient(135deg, rgba(255,107,53,0.10), rgba(124,92,255,0.08));
+  border: 1px solid rgba(255,107,53,0.22);
+  border-radius: 18px;
+}
+@media (max-width: 700px) { .bos-upgrade-band { grid-template-columns: 1fr; text-align: center; } }
+.bos-upgrade-band-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #1a0e00;
+  display: grid; place-items: center; font-size: 26px;
+}
+.bos-upgrade-band-text strong { display: block; font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+.bos-upgrade-band-text p { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin: 0; }
+
+/* ─── Locked module rows ──────────────────────── */
+.bos-row-locked {
+  display: inline-block; padding: 4px 10px; border-radius: 999px;
+  background: rgba(124,92,255,0.10); color: var(--accent-3);
+  border: 1px solid rgba(124,92,255,0.30);
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700;
+}
+.bos-row-locked-name { color: var(--text-dim); position: relative; }
+.bos-row-locked-name strong { color: var(--text-dim); }
+.bos-row-locked-name::after {
+  content: " 🔒"; opacity: 0.6; font-size: 11px;
+}
+
+/* ─── Page introduction callout ───────────────── */
+.bos-page-intro {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 0; margin-bottom: 22px;
+  overflow: hidden;
+}
+.bos-page-intro summary {
+  list-style: none; cursor: pointer;
+  padding: 14px 18px;
+  font-weight: 700; font-size: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.bos-page-intro summary::-webkit-details-marker { display: none; }
+.bos-page-intro summary::after {
+  content: "▾"; margin-left: auto; opacity: 0.5; transition: transform .15s ease;
+}
+.bos-page-intro[open] summary::after { transform: rotate(180deg); }
+.bos-page-intro-body {
+  padding: 0 18px 18px; border-top: 1px solid var(--border); padding-top: 14px;
+  font-size: 13px; line-height: 1.6; color: var(--text-dim);
+}
+.bos-page-intro-body p { margin-bottom: 10px; }
+.bos-page-intro-body strong { color: var(--text); }
