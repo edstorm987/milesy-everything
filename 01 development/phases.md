@@ -78,6 +78,29 @@ Real API wiring (Stripe, GMB, GA4, Search Console, SMTP), custom
 domains per client, observability, CI/CD. Currently parked. Activates
 after Phases 8–10 settle.
 
+## Phase 12 — Multi-agency master/satellite (chapter #123)
+Milesy Media as **master**; niche agencies (AquaOasis-web for
+therapists, etc.) as **tenants** on the same backend. Each agency owns
+its marketing front, brand kit, lead-magnet pack, plugin set, and
+employee pool. Ed-as-master flips between agencies via a Topbar
+switcher.
+
+Architectural fit is already there (agencies are first-class tenants;
+plugins toggleable per agency; brand kits per-agency). Gaps to close
+in 5 small rounds:
+1. Multi-agency users (`agencyIds[]` instead of single `agencyId`).
+2. Agency switcher in Topbar (re-issues session cookie).
+3. Per-agency marketing front (host-header routing —
+   `aquaoasis-web.com` resolves to agency by domain, same Next.js host
+   renders branded shell).
+4. Per-agency lead-magnet pack (`public/agencies/<slug>/health-check/`).
+5. Prompt-driven agency spawner (CLI / admin button generates brand
+   pack + lead magnet + starting copy).
+
+Suggested staging: Round 1 = items #1+#2 (multi-agency core proven
+end-to-end inside portal). Round 2 = #3 (domain-aware marketing).
+Round 3 = #4+#5. None of this requires undoing the unification work.
+
 ## Operating mode (chief commander pattern)
 Ed runs 4 active Claude terminals on Opus 4.7 (T1 foundation, T2
 plugins, T3 website-editor, T4 ecosystem/manual) plus a chief commander

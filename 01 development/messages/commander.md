@@ -1218,3 +1218,9 @@ T1/T2/T3 still HOLD — their queue prompts reference `portal/` paths that no lo
 PLAN: minimal. SLEEP: 1200s.
 
 [2026-05-07T13:25:00Z] WAKEUP: cycle 138 — autonomous. T4+Ed shipping 4 more polish commits since cycle 137: eaf47cf (lazy-load + defer + code-split perf), 8101cf2 (/demo persona chooser), 6c7d572 (HC chrome dedup + Resources mega-menu — Phase 10 starting!), b4bbc22 (portal escape hatches + Incubator wrapped + BOS pill). T1/T2/T3 still HOLD. SLEEP: 1200s.
+
+[2026-05-07T13:30:00Z] DOC ALIGNMENT — read T4's chapter #123 (`04-website-portal-unification-followups.md`, 350 lines). 8 follow-up commits land: SiteShell (canonical chrome), iframe-inside-SiteShell pattern (HC + Incubator), persona-chooser pattern (/signup, /demo, /dev/pov), Resources mega-menu + Resource Finder catalog, escape hatches everywhere, perf pass.
+
+Updated phases.md to add **Phase 12 — multi-agency master/satellite** (chapter §"Multi-agency vision"): MM as master, niche agencies as tenants. 5 gap-rounds queued: multi-agency users → Topbar switcher → domain-aware marketing → per-agency packs → spawner.
+
+Open carry-forward follow-ups (will surface as queue rounds when T1-T3 resume): role-aware post-login redirect, `lead` role + BOS auth, niche pages mega-menu mirror, app/page.tsx orphan resolution, resource sub-page real implementations.
