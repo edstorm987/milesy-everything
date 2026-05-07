@@ -26,6 +26,7 @@
     "smoke:multi-agency-users": "tsx --test scripts/smoke-multi-agency-users.test.ts",
     "smoke:topbar-agency-switcher": "tsx --test scripts/smoke-topbar-agency-switcher.test.ts",
     "smoke:postgres-backend-wired": "tsx --test scripts/smoke-postgres-backend-wired.test.ts",
+    "smoke:durable-nonce-store": "tsx --test scripts/smoke-durable-nonce-store.test.ts",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

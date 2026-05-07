@@ -49,7 +49,8 @@ describe("Login lockout + sweep — source markers (R021)", () => {
     assert.ok(src.includes("export function isLoginLocked"));
     assert.ok(src.includes("export function recordLoginFailure"));
     assert.ok(src.includes("export function recordLoginSuccess"));
-    assert.ok(src.includes("export function sweepExpired"));
+    // R028 made sweepExpired async (nonce GC awaits the durable store).
+    assert.ok(src.match(/export async function sweepExpired/));
   });
 
   it("rateLimit.ts uses 10-attempt threshold + 5min window + 5min lockout", () => {
