@@ -120,6 +120,36 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R006 — Portal template marketplace** — DONE.
+      Goal A: NEW `server/templateMarketplace.ts` —
+      `listBuiltinTemplates()` surfaces every `PAGE_TEMPLATES` entry
+      + `brand-page-pack` composite with id-prefix-inferred tags
+      (Login / Aqua Incubator / Brand Pack / Composite / Storefront /
+      Service Portal / Affiliate Site / Marketing / Generic page).
+      Goal B: operator-saved per-agency templates under
+      `t/<agencyId>/_agency/website-editor/templates/<id>` with
+      `saved-<slug>-<base36-ts>` id; `listAllTemplates()` saved-first
+      merge; `saveTemplate / deleteSavedTemplate` round-trip; cross-
+      agency isolation. Goal C: 3 new API routes — `GET /templates`,
+      `POST /templates` (label+blocks required, 400 otherwise;
+      201 on success), `DELETE /templates?id=…` (200/404/400). Goal
+      D: NEW `TemplateGallery.tsx` modal (search + auto-tag-chip
+      filter + 3-col card grid + right-pane preview + "Use this
+      template" CTA fires `onPick(id, kind)`); NEW
+      `SaveAsTemplateButton.tsx` (modal captures BlockTree +
+      label/desc/tags/coverUrl, POSTs, auto-closes on success). Both
+      accept `fetchImpl` override. Goal E: 25/25 smoke pass in
+      NEW `__smoke__/template-marketplace.test.ts` (registry
+      contract + HTTP shape, 400/404 paths, per-agency isolation).
+      website-editor tsc-clean. Chapter
+      `04-template-marketplace.md` + MASTER row #76.
+      Q-ASSUMED: tag inference by id-prefix; default tag
+      "Operator template" when none provided; topbar wiring
+      out-of-scope (host page owns applyStarterVariant). Deferred:
+      screenshot-based cover capture, cross-agency curated
+      marketplace, paid templates, composite-pack sibling-seeding
+      for saved templates, agency-shell "+ New client" gallery
+      wire-up.
 - [x] **T3 R005 — AI image editing (variations + inpaint)** — DONE.
       Goal A: `POST /api/portal/ai-builder/image/variations` (body
       `{ sourceImageUrl, count?=4, strength? }`) → 4 stub picsum URLs

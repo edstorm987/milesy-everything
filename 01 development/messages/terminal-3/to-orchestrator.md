@@ -114,3 +114,4 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T02:05:00Z] WAKE-PENDING-ARCHIVE: 005-ai-image-editing.md still lowest in queue. Sleeping 600s.
 [2026-05-07T02:06:00Z] WARN: my autostash picked up commander's queue-rename of 005-ai-image-editing.md → old prompts/ and absorbed it into my last commit (042cf3c). Side-effect of shared `.git/index` mesh hazard; archive itself is correct so no recovery needed.
 [2026-05-07T02:06:00Z] STARTED: queue file `006-portal-template-marketplace.md` — TemplateGallery + preview + Save-as-template + smoke + chapter.
+[2026-05-07T02:08:00Z] COMMIT: pending — staging R006 explicit-path bundle.
