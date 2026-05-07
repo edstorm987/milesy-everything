@@ -1337,3 +1337,6 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 - [x] T2 R003 — `@aqua/plugin-activity-inbox` shipped (chapter #74,
       smoke 12/12, chrome bell wired into agency layout via
       `Sidebar.extra`).
+- [x] T2 R004 — `@aqua/plugin-credentials-vault` shipped (chapter
+      #75, smoke 10/10, AES-256-GCM at rest, rate-limited reveals,
+      sharedWith ACL).
