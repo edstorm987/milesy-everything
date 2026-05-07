@@ -195,3 +195,123 @@ export interface LeadFunnel {
   unqualifiedCount: number;
   lostCount: number;
 }
+
+// ─── R008 additions: ContentItem + Touchpoint ────────────────────────────
+
+export type ContentItemStatus = "draft" | "scheduled" | "published" | "archived";
+
+export interface ContentItem {
+  id: string;
+  agencyId: AgencyId;
+  campaignId?: string;          // optional — content can live outside a campaign
+  title: string;
+  channel: CampaignChannel;
+  scheduledAt?: number;
+  publishedAt?: number;
+  status: ContentItemStatus;
+  url?: string;
+  notes?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface CreateContentItemInput {
+  campaignId?: string;
+  title: string;
+  channel: CampaignChannel;
+  scheduledAt?: number;
+  status?: ContentItemStatus;
+  url?: string;
+  notes?: string;
+}
+
+export interface UpdateContentItemPatch {
+  title?: string;
+  channel?: CampaignChannel;
+  scheduledAt?: number;
+  publishedAt?: number;
+  status?: ContentItemStatus;
+  url?: string;
+  notes?: string;
+}
+
+export interface ContentItemFilter {
+  campaignId?: string;
+  status?: ContentItemStatus;
+  channel?: CampaignChannel;
+  fromScheduledAt?: number;
+  toScheduledAt?: number;
+}
+
+// Calendar bucket — items grouped by ISO week / day for the calendar
+// page. `windowStart` is inclusive, `windowEnd` exclusive.
+export interface CalendarBucket {
+  // YYYY-MM-DD UTC.
+  day: string;
+  items: ContentItem[];
+}
+
+export interface CalendarWindow {
+  windowStart: number;
+  windowEnd: number;
+  buckets: CalendarBucket[];
+  unscheduledCount: number;
+}
+
+// Touchpoints — every contact attempt with a lead, plus inbound
+// activity (link clicks etc) when a channel reports it. Mostly an
+// audit trail for the CRM-side timeline.
+export type TouchpointType =
+  | "outreach"      // we contacted them
+  | "reply"         // they replied
+  | "open"          // they opened an email
+  | "click"         // they clicked a link
+  | "meeting"       // we had a call
+  | "note";         // free-text observation
+
+export interface Touchpoint {
+  id: string;
+  agencyId: AgencyId;
+  leadId: string;
+  campaignId?: string;
+  type: TouchpointType;
+  channel: CampaignChannel;
+  at: number;
+  summary?: string;
+  metadata?: Record<string, unknown>;
+  createdAt: number;
+}
+
+export interface CreateTouchpointInput {
+  leadId: string;
+  type: TouchpointType;
+  channel: CampaignChannel;
+  campaignId?: string;
+  at?: number;
+  summary?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface TouchpointFilter {
+  leadId?: string;
+  campaignId?: string;
+  type?: TouchpointType;
+  channel?: CampaignChannel;
+  fromAt?: number;
+  toAt?: number;
+}
+
+// Performance summary (read-only, sparkline placeholder per chapter).
+export interface PerformanceSummary {
+  windowStart: number;
+  windowEnd: number;
+  campaigns: { total: number; active: number };
+  content: { scheduled: number; published: number };
+  touchpoints: { total: number; byType: Array<{ type: TouchpointType; count: number }> };
+  // 12-week sparkline of touchpoint counts. Each bucket is a 7-day
+  // window ending at `windowEnd`.
+  weeklyTouchpoints: number[];
+  // Honesty contract — false when we have zero campaigns AND zero
+  // touchpoints; UI renders an empty state.
+  hasData: boolean;
+}

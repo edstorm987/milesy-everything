@@ -177,3 +177,6 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T09:10:00Z] WAKE-PENDING-ARCHIVE: 016 still lowest (queue grew with new 017-020). Sleeping 600s.
 [2026-05-07T09:25:00Z] STARTED: queue file `017-block-library-polish.md` — registry already has 71+ blocks (accordion/tabs/pricing-table/feature-grid present from R002+). Shipping 5 missing high-utility blocks: `feature-comparison`, `team-grid`, `breadcrumb`, `process-steps`, `share-buttons` — all CSS-var-driven, sensible defaults, smoke + chapter.
 [2026-05-07T09:35:00Z] COMMIT: pending — staging R017 explicit-path bundle.
+[2026-05-07T09:36:00Z] COMMIT: 356890a "T3 R017: block library polish — 5 new blocks + 39/39 smoke". 12 files clean. Pushed.
+[2026-05-07T09:36:00Z] DONE: queue file `017-block-library-polish.md` — round shipped. website-editor smoke 39/39 + tsc-clean. Chapter `04-block-library-polish.md` + MASTER row #98 + tasks.md row added. Q-ASSUMED: 5 picks by gut + grep (registry already over-shoots chapter floor); array-prop editors deferred; breadcrumb auto-segments by `/`; share Copy is `<button>` not `<a>`. Commander may archive 017; queue still has 018-020.
+[2026-05-07T09:37:00Z] WAKE-PENDING-ARCHIVE: 017 still lowest. Sleeping 1800s pending cadence.

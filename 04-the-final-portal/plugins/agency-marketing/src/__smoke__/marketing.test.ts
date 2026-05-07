@@ -271,3 +271,147 @@ describe("agency-marketing smoke", () => {
     assert.ok(eventNames.includes("lead.converted"));
   });
 });
+
+// ─── R008: ContentCalendar / Touchpoints / Performance ───────────────────
+
+describe("agency-marketing R008 — ContentCalendar / Touchpoints / Performance", () => {
+  function freshContainer() {
+    const w = buildWorld();
+    const c = containerWithDeps({
+      agencyId: AGENCY_ID,
+      storage: w.storage,
+      tenant: w.tenant,
+      user: w.user,
+      activity: w.activity,
+      events: w.events,
+      pluginInstalls: w.pluginInstalls,
+    });
+    return { w, c };
+  }
+
+  test("R008-1: ContentCalendar.create stores + emits content.created; default status follows scheduledAt", async () => {
+    const { w, c } = freshContainer();
+    const drafted = await c.content.create(ACTOR, { title: "No-date draft", channel: "email" });
+    assert.equal(drafted.status, "draft");
+    const scheduled = await c.content.create(ACTOR, { title: "Scheduled", channel: "email", scheduledAt: Date.now() + 86_400_000 });
+    assert.equal(scheduled.status, "scheduled");
+    assert.ok(w.inspect.events.some(e => e.name === "agency-marketing.content.created"));
+  });
+
+  test("R008-2: ContentCalendar.update + publish transitions status; publishedAt set; emits update events", async () => {
+    const { w, c } = freshContainer();
+    const item = await c.content.create(ACTOR, { title: "T", channel: "email" });
+    const upd = await c.content.update(ACTOR, item.id, { title: "T2", channel: "social" });
+    assert.equal(upd.title, "T2");
+    assert.equal(upd.channel, "social");
+    const pub = await c.content.publish(ACTOR, item.id);
+    assert.equal(pub.status, "published");
+    assert.ok(pub.publishedAt && pub.publishedAt > 0);
+    assert.ok(w.inspect.events.some(e => e.name === "agency-marketing.content.updated"));
+  });
+
+  test("R008-3: ContentCalendar.window groups by UTC day across the requested range; unscheduledCount counts drafts without scheduledAt", async () => {
+    const { c } = freshContainer();
+    const monday = Date.UTC(2026, 4, 4); // Mon 2026-05-04
+    await c.content.create(ACTOR, { title: "A", channel: "email", scheduledAt: monday + 10 * 3_600_000 });
+    await c.content.create(ACTOR, { title: "B", channel: "email", scheduledAt: monday + 14 * 3_600_000 });
+    await c.content.create(ACTOR, { title: "C-next-day", channel: "email", scheduledAt: monday + 86_400_000 + 9 * 3_600_000 });
+    await c.content.create(ACTOR, { title: "D-draft", channel: "social" }); // no scheduledAt
+
+    const window = await c.content.window(monday, monday + 7 * 86_400_000);
+    assert.equal(window.buckets.length, 7);
+    assert.equal(window.buckets[0]?.items.length, 2, "Monday has 2 items");
+    assert.equal(window.buckets[1]?.items.length, 1, "Tuesday has 1 item");
+    assert.equal(window.unscheduledCount, 1);
+  });
+
+  test("R008-4: Touchpoint.record stores + emits touchpoint.recorded; rejects unknown type", async () => {
+    const { w, c } = freshContainer();
+    const tp = await c.touchpoints.record(ACTOR, {
+      leadId: "lead_1", type: "outreach", channel: "email", summary: "first outreach",
+    });
+    assert.equal(tp.type, "outreach");
+    assert.ok(w.inspect.events.some(e => e.name === "agency-marketing.touchpoint.recorded"));
+    await assert.rejects(
+      () => c.touchpoints.record(ACTOR, { leadId: "lead_1", type: "bogus" as never, channel: "email" }),
+      /invalid touchpoint type/,
+    );
+  });
+
+  test("R008-5: Touchpoint.listForLead returns only that lead's touchpoints, newest first", async () => {
+    let t = Date.UTC(2026, 4, 4);
+    const realDateNow = Date.now;
+    Date.now = () => t;
+    try {
+      const { c } = freshContainer();
+      await c.touchpoints.record(ACTOR, { leadId: "lead_a", type: "outreach", channel: "email" });
+      t += 1000;
+      await c.touchpoints.record(ACTOR, { leadId: "lead_b", type: "outreach", channel: "email" });
+      t += 1000;
+      await c.touchpoints.record(ACTOR, { leadId: "lead_a", type: "reply", channel: "email" });
+      const aRows = await c.touchpoints.listForLead("lead_a");
+      assert.equal(aRows.length, 2);
+      assert.equal(aRows[0]?.type, "reply", "newest first");
+      const bRows = await c.touchpoints.listForLead("lead_b");
+      assert.equal(bRows.length, 1);
+    } finally {
+      Date.now = realDateNow;
+    }
+  });
+
+  test("R008-6: onCrmLeadStatusChanged subscriber wraps record() with a 'note' touchpoint and source metadata", async () => {
+    const { c } = freshContainer();
+    const tp = await c.touchpoints.onCrmLeadStatusChanged({
+      leadId: "lead_x", fromStatus: "new", toStatus: "qualified",
+    });
+    assert.equal(tp.type, "note");
+    assert.equal((tp.metadata as Record<string, unknown>).source, "client-crm.lead.status_changed");
+    assert.equal((tp.metadata as Record<string, unknown>).toStatus, "qualified");
+  });
+
+  test("R008-7: Performance.summary honesty contract — empty world hasData:false; tile values zero", async () => {
+    const { c } = freshContainer();
+    const summary = await c.performance.summary(Date.now());
+    assert.equal(summary.hasData, false);
+    assert.equal(summary.campaigns.total, 0);
+    assert.equal(summary.touchpoints.total, 0);
+    assert.equal(summary.weeklyTouchpoints.length, 12);
+    assert.ok(summary.weeklyTouchpoints.every(n => n === 0));
+  });
+
+  test("R008-8: Performance.summary aggregates campaigns + content + touchpoints; sparkline = 12 weekly buckets", async () => {
+    const refNow = Date.UTC(2026, 4, 7);
+    let t = refNow;
+    const realDateNow = Date.now;
+    Date.now = () => t;
+    try {
+      const { c } = freshContainer();
+      await c.campaigns.create({ name: "C1", channel: "email", goalKpi: "leads", goalTarget: 10 }, ACTOR);
+      await c.content.create(ACTOR, { title: "Post", channel: "social", scheduledAt: refNow });
+      await c.touchpoints.record(ACTOR, { leadId: "l1", type: "outreach", channel: "email", at: refNow - 86_400_000 });
+      await c.touchpoints.record(ACTOR, { leadId: "l2", type: "open", channel: "email", at: refNow - 8 * 86_400_000 });
+
+      const summary = await c.performance.summary(refNow);
+      assert.equal(summary.hasData, true);
+      assert.equal(summary.campaigns.total, 1);
+      assert.equal(summary.content.scheduled, 1);
+      assert.equal(summary.touchpoints.total, 2);
+      assert.equal(summary.weeklyTouchpoints.length, 12);
+      const trailingSum = summary.weeklyTouchpoints.reduce((s, n) => s + n, 0);
+      assert.equal(trailingSum, 2);
+    } finally {
+      Date.now = realDateNow;
+    }
+  });
+
+  test("R008-9: ContentCalendar.archive flips status; window excludes archived (unscheduledCount drops)", async () => {
+    const { c } = freshContainer();
+    const a = await c.content.create(ACTOR, { title: "A", channel: "email" });
+    await c.content.create(ACTOR, { title: "B", channel: "email" });
+    let w = await c.content.window(0, Date.now() + 86_400_000 * 30);
+    assert.equal(w.unscheduledCount, 2);
+    await c.content.archive(ACTOR, a.id);
+    w = await c.content.window(0, Date.now() + 86_400_000 * 30);
+    assert.equal(w.unscheduledCount, 1);
+  });
+});

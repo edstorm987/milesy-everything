@@ -2030,3 +2030,9 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       smoke 20/20: 11 new R007 cases over Payment + Plan + PnL +
       lock-in + honesty contract; 4 new admin pages; 7 new API
       routes; default landing flipped to FounderDashboardPage).
+- [x] T2 R008 — `@aqua/plugin-agency-marketing` extended (chapter
+      #79, smoke 17/17: 9 new R008 cases over ContentItem + Touchpoint +
+      Performance + honesty empty state; 3 new admin pages; 8 new API
+      routes; client-crm subscriber port for cross-plugin touchpoint
+      logging). Q-ASSUMED kept scopePolicy:"agency" (R+1 migration to
+      "client" flagged).

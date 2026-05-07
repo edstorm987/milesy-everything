@@ -16,6 +16,16 @@ import {
   updateLeadHandler,
   updateTemplateHandler,
 } from "./handlers";
+import {
+  calendarWindowHandler,
+  createContentHandler,
+  listContentHandler,
+  listTouchpointsHandler,
+  performanceSummaryHandler,
+  publishContentHandler,
+  recordTouchpointHandler,
+  updateContentHandler,
+} from "./handlers-r008";
 
 const AGENCY_ADMINS = ["agency-owner", "agency-manager"] as const;
 const AGENCY_VIEWERS = ["agency-owner", "agency-manager", "agency-staff"] as const;
@@ -41,4 +51,14 @@ export const ROUTES: PluginApiRoute[] = [
   // Reports (2 routes)
   { path: "reports/campaigns", methods: ["GET"], handler: reportCampaignsHandler, visibleToRoles: [...AGENCY_VIEWERS] },
   { path: "reports/leads", methods: ["GET"], handler: reportLeadsHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+
+  // R008 — Content calendar / Touchpoints / Performance
+  { path: "content", methods: ["GET"], handler: listContentHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "content/create", methods: ["POST"], handler: createContentHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "content/update", methods: ["PATCH"], handler: updateContentHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "content/publish", methods: ["POST"], handler: publishContentHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "calendar", methods: ["GET"], handler: calendarWindowHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "touchpoints", methods: ["GET"], handler: listTouchpointsHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "touchpoints/record", methods: ["POST"], handler: recordTouchpointHandler, visibleToRoles: [...AGENCY_VIEWERS] },
+  { path: "performance", methods: ["GET"], handler: performanceSummaryHandler, visibleToRoles: [...AGENCY_VIEWERS] },
 ];
