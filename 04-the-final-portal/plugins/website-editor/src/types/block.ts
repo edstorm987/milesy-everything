@@ -64,6 +64,14 @@ export interface BlockStyles {
   // Responsive overrides
   mobile?: Partial<Omit<BlockStyles, "mobile" | "tablet" | "animate">>;
   tablet?: Partial<Omit<BlockStyles, "mobile" | "tablet" | "animate">>;
+  // R019 — per-viewport visibility toggles. When true, the renderer
+  // omits the block from the matching viewport. Foundation respects
+  // these in storefront render; editor preview honours them when
+  // the matching viewport is active so operators see what end-users
+  // see.
+  hideOnDesktop?: boolean;
+  hideOnTablet?: boolean;
+  hideOnMobile?: boolean;
   // On-scroll entrance animation
   animate?: "fade-in" | "slide-up" | "slide-left" | "slide-right" | "zoom-in" | "rotate-in" | "blur-in";
   animateDuration?: string;

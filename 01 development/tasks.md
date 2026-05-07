@@ -665,6 +665,31 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R019 — Multi-device viewport + mobile preview** — DONE.
+      NEW `lib/viewport.ts` (pure SSR-safe): `Viewport`
+      union (desktop/tablet/mobile), `VIEWPORT_SPECS`
+      (1280/768/390), `isHiddenOn(styles,v)`,
+      `pruneForViewport(blocks,v)` recursive deep-clone filter,
+      `detectOverflows(doc,viewportWidth)` DOM walker with 1px
+      sub-pixel tolerance. `BlockStyles` extended with
+      `hideOnDesktop/hideOnTablet/hideOnMobile` optional booleans.
+      NEW `ViewportSwitcher.tsx` 3-chip toolbar with active
+      highlight, aria-pressed, optional flag dots for overflow
+      counts. NEW `__smoke__/r019-mobile-viewport.test.ts`
+      26/26 (specs, hide matrix, prune at every depth + nested
+      + input-untouched, detectOverflows null/undefined doc + 1px
+      tolerance, switcher renders 3 chips + active + width hints
+      + flag dot + brand-kit var). package.json test chain
+      extended. tsc-clean. Chapter `04-mobile-viewport.md` +
+      MASTER row #100.
+      Q-ASSUMED: pure components (host wires switcher + swaps
+      iframe width + runs detectOverflows on switch); touch
+      simulation is foundation editor concern; existing
+      devicePresets coexists; per-viewport styling already on
+      BlockStyles.mobile/.tablet. Deferred: host topbar wire-up,
+      touch simulation, foundation storefront pruning per
+      detected client viewport, hideOn* in
+      EditorPropertiesSidebar, auto-fix overflow suggestions.
 - [x] **T3 R018 — Editor keyboard shortcuts + Cmd-K palette** — DONE.
       NEW `lib/editorShortcuts.ts` (pure SSR-safe registry):
       `KeyBinding { id, label, key, scope, meta?, shift?, alt? }`
