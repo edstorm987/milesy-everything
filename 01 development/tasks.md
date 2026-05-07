@@ -1024,6 +1024,32 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R032 — i18n / multi-language per page** — DONE.
+      Pure helper lib `lib/i18n.ts` ships per-page localization layer.
+      Schema extension `EditorPage.locales?: LocalePageMap = {
+      defaultLocale, locales: Record<bcp47, { tree, meta?, ... }> }` is
+      host one-liner. Helpers: normaliseLocale (BCP-47), parseLocalePrefix
+      (URL routing case-insens), parseAcceptLanguage (quality sort),
+      resolveLocale (priority override > URL > accept-lang > default,
+      lang-only fallback fr-CA→fr), localizedTree (fallback w/
+      wasFallback), localizedUrl (default unprefixed for SEO),
+      buildHreflangLinks (per-locale + x-default), cloneTreeForLocale
+      (rewrites translatable props w/ id-suffix, default identity =
+      operator-paste path), auditLocale (positional walk → translated/
+      untranslated/missing/complete). Smoke 51/51. package.json chain
+      extended.
+      NOT in scope: real translation API (T6); RTL layouts; per-block
+      locale override.
+      Q-ASSUMED: schema extension is host one-liner mirroring R029/R030
+      pattern; editor topbar language picker + sidebar status badges
+      are host UI; banner copy is host-side (helper gives
+      wasFallback boolean); auto-translate ships identity translator
+      (operator-paste path) — real ML behind host endpoint; positional
+      walk in auditLocale (id-matching breaks under cloned-suffix ids).
+      Files: `04-the-final-portal/plugins/website-editor/src/lib/i18n.ts`
+      (NEW) · `__smoke__/r032-i18n.test.ts` (NEW) · `package.json` test
+      chain · `01 development/context/prior research/04-i18n.md` (NEW
+      chapter) · MASTER row #113.
 - [x] **T3 R031 — Accessibility audit walker + WCAG 2.1 AA gates** — DONE.
       NEW `lib/a11yAudit.ts` (pure). `auditAccessibility(blocks)` walks
       tree → `A11yAuditResult { issues, countsBySeverity, countsByCode,
