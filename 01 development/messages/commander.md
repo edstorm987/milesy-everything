@@ -1022,3 +1022,7 @@ Queue state post-stage:
 [2026-05-07T08:50:00Z] PLAN: archive T3/027.
 
 [2026-05-07T08:50:00Z] SLEEP: 270s.
+
+[2026-05-07T08:55:00Z] WAKEUP: cycle 106 — autonomous. T2 STARTED R012 pre-sales-hq. T1 long-cadence sleep. T3 chains.
+
+[2026-05-07T08:55:00Z] PLAN: minimal. SLEEP: 270s.
