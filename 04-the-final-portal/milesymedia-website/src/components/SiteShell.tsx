@@ -143,7 +143,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Link href="/health-check">Health Check</Link> ·{" "}
             <Link href="/business-os">Business OS</Link> ·{" "}
             <Link href="/incubator">Incubator</Link> ·{" "}
+            <Link href="/resources">Resources</Link> ·{" "}
             <Link href="/login">Client portal</Link> ·{" "}
+            <Link href="/privacy">Privacy</Link> ·{" "}
+            <Link href="/terms">Terms</Link> ·{" "}
             <a href="mailto:hello@milesymedia.co">hello@milesymedia.co</a>
           </span>
         </div>

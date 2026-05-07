@@ -114,6 +114,11 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
       fix; dev/pov persona `sees:` line; footer parity across all pages;
       NEW /privacy + /terms stubs (next.config.ts rewrites); deploy
       date refresh.
+- [x] Marketing home JSX rewrite via SiteShell (post-Sprint-2 polish).
+      **DONE T4 R006 — chapter #148.** `src/app/page.tsx` + `_home/home.html`
+      (fs.readFileSync + dangerouslySetInnerHTML); `/` rewrite dropped;
+      legacy `_marketing/index.html` deleted; SiteShell footer R005 parity;
+      mega-menu sync rule retires for home page.
 
 ### Blocked
 
@@ -133,7 +138,8 @@ Goal: WS-B/C complete; WS-D started; WS-E half. Ship-gate 7/9.
   ~~WS-E R027 Postgres backend~~ #134 +
   ~~WS-E R028 durable HMAC nonces~~ #138 +
   ~~WS-E R029 env secrets policy~~ #142 +
-  ~~WS-E R030 observability~~ #144 — Sprint 2 T1 complete 2026-05-07.
+  ~~WS-E R030 observability~~ #144 +
+  ~~R031 BOS middleware integration~~ #147 — Sprint 2 T1 complete 2026-05-07.
 - T2: ~~WS-B R023 rank-my-website plugin~~ #141 +
   ~~WS-D R024 SMTP outbound~~ #144 +
   ~~WS-D R025 Stripe events~~ #145 — DONE 2026-05-07

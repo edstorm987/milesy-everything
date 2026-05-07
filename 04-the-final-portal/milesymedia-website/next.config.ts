@@ -44,12 +44,11 @@ const nextConfig: NextConfig = {
   // directory paths to index.html in `public/`; rewrites do.
   async rewrites() {
     return {
-      // T4 unify-4 — marketing surface lives in public/_marketing/.
-      // beforeFiles fires ahead of Next's filesystem matching so / wins
-      // over app/page.tsx (which becomes orphaned legacy until we
-      // delete it in Step 5 cleanup).
+      // T4 unify-4 — marketing surface mostly lives in public/_marketing/.
+      // T4 R006 retired the `/` rewrite when the home was JSX-ported
+      // through SiteShell (`src/app/page.tsx`). Niche pages stay static
+      // HTML for v1 (separate JSX-rewrite round if/when scheduled).
       beforeFiles: [
-        { source: "/",                destination: "/_marketing/index.html" },
         { source: "/for-skincare",    destination: "/_marketing/for-skincare.html" },
         { source: "/for-coaching",    destination: "/_marketing/for-coaching.html" },
         { source: "/for-fitness",     destination: "/_marketing/for-fitness.html" },
