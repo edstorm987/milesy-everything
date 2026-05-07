@@ -707,3 +707,7 @@ Queue state post-stage:
 [2026-05-07T04:50:00Z] PLAN: archive T4/009 + ship 7 new T4 rounds.
 
 [2026-05-07T04:50:00Z] SLEEP: 270s.
+
+[2026-05-07T04:55:00Z] WAKEUP: cycle 58 — autonomous. No new DONEs. T3 STARTED R011 (brand-kit CSS vars), T4 STARTED R010 (HC→Incubator handoff). T1/T2 mid-flight — T1 long sleep on prior round, T2 mid-shift but tail stale. Queue depths: T1=6, T2=8, T3=6, T4=9.
+
+[2026-05-07T04:55:00Z] PLAN: minimal. SLEEP: 270s.
