@@ -1,7 +1,12 @@
 # Rundown — where we are, what's left
 
-Snapshot 2026-05-07T19:20Z. Refresh as the picture changes; this
+Snapshot 2026-05-07T20:30Z. Refresh as the picture changes; this
 file is meant to be skimmed in 30 seconds.
+
+**Latest**: 4 parallel-subagent rounds shipped (R037 leads-pipeline
+foundation glue · forgotten password · Google OAuth audit · Incubator-
+inside-BOS) + build-error fix-up pass. `npm run build` is **exit 0**
+with full route table. Ed switching to web mode for next session.
 
 For the canonical plan see chapter **#124** `04-ship-plan-v1.md`.
 For the dev-folder layout see `README.md`. This file = at-a-glance

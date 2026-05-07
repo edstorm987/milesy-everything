@@ -1,12 +1,13 @@
 import Link from "next/link";
-import dynamic from "next/dynamic";
+// Renamed to avoid clashing with the route-level `dynamic` const below.
+import nextDynamic from "next/dynamic";
 import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
 import { seedFounder } from "@/lib/server/founderSeed";
 import { SiteShell } from "@/components/SiteShell";
 
 // Code-split: form bundle only ships when /login renders, and the
 // nav + card chrome paint without waiting for it.
-const LoginForm = dynamic(() => import("./LoginForm").then(m => m.LoginForm), {
+const LoginForm = nextDynamic(() => import("./LoginForm").then(m => m.LoginForm), {
   loading: () => <div className="h-40" aria-hidden />,
 });
 
@@ -14,10 +15,26 @@ export const metadata = {
   title: "Sign in · Milesy Media",
 };
 
+// `seedFounder()` runs at request-time and reads FOUNDER_PASSWORD from
+// process.env (R024 / chapter #129). When `next build` static-prerenders
+// this page, the env may be unset and seedFounder throws. Force dynamic
+// so the page is never prerendered — it renders per-request.
+export const dynamic = "force-dynamic";
+
 export default async function LoginPage() {
   // T4 unify-3 — make sure the founder user is seeded before the
   // form renders, so a fresh `npm run dev` can sign in immediately.
-  await seedFounder();
+  // Wrapped: in prod with no FOUNDER_PASSWORD env, the seed throws
+  // (per chapter #129 fail-closed policy). The login page itself
+  // still renders so visitors can sign in with their own accounts.
+  try {
+    await seedFounder();
+  } catch (e) {
+    if (process.env.NODE_ENV !== "production") {
+      // eslint-disable-next-line no-console
+      console.warn("[/login] seedFounder skipped:", e instanceof Error ? e.message : e);
+    }
+  }
   return (
     <SiteShell>
       <main className="mm-auth-shell">

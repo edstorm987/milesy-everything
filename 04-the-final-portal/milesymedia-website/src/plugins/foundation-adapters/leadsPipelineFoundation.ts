@@ -33,7 +33,11 @@ import { subscribeForPlugin } from "@/server/eventBus";
 import { makePluginStorage } from "@/lib/server/pluginStorage";
 import { getInstall } from "@/server/pluginInstalls";
 
-const PLUGIN_ID = "@aqua/plugin-leads-pipeline";
+// Match the plugin's manifest id (chapter #157 / R037 follow-up):
+// the foundation registry validator regex /^[a-z][a-z0-9-]*$/ rejects
+// `@aqua/plugin-...`. Manifest id = "leads-pipeline"; npm package name
+// = "@aqua/plugin-leads-pipeline" (latter still imported above).
+const PLUGIN_ID = "leads-pipeline";
 
 let registered = false;
 

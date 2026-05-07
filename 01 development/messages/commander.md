@@ -1603,3 +1603,16 @@ Top-level now has **9 MD files** (README + 8 docs) all internally consistent + c
 3 chapters · 34 new smoke tests · `tsc --noEmit` clean across all three. ~25 min wall-clock vs days sequentially. Manager-with-subagent pattern (chapter #158) paying off exactly as predicted.
 
 Sprint 2.5 status: 17 done · 1 queued (HC→leads-pipeline tracking verification, post foundation glue) · 2 open (employee persona + perf pass).
+
+[2026-05-07T20:30:00Z] **BUILD FIX PASS — npm run build exit 0**.
+Issues found in cycle prod-build pass:
+1. `/login/reset` — useSearchParams in client component without Suspense → prerender bail. Fixed: `export const dynamic = "force-dynamic"` + Suspense wrapper.
+2. `/login` — `seedFounder()` in server component throws at static-prerender time when FOUNDER_PASSWORD env unset (R024 fail-closed policy in prod). Fixed: `export const dynamic = "force-dynamic"` + try/catch around seedFounder + dev-mode warning.
+3. `/login` — name collision: `import dynamic from "next/dynamic"` clashed with `export const dynamic = "force-dynamic"`. Fixed: rename import to `nextDynamic`.
+4. `/dev/pov` — same dynamic flag added defensively.
+5. Plugin `@aqua/plugin-leads-pipeline` rejected by validator regex `/^[a-z][a-z0-9-]*$/`. Fixed: manifest `id` → `"leads-pipeline"` in plugins/leads-pipeline/index.ts + matching PLUGIN_ID consts in campaigns.ts + foundation-adapters/leadsPipelineFoundation.ts. npm package name `@aqua/plugin-leads-pipeline` retained for transpilePackages.
+6. Plugin `panelId: "leads-pipeline"` non-standard warning. Fixed: panelId → `"marketing"` (in VALID_PANEL_IDS).
+
+Final route table prints clean. Static + dynamic routes both render. tsc clean. Stale build-time warnings about "@aqua/plugin-leads-pipeline" still appear in some logs but are inert — they reference the npm package name in error-prefix strings, not manifest id rejections.
+
+Ed switching to web mode (Mode B per CLAUDE.md). All work pushed; rundown refreshed; build verified green.

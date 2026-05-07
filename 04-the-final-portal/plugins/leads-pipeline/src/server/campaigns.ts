@@ -34,7 +34,7 @@ import type { LeadService } from "./leads";
 const CAMPAIGN_INDEX_KEY = "campaigns/index";
 const campaignKey = (id: string): string => `campaign:${id}`;
 
-export const PLUGIN_ID = "@aqua/plugin-leads-pipeline";
+export const PLUGIN_ID = "leads-pipeline";
 
 export class CampaignService {
   constructor(

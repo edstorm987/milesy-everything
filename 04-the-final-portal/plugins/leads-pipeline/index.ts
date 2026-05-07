@@ -17,7 +17,11 @@ const AGENCY_VIEWERS = ["agency-owner", "agency-manager", "agency-staff"] as con
 const AGENCY_ADMINS = ["agency-owner", "agency-manager"] as const;
 
 const manifest: AquaPlugin = {
-  id: "@aqua/plugin-leads-pipeline",
+  // The foundation registry validator regex /^[a-z][a-z0-9-]*$/ rejects
+  // `@aqua/plugin-...` (chapter #157 follow-up — observed at build time).
+  // Manifest id matches the folder slug; npm package name retains the
+  // @aqua/plugin-... form for transpilePackages.
+  id: "leads-pipeline",
   name: "Leads Pipeline",
   version: "0.1.0",
   status: "alpha",
@@ -34,7 +38,7 @@ const manifest: AquaPlugin = {
       id: "leads-pipeline.board",
       label: "Leads board",
       href: "/portal/agency/pipelines/leads",
-      panelId: "leads-pipeline",
+      panelId: "marketing",
       order: 10,
       visibleToRoles: [...AGENCY_VIEWERS],
     },
@@ -42,7 +46,7 @@ const manifest: AquaPlugin = {
       id: "leads-pipeline.contacts",
       label: "Contacts",
       href: "/portal/agency/leads-pipeline/contacts",
-      panelId: "leads-pipeline",
+      panelId: "marketing",
       order: 20,
       visibleToRoles: [...AGENCY_VIEWERS],
     },
@@ -50,7 +54,7 @@ const manifest: AquaPlugin = {
       id: "leads-pipeline.campaigns",
       label: "Campaigns",
       href: "/portal/agency/leads-pipeline/campaigns",
-      panelId: "leads-pipeline",
+      panelId: "marketing",
       order: 30,
       visibleToRoles: [...AGENCY_ADMINS],
     },

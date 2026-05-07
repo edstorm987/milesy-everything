@@ -6,12 +6,19 @@
 // and redirects to `/login?reset=1` on success.
 
 import Link from "next/link";
+import { Suspense } from "react";
 import { SiteShell } from "@/components/SiteShell";
 import { ResetForm } from "./ResetForm";
 
 export const metadata = {
   title: "Reset password · Milesy Media",
 };
+
+// `/login/reset` reads `?token=` via useSearchParams in ResetForm.
+// Force dynamic rendering so the static-prerender pass doesn't bail
+// out (Next 16 requires Suspense around CSR-bailout client islands;
+// dynamic renders skip the prerender entirely).
+export const dynamic = "force-dynamic";
 
 export default function ResetPage() {
   return (
@@ -36,7 +43,9 @@ export default function ResetPage() {
               <h1>Reset password</h1>
               <p>Pick something at least 8 characters long.</p>
             </div>
-            <ResetForm />
+            <Suspense fallback={<div className="h-32" aria-hidden />}>
+              <ResetForm />
+            </Suspense>
             <div className="mm-auth-foot">
               <span>
                 Changed your mind? <Link href="/login">Sign in →</Link>

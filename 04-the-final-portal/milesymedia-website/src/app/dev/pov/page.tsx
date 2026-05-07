@@ -22,6 +22,14 @@ import { issueSession, sessionCookie } from "@/lib/server/auth";
 import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
 import { cookies } from "next/headers";
 
+// `seedFounder()` runs inside the `signInAs` server action below and
+// reads FOUNDER_PASSWORD from process.env. When `next build` static-
+// prerenders this page, it never invokes the action — so the page
+// itself is safe to prerender. But we force dynamic anyway because
+// /dev/pov is a non-prod surface and keeping it consistent with
+// /login simplifies prerender behaviour.
+export const dynamic = "force-dynamic";
+
 type Persona = "founder" | "demo-owner" | "demo-client" | "demo-customer";
 
 async function signInAs(persona: Persona) {
