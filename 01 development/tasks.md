@@ -59,8 +59,10 @@ _(none — terminals on HOLD pending RESUME signal post-unification)_
 - [x] **R038 — Image srcset + responsive helper** — DONE 2026-05-07.
       `lib/responsiveImage.ts` (buildImageAttrs / withCdnResize /
       auditImage) + 34/34 smoke + chapter #128.
-- [ ] **R039 — Block schema migration runner** (forward-compat for
-      evolving block schemas; pure helper + smoke).
+- [x] **R039 — Block schema migration runner** — DONE 2026-05-07.
+      `lib/blockSchemaMigrations.ts` (versioned migrate runner +
+      seed v1→v2 / v2→v3 + loadBlockTreeMigrated) + 23/23 smoke +
+      chapter #130.
 
 ### T4 manual (Ed driving)
 
