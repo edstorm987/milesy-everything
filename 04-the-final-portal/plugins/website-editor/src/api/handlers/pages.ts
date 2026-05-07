@@ -16,6 +16,7 @@ import {
   listVariantsForPortal,
   setActivePortalVariant,
 } from "../../server/pages";
+import { listAllPortalVariants } from "../../server/portalVariants";
 import { fail, ok, readJsonBody, readQuery, requireClientScope } from "../helpers";
 
 function siteIdOrFail(query: Record<string, string>): string | Response {
@@ -157,6 +158,17 @@ export async function handleListPortalVariants(req: Request, ctx: PluginCtx): Pr
   if (sid instanceof Response) return sid;
   if (!q.role || !isPortalRole(q.role)) return fail("valid role required", 400);
   const variants = await listVariantsForPortal(ctx.storage, scope.agencyId, scope.clientId, sid, q.role);
+  return ok({ variants });
+}
+
+// R012 — flat all-roles gallery feed. `GET /portal-variants/all?siteId=…`
+export async function handleListAllPortalVariants(req: Request, ctx: PluginCtx): Promise<Response> {
+  const scope = requireClientScope(ctx);
+  if (!scope.ok) return scope.res;
+  const q = readQuery(req);
+  const sid = siteIdOrFail(q);
+  if (sid instanceof Response) return sid;
+  const variants = await listAllPortalVariants(ctx.storage, scope.agencyId, scope.clientId, sid);
   return ok({ variants });
 }
 

@@ -405,6 +405,36 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R012 — Portal-variant editor** — DONE.
+      Server CRUD + singleton enforcement live since R002. R012
+      adds the flat-across-all-roles read + 2 UI components.
+      Goal A/D: NEW `listAllPortalVariants` server helper +
+      `GET /portal-variants/all?siteId=…` endpoint returning
+      `PortalVariantSummary[]` sorted by PORTAL_ROLES order,
+      active-first within role, updatedAt desc. Goal B: NEW
+      `PortalVariantSwitcher.tsx` topbar dropdown (lazy-fetch,
+      per-role grouping with "+ New variant" callback, active
+      green pip, current cyan tint, brand-kit CSS-var driven
+      from R011). Goal D: NEW `PortalVariantGallery.tsx` full-
+      screen modal (16:9 preview tile, role-tinted chip,
+      live/draft chip, last-edited date, Edit + Make live CTAs;
+      POSTs `/portal-variants/active` directly with busy state).
+      Goal C: `setActivePortalVariant` already shipped (R002).
+      Both UI components accept `fetchImpl` override. NEW
+      `__smoke__/r012-portal-variant-editor.test.ts` 21/21
+      (sort, status, variantId surface, HTTP shape, flip-flow,
+      singleton invariant ≤1 active/role) + package.json test
+      chain extended. tsc-clean. Chapter
+      `04-portal-variant-editor.md` + MASTER row #93.
+      Q-ASSUMED: 4 PortalRoles per foundation
+      (login/affiliates/orders/account); wider role set
+      (account/customer/member/affiliate/start-here/other) is
+      Q-FOLLOWUP for T1; preview thumbnails are placeholder
+      tiles (real screenshot R+1); host-page topbar wiring
+      unchanged (pure components ready to mount). Deferred:
+      foundation PortalRole extension, screenshot capture,
+      drag-to-reorder, host-page topbar mount, variant
+      duplication, A/B testing (out of scope per prompt).
 - [x] **T3 R011 — Brand-kit CSS variables** — DONE.
       Per `eds requirments.md` §5 (no hardcoded brand colours).
       Goal A: vendored `BrandKit` (`lib/tenancy.ts`) gains 9 optional

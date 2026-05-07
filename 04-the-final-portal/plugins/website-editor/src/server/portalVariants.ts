@@ -145,3 +145,54 @@ export {
   getActivePortalVariant,
   setActivePortalVariant,
 };
+
+// R012 — Editor variant gallery summary across all roles.
+//
+// Returns a flat list of `{ role, pageId, variantId, title, slug,
+// isActive, status, updatedAt }` records — one per `EditorPage` in
+// the site that has a `portalRole`. Sorted active-first within each
+// role group, then by `updatedAt` desc.
+
+import { PORTAL_ROLES } from "../lib/portalRole";
+
+export interface PortalVariantSummary {
+  role: PortalRole;
+  pageId: string;
+  variantId?: string;
+  title: string;
+  slug: string;
+  isActive: boolean;
+  status: "draft" | "live";
+  updatedAt: number;
+}
+
+export async function listAllPortalVariants(
+  storage: PluginStorage,
+  agencyId: AgencyId,
+  clientId: ClientId,
+  siteId: string,
+): Promise<PortalVariantSummary[]> {
+  const out: PortalVariantSummary[] = [];
+  for (const role of PORTAL_ROLES) {
+    const variants = await listVariantsForPortal(storage, agencyId, clientId, siteId, role);
+    for (const v of variants) {
+      out.push({
+        role,
+        pageId: v.id,
+        ...(v.variantId ? { variantId: v.variantId } : {}),
+        title: v.title,
+        slug: v.slug,
+        isActive: Boolean(v.isActivePortal),
+        status: v.isActivePortal ? "live" : "draft",
+        updatedAt: v.updatedAt,
+      });
+    }
+  }
+  return out.sort((a, b) => {
+    if (a.role !== b.role) {
+      return PORTAL_ROLES.indexOf(a.role) - PORTAL_ROLES.indexOf(b.role);
+    }
+    if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
+    return b.updatedAt - a.updatedAt;
+  });
+}

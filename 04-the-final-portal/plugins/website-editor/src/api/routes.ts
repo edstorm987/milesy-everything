@@ -16,6 +16,7 @@ import {
   handleRevertPage,
   handleDeletePage,
   handleListPortalVariants,
+  handleListAllPortalVariants,
   handleSetActivePortalVariant,
 } from "./handlers/pages";
 import {
@@ -82,6 +83,7 @@ export const apiRoutes: PluginApiRoute[] = [
   { path: "/pages/revert", methods: ["POST"], handler: handleRevertPage },
   { path: "/pages", methods: ["DELETE"], handler: handleDeletePage },
   { path: "/portal-variants", methods: ["GET"], handler: handleListPortalVariants },
+  { path: "/portal-variants/all", methods: ["GET"], handler: handleListAllPortalVariants },
   { path: "/portal-variants/active", methods: ["POST"], handler: handleSetActivePortalVariant },
 
   // Themes
