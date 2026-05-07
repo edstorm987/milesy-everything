@@ -1191,3 +1191,5 @@ Queue depths post-archive: T1=4 (paused) · T2=3 (paused) · T3=2 (paused) · T4
 [2026-05-07T12:00:00Z] WAKEUP: cycle 131 — autonomous. Quiet. T1/T2/T3 still mid-long-sleep (HOLD will be picked up on their next wake). T4 quiet since d3f6caa — Ed not yet pasted unification prompt. PLAN: minimal. SLEEP: 270s.
 
 [2026-05-07T12:05:00Z] WAKEUP: cycle 132 — autonomous. Quiet. T4 mid-Step-1 (config files moved last cycle, no new commit since). T1/T2/T3 still long-sleep. SLEEP: 270s.
+
+[2026-05-07T12:10:00Z] WAKEUP: cycle 133 — autonomous. T4 unify Step 1 LANDED — `portal/` directory no longer exists; everything now under `milesymedia website/` (package.json, next.config.ts, middleware.ts, src/, public/ all moved + marketing HTML pages coexist). Move was mesh-absorbed across multiple commander commits but tree is consistent. T1/T2/T3 still long-sleep (HOLD pending). PLAN: minimal. SLEEP: 270s.
