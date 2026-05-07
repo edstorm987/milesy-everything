@@ -251,3 +251,5 @@ MASTER.md now has 9 T4-attributed rows (66-74) covering: state snapshot · plugi
 
 [2026-05-07T19:28:00Z] COMMIT c4ab62e (R020 — clean, 8 files +285).
 [2026-05-07T19:28:30Z] WAKE-PENDING-ARCHIVE 020-as-client-preview.md. Sleeping; queue continues 021-022.
+
+[2026-05-07T19:33:00Z] WAKE-PENDING-ARCHIVE 020-as-client-preview.md (2). Sleeping again. (Pull warning "Cannot rebase onto multiple branches" appeared but tree is clean + up to date with origin/main; tracking it but not blocking.)
