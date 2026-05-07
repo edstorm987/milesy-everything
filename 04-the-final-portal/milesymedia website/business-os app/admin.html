@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="../incubator app/print.css" media="print" />
 </head>
 <body class="bos-body">
   <div class="bos-bg-glow" aria-hidden="true"></div>
@@ -108,8 +109,14 @@
           <p class="muted">All HC submissions captured on this device.</p>
         </div>
         <div>
+          <button class="btn btn-secondary" data-admin-print>🖨 Print this report</button>
           <button class="btn btn-primary" data-admin-snapshot>📸 Run weekly snapshot</button>
         </div>
+      </div>
+      <!-- R018 print-only header -->
+      <div data-print-only class="print-header" style="display:none">
+        <div class="print-header-brand">Milesy<span>Media</span> · Founder admin</div>
+        <div class="print-header-meta" data-print-meta></div>
       </div>
       <div class="bos-table-wrap">
         <table class="bos-table">
@@ -134,6 +141,10 @@
             </tbody>
           </table>
         </div>
+      </div>
+      <!-- R018 print-only watermark -->
+      <div data-print-only class="print-watermark" style="display:none">
+        <strong>Founder-admin snapshot</strong> — printed <span data-print-date></span>. Local-storage view; small-n flagged where applicable. <span data-print-url></span>
       </div>
     </section>
 
@@ -664,6 +675,25 @@
         } catch (e) {}
         status.textContent = 'Saved · ' + n + ' pack active in Incubator';
         setTimeout(function () { status.textContent = ''; }, 4000);
+      });
+    })();
+
+    /* R018 — print this report (admin Reports tab). */
+    (function () {
+      function paintMeta() {
+        var d = new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+        document.querySelectorAll('[data-print-meta]').forEach(function (el) { el.textContent = 'Printed ' + d; });
+        document.querySelectorAll('[data-print-date]').forEach(function (el) { el.textContent = d; });
+        document.querySelectorAll('[data-print-url]').forEach(function (el) { el.textContent = location.host + location.pathname; });
+      }
+      window.addEventListener('beforeprint', paintMeta);
+      var btn = document.querySelector('[data-admin-print]');
+      if (btn) btn.addEventListener('click', function () {
+        /* Switch to Reports tab first so the printed view shows reports
+           rather than whatever pane the user happens to be on. */
+        var rep = document.querySelector('[data-admin-tab="reports"]');
+        if (rep) rep.click();
+        setTimeout(function () { paintMeta(); window.print(); }, 60);
       });
     })();
   </script>

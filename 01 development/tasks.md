@@ -123,6 +123,32 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R018 — Print/export PDF (HC + Incubator + admin Reports)** — DONE.
+      NEW canonical `incubator app/print.css` (~120L) shared across
+      HC results + Incubator root + admin Reports via `<link
+      media="print">` (relative paths from each surface). No server-
+      side PDF (T6 R+1) — everything goes through window.print() + OS
+      Save-as-PDF (incl. iOS Safari Share-menu). Hides nav/sticky/AI
+      launcher/dev bar/cart/back-strip/switcher/modals/progress meta;
+      forces flat backgrounds + page-break hints; `[data-print-only]`
+      pattern (inline display:none + @print display:block!important)
+      keeps blocks invisible on screen. 3 surfaces wired w/ print
+      buttons + brand headers + honest watermarks per #68: HC results
+      ("Self-reported snapshot — only topics you answered surfaced;
+      nothing fabricated"), Incubator root ("Onboarding snapshot —
+      only ticked checklist items count toward phase advance"), admin
+      Reports ("Founder-admin snapshot — Local-storage view; small-n
+      flagged"). Each registers beforeprint/afterprint: beforeprint
+      paints meta + opens `[data-print-expand]` (saves prior state);
+      afterprint restores. Admin print btn auto-switches to Reports
+      tab first. Cmd+P trigger works without buttons too via the
+      same listeners. Smoke: print.css + 3 surfaces all 200; manual
+      Cmd+P preview verified — brand header + content + watermark +
+      chrome hidden + transparency expanded + afterprint restores.
+      Q-ASSUMED: server-side render R+1 (Vercel edge fn for cross-
+      browser consistency); per-niche brand on print deferred;
+      activity.html print page R+1. NEW chapter `04-print-export-
+      pdf.md` + MASTER #94.
 - [x] **T4 R017 — HC progress save / email-capture nudge** — DONE.
       Existing post-Q5 progress-save modal extended into a resume-link
       generator. Form-state captures name + required email + optional

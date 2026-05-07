@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="../incubator app/print.css" media="print" />
 </head>
 <body>
 
@@ -174,6 +175,16 @@
 
       <!-- ─── RESULTS ───────────────────────────── -->
       <section class="hc-step" data-step="results" hidden>
+        <!-- R018 print-only header -->
+        <div data-print-only class="print-header" style="display:none">
+          <div class="print-header-brand">Milesy<span>Media</span> · Health Check</div>
+          <div class="print-header-meta" data-print-meta></div>
+        </div>
+        <!-- R018 print trigger (screen-only) -->
+        <div data-print-trigger style="display:flex;justify-content:flex-end;margin-bottom:14px">
+          <button type="button" class="btn btn-secondary" data-hc-print>🖨 Print this page</button>
+        </div>
+
         <div class="hc-results-head">
           <span class="eyebrow">The mirror</span>
           <h1 data-hc-money-headline>You're leaving an estimated <span class="accent">£3,200/month</span> on the table.</h1>
@@ -211,7 +222,7 @@
 
         <!-- ── Transparency block — how we got this & what we'd verify ── -->
         <div class="hc-transparency">
-          <details class="hc-transparency-detail">
+          <details class="hc-transparency-detail" data-print-expand>
             <summary>🧮 How we got this number</summary>
             <div class="hc-transparency-body">
               <p>The range above is derived from <strong>your answers</strong>, not from your live business data. Three inputs feed it:</p>
@@ -315,6 +326,11 @@
             <button class="hc-share-btn" data-hc-share="email">📧 Email me a copy</button>
             <button class="hc-share-btn" data-hc-share="link">🔗 Get a shareable link</button>
             <button class="hc-share-btn" data-hc-share="pdf">📄 Download as PDF</button>
+          </div>
+
+          <!-- R018 print-only watermark -->
+          <div data-print-only class="print-watermark" style="display:none">
+            <strong>Self-reported snapshot</strong> — printed <span data-print-date></span>. Honesty contract: only topics you answered are surfaced; nothing fabricated. <span data-print-url></span>
           </div>
 
           <!-- Second sign-up grab — only if no contact captured earlier -->
@@ -1121,6 +1137,33 @@
     if (!a) return;
     bridgeHcToIncubator();
     /* Default navigation proceeds to ../incubator app/index.html?from=hc */
+  });
+
+  /* R018 — print this page. Auto-fills print-only meta + opens any
+     `[data-print-expand]` <details> on beforeprint, then restores after. */
+  function paintPrintMeta() {
+    var d = new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+    document.querySelectorAll('[data-print-meta]').forEach(function (el) { el.textContent = 'Printed ' + d; });
+    document.querySelectorAll('[data-print-date]').forEach(function (el) { el.textContent = d; });
+    document.querySelectorAll('[data-print-url]').forEach(function (el) { el.textContent = location.host + location.pathname; });
+  }
+  var __printRestore = [];
+  window.addEventListener('beforeprint', function () {
+    paintPrintMeta();
+    __printRestore = [];
+    document.querySelectorAll('details[data-print-expand]').forEach(function (d) {
+      __printRestore.push({ el: d, was: d.open });
+      d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    __printRestore.forEach(function (r) { r.el.open = r.was; });
+    __printRestore = [];
+  });
+  document.addEventListener('click', function (ev) {
+    if (!ev.target.closest('[data-hc-print]')) return;
+    paintPrintMeta();
+    window.print();
   });
   </script>
 
