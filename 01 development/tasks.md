@@ -1649,3 +1649,7 @@ _(T2 R11 done — see `Done — Round 11` below.)_
 - [x] T2 R005 — `@aqua/plugin-notifications` shipped (chapter #76,
       smoke 12/12, 4 pluggable channel drivers email/slack/whatsapp-stub/webhook,
       cooldown dedup per (userId, eventId)).
+- [x] T2 R006 — `@aqua/plugin-bookings` shipped (chapter #77, smoke
+      12/12, services + weekly availability + slot generator with
+      buffer + capacity > 1 group sessions + ICS confirmation email +
+      CRM merge on completion; storefront `booking-form` block).
