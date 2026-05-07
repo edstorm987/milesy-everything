@@ -294,3 +294,5 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T17:02:00Z] WAKE-PENDING-ARCHIVE: 033-activity-category-batch.md still lowest (DONE at 17:00Z @ commit 848dbb5). Sleeping 600s — queue empty after archive; next wake will check for new T1 rounds or log WAKE-EMPTY per loop discipline.
 
 [2026-05-07T17:13:00Z] WAKE-EMPTY: queues/T1/ has no rounds (033 archived; no follow-ups staged). Sprint 2 T1 + foundation cross-plugin glue all complete (8 chapters: #133/#134/#138/#142/#144/#147/#150/#153). Sleeping 1800s — waiting for commander to stage new T1 work or for Ed to re-paste the router. Empty-wake counter: 1/10.
+
+[2026-05-07T17:45:00Z] WAKE-EMPTY: queues/T1/ still empty (no new rounds staged since 033 archive). Sprint 2 T1 + WS-E + foundation cross-plugin glue all complete. Stash on entry: 3 milesymedia-website files (T4 boundary) — left in stash, not touched. Empty-wake counter: 2/10. Sleeping 1800s.
