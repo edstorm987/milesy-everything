@@ -3539,3 +3539,23 @@ body.bos-cp-editing .bos-cp-fields textarea {
   overflow-y: auto;
 }
 .bos-week-modal-head { display: flex; justify-content: space-between; align-items: center; }
+
+/* T4 unify-fix — Back-to-website link in BOS sidebar */
+.bos-back-to-site {
+  display: block;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 13px;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+.bos-back-to-site:hover {
+  background: rgba(201, 167, 106, 0.15);
+  color: #C9A76A;
+  border-color: #C9A76A;
+}

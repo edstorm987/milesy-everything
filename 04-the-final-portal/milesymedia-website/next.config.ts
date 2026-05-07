@@ -54,11 +54,11 @@ const nextConfig: NextConfig = {
         { source: "/for-coaching",    destination: "/_marketing/for-coaching.html" },
         { source: "/for-fitness",     destination: "/_marketing/for-fitness.html" },
         { source: "/for-agencies",    destination: "/_marketing/for-agencies.html" },
-        // Static-app directory paths → their index.html. /health-check
-        // is now owned by app/health-check/page.tsx (SiteShell wrap)
-        // so the rewrite for it is gone.
+        // /health-check + /incubator are now owned by app/ routes
+        // (SiteShell wrap). Only /business-os keeps the rewrite —
+        // it stays a standalone app per Ed's call (separate
+        // application; just gets a "Back to website" pill).
         { source: "/business-os",     destination: "/business-os/index.html" },
-        { source: "/incubator",       destination: "/incubator/index.html" },
       ],
       afterFiles: [],
       fallback: [],

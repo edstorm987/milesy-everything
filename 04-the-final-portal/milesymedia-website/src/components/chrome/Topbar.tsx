@@ -59,10 +59,10 @@ export function Topbar({ title, subtitle, role, email, panels, tenantLabel, curr
         </form>
         <Link
           href="/"
-          aria-label="Open marketing site in a new view"
-          className="text-black/40 hover:text-black/70"
+          aria-label="Back to the marketing site"
+          className="rounded-md border border-black/10 bg-white px-2 py-1 text-black/70 hover:bg-black/5"
         >
-          <span aria-hidden>↗</span> Marketing
+          <span aria-hidden>←</span> Back to website
         </Link>
       </div>
     </header>
