@@ -173,6 +173,32 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       precedent); tokeninfo not JWKS (Q-ASSUMED); no password reset.
       Cross-team: T2 R10 register MagicLinkDelivery hook at boot;
       T6 R2 set `GOOGLE_OAUTH_REDIRECT_URI` env in prod deploys.
+- [x] **T3 R007 — Cookie consent + force-password-change** — DONE.
+      Goal A: NEW `CookieConsentBlock.tsx` registered in blockRegistry
+      under `cookie-consent` (🍪, content category). Props
+      `{ message, acceptLabel, declineLabel?, policyUrl?, position }`
+      with bottom-bar/corner/modal layouts; localStorage key
+      `aqua_cookie_consent_v1` (exported `COOKIE_CONSENT_KEY`) +
+      `CustomEvent("aqua-cookie-consent")` on `window` so plugins
+      can subscribe. Goal B: NEW `server/forcePasswordChange.ts`
+      registry — per-user + agency-wide `_all` flags under
+      `t/<agencyId>/_agency/website-editor/force-password/`; NEW
+      `api/handlers/forcePassword.ts` — `GET /users/force-password`
+      (roster or `?userId=…`), `POST /users/force-password` (per-user
+      or `all:true`); 400 paths covered. Q-ASSUMED on T1: login-time
+      redirect itself is foundation territory — chapter §3
+      documents the read-and-clear contract for T1's post-auth hook.
+      Goal C: NEW `__smoke__/r007-cookie-force-password.test.ts`
+      29/29 + package.json test-chain extended. tsc-clean. Chapter
+      `04-cookie-consent-and-password-change.md` + MASTER row #80.
+      Q-ASSUMED: single-binary cookie consent v1; cookie block NOT
+      auto-injected into pageTemplates; agency-wide `_all` flag not
+      auto-cleared per-user (safer failure mode); editor admin UI
+      surfacing the toggle in T1's user-detail view deferred.
+      Deferred: granular categories + manage-prefs UX, T1
+      foundation post-auth redirect + `/account/change-password`
+      page, per-user `lastChanged` so agency-wide flag falls off
+      naturally.
 - [x] **T3 R006 — Portal template marketplace** — DONE.
       Goal A: NEW `server/templateMarketplace.ts` —
       `listBuiltinTemplates()` surfaces every `PAGE_TEMPLATES` entry
