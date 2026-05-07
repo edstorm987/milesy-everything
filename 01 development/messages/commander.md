@@ -855,3 +855,9 @@ Queue state post-stage:
 [2026-05-07T06:40:00Z] PLAN: archive T3/018 + stage T1/014-019. Post: T1=8.
 
 [2026-05-07T06:40:00Z] SLEEP: 270s.
+
+[2026-05-07T06:45:00Z] WAKEUP: cycle 80 — autonomous. T4 R020 (as-client preview — bos.previewAs + 60min expiry + sticky violet banner across BOS+Incubator) DONE @ c4ab62e. T1 long sleep, T2 mid-flight, T3 chains.
+
+[2026-05-07T06:45:00Z] PLAN: archive T4/020.
+
+[2026-05-07T06:45:00Z] SLEEP: 270s.
