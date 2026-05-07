@@ -226,6 +226,37 @@ async function main() {
     record("overview shows Lock-in chip", ovrBody.includes("Lock-in paid"));
   }
 
+  console.log("\n§ Comms widget");
+  if (clientId) {
+    // Per-client header carries the comms row.
+    const ovr = await go("GET", `/portal/clients/${clientId}`);
+    const ovrBody = ovr.status === 200 ? await ovr.text() : "";
+    record("client overview shows comms row testid", ovrBody.includes("client-comms-row"));
+    // Save comms metadata via foundation route.
+    const save = await go("POST", "/api/tenants/client-comms", {
+      body: JSON.stringify({
+        clientId,
+        patch: {
+          whatsappLink: "https://chat.whatsapp.com/smoke-comms",
+          clientEmail: "smoke-comms@example.com",
+          lastContactedAt: "now",
+        },
+      }),
+    });
+    record("client-comms POST 200", save.status === 200, `status=${save.status}`);
+    // Bad payload → 400.
+    const bad = await go("POST", "/api/tenants/client-comms", { body: JSON.stringify({}) });
+    record("client-comms rejects empty body", bad.status === 400);
+    // Header now shows the saved WhatsApp link.
+    const ovr2 = await go("GET", `/portal/clients/${clientId}`);
+    const body2 = ovr2.status === 200 ? await ovr2.text() : "";
+    record("comms row shows saved WhatsApp pill", body2.includes("https://chat.whatsapp.com/smoke-comms"));
+  }
+  // Agency home tile carries the chip.
+  const agencyHome = await go("GET", "/portal/agency");
+  const homeBody = agencyHome.status === 200 ? await agencyHome.text() : "";
+  record("agency home tile shows last-contact chip", /💬\s*(?:never|last contact)/.test(homeBody));
+
   console.log("\n§ Client tasks kanban");
   if (clientId) {
     const k = await go("GET", `/portal/clients/${clientId}?tab=kanban`);

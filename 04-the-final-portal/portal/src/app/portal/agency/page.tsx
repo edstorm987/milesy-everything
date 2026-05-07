@@ -122,8 +122,30 @@ export default async function AgencyHome() {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-3 text-[11px] text-black/45">
-                      {last ? `Last activity ${formatRelative(last)}` : "No activity yet"}
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-black/45">
+                      <span>{last ? `Last activity ${formatRelative(last)}` : "No activity yet"}</span>
+                      {(() => {
+                        const m = (client.metadata ?? {}) as { lastContactedAt?: number };
+                        if (!m.lastContactedAt) {
+                          return (
+                            <span className="rounded-full bg-black/5 px-1.5 py-px text-[10px] text-black/55">
+                              💬 never
+                            </span>
+                          );
+                        }
+                        const stale = Date.now() - m.lastContactedAt > 7 * 86_400_000;
+                        return (
+                          <span
+                            title={new Date(m.lastContactedAt).toLocaleString()}
+                            className={[
+                              "rounded-full px-1.5 py-px text-[10px]",
+                              stale ? "bg-amber-100 text-amber-900" : "bg-emerald-50 text-emerald-800",
+                            ].join(" ")}
+                          >
+                            💬 last contact {formatRelative(m.lastContactedAt)}
+                          </span>
+                        );
+                      })()}
                     </div>
                   </Link>
                   <div className="flex items-center gap-1 border-t border-black/5 bg-black/[0.015] px-2 py-1.5 text-[11px] opacity-0 transition group-hover:opacity-100 group-focus-within:opacity-100">

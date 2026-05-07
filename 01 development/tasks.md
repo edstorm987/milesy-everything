@@ -9,6 +9,22 @@ from cycle 17.
 
 _(T1 R8 done — see `Done — Round 8` below; commits 7074f49 + c2dc0f1)_
 _(T2 R11 done — see `Done — Round 11` below.)_
+- [x] **T1 009 — Per-client comms widget (WhatsApp + email)** — DONE.
+      Goal A: NEW `_CommsRow.tsx` on per-client header (below name) —
+      emerald WhatsApp pill / dashed placeholder; blue mailto pill /
+      dashed placeholder; 🕘 last-contact relative time (amber >7d).
+      Goal B: NEW `POST /api/tenants/client-comms` route — gated
+      `requireRoleForClient(AGENCY_ROLES)`, persists
+      `metadata.whatsappLink`/`clientEmail`/`lastContactedAt` via
+      `updateClient`; inline Edit modal + Mark-contacted button on
+      the row. Q-ASSUMED: empty-string/0 sentinels for cleared values
+      since updateClient shallow-merges (can't true-delete keys).
+      Goal C: agency home tile chip 💬 — never (muted) / fresh
+      (emerald, ≤7d) / stale (amber, >7d). Goal D: smoke
+      `§ Comms widget` (5 — comms-row testid + POST 200 + empty-body
+      400 + saved WhatsApp re-renders + agency home chip visible).
+      Chapter `04-comms-widget.md`; MASTER row #84; tsc clean. HARD
+      BOUNDARY honoured.
 - [x] **T1 008 — Per-client client-tasks kanban tab** — DONE.
       Goal A: NEW `_KanbanTabClient.tsx` client component on per-client
       Kanban tab. Boots via `/api/portal/kanban/boards?clientId=`,

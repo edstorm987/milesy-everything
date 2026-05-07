@@ -24,6 +24,7 @@ import { ToolsPicker, type PickerPlugin } from "./_ToolsPicker";
 import { BuildPortalWizard, type WizardPlugin } from "./_BuildPortalWizard";
 import { ClientSopsTab } from "./_ClientSopsTab";
 import { KanbanTabClient } from "./_KanbanTabClient";
+import { CommsRow } from "./_CommsRow";
 import { assertSopsAccess, familiesForStage, SopsAccessError } from "@/lib/server/sopsAccess";
 import { RequirePermission } from "@/lib/server/RequirePermission";
 import { OnboardingDashboardPanel, type OnboardingPhase } from "./_OnboardingDashboardPanel";
@@ -106,6 +107,8 @@ export default async function ClientHome({
   const meta = (client.metadata ?? {}) as {
     planTier?: "foundational" | "expansion" | "mastery";
     whatsappLink?: string;
+    clientEmail?: string;
+    lastContactedAt?: number;
     stripeLink?: string;
     lockInPaid?: boolean;
     therapistName?: string;
@@ -139,6 +142,16 @@ export default async function ClientHome({
         )}
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-2xl font-semibold tracking-tight text-black/90">{client.name}</h1>
+          <div className="mt-2">
+            <CommsRow
+              clientId={client.id}
+              initial={{
+                whatsappLink: meta.whatsappLink ?? "",
+                clientEmail: meta.clientEmail ?? "",
+                lastContactedAt: meta.lastContactedAt ?? 0,
+              }}
+            />
+          </div>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-black/60">
             <span
               className="rounded-full px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-white"
