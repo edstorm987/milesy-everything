@@ -1174,3 +1174,8 @@ T4 shipped 1 more manual commit (`b02c78f T4 manual: SEO arc — sticky embed + 
 [2026-05-07T11:35:00Z] WAKEUP: cycle 127 — autonomous. No new DONEs since 126. T4 shipped one more manual commit (`8077363 T4 manual: branching HC — skipIf engine + Website gate + SEO follow-ups`). T1/T2/T3 mid-flight on next rounds (021/017/036). No Q-BLOCKED. Ed actively planning a portal+website unification (single-host wire-in + Ed seed user) — not yet executed. PLAN: minimal. SLEEP: 270s.
 
 [2026-05-07T11:40:00Z] STAGED: T4 unification prompt at `01 development/terminal-prompts/T4-manual-unification.md`. Ed will paste once T1/T2/T3 finish current rounds. Plan: 5 staged steps — (1) move portal Next.js into milesymedia website/ root, (2) drop HC/BOS/Incubator into public/, (3) seed ed/ed@milesymedia.com/"123" founder, (4) wire marketing Sign-in CTAs to /login, (5) cleanup + chapter. T1 will need pause-NOTE in inbox before Ed kicks T4 off (T1's R021 lives in portal/ — would conflict with the move).
+
+[2026-05-07T11:45:00Z] WAKEUP: cycle 128 — autonomous. Double DONE.
+- T2 R017 (support-desk plugin — tickets + auto-assign + ecommerce subscriber + 12/12) DONE @ f317641 ch#119.
+- T3 R036 (sitemap+robots advanced generators — hreflang + filter + validator + 45/45) DONE @ efebf3f.
+T4 shipped 1 more manual commit (`0ed312d swap HC search embed DDG→Google`). T1 still mid-R021. Archived T2/017 + T3/036. Queue depths post: T1=4 (paused-ready) · T2=3 · T3=2 · T4=0. T3 dipped to 2 — will stage 3 more next cycle if it ships R037 fast. SLEEP: 270s.

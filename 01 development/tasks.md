@@ -3149,3 +3149,15 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       mark `ServerUser.emailVerifiedAt`, auto-login session cookie,
       DemoBanner CTA updated to /signup?from=demo, LoginForm gets
       "Create your agency →" link).
+- [x] T1 R21 — Session security hardening (chapter #120, smoke
+      13/13, audit-pass adds CSRF double-submit tokens via NEW
+      `lib/server/csrf.ts` + `/api/auth/csrf` GET; session rotation
+      via per-user sessionRev counter compared in `getCurrentUser`
+      + bumped on password/role change in users.ts + NEW
+      `rotateUserSession` helper; login lockout 10 failures in 5min
+      → 5min lock via NEW isLoginLocked/recordLoginFailure/Success
+      in rateLimit.ts wired into /api/auth/login route; expiry
+      sweep via NEW sweepExpired() + Founder-gated
+      /api/internal/sweep diagnostic — sessions are stateless HMAC
+      so no session-list to prune, sweep covers in-memory rateLimit
+      buckets + loginFails maps).
