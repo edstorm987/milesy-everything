@@ -197,14 +197,6 @@ export function LoginForm({
           {isMagic ? "Use a password instead" : "Email me a magic link instead"}
         </button>
       )}
-      {!embedded && (
-        <p className="mm-form-link">
-          New here?{" "}
-          <a href="/signup" data-testid="login-signup-link">
-            Create your agency →
-          </a>
-        </p>
-      )}
       {clientId && allowSignup && (
         <p className="mm-form-link">
           {mode === "signin" ? (

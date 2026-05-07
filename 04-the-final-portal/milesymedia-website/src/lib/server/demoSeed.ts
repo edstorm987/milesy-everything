@@ -70,9 +70,39 @@ export interface SeedDemoResult {
 // Idempotent: existing demo agency + client + users are reused. New
 // installs and phase progress are seeded only if missing.
 
-export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
-  await ensureHydrated();
+// Per-process memoize. Once the demo tenant is fully seeded, repeat
+// calls hit the cached promise — which the dev-bypass POV picker
+// fires every click. Without this, each click re-walks every plugin
+// install + phase + permissions row even though every check is a
+// no-op. With it, repeat clicks are ~10× faster (just the session
+// issue + redirect).
+let _demoSeedPromise: Promise<SeedDemoResult> | null = null;
 
+export async function seedDemoAgency(actor?: string): Promise<SeedDemoResult> {
+  if (_demoSeedPromise) return _demoSeedPromise;
+  // Fast-path probe: if a snapshot exists, return a synthetic result
+  // immediately. Skips the 300-line idempotent walk.
+  await ensureHydrated();
+  const snap = getDemoSnapshot();
+  if (snap) {
+    _demoSeedPromise = Promise.resolve({
+      agency: snap.agency,
+      client: snap.client,
+      ownerUser: snap.ownerUser,
+      clientUser: snap.clientUser,
+      customerUser: snap.customerUser,
+      createdAgency: false,
+      createdClient: false,
+      installedPlugins: [],
+      seededExtraClients: [],
+    });
+    return _demoSeedPromise;
+  }
+  _demoSeedPromise = seedDemoAgencyImpl(actor);
+  return _demoSeedPromise;
+}
+
+async function seedDemoAgencyImpl(actor?: string): Promise<SeedDemoResult> {
   let agency: Agency | null = getAgencyBySlug(DEMO_AGENCY_SLUG);
   let createdAgency = false;
   if (!agency) {

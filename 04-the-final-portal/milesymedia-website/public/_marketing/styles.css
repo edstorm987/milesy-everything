@@ -1079,7 +1079,7 @@ footer {
   margin: 0 auto;
 }
 .mm-signup-picker { max-width: 760px; }
-.mm-dev-card { max-width: 560px; border-color: rgba(201, 167, 106, 0.5); }
+.mm-dev-card { max-width: 880px; border-color: rgba(201, 167, 106, 0.5); }
 .mm-auth-card-head { text-align: center; margin-bottom: 26px; position: relative; }
 .mm-auth-card-head h1 {
   font-family: "Playfair Display", Georgia, serif;
@@ -1264,8 +1264,17 @@ footer {
   margin-bottom: 10px;
   font-weight: 700;
 }
-.mm-pov-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
-.mm-pov-list form { margin: 0; }
+.mm-pov-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+@media (min-width: 640px) {
+  .mm-pov-list { grid-template-columns: 1fr 1fr; }
+}
+.mm-pov-list form { margin: 0; height: 100%; }
+.mm-pov-list form > button { height: 100%; }
 .mm-pov-btn {
   width: 100%; text-align: left;
   display: flex; flex-direction: column; gap: 4px;
