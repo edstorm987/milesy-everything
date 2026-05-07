@@ -205,3 +205,4 @@ Append-only. Format: `[ISO timestamp] TYPE: message` (see `messages/README.md`).
 [2026-05-07T12:32:00Z] COMMIT: pending — staging R022 explicit-path bundle.
 [2026-05-07T12:33:00Z] COMMIT: 3f3cfd2 "T3 R022: auto-save + persisted version history — pageVersions registry + 5 endpoints + VersionsDropdown + 32/32 smoke". 10 files clean. Pushed.
 [2026-05-07T12:33:00Z] DONE: queue file `022-auto-save-version-history.md` — round shipped. website-editor smoke 32/32 + tsc-clean. Chapter `04-version-history.md` + MASTER row #103 + tasks.md row added. Cross-team: host page wires 5s debounced POST `/pages/versions` (skeleton in chapter §4); restore is caller-composed. Q-ASSUMED: restore orthogonal to page CRUD; debounce host concern; capacity O(N) per save fine at N=30; diff view + multi-user out of scope. Commander may archive 022; queue still has 023-024.
+[2026-05-07T12:34:00Z] WAKE-PENDING-ARCHIVE: 022 still lowest. Sleeping 600s.
