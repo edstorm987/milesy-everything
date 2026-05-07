@@ -815,6 +815,59 @@ a:hover { color: var(--inc-gold); }
   color: #9ec5e8;
 }
 
+/* ─── Multi-business switcher (R012) ─── */
+.bos-switcher { position: relative; display: inline-block; }
+.bos-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #0F0F0F;
+  color: #D4B888;
+  border: 1px solid #2A2A2A;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+.bos-switcher-btn:hover { border-color: #8E7340; color: #E9E5DA; }
+.bos-switcher-btn[aria-expanded="true"] { border-color: #C9A76A; }
+.bos-switcher-icon { font-size: 14px; color: #C9A76A; }
+.bos-switcher-label { max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+.bos-switcher-chev { font-size: 10px; opacity: 0.7; }
+.bos-switcher-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 220px;
+  background: #0F0F0F;
+  border: 1px solid #2A2A2A;
+  border-radius: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  z-index: 9999;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+}
+.bos-switcher-menu li { margin: 0; padding: 0; }
+.bos-switcher-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  color: #E9E5DA;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.bos-switcher-menu button:hover { background: rgba(201,167,106,0.1); color: #D4B888; }
+.bos-switcher-menu button.is-active { color: #C9A76A; }
+.bos-switcher-sep { border-top: 1px solid #2A2A2A; margin: 6px 0; }
+
 /* ─── Tiny header strip ─── */
 .inc-toprail {
   display: flex;

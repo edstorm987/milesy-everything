@@ -2865,3 +2865,55 @@ body.bos-cp-editing .bos-cp-fields textarea {
 .bos-checkout-summary hr { border: 0; border-top: 1px solid var(--bos-line, #e6e1d4); margin: 10px 0; }
 
 @media (max-width: 760px) { .bos-checkout-grid { grid-template-columns: 1fr; } }
+
+/* ─── R012 Multi-business switcher (rendered in sidebar) ─── */
+.bos-switcher { position: relative; display: block; }
+.bos-switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--bos-card-2, #f5f1e8);
+  color: var(--text, #1a1a1a);
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.bos-switcher-btn:hover { border-color: #C9A76A; }
+.bos-switcher-icon { color: #8E7340; flex: 0 0 auto; }
+.bos-switcher-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.bos-switcher-chev { font-size: 10px; opacity: 0.6; }
+.bos-switcher-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--bos-line, #e6e1d4);
+  border-radius: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  z-index: 9999;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+}
+.bos-switcher-menu li { margin: 0; padding: 0; }
+.bos-switcher-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  color: var(--text, #1a1a1a);
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.bos-switcher-menu button:hover { background: rgba(201,167,106,0.12); }
+.bos-switcher-menu button.is-active { color: #8E7340; font-weight: 600; }
+.bos-switcher-sep { border-top: 1px solid var(--bos-line, #e6e1d4); margin: 6px 0; }

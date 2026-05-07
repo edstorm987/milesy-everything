@@ -88,6 +88,33 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R012 — Multi-business localStorage segregation** — DONE.
+      Per-business namespace under `businesses.<id>.<key>` + active-
+      business switcher. **Switch-by-mirror approach**: 14
+      NAMESPACED_KEYS (bos.user/brand/healthCheck/progress/
+      lessonProgress/tasks/leads/activity/entitlement/company +
+      incubator.phase/phaseProgress/phaseAdvanced/lastVisitedPhasePage)
+      stored namespaced AND mirrored into flat slots — existing
+      readers need ZERO changes. NEW `incubator app/lib/storage.js`
+      (~155L) exposes `window.BOSStorage = {list, activeId, getActive,
+      add, switch, remove, rename, set write-through, snapshot,
+      mirror}`. NEW top-level keys: `bos.businesses=[{id,name}]` +
+      `bos.activeBusinessId`. **Auto-migration** on first load creates
+      `default` business from current flat state (best-effort name
+      from bos.user.business || bos.brand.companyName); idempotent.
+      NEW `lib/business-switcher.js` (~95L) auto-mounts pill+dropdown
+      into `.inc-toprail` (Incubator) AND `.bos-sidebar` (BOS) — pick
+      switches + reload, Add prompts for name + snapshots current
+      state. CSS in both incubator.css (~52L dark) + bos styles.css
+      (~50L light). Wiring: 5 most-visited Incubator pages get
+      explicit script tags; BOS via NEW `ensureSwitcherLoaded()` in
+      bos.js boot (mirror-pattern of R007 lazy load). Smoke: 5 URLs
+      200; auto-migrate + render + add-new + switch-back all verified.
+      Q-ASSUMED: switch-by-mirror zero-touch (full reader migration
+      R+1); add-new snapshots current as starting (blank-slate R+1);
+      transactional Incubator pages skip switcher to keep visual
+      noise low. NEW chapter `04-multi-business-storage.md` + MASTER
+      #88.
 - [x] **T4 R011 — Pro upgrade flow mockup** — DONE.
       NEW source-of-truth `bos.entitlement={tier:free|pro-trial|pro,
       startedAt, expiresAt?, expiredAt?}` in bos.js + `isPro()` helper

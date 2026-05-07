@@ -490,6 +490,21 @@
     document.head.appendChild(s);
   }
 
+  /* R012 — Lazy-load multi-business storage shim + switcher UI.
+     Both live under the Incubator's lib/ folder (single source of truth
+     across BOS + Incubator). Switcher auto-mounts into `.bos-sidebar`. */
+  function ensureSwitcherLoaded() {
+    if (document.querySelector('script[data-bos-storage]')) return;
+    var s = document.createElement('script');
+    s.setAttribute('data-bos-storage', '');
+    s.src = '../incubator app/lib/storage.js';
+    document.head.appendChild(s);
+    var sw = document.createElement('script');
+    sw.src = '../incubator app/lib/business-switcher.js';
+    sw.defer = true;
+    document.head.appendChild(sw);
+  }
+
   function mountAi() {
     ensureAquaAILoaded();
     if (document.querySelector('.bos-ai-launcher')) return;
@@ -835,6 +850,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    ensureSwitcherLoaded();
     mountIncubatorStrip();
     mountTrialBanner();
     mountAutoSidebar();
