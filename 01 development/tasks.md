@@ -69,6 +69,24 @@ _(T2 R11 done — see `Done — Round 11` below.)_
       Quests" + testid + boards endpoint 200). Chapter
       `04-agency-shell-founder-todos.md`; MASTER row #80; tsc clean.
       HARD BOUNDARY honoured.
+- [x] **T4 R009 — Founder admin polish (full dashboard)** — DONE.
+      Admin Overview gains 2nd KPI row (Active in Incubator + phase
+      chip · Lessons completed · Phase advances · Top marketplace
+      clicks). Leads pane: per-row drill-down (HC topics w/ unanswered
+      honesty pill + Incubator phase + last-activity + editable note
+      saving to NEW `bos.leadNotes[id]`) + Export-CSV button (Blob
+      download w/ proper escape). Reports pane: NEW "Run weekly
+      snapshot" button → `bos.reports.snapshots[]` + Δ vs closest-to-
+      7d-prior snapshot (green/red/grey) + small-n<5 indicative pill
+      per #68. Questions editor: per-step phase-scope `<select>`
+      (all/epic-intro/blueprint/diagnostics/brand-builder) saving
+      `step.phase`; tagged steps render gold sub-line. Auth gate gains
+      explicit T6 prod-auth TODO comment. NEW marketplace click
+      tracker: `bos.marketplaceClicks[addonId]++` via delegated
+      listener on `[data-mp-addon]` cards (data-attr added in
+      `bos.js renderMarketplace`). Smoke: admin + marketplace 200; all
+      patterns verified end-to-end. NEW chapter `04-founder-admin-
+      polish.md` + MASTER #85.
 - [x] **T4 R008 — Marketing site overhaul (Incubator visual parity)** — DONE.
       Marketing index.html rebuilt for visual parity with Incubator
       surface §15d. NEW `.mm-stickybar` sticky top bar with persistent

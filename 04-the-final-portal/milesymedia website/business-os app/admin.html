@@ -41,6 +41,14 @@
         <div class="kpi"><div class="lbl">Pipeline value</div><div class="num">£<span data-admin-stat="lead-value">0</span></div></div>
         <div class="kpi"><div class="lbl">BOS sign-ups</div><div class="num" data-admin-stat="user-count">0</div></div>
       </div>
+
+      <!-- R009 — expanded KPIs -->
+      <div class="kpi-row" style="margin-top:14px">
+        <div class="kpi"><div class="lbl">Active in Incubator</div><div class="num" data-admin-stat="incubator-active">0</div><div class="muted" style="font-size:12px;margin-top:4px" data-admin-stat="incubator-phase">phase: —</div></div>
+        <div class="kpi"><div class="lbl">Lessons completed</div><div class="num" data-admin-stat="lessons-done">0</div><div class="muted" style="font-size:12px;margin-top:4px" data-admin-stat="lessons-of">of 5 written</div></div>
+        <div class="kpi"><div class="lbl">Phase advances</div><div class="num" data-admin-stat="phase-advances">0</div></div>
+        <div class="kpi"><div class="lbl">Top marketplace clicks</div><div class="num" style="font-size:18px;font-weight:600" data-admin-stat="mp-top">—</div><div class="muted" style="font-size:12px;margin-top:4px" data-admin-stat="mp-total">0 total clicks</div></div>
+      </div>
       <div class="bos-notion-slot" style="margin-top:24px">
         <div class="bos-notion-slot-icon">ℹ️</div>
         <div>
@@ -71,6 +79,15 @@
 
     <!-- Leads -->
     <section class="bos-admin-pane" data-admin-pane="leads" hidden>
+      <div class="bos-section-head">
+        <div>
+          <h2>Leads</h2>
+          <p class="muted">Click a row to drill down. Notes save to <code>bos.leadNotes</code>.</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" data-admin-leads-csv>⬇ Export CSV</button>
+        </div>
+      </div>
       <div class="bos-table-wrap">
         <table class="bos-table">
           <thead>
@@ -79,10 +96,20 @@
           <tbody data-admin-leads></tbody>
         </table>
       </div>
+      <div data-admin-lead-detail hidden style="margin-top:18px"></div>
     </section>
 
     <!-- Reports -->
     <section class="bos-admin-pane" data-admin-pane="reports" hidden>
+      <div class="bos-section-head">
+        <div>
+          <h2>Health-check reports</h2>
+          <p class="muted">All HC submissions captured on this device.</p>
+        </div>
+        <div>
+          <button class="btn btn-primary" data-admin-snapshot>📸 Run weekly snapshot</button>
+        </div>
+      </div>
       <div class="bos-table-wrap">
         <table class="bos-table">
           <thead>
@@ -90,6 +117,22 @@
           </thead>
           <tbody data-admin-reports></tbody>
         </table>
+      </div>
+
+      <!-- Snapshot history -->
+      <div style="margin-top:24px">
+        <h3 style="margin-bottom:8px">Weekly snapshots</h3>
+        <p class="muted" style="font-size:13px;margin-bottom:10px">Each snapshot records counts at the moment you click the button. Δ shows the change vs the snapshot taken closest to 7 days prior. <strong>Small-n flagged</strong> — when a metric is &lt;5 we render an indicative-only badge.</p>
+        <div class="bos-table-wrap">
+          <table class="bos-table">
+            <thead>
+              <tr><th>Captured</th><th>Leads</th><th>HC done</th><th>Lessons done</th><th>Phase advances</th></tr>
+            </thead>
+            <tbody data-admin-snapshots>
+              <tr><td colspan="5" class="bos-cp-empty" style="padding:18px">No snapshots yet — click "Run weekly snapshot" above.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -113,6 +156,11 @@
   <script src="../lead magnet app/hc-questions.js"></script>
   <script>
     /* ─── Admin gate ──────────────────────────── */
+    /* TODO (T6): replace prompt() password with real auth (server-side
+       session check + role gate). Today's gate is a throwaway client-
+       side check — anyone with devtools can bypass. Acceptable while
+       the entire app runs on localStorage; not acceptable once the
+       portal plugin lands and reads from Postgres. */
     (function () {
       try {
         if (localStorage.getItem('bos.adminUnlocked') === '1') return;
@@ -145,35 +193,212 @@
     });
 
     /* ─── Overview KPIs ────────────────────────── */
+    var PHASE_LABEL = { 'epic-intro':'Epic Intro','blueprint':'Blueprint','diagnostics':'Diagnostics','brand-builder':'Brand Builder' };
+    function readMetrics() {
+      return {
+        leads: getJson('bos.leads', []),
+        hc: getJson('bos.healthCheck', null),
+        user: getJson('bos.user', null),
+        incActive: localStorage.getItem('incubator.active') === '1',
+        incPhase: localStorage.getItem('incubator.phase') || 'epic-intro',
+        lessons: getJson('bos.lessonProgress', {}),
+        advances: getJson('bos.', null) /* unused — kept for shape */ || getJson('incubator.phaseAdvanced', {}),
+        mpClicks: getJson('bos.marketplaceClicks', {})
+      };
+    }
     function paintOverview() {
-      var leads = getJson('bos.leads', []);
-      var hc = getJson('bos.healthCheck', null);
-      var user = getJson('bos.user', null);
-      var pipelineValue = leads.reduce(function (s, l) { return s + (l.value || 0); }, 0);
-      document.querySelector('[data-admin-stat="hc-count"]').textContent = hc ? 1 : 0;
-      document.querySelector('[data-admin-stat="lead-count"]').textContent = leads.length;
+      var m = readMetrics();
+      var pipelineValue = m.leads.reduce(function (s, l) { return s + (l.value || 0); }, 0);
+      document.querySelector('[data-admin-stat="hc-count"]').textContent = m.hc ? 1 : 0;
+      document.querySelector('[data-admin-stat="lead-count"]').textContent = m.leads.length;
       document.querySelector('[data-admin-stat="lead-value"]').textContent = pipelineValue.toLocaleString();
-      document.querySelector('[data-admin-stat="user-count"]').textContent = user ? 1 : 0;
+      document.querySelector('[data-admin-stat="user-count"]').textContent = m.user ? 1 : 0;
+
+      // R009 expanded KPIs
+      document.querySelector('[data-admin-stat="incubator-active"]').textContent = m.incActive ? 1 : 0;
+      document.querySelector('[data-admin-stat="incubator-phase"]').textContent = 'phase: ' + (PHASE_LABEL[m.incPhase] || '—');
+
+      var lessonsDone = Object.keys(m.lessons).filter(function (k) { return m.lessons[k]; }).length;
+      document.querySelector('[data-admin-stat="lessons-done"]').textContent = lessonsDone;
+
+      var advances = Object.keys(m.advances).filter(function (k) { return m.advances[k]; }).length;
+      document.querySelector('[data-admin-stat="phase-advances"]').textContent = advances;
+
+      var sortedClicks = Object.keys(m.mpClicks).map(function (k) { return [k, m.mpClicks[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+      var total = sortedClicks.reduce(function (s, p) { return s + p[1]; }, 0);
+      document.querySelector('[data-admin-stat="mp-top"]').textContent = sortedClicks[0] ? sortedClicks[0][0] + ' (' + sortedClicks[0][1] + ')' : '—';
+      document.querySelector('[data-admin-stat="mp-total"]').textContent = total + ' total clicks';
     }
     paintOverview();
 
-    /* ─── Leads table ──────────────────────────── */
+    /* ─── Leads table + drill-down (R009) ─────── */
+    function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+    function leadIdOf(l, i) { return l.id || ('L' + i); }
     function paintLeads() {
       var leads = getJson('bos.leads', []);
       var tbody = document.querySelector('[data-admin-leads]');
       if (!leads.length) { tbody.innerHTML = '<tr><td colspan="6" class="bos-cp-empty" style="padding:22px">No leads captured yet.</td></tr>'; return; }
-      tbody.innerHTML = leads.map(function (l) {
-        return '<tr>'
-          + '<td><strong>' + (l.name || '?') + '</strong></td>'
-          + '<td>' + (l.source || '—') + '</td>'
-          + '<td><span class="badge badge-good">' + (l.stage || 'new') + '</span></td>'
+      tbody.innerHTML = leads.map(function (l, i) {
+        return '<tr data-admin-lead-row="' + escapeHtml(leadIdOf(l, i)) + '" data-admin-lead-i="' + i + '" style="cursor:pointer">'
+          + '<td><strong>' + escapeHtml(l.name || '?') + '</strong></td>'
+          + '<td>' + escapeHtml(l.source || '—') + '</td>'
+          + '<td><span class="badge badge-good">' + escapeHtml(l.stage || 'new') + '</span></td>'
           + '<td>£' + (l.value || 0) + '</td>'
-          + '<td>' + (l.contact || '—') + '</td>'
-          + '<td><a href="leads.html" class="bos-row-cta">Open →</a></td>'
+          + '<td>' + escapeHtml(l.contact || '—') + '</td>'
+          + '<td><span class="bos-row-cta">View ↓</span></td>'
           + '</tr>';
       }).join('');
     }
+
+    function renderLeadDetail(i) {
+      var leads = getJson('bos.leads', []);
+      var l = leads[i];
+      var host = document.querySelector('[data-admin-lead-detail]');
+      if (!l) { host.hidden = true; host.innerHTML = ''; return; }
+      var id = leadIdOf(l, i);
+      var notes = getJson('bos.leadNotes', {});
+      var note = notes[id] || '';
+      var hc = getJson('bos.healthCheck', null);
+      var phaseId = localStorage.getItem('incubator.phase') || 'epic-intro';
+      var lastActivity = (function () {
+        var prog = getJson('bos.progress', null);
+        if (prog && prog.lastActive) return new Date(prog.lastActive).toLocaleString();
+        return '—';
+      })();
+      var topicsHtml = (hc && hc.topics) ? hc.topics.map(function (t) {
+        return '<li>' + escapeHtml(t.name) + ' — ' + (t.score == null ? '<span class="muted">unanswered</span>' : '<strong>' + t.score + '</strong>/100') + '</li>';
+      }).join('') : '<li class="muted">No HC on file</li>';
+
+      host.hidden = false;
+      host.innerHTML =
+        '<div class="bos-notion-slot" style="flex-direction:column;align-items:stretch;gap:14px">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">' +
+            '<div>' +
+              '<h3 style="margin:0">' + escapeHtml(l.name || '?') + '</h3>' +
+              '<div class="muted" style="font-size:13px">' + escapeHtml(l.contact || '—') + ' · ' + escapeHtml(l.source || '—') + ' · ' + escapeHtml(l.stage || 'new') + '</div>' +
+            '</div>' +
+            '<button type="button" class="btn btn-secondary" data-admin-lead-close>✕ Close</button>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">' +
+            '<div>' +
+              '<h4 style="margin:0 0 6px">Health Check</h4>' +
+              '<ul style="margin:0;padding-left:18px;font-size:14px">' + topicsHtml + '</ul>' +
+            '</div>' +
+            '<div>' +
+              '<h4 style="margin:0 0 6px">Incubator</h4>' +
+              '<p class="muted" style="margin:0;font-size:14px">Phase: <strong>' + escapeHtml(PHASE_LABEL[phaseId] || phaseId) + '</strong></p>' +
+              '<p class="muted" style="margin:6px 0 0;font-size:14px">Last activity: ' + escapeHtml(lastActivity) + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<h4 style="margin:0 0 6px">Note</h4>' +
+            '<textarea data-admin-lead-note placeholder="Notes about this lead — saved to bos.leadNotes" style="width:100%;min-height:90px;background:#0F0F0F;color:#E9E5DA;border:1px solid #2A2A2A;border-radius:8px;padding:10px;font:inherit">' + escapeHtml(note) + '</textarea>' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">' +
+              '<span class="muted" style="font-size:12px" data-admin-lead-note-status></span>' +
+              '<button type="button" class="btn btn-primary" data-admin-lead-save="' + escapeHtml(id) + '">Save note</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    document.addEventListener('click', function (ev) {
+      var row = ev.target.closest('[data-admin-lead-row]');
+      if (row) {
+        renderLeadDetail(parseInt(row.getAttribute('data-admin-lead-i'), 10));
+        return;
+      }
+      var close = ev.target.closest('[data-admin-lead-close]');
+      if (close) {
+        var host = document.querySelector('[data-admin-lead-detail]');
+        host.hidden = true; host.innerHTML = '';
+        return;
+      }
+      var save = ev.target.closest('[data-admin-lead-save]');
+      if (save) {
+        var id = save.getAttribute('data-admin-lead-save');
+        var ta = document.querySelector('[data-admin-lead-note]');
+        var notes = getJson('bos.leadNotes', {});
+        notes[id] = (ta && ta.value) || '';
+        setJson('bos.leadNotes', notes);
+        var st = document.querySelector('[data-admin-lead-note-status]');
+        if (st) { st.textContent = 'Saved.'; setTimeout(function () { st.textContent = ''; }, 2500); }
+      }
+    });
+
+    /* ─── Export CSV (R009) ────────────────────── */
+    document.querySelector('[data-admin-leads-csv]').addEventListener('click', function () {
+      var leads = getJson('bos.leads', []);
+      var notes = getJson('bos.leadNotes', {});
+      var rows = [['id','name','source','stage','value','contact','note']];
+      leads.forEach(function (l, i) {
+        var id = leadIdOf(l, i);
+        rows.push([id, l.name || '', l.source || '', l.stage || '', l.value || 0, l.contact || '', (notes[id] || '').replace(/\r?\n/g, ' ')]);
+      });
+      var csv = rows.map(function (r) { return r.map(function (v) { var s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(','); }).join('\n');
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'leads-' + new Date().toISOString().slice(0, 10) + '.csv';
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    });
+
     paintLeads();
+
+    /* ─── Weekly snapshots (R009) ──────────────── */
+    function takeSnapshot() {
+      var m = readMetrics();
+      var lessonsDone = Object.keys(m.lessons).filter(function (k) { return m.lessons[k]; }).length;
+      var advances = Object.keys(m.advances).filter(function (k) { return m.advances[k]; }).length;
+      var snap = {
+        ts: new Date().toISOString(),
+        leads: m.leads.length,
+        hcDone: m.hc ? 1 : 0,
+        lessonsDone: lessonsDone,
+        advances: advances
+      };
+      var all = getJson('bos.reports.snapshots', []);
+      all.push(snap); setJson('bos.reports.snapshots', all);
+      paintSnapshots();
+    }
+    function findClosestPriorTo(snaps, targetTs) {
+      // Snapshot taken closest to (target - 7d) — used for delta calc.
+      var target = targetTs - 7 * 24 * 3600 * 1000;
+      var best = null, bestDiff = Infinity;
+      for (var i = 0; i < snaps.length - 1; i++) {
+        var t = +new Date(snaps[i].ts);
+        if (t >= targetTs) continue;
+        var d = Math.abs(t - target);
+        if (d < bestDiff) { bestDiff = d; best = snaps[i]; }
+      }
+      return best;
+    }
+    function deltaCell(now, prior, key) {
+      var n = now[key] || 0;
+      var indicator = n < 5 ? ' <span class="badge" style="background:#3a2a14;color:#C9A76A;font-size:10px;padding:2px 6px;border-radius:999px">n&lt;5 indicative</span>' : '';
+      if (!prior) return n + indicator;
+      var diff = n - (prior[key] || 0);
+      var sign = diff > 0 ? '+' : '';
+      var color = diff > 0 ? '#5a7a3a' : (diff < 0 ? '#d05959' : '#8A8377');
+      return n + ' <span style="color:' + color + ';font-size:12px">(Δ ' + sign + diff + ')</span>' + indicator;
+    }
+    function paintSnapshots() {
+      var snaps = getJson('bos.reports.snapshots', []);
+      var tbody = document.querySelector('[data-admin-snapshots]');
+      if (!snaps.length) { tbody.innerHTML = '<tr><td colspan="5" class="bos-cp-empty" style="padding:18px">No snapshots yet — click "Run weekly snapshot" above.</td></tr>'; return; }
+      tbody.innerHTML = snaps.slice().reverse().map(function (s, idx) {
+        var prior = findClosestPriorTo(snaps, +new Date(s.ts));
+        return '<tr>'
+          + '<td class="muted">' + new Date(s.ts).toLocaleString() + '</td>'
+          + '<td>' + deltaCell(s, prior, 'leads') + '</td>'
+          + '<td>' + deltaCell(s, prior, 'hcDone') + '</td>'
+          + '<td>' + deltaCell(s, prior, 'lessonsDone') + '</td>'
+          + '<td>' + deltaCell(s, prior, 'advances') + '</td>'
+          + '</tr>';
+      }).join('');
+    }
+    document.querySelector('[data-admin-snapshot]').addEventListener('click', takeSnapshot);
+    paintSnapshots();
 
     /* ─── HC reports ───────────────────────────── */
     function paintReports() {
@@ -204,6 +429,11 @@
 
     var TIER_KEYS = ['beginner', 'intermediate', 'professional'];
     var STEP_TYPES = ['choice', 'multi', 'slider', 'text', 'task', 'reveal', 'url'];
+    /* R009 — Incubator-phase scope tags. `all` = surfaced regardless of
+       phase; specific phase = the lead-magnet can later filter / prioritise
+       by `incubator.phase` (lead-magnet read-side wiring is R+1; admin
+       captures the field today so editors can tag without a code change). */
+    var PHASE_SCOPE = ['all', 'epic-intro', 'blueprint', 'diagnostics', 'brand-builder'];
     var openArea = null, openTier = 'beginner';
 
     function renderTree() {
@@ -258,8 +488,14 @@
           +   '<select data-step-k="type">'
           +     STEP_TYPES.map(function (t) { return '<option' + (t === step.type ? ' selected' : '') + '>' + t + '</option>'; }).join('')
           +   '</select>'
+          +   '<select data-step-k="phase" title="Incubator phase scope" style="margin-left:6px">'
+          +     PHASE_SCOPE.map(function (p) { return '<option value="' + p + '"' + ((step.phase || 'all') === p ? ' selected' : '') + '>phase: ' + p + '</option>'; }).join('')
+          +   '</select>'
           +   '<button class="bos-admin-step-del" data-step-del="' + si + '">✕</button>'
           + '</div>';
+        if ((step.phase || 'all') !== 'all') {
+          html += '<div class="muted" style="font-size:11px;margin:-4px 0 8px;color:#C9A76A">↳ tagged for ' + step.phase + ' phase</div>';
+        }
         if (step.type === 'choice' || step.type === 'multi') {
           html += '<label>Prompt<textarea data-step-k="prompt" rows="2">' + (step.prompt || '') + '</textarea></label>'
             + '<label>Options (one per line · format: "label | score")<textarea data-step-k="options" rows="4">'

@@ -111,6 +111,19 @@
         var b = document.querySelector('[data-bos-mp-banner]');
         if (b) b.style.display = 'none';
       }
+
+      /* Click tracker — admin overview reads bos.marketplaceClicks
+         (R009). Increment on every click inside an addon card. */
+      document.addEventListener('click', function (ev) {
+        var card = ev.target.closest('[data-mp-addon]');
+        if (!card) return;
+        try {
+          var m = JSON.parse(localStorage.getItem('bos.marketplaceClicks') || '{}') || {};
+          var id = card.getAttribute('data-mp-addon');
+          m[id] = (m[id] || 0) + 1;
+          localStorage.setItem('bos.marketplaceClicks', JSON.stringify(m));
+        } catch (e) {}
+      });
     });
   </script>
 

@@ -619,7 +619,7 @@
       .filter(function (a) { return filter === 'all' || a.cat === filter; })
       .map(function (a) {
         var owned = mode === 'customer';
-        return '<article class="addon-card' + (owned ? ' is-owned' : '') + '">'
+        return '<article class="addon-card' + (owned ? ' is-owned' : '') + '" data-mp-addon="' + a.id + '">'
           + '<div class="addon-head">'
           +   '<div class="addon-icon">' + a.icon + '</div>'
           +   '<div><h3>' + a.name + '</h3><div class="addon-cat">' + categoryLabel(a.cat) + '</div></div>'
