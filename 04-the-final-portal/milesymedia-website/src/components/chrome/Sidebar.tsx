@@ -57,12 +57,29 @@ export function Sidebar({ panels, tenantLabel, currentPath, mobile = false, extr
     >
       {!mobile && <SidebarCollapseToggle />}
 
-      <div className="mb-6 mm-sidebar-tenant">
+      {/* Sticky tenant + dashboard header — stays visible while the
+          rest of the sidebar scrolls. Adds a one-tap Dashboard link so
+          the agency owner can always bail back to /portal/agency
+          regardless of how deep they've drilled into a plugin. */}
+      <div
+        className={[
+          "mb-4 mm-sidebar-tenant",
+          mobile ? "" : "sticky top-0 z-10 -mx-4 -mt-4 bg-white/85 px-4 pt-4 pb-3 backdrop-blur",
+        ].join(" ")}
+      >
         <div className="text-[11px] uppercase tracking-wide text-black/50">Tenant</div>
         <div className="text-base font-semibold text-black/90">{tenantLabel}</div>
       </div>
 
       <nav aria-label="Primary" className="flex flex-col gap-5">
+        {panels.length === 0 && (
+          <p
+            data-testid="sidebar-empty-state"
+            className="rounded-md border border-dashed border-black/10 px-2 py-3 text-[11px] italic text-black/40"
+          >
+            No tools enabled for this scope yet.
+          </p>
+        )}
         {panels.map(panel => {
           const headingId = `nav-panel-${panel.id}`;
           return (
@@ -73,6 +90,9 @@ export function Sidebar({ panels, tenantLabel, currentPath, mobile = false, extr
               >
                 {panel.label}
               </h2>
+              {panel.items.length === 0 && (
+                <p className="px-2 py-1 text-[11px] italic text-black/40">No tools enabled.</p>
+              )}
               <ul className="flex flex-col">
                 {panel.items.map(item => {
                   const active = currentPath === item.href || currentPath.startsWith(item.href + "/");

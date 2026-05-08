@@ -45,7 +45,7 @@ export default async function ClientLayout({
 
   const installs = listInstalledFor({ agencyId: client.agencyId, clientId: client.id });
   const eff = effectiveRole(session);
-  const panels = buildSidebar({
+  const dynamicPanels = buildSidebar({
     role: session.role,
     scope: "client",
     currentClient: client,
@@ -53,6 +53,32 @@ export default async function ClientLayout({
     permissions: eff.permissions,
     isFounder: eff.isFounder,
   });
+  // Always-present workspace nav so the per-client sidebar isn't a
+  // "No tools enabled" empty state when nothing is installed yet.
+  // Ed's directive 2026-05-08 — "sidebar should always be toggleable"
+  // (i.e. always populated). Provides at-minimum an escape hatch +
+  // overview tabs as nav links.
+  const overviewBase = `/portal/clients/${client.id}`;
+  const workspacePanel: import("@/lib/chrome/sidebarLayout").NavPanel = {
+    id: "main",
+    label: "Workspace",
+    order: 0,
+    items: [
+      { id: "back-to-agency", label: "← Back to agency", href: "/portal/agency", order: 0 },
+      { id: "client-overview", label: "Overview",  href: overviewBase, order: 10 },
+      { id: "client-website",  label: "Website",   href: `${overviewBase}?tab=website`,  order: 20 },
+      { id: "client-portal",   label: "Portal",    href: `${overviewBase}?tab=portal`,   order: 30 },
+      { id: "client-kanban",   label: "Kanban",    href: `${overviewBase}?tab=kanban`,   order: 40 },
+      { id: "client-finance",  label: "Finance",   href: `${overviewBase}?tab=finance`,  order: 50 },
+      { id: "client-assets",   label: "Assets",    href: `${overviewBase}?tab=assets`,   order: 60 },
+      { id: "client-sops",     label: "SOPs",      href: `${overviewBase}?tab=sops`,     order: 70 },
+      { id: "client-files",    label: "Files",     href: `${overviewBase}?tab=files`,    order: 80 },
+      { id: "client-tools",    label: "Tools",     href: `${overviewBase}?tab=tools`,    order: 90 },
+    ],
+  };
+  // Merge workspace panel with discovered plugin panels (workspace
+  // first so it always sits at the top, dynamic plugin panels follow).
+  const panels = [workspacePanel, ...dynamicPanels.filter(p => p.id !== "main")];
 
   const h = await headers();
   const currentPath = h.get("x-invoke-path") ?? h.get("x-pathname") ?? `/portal/clients/${client.id}`;

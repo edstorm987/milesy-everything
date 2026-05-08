@@ -80,11 +80,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   <span className="nav-mega-heading">Quick access</span>
                   <Link href="/business-os">
                     <strong>🧭 Business OS</strong>
-                    <em>The free operating layer</em>
-                  </Link>
-                  <Link href="/incubator">
-                    <strong>🌱 Incubator</strong>
-                    <em>Four-phase build engagement</em>
+                    <em>Free operating layer · Incubator setup built in</em>
                   </Link>
                   <Link href="/health-check">
                     <strong>🩺 Health Check</strong>
@@ -154,7 +150,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <span>
             <Link href="/health-check">Health Check</Link> ·{" "}
             <Link href="/business-os">Business OS</Link> ·{" "}
-            <Link href="/incubator">Incubator</Link> ·{" "}
             <Link href="/resources">Resources</Link> ·{" "}
             <Link href="/login">Client portal</Link> ·{" "}
             <Link href="/privacy">Privacy</Link> ·{" "}

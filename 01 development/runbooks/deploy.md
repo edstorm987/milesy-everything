@@ -216,6 +216,20 @@ npm run smoke:post-deploy -- --url=https://<preview>.vercel.app \
 # add --verbose for response bodies; --founder-email=<addr> if non-default
 ```
 
+**Pre-ship feature walkthrough** (T1, chapter #168) — local audit of
+every major user flow as source-marker + best-effort runtime hybrid.
+Run this BEFORE `smoke:post-deploy`; it catches missing route files,
+broken wire-ups, and registry drift without needing a deploy URL:
+
+```bash
+cd 04-the-final-portal/milesymedia-website
+npm run smoke:feature-walkthrough
+```
+
+This is the canonical pre-ship check — green here means the foundation
+is wired correctly; green on `smoke:post-deploy` means the deploy is
+serving the wired surfaces. Together they're the ship gate.
+
 Curl one-liners for the cheap subset:
 
 ```bash

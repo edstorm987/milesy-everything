@@ -1291,17 +1291,25 @@ footer {
   border: 1px solid rgba(20, 18, 14, 0.12);
   flex: 0 0 auto;
 }
-/* Tighter max-width so the pill stays compact when the topbar's
-   tenant-switcher button takes the title slot (Ed's directive
-   2026-05-08). Hidden below sm to keep mobile clean. */
+/* Tightened ProfileMenu (2026-05-08) — when the topbar carries the
+   tenant-switcher in the title slot, the right cluster gets
+   crowded. Hide the display name on the trigger; identity is in
+   the popover. The avatar circle + caret is the trigger. */
 .mm-profile-display {
-  max-width: 140px;
+  display: none !important;
 }
-@media (max-width: 640px) {
-  .mm-profile-display { display: none; }
+.mm-profile-menu summary {
+  padding: 4px 8px 4px 4px;
+  gap: 4px;
 }
-.mm-profile-menu summary { padding-right: 10px; }
+.mm-profile-menu summary .mm-profile-avatar,
+.mm-profile-menu summary .mm-profile-avatar-img {
+  width: 30px;
+  height: 30px;
+  font-size: 12px;
+}
 .mm-profile-display-fallback {
+  display: none;
   font-size: 13px;
   color: #14120E;
   font-weight: 500;

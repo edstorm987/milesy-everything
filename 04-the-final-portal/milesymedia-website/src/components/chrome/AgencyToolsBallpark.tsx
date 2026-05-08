@@ -32,15 +32,40 @@ const SETTINGS_ROW = {
   hint: "Brand, billing, team.", requires: ["clients.edit"],
 };
 
-const MORE_TOOLS: { id: string; label: string; href: string }[] = [
-  { id: "kanban",     label: "Tasks & Kanban",   href: "/portal/agency/kanban" },
-  { id: "marketing",  label: "Social Media",     href: "/portal/agency/agency-marketing" },
-  { id: "hr",         label: "HR",               href: "/portal/agency/agency-hr" },
-  { id: "forms",      label: "Forms",            href: "/portal/agency/forms" },
-  { id: "email",      label: "Email",            href: "/portal/agency/email-sender" },
-  { id: "ops",        label: "Ops",              href: "/portal/agency/ops" },
-  { id: "domains",    label: "Domains",          href: "/portal/agency/domains" },
-  { id: "affiliates", label: "Affiliates",       href: "/portal/agency/affiliates" },
+// MORE_TOOLS is grouped into three logical sub-buckets so the long flat
+// list doesn't overwhelm the sidebar when expanded. Sub-group order
+// matches the agency's daily-mental-model: Operations (do-the-work) →
+// Communications (talk-to-people) → Growth (acquire/retain). Each
+// entry's `href` follows the foundation `/portal/agency/<pluginId>`
+// convention; missing-install lands on the friendly stub from the
+// catch-all (T1 nav-audit 2026-05-08).
+interface MoreToolEntry { id: string; label: string; href: string }
+interface MoreToolGroup { id: string; label: string; items: MoreToolEntry[] }
+const MORE_TOOLS_GROUPS: MoreToolGroup[] = [
+  {
+    id: "operations", label: "Operations",
+    items: [
+      { id: "kanban",   label: "Tasks & Kanban", href: "/portal/agency/kanban" },
+      { id: "hr",       label: "HR",             href: "/portal/agency/agency-hr" },
+      { id: "ops",      label: "Ops",            href: "/portal/agency/agency-ops" },
+      { id: "marketing", label: "Marketing ops", href: "/portal/agency/agency-marketing" },
+    ],
+  },
+  {
+    id: "communications", label: "Communications",
+    items: [
+      { id: "forms",  label: "Forms",        href: "/portal/agency/forms" },
+      { id: "email",  label: "Email sender", href: "/portal/agency/email-sender" },
+    ],
+  },
+  {
+    id: "growth", label: "Growth",
+    items: [
+      { id: "domains",     label: "Domains",     href: "/portal/agency/agency-domains" },
+      { id: "affiliates",  label: "Affiliates",  href: "/portal/agency/affiliates" },
+      { id: "memberships", label: "Memberships", href: "/portal/agency/memberships" },
+    ],
+  },
 ];
 
 export function AgencyToolsBallpark({
@@ -82,6 +107,11 @@ export function AgencyToolsBallpark({
         >
           Aqua HQ
         </h2>
+        {visibleAquaHq.length === 0 && (
+          <p className="px-2 py-1 text-[11px] italic text-black/40">
+            No tools enabled for your role.
+          </p>
+        )}
         <ul className="flex flex-col">
           {visibleAquaHq.map(s => (
             <li key={s.id}>
@@ -117,18 +147,28 @@ export function AgencyToolsBallpark({
           <span aria-hidden="true" className="text-black/40">{moreOpen ? "▾" : "▸"}</span>
         </button>
         {moreOpen && (
-          <ul className="mt-1 flex flex-col">
-            {MORE_TOOLS.map(t => (
-              <li key={t.id}>
-                <Link
-                  href={t.href}
-                  className="block rounded-md px-2 py-1.5 text-sm text-black/70 hover:bg-black/5"
-                >
-                  {t.label}
-                </Link>
-              </li>
+          <div className="mt-1 flex flex-col gap-3">
+            {MORE_TOOLS_GROUPS.map(group => (
+              <div key={group.id}>
+                <h3 className="px-2 pt-1 text-[10px] font-semibold uppercase tracking-wide text-black/40">
+                  {group.label}
+                </h3>
+                <ul className="flex flex-col">
+                  {group.items.map(t => (
+                    <li key={t.id}>
+                      <Link
+                        href={t.href}
+                        title={t.label}
+                        className="block rounded-md px-2 py-1.5 text-sm text-black/70 hover:bg-black/5"
+                      >
+                        {t.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
