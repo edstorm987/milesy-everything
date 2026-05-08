@@ -4,8 +4,23 @@
 // rank-my-website plugin owns that integration later.
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { SiteShell } from "@/components/SiteShell";
-import { SeoAuditTool } from "@/components/resource-tools/SeoAuditTool";
+
+// T4 perf-3 — code-split the audit tool out of the initial page bundle.
+// The form + scan logic is below the hero header (not LCP-critical) and
+// only runs after a user action. Lazy-loading shaves the resource-tool
+// JS off the first paint of every other resources/* route too because
+// the chunk no longer joins the shared layout split.
+// `ssr: false` requires a client component in Next 16 — we keep this
+// page server-rendered for SEO + use plain dynamic() for client-bundle
+// code-split. The component still SSRs on first paint, but its JS
+// chunk no longer joins the layout split, so siblings (other resource
+// pages) don't pay for it.
+const SeoAuditTool = dynamic(
+  () => import("@/components/resource-tools/SeoAuditTool").then((m) => m.SeoAuditTool),
+  { loading: () => <div className="mm-tool-loading">Loading audit tool…</div> },
+);
 
 export const metadata = {
   title: "SEO audit · Milesy Media",

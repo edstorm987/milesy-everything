@@ -1,8 +1,14 @@
 // T4 R002 — real /resources/site-speed (replaces catch-all stub).
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { SiteShell } from "@/components/SiteShell";
-import { SiteSpeedTool } from "@/components/resource-tools/SiteSpeedTool";
+
+// T4 perf-3 — code-split (see seo-audit/page.tsx for the rationale).
+const SiteSpeedTool = dynamic(
+  () => import("@/components/resource-tools/SiteSpeedTool").then((m) => m.SiteSpeedTool),
+  { loading: () => <div className="mm-tool-loading">Loading speed tool…</div> },
+);
 
 export const metadata = {
   title: "Site speed test · Milesy Media",

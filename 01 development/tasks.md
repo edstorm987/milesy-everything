@@ -220,9 +220,26 @@ Ed's 2026-05-07T17:00Z list. Most landed via subagents in cycle 173
 
 ### Open Sprint-2.5 items
 
-- [ ] Performance pass beyond dev-bypass memoize — biggest lever
-      remaining is `PORTAL_BACKEND=postgres` (T1 R027 wired) on a
-      real Postgres URL. Operator action.
+- [x] **Performance audit — easy wins shipped (T1 perf-audit, 2026-05-08).**
+      Chapter #168. Font preload + dns-prefetch in SiteShell;
+      next/dynamic on the three resource-tools pages so the heavy
+      audit components no longer ship in every resource page's
+      first-paint chunk; 30s memoize re-introduced on
+      `seedFounderForDevBypass` (commander's open perf item) so
+      repeat /dev/pov clicks short-circuit instead of re-walking
+      every plugin install. NEW `scripts/perf-baseline.mjs` +
+      `npm run perf:baseline` snapshots `.next/static/chunks/`
+      totals + top static HTML sizes (Next 16/Turbopack no longer
+      prints per-route table). Smoke `scripts/smoke-perf-easy-wins.test.ts`
+      11/11. Hard wins queued for follow-up rounds:
+      `terminal-prompts/queues/T1/perf-postgres-on-prod-url.md`,
+      `terminal-prompts/queues/T4/perf-cdn-image-resizer.md`,
+      `terminal-prompts/queues/T4/perf-marketing-service-worker.md`,
+      `terminal-prompts/queues/T1/perf-bundle-analyzer-tree-shake.md`.
+- [ ] Hard perf wins — staged in `terminal-prompts/queues/T{1,4}/perf-*.md`.
+      Postgres backend on a real DB URL (T1, operator); CDN image
+      resizer adoption (T4); service-worker for marketing (T4);
+      bundle-analyzer tree-shake audit (T1).
 
 ## Sprint 3 (planned — Felicia + production)
 

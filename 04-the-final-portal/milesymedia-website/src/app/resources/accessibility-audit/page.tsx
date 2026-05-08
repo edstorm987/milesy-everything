@@ -1,8 +1,17 @@
 // T4 R002 — real /resources/accessibility-audit (replaces catch-all stub).
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { SiteShell } from "@/components/SiteShell";
-import { AccessibilityAuditTool } from "@/components/resource-tools/AccessibilityAuditTool";
+
+// T4 perf-3 — code-split (see seo-audit/page.tsx for the rationale).
+const AccessibilityAuditTool = dynamic(
+  () =>
+    import("@/components/resource-tools/AccessibilityAuditTool").then(
+      (m) => m.AccessibilityAuditTool,
+    ),
+  { loading: () => <div className="mm-tool-loading">Loading a11y tool…</div> },
+);
 
 export const metadata = {
   title: "Accessibility audit · Milesy Media",

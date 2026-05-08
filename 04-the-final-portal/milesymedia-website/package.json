@@ -41,6 +41,9 @@
     "smoke:leads-pipeline-foundation-glue": "tsx --test scripts/smoke-leads-pipeline-foundation-glue.test.ts",
     "smoke:hc-leads-pipeline-integration": "tsx --test scripts/smoke-hc-leads-pipeline-integration.test.ts",
     "smoke:email-sender-foundation": "tsx --test scripts/smoke-email-sender-foundation.test.ts",
+    "smoke:feature-walkthrough": "tsx --test scripts/smoke-feature-walkthrough.test.ts",
+    "smoke:perf-easy-wins": "tsx --test scripts/smoke-perf-easy-wins.test.ts",
+    "perf:baseline": "node scripts/perf-baseline.mjs",
     "migrate:file-to-postgres": "node scripts/migrate-file-to-postgres.mjs"
   },
   "dependencies": {

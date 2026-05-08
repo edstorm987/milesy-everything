@@ -78,17 +78,40 @@ export function seedFounder(): Promise<void> {
 // `NODE_ENV === "production"` to prevent accidental use; the regular
 // seedFounder is the prod path. Idempotent on email lookup.
 const DEV_FOUNDER_PASSWORD = "dev-founder-2026";
+
+// T1 perf-2 — short-window memoize for the dev-bypass seed. Earlier
+// the function ran in full on every /dev/pov click so new plugins
+// would auto-install when the dev server stayed up for hours; the
+// install loop walks every plugin and is the dominant cost on
+// repeat clicks (commander flagged the perf hit). Compromise: cache
+// the in-flight + completed result for DEV_SEED_TTL_MS so rapid
+// repeat clicks short-circuit, but a full re-walk happens after the
+// window expires (newly added plugins still get picked up within
+// half a minute). Reset helper (`_resetFounderSeedForTests`) clears
+// this too so smokes stay deterministic.
+const DEV_SEED_TTL_MS = 30_000;
+let devSeedPromise: Promise<void> | null = null;
+let devSeedAt = 0;
+
 export function seedFounderForDevBypass(): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     throw new Error(
       "[founderSeed] seedFounderForDevBypass is dev-only — use FOUNDER_PASSWORD env in production.",
     );
   }
-  // No memoize: every dev-pov click re-runs the seed so newly added
-  // plugins (or sidebar nav items pointing at not-yet-installed plugins)
-  // get auto-installed even when the dev server has been running for
-  // hours. Each step is idempotent.
-  return devRun();
+  const now = Date.now();
+  if (devSeedPromise && now - devSeedAt < DEV_SEED_TTL_MS) {
+    return devSeedPromise;
+  }
+  devSeedAt = now;
+  devSeedPromise = devRun().catch((e) => {
+    // Failed runs shouldn't poison the cache for the full TTL — clear
+    // immediately so the next click retries.
+    devSeedPromise = null;
+    devSeedAt = 0;
+    throw e;
+  });
+  return devSeedPromise;
 }
 
 async function devRun(): Promise<void> {
@@ -239,4 +262,6 @@ async function run(): Promise<void> {
 // between invocations. Not for prod use.
 export function _resetFounderSeedForTests(): void {
   seedPromise = null;
+  devSeedPromise = null;
+  devSeedAt = 0;
 }

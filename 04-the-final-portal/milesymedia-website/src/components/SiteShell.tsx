@@ -10,6 +10,13 @@ import type { ReactNode } from "react";
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
     <>
+      {/* T4 perf-1 — explicit preconnect + DNS prefetch + non-blocking
+          stylesheet preload for the Playfair Display webfont. The
+          stylesheet itself loads "as=style" then upgrades to a real
+          <link rel="stylesheet"> via the inline onload swap (chapter
+          #200). Inter is system-stack, no preload needed. */}
+      <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+      <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
       <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
@@ -18,6 +25,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
         rel="preconnect"
         href="https://fonts.gstatic.com"
         crossOrigin=""
+      />
+      <link
+        rel="preload"
+        as="style"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap"
       />
       <link
         rel="stylesheet"
