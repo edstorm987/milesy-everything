@@ -24,8 +24,16 @@ export default async function PhaseEditorPage({
   if (!ok) redirect("/portal/agency");
 
   const { phaseId } = await params;
-  const phase = getPhase(phaseId);
-  if (!phase || phase.agencyId !== getActiveAgencyId(session)) notFound();
+  const activeAgencyId = getActiveAgencyId(session);
+  // Resilient lookup: route param can be the full id (`phase_<agency>_<stage>`)
+  // OR just the stage (legacy bookmarks / Ed's manual nav). Stage fallback
+  // scopes to the active agency to avoid cross-tenant leak.
+  let phase = getPhase(phaseId);
+  if (!phase) {
+    const { listPhasesForAgency } = await import("@/server/phases");
+    phase = listPhasesForAgency(activeAgencyId).find(p => p.stage === phaseId) ?? null;
+  }
+  if (!phase || phase.agencyId !== activeAgencyId) notFound();
 
   return (
     <div className="flex flex-col gap-6">
@@ -46,6 +54,9 @@ export default async function PhaseEditorPage({
           ordering: phase.order,
           customCss: phase.customCss ?? "",
           customJs: phase.customJs ?? "",
+          welcomeHeading: phase.welcomeHeading ?? "",
+          welcomeBody: phase.welcomeBody ?? "",
+          isPublicPreset: phase.isPublicPreset ?? false,
         }}
       />
     </div>

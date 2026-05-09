@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Milesy Media — Business OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/business-os/styles.css" />
+  <script src="/business-os/splash.js"></script>
+  <script defer src="/business-os/auth-sync.js"></script>
+</head>
+<body data-mobile-checked="2026-05-07">
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="/" class="brand">
+        <span class="mark">M</span>
+        <span class="brand-name">Milesy<span class="a">Media</span> · <span class="muted">Business&nbsp;OS</span></span>
+      </a>
+      <div class="nav-cta">
+        <a href="/" class="btn btn-ghost">← Back to website</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-shell">
+    <div class="auth-card bos-auth-card">
+      <div class="bos-source-banner" data-bos-source-banner hidden>
+        <span class="bos-source-icon">🎁</span>
+        <div>
+          <strong>Your free Business OS, ready to go.</strong>
+          <p class="muted">We've already saved your Health Check results — they'll appear on your dashboard the moment you sign in.</p>
+        </div>
+      </div>
+
+      <span class="eyebrow">Free · Lifetime access</span>
+      <h1>Welcome to your <span class="accent">Business OS</span>.</h1>
+      <p class="sub">A complete operating system for growing your business — assessments, guides, templates and a free assistant — all in one portal. Start by creating your account.</p>
+
+      <form id="bos-auth-form" autocomplete="off">
+        <div class="bos-tabs">
+          <button type="button" class="bos-tab is-on" data-bos-tab="signup">Create account</button>
+          <button type="button" class="bos-tab" data-bos-tab="signin">I already have one</button>
+        </div>
+
+        <div class="field" data-bos-field="name">
+          <label>Your name</label>
+          <input type="text" name="name" placeholder="Jordan Lee" />
+        </div>
+        <div class="field" data-bos-field="business">
+          <label>Business name</label>
+          <input type="text" name="business" placeholder="Northbeam Apparel" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@yourbusiness.co.uk" required />
+        </div>
+        <div class="field" data-bos-field="password">
+          <label>Pick a password</label>
+          <input type="password" name="password" placeholder="At least 8 characters" />
+        </div>
+
+        <div class="field" data-bos-field="niche">
+          <label>Pick your OS</label>
+          <div class="bos-niche-picker" data-bos-niche-picker></div>
+          <input type="hidden" name="niche" data-bos-niche-input value="generic" />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Create my Business OS →</button>
+
+        <div class="divider">Or</div>
+
+        <a href="/health-check/index.html" class="admin-link">Take the free Health Check first ↗</a>
+
+        <button type="button" class="bos-dev-bypass" data-bos-bypass>
+          ⚡ Dev bypass — skip login &amp; jump straight in
+        </button>
+
+        <p class="muted bos-fineprint">
+          By creating an account you'll get the precustomer portal. As soon as you upgrade, your full Aqua agency portal layers on top — same login, more sidebar.
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container foot-row">
+      <span>© 2026 Milesy Media · Business OS <span style="opacity:0.4">· Standalone preview · localhost:3034</span></span>
+      <span>
+        <a href="https://milesymedia.co">milesymedia.co</a> ·
+        <a href="mailto:hello@milesymedia.co">hello@milesymedia.co</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    // Tab toggle (signup vs signin)
+    document.querySelectorAll('[data-bos-tab]').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('[data-bos-tab]').forEach(function (x) { x.classList.remove('is-on'); });
+        t.classList.add('is-on');
+        var mode = t.getAttribute('data-bos-tab');
+        document.querySelectorAll('[data-bos-field]').forEach(function (f) {
+          f.style.display = (mode === 'signup' ? '' : (f.getAttribute('data-bos-field') === 'password' ? '' : 'none'));
+        });
+        document.querySelector('button[type="submit"]').textContent =
+          mode === 'signup' ? 'Create my Business OS →' : 'Sign in →';
+      });
+    });
+
+    // Niche picker — visual cards
+    var NICHES = [
+      { slug: 'therapist',  label: 'Therapist',  icon: '🌿' },
+      { slug: 'roofer',     label: 'Roofer',     icon: '🏠' },
+      { slug: 'salon',      label: 'Salon',      icon: '💇' },
+      { slug: 'coach',      label: 'Coach',      icon: '🎯' },
+      { slug: 'restaurant', label: 'Restaurant', icon: '🍽' },
+      { slug: 'retailer',   label: 'Retailer',   icon: '🛍' },
+      { slug: 'agency',     label: 'Agency',     icon: '💼' },
+      { slug: 'generic',    label: 'Other',      icon: '◆'  }
+    ];
+    // Pre-fill from URL params (e.g. arriving from health check)
+    (function () {
+      var qs = new URLSearchParams(location.search);
+      ['name', 'business', 'email'].forEach(function (k) {
+        var v = qs.get(k);
+        if (!v) return;
+        var input = document.querySelector('input[name="' + k + '"]');
+        if (input) input.value = v;
+      });
+      if (qs.get('source') === 'healthcheck') {
+        var b = document.querySelector('[data-bos-source-banner]');
+        if (b) b.removeAttribute('hidden');
+      }
+    })();
+
+    var picker = document.querySelector('[data-bos-niche-picker]');
+    var input = document.querySelector('[data-bos-niche-input]');
+    picker.innerHTML = NICHES.map(function (n, i) {
+      return '<button type="button" class="bos-niche-tile' + (i === 0 ? ' is-on' : '') + '" data-bos-niche="' + n.slug + '">'
+        + '<span class="bos-niche-icon">' + n.icon + '</span>'
+        + '<span class="bos-niche-label">' + n.label + ' OS</span>'
+        + '</button>';
+    }).join('');
+    input.value = 'therapist';
+    picker.querySelectorAll('[data-bos-niche]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        picker.querySelectorAll('.bos-niche-tile').forEach(function (x) { x.classList.remove('is-on'); });
+        b.classList.add('is-on');
+        input.value = b.getAttribute('data-bos-niche');
+      });
+    });
+
+    // Demo submit — seed user + initial XP + achievement, then jump in
+    document.getElementById('bos-auth-form').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var fd = new FormData(ev.target);
+      var niche = fd.get('niche') || 'generic';
+      try {
+        localStorage.setItem('bos.user', JSON.stringify({
+          name: fd.get('name') || 'Friend',
+          business: fd.get('business') || 'Your Business',
+          email: fd.get('email') || '',
+          niche: niche
+        }));
+        // Seed progress with first-step XP + achievement
+        var p = { xp: 100, timeSavedHrs: 0, streak: 0, lastActive: null, completed: {}, achievements: ['first-step'] };
+        if (niche !== 'generic') p.achievements.push('niche-locked');
+        localStorage.setItem('bos.progress', JSON.stringify(p));
+      } catch (e) {}
+      // Chapter #159 — Incubator is the BOS setup phase. New signups
+      // route through it; returning users with bos.incubatorComplete
+      // skip straight to the dashboard.
+      var done = false;
+      try { done = localStorage.getItem('bos.incubatorComplete') === 'true'; } catch (e) {}
+      window.location.href = done ? 'app.html' : '/business-os/incubator';
+    });
+
+    // Dev bypass — seeds a demo user and jumps to the app. Visible
+    // intentionally during build; we'll hide behind a query flag once
+    // we ship for real.
+    document.querySelector('[data-bos-bypass]').addEventListener('click', function () {
+      try {
+        localStorage.setItem('bos.user', JSON.stringify({
+          name: 'Jordan Lee', business: 'Northbeam Apparel',
+          email: 'demo@milesymedia.co', niche: 'therapist', dev: true
+        }));
+        localStorage.setItem('bos.progress', JSON.stringify({
+          xp: 350, timeSavedHrs: 12.5, streak: 2, lastActive: null,
+          completed: {}, achievements: ['first-step', 'niche-locked', 'self-aware']
+        }));
+        // Seed a fake health check so the dashboard isn't empty
+        localStorage.setItem('bos.healthCheck', JSON.stringify({
+          headline: "You're leaving an estimated £3,200/month on the table.",
+          leakEstimate: 3200,
+          topics: [
+            { name: 'Visibility', icon: '⌕', score: 38, status: 'bad' },
+            { name: 'Website',    icon: '◎', score: 62, status: 'warn' },
+            { name: 'Customer flow', icon: '↗', score: 71, status: 'warn' },
+            { name: 'My Business', icon: '✪', score: 84, status: 'good' },
+            { name: 'Retention',   icon: '✉', score: 45, status: 'bad' }
+          ]
+        }));
+        // Chapter #159 — dev bypass goes straight to dashboard, so
+        // mark setup complete to skip the gate redirect in app.html.
+        localStorage.setItem('bos.incubatorComplete', 'true');
+      } catch (e) {}
+      window.location.href = 'app.html?skipSetup=1';
+    });
+  </script>
+
+</body>
+</html>

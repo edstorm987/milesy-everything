@@ -13,6 +13,9 @@ interface Body {
   stage?: string;
   customCss?: string;
   customJs?: string;
+  welcomeHeading?: string;
+  welcomeBody?: string;
+  isPublicPreset?: boolean;
 }
 
 // POST /api/portal/phases/upsert — create / edit a phase. Founder or
@@ -51,6 +54,9 @@ export async function POST(req: NextRequest) {
       order: ordering,
       customCss: body.customCss ?? existing.customCss,
       customJs: body.customJs ?? existing.customJs,
+      welcomeHeading: body.welcomeHeading ?? existing.welcomeHeading,
+      welcomeBody: body.welcomeBody ?? existing.welcomeBody,
+      isPublicPreset: body.isPublicPreset ?? existing.isPublicPreset,
     };
   } else {
     const id = `phase_${agencyId}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
@@ -66,6 +72,9 @@ export async function POST(req: NextRequest) {
       isDefault: false,
       customCss: body.customCss,
       customJs: body.customJs,
+      welcomeHeading: body.welcomeHeading,
+      welcomeBody: body.welcomeBody,
+      isPublicPreset: body.isPublicPreset ?? false,
     };
   }
   const saved = upsertPhase(row);

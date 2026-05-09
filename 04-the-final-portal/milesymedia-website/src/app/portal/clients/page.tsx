@@ -20,7 +20,7 @@ export default async function ClientsList() {
   }
   const clients = listClients(session.agencyId);
   return (
-    <div className="flex min-h-screen flex-col px-8 py-6">
+    <div>
       <h1 className="text-2xl font-semibold tracking-tight text-black/90">Clients</h1>
       <p className="mt-1 text-sm text-black/60">{clients.length} client{clients.length === 1 ? "" : "s"} in this agency.</p>
       {clients.length === 0 ? (

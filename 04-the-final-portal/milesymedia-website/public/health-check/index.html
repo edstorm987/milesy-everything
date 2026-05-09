@@ -9,9 +9,173 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/health-check/styles.css" />
-  <link rel="stylesheet" href="/incubator/print.css" media="print" />
+  <link rel="stylesheet" href="/business-os/print.css" media="print" />
 </head>
 <body data-mobile-checked="2026-05-07">
+
+  <!-- Health Check splash — a quick branded loader on every fresh
+       load of the iframe. Self-contained styles + script so it paints
+       before any other CSS is parsed. -->
+  <style id="hc-splash-style">
+    .hc-splash {
+      position: fixed; inset: 0; z-index: 99999;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 30%, rgba(212, 184, 136, 0.06) 0%, transparent 70%),
+        linear-gradient(180deg, #0B0A07 0%, #050505 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: "Inter", -apple-system, system-ui, sans-serif;
+      animation: hc-splash-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .hc-splash::before {
+      content: ""; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(212, 184, 136, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212, 184, 136, 0.025) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 50% 40% at 50% 50%, #000 0%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 50% 40% at 50% 50%, #000 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hc-splash-out { animation: hc-splash-out 0.55s cubic-bezier(0.6, 0, 0.4, 1) both; pointer-events: none; }
+    .hc-splash-stage {
+      position: relative;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 24px;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .hc-splash-eyebrow {
+      font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: rgba(212, 184, 136, 0.55);
+      display: inline-flex; align-items: center; gap: 10px;
+      opacity: 0; animation: hc-splash-fade-up 0.6s 0.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .hc-splash-eyebrow::before, .hc-splash-eyebrow::after {
+      content: ""; width: 28px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212, 184, 136, 0.4), transparent);
+    }
+    .hc-splash-mono {
+      width: 72px; height: 72px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1B1408 0%, #0A0703 100%);
+      border: 1px solid rgba(212, 184, 136, 0.22);
+      display: grid; place-items: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 2px rgba(0,0,0,0.5), 0 16px 40px -10px rgba(212,184,136,0.18);
+      opacity: 0; animation: hc-splash-mono-in 0.7s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .hc-splash-mono svg { display: block; }
+    .hc-splash-wordmark {
+      font-family: "Playfair Display", Georgia, serif;
+      font-weight: 700; font-size: 22px;
+      letter-spacing: -0.015em; color: #F5EDD8;
+      opacity: 0; animation: hc-splash-fade-up 0.7s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .hc-splash-wordmark span {
+      background: linear-gradient(135deg, #D4B888 0%, #8B6F3D 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hc-splash-ekg {
+      width: 240px; height: 36px;
+      opacity: 0; animation: hc-splash-fade-up 0.7s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .hc-splash-ekg path {
+      fill: none; stroke: url(#hc-ekg-grad);
+      stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 480; stroke-dashoffset: 480;
+      animation: hc-splash-trace 2.2s 0.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+    .hc-splash-status {
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(212, 184, 136, 0.5); font-weight: 500;
+      opacity: 0; animation: hc-splash-fade-up 0.7s 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .hc-splash-status::before {
+      content: ""; width: 5px; height: 5px;
+      border-radius: 999px; background: #D4B888;
+      box-shadow: 0 0 10px rgba(212, 184, 136, 0.7);
+      animation: hc-splash-blink 1.4s ease-in-out infinite;
+    }
+    @keyframes hc-splash-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes hc-splash-out { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.015); visibility: hidden; } }
+    @keyframes hc-splash-fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes hc-splash-mono-in { 0% { opacity: 0; transform: scale(0.85); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes hc-splash-trace { 0% { stroke-dashoffset: 480; } 55% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -480; } }
+    @keyframes hc-splash-blink { 0%, 100% { opacity: 0.45; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+    @media (prefers-reduced-motion: reduce) {
+      .hc-splash, .hc-splash *, .hc-splash *::before, .hc-splash *::after { animation: none !important; opacity: 1 !important; }
+      .hc-splash-ekg path { stroke-dashoffset: 0; }
+    }
+  </style>
+  <div class="hc-splash" id="hcSplash" aria-hidden="true">
+    <div class="hc-splash-stage">
+      <div class="hc-splash-eyebrow">Milesy Media</div>
+      <div class="hc-splash-mono">
+        <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
+          <defs>
+            <linearGradient id="hc-mono-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#D4B888" />
+              <stop offset="100%" stop-color="#8B6F3D" />
+            </linearGradient>
+          </defs>
+          <text x="16" y="22" text-anchor="middle"
+            font-family="Playfair Display, Georgia, serif"
+            font-size="20" font-weight="700" fill="url(#hc-mono-grad)"
+            letter-spacing="-0.02em">M</text>
+        </svg>
+      </div>
+      <div class="hc-splash-wordmark">Health <span>Check</span></div>
+      <svg class="hc-splash-ekg" viewBox="0 0 240 36" aria-hidden="true">
+        <defs>
+          <linearGradient id="hc-ekg-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="rgba(212,184,136,0)" />
+            <stop offset="50%" stop-color="#D4B888" />
+            <stop offset="100%" stop-color="rgba(212,184,136,0)" />
+          </linearGradient>
+        </defs>
+        <path d="M0 18 L60 18 L72 18 L80 6 L88 30 L96 8 L104 22 L112 18 L160 18 L172 18 L180 12 L188 24 L196 18 L240 18" />
+      </svg>
+      <div class="hc-splash-status">Diagnostic in progress</div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var MIN = 600, FADE = 400, MAX_WAIT = 1800;
+      var el = document.getElementById('hcSplash');
+      if (!el) return;
+      var start = Date.now();
+      var fired = false;
+      function done() {
+        if (fired) return;
+        fired = true;
+        var wait = Math.max(0, MIN - (Date.now() - start));
+        setTimeout(function () {
+          if (!el) return;
+          el.classList.add('hc-splash-out');
+          setTimeout(function () { if (el && el.parentNode) el.parentNode.removeChild(el); }, FADE);
+        }, wait);
+      }
+      /* Fire as soon as DOM is interactive — far snappier than waiting
+         for `window.load` (which waits for every image + font). Plus a
+         hard fallback at MAX_WAIT so the splash NEVER gets stuck. */
+      if (document.readyState !== 'loading') {
+        setTimeout(done, 50);
+      } else {
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(done, 50); }, { once: true });
+      }
+      setTimeout(done, MAX_WAIT);
+    })();
+  </script>
+
+  <!-- Global back button — visible on every step except intro/results.
+       Click → smart back (handled in script via data-hc-action="go-back"). -->
+  <button type="button" class="hc-back-floater" data-hc-action="go-back" aria-label="Back">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="15 6 9 12 15 18" />
+    </svg>
+    <span>Back</span>
+  </button>
 
 
   <main class="hc-shell">
@@ -34,7 +198,11 @@
           </div>
           <div class="hc-actions">
             <button class="btn btn-primary btn-lg" data-hc-action="start">Let's go →</button>
+            <button class="btn btn-secondary btn-lg" data-hc-action="returning" id="hcReturningCta">Log back in →</button>
           </div>
+          <p class="hc-returning-hint muted" id="hcReturningHint" style="margin-top:10px;font-size:13px;display:none">
+            <span id="hcReturningHintText"></span>
+          </p>
         </div>
       </section>
 
@@ -198,14 +366,16 @@
           </div>
         </div>
 
-        <!-- ── R010: Incubator handoff — primary post-HC next step ── -->
+        <!-- 2026-05-09 — Post-HC handoff goes to Business OS (the app),
+             not the Incubator. The Incubator lives inside BOS as a
+             sidebar section (chapter #159 setup flow). -->
         <div class="hc-incubator-handoff">
-          <div class="hc-incubator-handoff-icon">🏛</div>
+          <div class="hc-incubator-handoff-icon">🧭</div>
           <div class="hc-incubator-handoff-body">
             <span class="eyebrow">Where to next</span>
-            <h2>Continue your journey in the Incubator.</h2>
-            <p>The Health Check is the mirror. The Incubator is the path. Four templated phases — Epic Intro · Blueprint · Diagnostics · Brand Builder — that turn what surfaced above into a real, owned operating system. We'll seed your brand details from the answers you just gave.</p>
-            <a href="/incubator/index.html?from=hc" class="btn btn-primary btn-lg" data-hc-incubator-cta>Continue your journey →</a>
+            <h2>Open your Business OS.</h2>
+            <p>The Health Check is the mirror. Business OS is where you act on it — your home dashboard, your customers, your numbers, your tasks. Inside you'll find the Incubator as a sidebar section: four templated setup phases (Epic Intro · Blueprint · Diagnostics · Brand Builder) that turn what surfaced above into a real, owned operating system. We seed your brand from the answers you just gave.</p>
+            <a href="/business-os/app.html?from=hc" class="btn btn-primary btn-lg" data-hc-incubator-cta>Open my Business OS →</a>
           </div>
         </div>
 
@@ -342,8 +512,8 @@
   </main>
 
 
-  <script defer src="/incubator/lib/storage.js"></script>
-  <script defer src="/incubator/lib/activity.js"></script>
+  <script defer src="/business-os/lib/storage.js"></script>
+  <script defer src="/business-os/lib/activity.js"></script>
   <script>
     /* R014 — `?niche=<key>` writes `bos.brand.niche` so HC results +
        Incubator pack auto-apply. Used by niche landing pages. */
@@ -847,9 +1017,22 @@
         leakEstimate: moneyEstimate,
         topics: pillars.filter(function (p) { return p.score != null; }).map(function (p) {
           return { name: p.area.name, icon: iconByName[p.area.name] || p.area.icon, score: p.score, status: p.status };
-        })
+        }),
+        /* 2026-05-09 — persist raw state so the intro "Show me my last results"
+           shortcut can restore + replay buildResults() without a fresh run. */
+        state: state,
+        completedAt: new Date().toISOString()
       };
       localStorage.setItem('bos.healthCheck', JSON.stringify(summary));
+      /* Append to history so the user can re-review past completions
+         from inside Business OS. Keep the last 12, newest first. */
+      try {
+        var hist = JSON.parse(localStorage.getItem('bos.healthCheckHistory') || '[]');
+        if (!Array.isArray(hist)) hist = [];
+        hist.unshift(summary);
+        if (hist.length > 12) hist = hist.slice(0, 12);
+        localStorage.setItem('bos.healthCheckHistory', JSON.stringify(hist));
+      } catch (e) {}
       /* R013 — log HC completion. Idempotent guard via prog.completed.healthCheck below. */
       if (window.Activity && typeof window.Activity.log === 'function') {
         var alreadyLoggedProg = JSON.parse(localStorage.getItem('bos.progress') || 'null');
@@ -1021,27 +1204,46 @@
       }).join('');
     }
 
-    /* ── Section navigator ─────────────────────── */
+    /* ── Section navigator — card per topic with redo + skip actions.
+         Click anywhere on the card → redo that section.
+         Click "Skip" (only on completed cards) → clear the answer for
+         that area so it disappears from the results, then re-render. */
     var nav = $("[data-hc-section-nav]");
     nav.innerHTML = pillars.map(function (p, i) {
       var done = p.score != null;
       var stateCls = done ? 'is-done' : 'is-pending';
       var label = done ? 'Score: ' + p.score + '/100 · ' + (p.slot.tier) : 'Not explored yet';
-      var cta   = done ? 'Deepen — try a higher tier' : 'Unlock more wins';
-      return '<button class="hc-section-nav-card ' + stateCls + '" data-hc-jump="' + i + '">'
-        + '<div class="hc-section-nav-icon">' + p.area.icon + '</div>'
-        + '<div class="hc-section-nav-meta">'
-        +   '<div class="hc-section-nav-title">' + p.area.name + '</div>'
-        +   '<div class="hc-section-nav-sub">' + label + '</div>'
-        + '</div>'
-        + '<div class="hc-section-nav-cta">' + cta + ' →</div>'
-        + '</button>';
+      var primaryCta = done ? '↻ Redo this section' : 'Explore this section →';
+      var skipBtn = done
+        ? '<button type="button" class="hc-section-nav-skip" data-hc-section-skip="' + i + '" aria-label="Skip ' + p.area.name + '">Skip</button>'
+        : '';
+      return '<div class="hc-section-nav-card ' + stateCls + '">'
+        + '<button class="hc-section-nav-main" data-hc-jump="' + i + '">'
+        +   '<div class="hc-section-nav-icon">' + p.area.icon + '</div>'
+        +   '<div class="hc-section-nav-meta">'
+        +     '<div class="hc-section-nav-title">' + p.area.name + '</div>'
+        +     '<div class="hc-section-nav-sub">' + label + '</div>'
+        +   '</div>'
+        +   '<div class="hc-section-nav-cta">' + primaryCta + '</div>'
+        + '</button>'
+        + skipBtn
+        + '</div>';
     }).join('');
     $$("[data-hc-jump]").forEach(function (b) {
       b.addEventListener('click', function () {
         state.areaIdx = parseInt(b.getAttribute('data-hc-jump'), 10);
         state.tier = null; state.exerciseIdx = 0;
         show('overview'); renderOverview();
+      });
+    });
+    $$("[data-hc-section-skip]").forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var idx = parseInt(b.getAttribute('data-hc-section-skip'), 10);
+        var aid = AREAS[idx] && AREAS[idx].id;
+        if (aid && state.answers[aid]) delete state.answers[aid];
+        /* Re-build results so the skipped section flips back to "pending". */
+        buildResults();
       });
     });
   }
@@ -1242,6 +1444,28 @@
     }
   } catch (e) {}
 
+  /* 2026-05-09 — Returning-visitor CTA. Always sends them through /login
+     so they end up in their portal → Business OS section, regardless of
+     local state. The hint shows the date if they've done the HC before. */
+  (function () {
+    var btn = document.getElementById('hcReturningCta');
+    var hint = document.getElementById('hcReturningHint');
+    var hintText = document.getElementById('hcReturningHintText');
+    if (!btn) return;
+    btn.textContent = 'Log back in →';
+    try {
+      var prior = localStorage.getItem('bos.healthCheck');
+      if (prior && hint && hintText) {
+        var s = JSON.parse(prior || '{}');
+        var when = s.completedAt ? new Date(s.completedAt) : null;
+        hintText.textContent = when
+          ? 'You completed the Health Check on ' + when.toLocaleDateString() + '. Sign in to your portal to pick up where you left off.'
+          : 'Sign in to your portal — your Business OS is waiting.';
+        hint.style.display = '';
+      }
+    } catch (e) {}
+  })();
+
   document.addEventListener('click', function (ev) {
     var pickType = ev.target.closest('[data-hc-pick-type]');
     if (pickType) { state.type = pickType.getAttribute('data-hc-pick-type'); state.areaIdx = 0; startArea(); return; }
@@ -1250,6 +1474,47 @@
     if (!t) return;
     var a = t.getAttribute('data-hc-action');
     if (a === 'start')           { show('gate'); }
+    else if (a === 'go-back') {
+      /* Smart back — handles every step:
+         - exercise: previous question if any, else back to overview
+         - overview: previous area's exercise (last question), else gate
+         - tiers:    back to overview (or gate if no area picked yet)
+         - gate:     back to intro
+         - results:  back to exercise (last question of last area)
+         - building: same as results target */
+      var s = state.step;
+      if (s === 'exercise') {
+        var pv = prevActiveIdx(state.exerciseIdx);
+        if (pv >= 0) { state.exerciseIdx = pv; renderStep(); return; }
+        show('overview'); renderOverview(); return;
+      }
+      if (s === 'overview') {
+        if (state.areaIdx > 0) { state.areaIdx--; show('overview'); renderOverview(); return; }
+        show('gate'); return;
+      }
+      if (s === 'tiers')    { show('overview'); renderOverview(); return; }
+      if (s === 'gate')     { show('intro'); return; }
+      if (s === 'results' || s === 'building') {
+        if (AREAS && AREAS.length) {
+          state.areaIdx = AREAS.length - 1;
+          state.exerciseIdx = 0;
+          var t = currentArea() && currentArea().tiers && state.tier ? currentTier() : null;
+          if (t && t.exercise && t.exercise.length) state.exerciseIdx = t.exercise.length - 1;
+          show('exercise'); renderStep(); return;
+        }
+        show('overview'); return;
+      }
+      show('intro');
+    }
+    else if (a === 'returning') {
+      /* Send returning users to /login WITHOUT a next= param — the
+         /login page now auto-redirects to the primary portal for
+         each role (Aqua Portal for agency/client/team, Business OS
+         for leads). If already signed in, /login bounces straight
+         through with no form shown. */
+      try { window.parent.location.href = '/login'; }
+      catch (e) { window.location.href = '/login'; }
+    }
     else if (a === 'open-tiers') { show('tiers'); renderTiers(); }
     else if (a === 'step-back')  { var pv = prevActiveIdx(state.exerciseIdx); if (pv >= 0) { state.exerciseIdx = pv; renderStep(); } }
     else if (a === 'step-next')  { nextStepOrArea(); }
@@ -1380,5 +1645,88 @@
   });
   </script>
 
+<script>
+/* Intro rubber-band — when the user tries to scroll on the intro
+   step, the .hc-intro block translates down by a dampened amount
+   then springs back to center. Cool premium feel without actually
+   scrolling the page. */
+(function () {
+  var MAX = 95;            // max pull in px (slightly less room)
+  var DAMP = 0.10;         // very gentle — every wheel tick gives only a sliver
+  var DIR = -1;            // -1 inverts → scroll DOWN pulls intro UP
+  var SPRING_MS = 1500;    // slow, deliberate spring-back
+  var IDLE_MS = 320;       // hold the pull a beat longer before releasing
+  var current = 0;
+  var idleTimer = null;
+  var pullingEl = null;
+
+  function isIntroActive() {
+    var intro = document.querySelector('.hc-step[data-step="intro"]');
+    return intro && !intro.hasAttribute('hidden');
+  }
+  function getEl() {
+    if (pullingEl && document.body.contains(pullingEl)) return pullingEl;
+    pullingEl = document.querySelector('.hc-intro');
+    return pullingEl;
+  }
+  function applyPull(delta) {
+    if (!isIntroActive()) return;
+    var el = getEl();
+    if (!el) return;
+    current = Math.max(-MAX, Math.min(MAX, current + delta * DAMP * DIR));
+    /* Pull intensity 0..1 — drives scale, blur, opacity for a weighted
+       "physical" pull feel. */
+    var t = Math.abs(current) / MAX;
+    var scale = 1 - t * 0.045;          // up to 4.5% compression
+    var blur = (t * 1.6).toFixed(2);    // tiny motion blur at max
+    var op = 1 - t * 0.08;              // very slight fade — feels heavy
+    el.style.transition = 'none';
+    el.style.transformOrigin = 'center top';
+    el.style.transform = 'translateY(' + current + 'px) scale(' + scale + ')';
+    el.style.filter = 'blur(' + blur + 'px)';
+    el.style.opacity = op;
+    if (idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(spring, IDLE_MS);
+  }
+  function spring() {
+    var el = getEl();
+    if (!el) return;
+    current = 0;
+    /* Spring with a touch of overshoot — back-out cubic gives a tiny
+       bounce feel without going overboard. */
+    el.style.transition =
+      'transform ' + SPRING_MS + 'ms cubic-bezier(0.34, 1.56, 0.46, 1), ' +
+      'filter '    + (SPRING_MS * 0.7) + 'ms ease-out, ' +
+      'opacity '   + (SPRING_MS * 0.7) + 'ms ease-out';
+    el.style.transform = 'translateY(0) scale(1)';
+    el.style.filter = 'blur(0)';
+    el.style.opacity = '1';
+  }
+
+  window.addEventListener('wheel', function (e) {
+    if (!isIntroActive()) return;
+    e.preventDefault();
+    applyPull(e.deltaY);
+  }, { passive: false });
+
+  /* Touch — track deltaY across the gesture. */
+  var touchStartY = null;
+  window.addEventListener('touchstart', function (e) {
+    if (!isIntroActive()) return;
+    if (e.touches.length === 1) touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  window.addEventListener('touchmove', function (e) {
+    if (!isIntroActive() || touchStartY == null) return;
+    var dy = touchStartY - e.touches[0].clientY;
+    touchStartY = e.touches[0].clientY;
+    e.preventDefault();
+    applyPull(dy);
+  }, { passive: false });
+  window.addEventListener('touchend', function () {
+    touchStartY = null;
+    spring();
+  });
+})();
+</script>
 </body>
 </html>

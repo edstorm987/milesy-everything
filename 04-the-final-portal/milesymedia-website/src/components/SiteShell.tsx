@@ -6,38 +6,67 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
+import dynamic from "next/dynamic";
+
+// All chrome client islands lazy-loaded with no SSR — they're not
+// critical to first paint and shouldn't block the marketing page from
+// rendering for slow connections. Each ships in its own micro-bundle.
+const ThemeSwitcher = dynamic(() => import("@/components/chrome/ThemeSwitcher").then(m => m.ThemeSwitcher));
+const NavCollapseToggle = dynamic(() => import("@/components/chrome/NavCollapseToggle").then(m => m.NavCollapseToggle));
+const NavExpandToggle = dynamic(() => import("@/components/chrome/NavCollapseToggle").then(m => m.NavExpandToggle));
+const NavSideTab = dynamic(() => import("@/components/chrome/NavCollapseToggle").then(m => m.NavSideTab));
+const NavAutoFold = dynamic(() => import("@/components/chrome/NavAutoFold").then(m => m.NavAutoFold));
+const FloatingChat = dynamic(() => import("@/components/chrome/FloatingChat").then(m => m.FloatingChat));
+const MarketingAuth = dynamic(() => import("@/components/chrome/MarketingAuth").then(m => m.MarketingAuth));
+
+const CONTACT_PHONE = "+44 7707 020250";
+const CONTACT_PHONE_HREF = "tel:+447707020250";
+const CONTACT_EMAIL = "hello@milesymedia.co";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
     <>
-      {/* T4 perf-1 — explicit preconnect + DNS prefetch + non-blocking
-          stylesheet preload for the Playfair Display webfont. The
-          stylesheet itself loads "as=style" then upgrades to a real
-          <link rel="stylesheet"> via the inline onload swap (chapter
-          #200). Inter is system-stack, no preload needed. */}
+      {/* ULTRA FAST mode — fonts load fully NON-BLOCKING via the
+          media="print" → onload swap trick. The marketing CSS loads
+          synchronously (it's actually critical for layout) but with a
+          small inline hint to mark fonts-ready instantly so text isn't
+          held back waiting for Playfair. */}
       <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-      <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      {/* Non-blocking font load. Stylesheet starts with media="print" so
+          it doesn't block render; a tiny inline script flips it to
+          media="all" once it's loaded. SiteShell is a server component,
+          so we can't pass onLoad as a React prop — instead we attach
+          the listener via a vanilla JS snippet. */}
       <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-      />
-      <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossOrigin=""
-      />
-      <link
-        rel="preload"
-        as="style"
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap"
-      />
-      <link
+        id="mm-pf-font"
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap"
+        media="print"
+        // suppressHydrationWarning — the inline script below flips
+        // media to "all" before React hydrates, so SSR + client diverge
+        // intentionally. This is a perf optimisation, not a bug.
+        suppressHydrationWarning
+      />
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            "(function(){var l=document.getElementById('mm-pf-font');if(!l)return;function s(){l.media='all'}if(l.sheet){s()}else{l.addEventListener('load',s,{once:true})}})();",
+        }}
+      />
+      <noscript
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html:
+            '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" />',
+        }}
       />
       <link rel="stylesheet" href="/_marketing/styles.css" />
 
+      <NavAutoFold />
+
       <div className="mm-stickybar">
+        <NavCollapseToggle />
         <div className="container mm-stickybar-row">
           <span className="mm-stickybar-icon">🩺</span>
           <span className="mm-stickybar-text">
@@ -46,6 +75,31 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <Link href="/health-check" className="mm-stickybar-cta">
             Take the free Health Check →
           </Link>
+          <span className="mm-stickybar-contacts" aria-label="Contact us directly">
+            <a href={CONTACT_PHONE_HREF} className="mm-stickybar-contact" title={`Call ${CONTACT_PHONE}`} aria-label={`Call ${CONTACT_PHONE}`}>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.86 19.86 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </a>
+            <a href={`mailto:${CONTACT_EMAIL}`} className="mm-stickybar-contact" title={`Email ${CONTACT_EMAIL}`} aria-label={`Email ${CONTACT_EMAIL}`}>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </a>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="mm-stickybar-contact" title="LinkedIn" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+                <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.66H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/>
+              </svg>
+            </a>
+            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" className="mm-stickybar-contact" title="Instagram" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+            </a>
+          </span>
         </div>
       </div>
 
@@ -60,6 +114,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <nav className="nav-links">
             <Link href="/#process">How we work</Link>
             <Link href="/#services">Services</Link>
+            <Link href="/projects">Projects</Link>
             <span className="nav-dropdown">
               <Link href="/#industries" className="nav-dropdown-toggle">
                 Industries ▾
@@ -129,20 +184,22 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </span>
           </nav>
           <div className="nav-cta">
-            <Link href="/login" className="btn btn-ghost">
-              Sign in
-            </Link>
+            <MarketingAuth />
             <Link href="/demo" className="btn btn-secondary">
               Try the demo
             </Link>
             <Link href="/signup" className="btn btn-primary">
               Get started
             </Link>
+            <ThemeSwitcher />
+            <NavExpandToggle />
           </div>
         </div>
+        <NavSideTab />
       </header>
 
-      {children}
+      <FloatingChat />
+      <div className="mm-page-content">{children}</div>
 
       <footer>
         <div className="container foot-row">
@@ -150,6 +207,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <span>
             <Link href="/health-check">Health Check</Link> ·{" "}
             <Link href="/business-os">Business OS</Link> ·{" "}
+            <Link href="/projects">Projects</Link> ·{" "}
             <Link href="/resources">Resources</Link> ·{" "}
             <Link href="/login">Client portal</Link> ·{" "}
             <Link href="/privacy">Privacy</Link> ·{" "}

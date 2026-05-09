@@ -14,7 +14,12 @@
   --brand-ink: #0F172A;
 }
 
-html, body { height: 100%; }
+/* Was `html, body { height: 100% }` — that capped the body to one
+   viewport and broke `position: sticky` on the marketing chrome
+   (stickybar + nav un-stuck after the hero). Switching to min-height
+   keeps full-bleed layouts working AND lets the document scroll
+   naturally so sticky elements pin against the viewport. */
+html, body { min-height: 100%; }
 
 body {
   background: var(--brand-bg);

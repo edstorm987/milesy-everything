@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Your plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/business-os/styles.css" />
+  <script src="/business-os/splash.js"></script>
+</head>
+<body class="bos-body" data-mobile-checked="2026-05-07">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="cart.html"></nav>
+      <a href="/" class="bos-back-to-site" title="Back to milesymedia.co">← Back to website</a>
+    </aside>
+
+    <main class="bos-main bos-cart">
+
+      <header class="bos-section-head">
+        <div>
+          <span class="eyebrow">Your plan</span>
+          <h1>Add-ons in your plan.</h1>
+          <p class="muted">Adjust freely. Nothing is charged until you confirm Pro at checkout. <strong>Demo</strong> — see <code>upgrade.html</code> for the (mocked) checkout flow.</p>
+        </div>
+      </header>
+
+      <div class="bos-callout"><span>📝</span><div><strong>v1 demo flow.</strong> Per-addon entitlement isn\'t live yet — adding to plan is captured here and surfaced at checkout. T6 wires real Stripe.</div></div>
+
+      <div class="bos-cart-shell">
+        <div class="bos-cart-list" data-bos-cart-list>
+          <p class="muted">Loading…</p>
+        </div>
+
+        <aside class="bos-cart-summary">
+          <h3>Plan summary</h3>
+          <div class="bos-cart-line"><span>Add-ons subtotal</span><span data-bos-cart-subtotal>£0</span></div>
+          <div class="bos-cart-line"><span>Pro base</span><span>£49</span></div>
+          <hr />
+          <div class="bos-cart-line bos-cart-total"><span>Monthly total</span><span data-bos-cart-total>£49</span></div>
+          <p class="muted">14-day free trial included with Pro.</p>
+          <a href="upgrade.html" class="btn btn-primary btn-lg" style="width:100%">Continue to checkout →</a>
+          <a href="marketplace.html" class="btn btn-secondary" style="width:100%;margin-top:8px">← Back to marketplace</a>
+          <a href="/" class="bos-back-to-site" title="Back to milesymedia.co">← Back to website</a>
+    </aside>
+      </div>
+
+    </main>
+  </div>
+
+  <script defer src="/business-os/lib/storage.js"></script>
+  <script defer src="/business-os/lib/activity.js"></script>
+  <script defer src="/business-os/bos.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function escape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+      function readCart() { try { return JSON.parse(localStorage.getItem('bos.cart') || '{}') || {}; } catch (e) { return {}; } }
+      function writeCart(c) { try { localStorage.setItem('bos.cart', JSON.stringify(c)); } catch (e) {} }
+      function paint() {
+        var cart = readCart();
+        var items = Array.isArray(cart.addons) ? cart.addons : [];
+        var host = document.querySelector('[data-bos-cart-list]');
+        if (!items.length) {
+          host.innerHTML = '<div class="bos-notion-slot"><div class="bos-notion-slot-icon">🛒</div><div><h3>No add-ons in your plan yet.</h3><p class="muted">Browse the marketplace to add what you need. You can drop or swap any time.</p><a href="marketplace.html" class="btn btn-primary">Browse marketplace →</a></div></div>';
+          document.querySelector('[data-bos-cart-subtotal]').textContent = '£0';
+          document.querySelector('[data-bos-cart-total]').textContent = '£49';
+          return;
+        }
+        var subtotal = items.reduce(function (s, i) { return s + (i.price || 0); }, 0);
+        host.innerHTML = items.map(function (i) {
+          return '<div class="bos-cart-row">' +
+            '<div class="bos-cart-row-body">' +
+              '<strong>' + escape(i.name) + '</strong>' +
+              '<div class="muted" style="font-size:13px"><a href="marketplace/' + escape(i.id) + '.html">View details →</a></div>' +
+            '</div>' +
+            '<div class="bos-cart-row-price">£' + (i.price || 0) + '<span>/mo</span></div>' +
+            '<button type="button" class="btn btn-secondary" data-bos-cart-remove="' + escape(i.id) + '">Remove</button>' +
+          '</div>';
+        }).join('');
+        document.querySelector('[data-bos-cart-subtotal]').textContent = '£' + subtotal;
+        document.querySelector('[data-bos-cart-total]').textContent = '£' + (subtotal + 49);
+      }
+      paint();
+
+      document.addEventListener('click', function (ev) {
+        var b = ev.target.closest('[data-bos-cart-remove]');
+        if (!b) return;
+        var id = b.getAttribute('data-bos-cart-remove');
+        var cart = readCart();
+        cart.addons = (cart.addons || []).filter(function (a) { return a.id !== id; });
+        cart.updatedAt = new Date().toISOString();
+        writeCart(cart);
+        paint();
+      });
+    });
+  </script>
+
+</body>
+</html>

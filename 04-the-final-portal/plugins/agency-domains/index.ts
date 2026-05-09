@@ -35,7 +35,7 @@ const manifest: AquaPlugin = {
   navItems: [
     {
       id: "agency-domains.attaches", label: "Custom domain",
-      href: "/portal/clients/{clientId}/agency-domains",
+      href: "/portal/clients/[clientId]/agency-domains",
       panelId: "ops", order: 50, visibleToRoles: [...VIEWERS],
     },
   ],

@@ -20,6 +20,11 @@ import { Sidebar } from "@/components/chrome/Sidebar";
 import { Topbar } from "@/components/chrome/Topbar";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { getPreviewPhase, escapeStyleContent, escapeScriptContent } from "@/lib/server/previewPhase";
+import { getPhaseForClientStage } from "@/server/phases";
+import { resolvePhaseTokens } from "@/server/phaseTokens";
+import { getAgency } from "@/server/tenants";
+import { WelcomeGate } from "@/components/chrome/WelcomeGate";
+import { cookies } from "next/headers";
 
 export default async function ClientLayout({
   children,
@@ -78,7 +83,10 @@ export default async function ClientLayout({
   };
   // Merge workspace panel with discovered plugin panels (workspace
   // first so it always sits at the top, dynamic plugin panels follow).
-  const panels = [workspacePanel, ...dynamicPanels.filter(p => p.id !== "main")];
+  let panels = [workspacePanel, ...dynamicPanels.filter(p => p.id !== "main")];
+
+  // Phase sidebar override — read AFTER activePhase resolved below.
+  // Computed inline once `activePhase` is available (further down).
 
   const h = await headers();
   const currentPath = h.get("x-invoke-path") ?? h.get("x-pathname") ?? `/portal/clients/${client.id}`;
@@ -90,6 +98,45 @@ export default async function ClientLayout({
   // `04-phases-preview-ui.md` documents the trade-off).
   const previewPhase = await getPreviewPhase();
   const previewActive = previewPhase && previewPhase.agencyId === client.agencyId;
+
+  // Welcome gate — phase-driven, first-landing only. Skipped during
+  // phase preview (operator perspective) and when the phase has no
+  // welcome copy authored. Cookie key is per-client + per-phase so
+  // moving the client to a new phase re-prompts with the new welcome.
+  const activePhase = previewActive
+    ? previewPhase
+    : getPhaseForClientStage(client.agencyId, client.stage);
+  const cookieJar = await cookies();
+  const welcomeCookie = activePhase
+    ? cookieJar.get(`mm-welcomed-${client.id}-${activePhase.id}`)?.value
+    : undefined;
+  const showWelcome =
+    !previewActive &&
+    !!activePhase &&
+    !!activePhase.welcomeHeading &&
+    !!activePhase.welcomeBody &&
+    !welcomeCookie;
+  const sessionUser = getUserById(session.userId);
+
+  // Phase sidebar override — when the active phase carries a custom
+  // sidebar shape, replace the auto-built panels with a single
+  // "Workspace" panel containing exactly the override entries. Lets a
+  // phase like "Onboarding" present a minimal, focused nav.
+  if (activePhase?.sidebarOverride && activePhase.sidebarOverride.length > 0) {
+    panels = [{
+      id: "main",
+      label: "Workspace",
+      order: 0,
+      items: activePhase.sidebarOverride
+        .map((item, idx) => ({
+          id: item.id,
+          label: item.label,
+          href: item.href.replaceAll("[clientId]", client.id),
+          order: item.order ?? (idx + 1) * 10,
+        }))
+        .sort((a, b) => a.order - b.order),
+    }];
+  }
 
   return (
     <>
@@ -119,12 +166,27 @@ export default async function ClientLayout({
             panels={panels}
             tenantLabel={client.name}
             currentPath={currentPath}
+            isDemo={session.isDemo}
+            previewActive={!!previewActive}
           />
           <main id="main-content" className="flex-1 px-8 py-6">
             <ErrorBoundary label={`${client.name} workspace`}>{children}</ErrorBoundary>
           </main>
         </div>
       </div>
+      {showWelcome && activePhase && (
+        <WelcomeGate
+          clientId={client.id}
+          phaseId={activePhase.id}
+          heading={activePhase.welcomeHeading!}
+          body={activePhase.welcomeBody!}
+          tokens={resolvePhaseTokens({
+            user: sessionUser,
+            client,
+            agencyName: getAgency(client.agencyId)?.name ?? "",
+          })}
+        />
+      )}
     </>
   );
 }

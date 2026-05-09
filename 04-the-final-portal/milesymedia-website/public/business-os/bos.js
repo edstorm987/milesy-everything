@@ -342,35 +342,12 @@
     document.querySelectorAll('[data-bos-niche-tagline]').forEach(function (el) { el.textContent = nm.tagline; });
   }
 
-  /* ─── Setup / Incubator phase tracking (chapter #159) ────
-     `bos.incubatorComplete` is the single graduation flag — true
-     once the user finishes the last Incubator phase. The static
-     incubator app at `/business-os/incubator/` writes per-phase
-     advances to `incubator.phaseAdvanced` ({id:true} map) via
-     lib/phase-advance.js. Sidebar reads that map for the checklist;
-     `isIncubatorComplete()` graduates the user back to the main
-     BOS dashboard. Five canonical phases per chapter #66 — Mastery
-     is the final orientation step (no lesson gate, just a
-     "graduate" CTA on the Incubator index). */
-  var INCUBATOR_PHASES = [
-    { id: 'epic-intro',    label: 'Epic Intro',    icon: '🌅', href: '/business-os/incubator/phase-1-epic-intro.html' },
-    { id: 'blueprint',     label: 'Blueprint',     icon: '📐', href: '/business-os/incubator/phase-2-blueprint.html' },
-    { id: 'diagnostics',   label: 'Diagnostics',   icon: '🔬', href: '/business-os/incubator/phase-3-diagnostics.html' },
-    { id: 'brand-builder', label: 'Brand Builder', icon: '🎨', href: '/business-os/incubator/phase-4-brand-builder.html' },
-    { id: 'mastery',       label: 'Traffic & Mastery', icon: '🏛', href: '/business-os/incubator/index.html' }
-  ];
-  function isIncubatorComplete() {
-    try { return localStorage.getItem('bos.incubatorComplete') === 'true'; } catch (e) { return false; }
-  }
-  function setIncubatorComplete(v) {
-    try { localStorage.setItem('bos.incubatorComplete', v ? 'true' : 'false'); } catch (e) {}
-  }
-  function isPhaseDone(id) {
-    try {
-      var adv = JSON.parse(localStorage.getItem('incubator.phaseAdvanced') || '{}') || {};
-      return !!adv[id];
-    } catch (e) { return false; }
-  }
+  /* (Removed 2026-05-09) — Incubator phase tracking deleted. Incubator
+     is now a client-only feature, archived under /_archived/incubator-public/.
+     Stub functions kept as no-ops so any straggler callers can't crash. */
+  function isIncubatorComplete() { return false; }
+  function setIncubatorComplete() {}
+  function isPhaseDone() { return false; }
 
   /* ─── Auto sidebar nav (Setup / Run / Learn / Premium / Add-ons / Help / Aqua) ─── */
   function buildSidebarNav(activePath) {
@@ -383,59 +360,24 @@
     var mode = getMode();
     var isPro = mode === 'customer';
 
-    /* Setup section — Incubator-as-onboarding (chapter #159). */
-    var setupComplete = isIncubatorComplete();
-    var phaseRows = INCUBATOR_PHASES.map(function (p) {
-      var done = setupComplete || isPhaseDone(p.id);
-      return '<a href="' + p.href + '" class="bos-side-phase' + (done ? ' is-done' : '') + '">'
-           +   '<span class="ico">' + (done ? '✓' : p.icon) + '</span> ' + p.label
-           + '</a>';
-    }).join('');
-    html += '<div class="bos-side-section bos-side-setup">'
-         +    '<div class="bos-side-label">Setup'
-         +      (setupComplete ? ' <span class="bos-setup-pill">Complete ✓</span>' : '')
-         +    '</div>'
-         +    '<a href="/business-os/incubator" class="bos-side-setup-head">'
-         +      '<span class="ico">🏛</span> The Incubator'
+    /* Simplified Business OS — lead-nurture flow only.
+       Health Check → Quick Wins (filtered videos) → Become a client.
+       Everything else archived to /_archived/business-os-extras/. */
+    html += '<div class="bos-side-section">'
+         +    link('app.html',         '🏠', 'Home')
+         +    link('tools.html',       '🛠', 'Tools')
+         +    link('quick-wins.html',  '⚡', 'Quick Wins')
+         +    link('diagnostic.html',  '🩺', 'My Diagnostic')
+         + '</div>';
+
+    html += '<div class="bos-side-section bos-side-cta-section">'
+         +    '<a href="/signup" class="bos-side-become-client">'
+         +      '<span class="ico">★</span> Become a client'
+         +      '<span class="bos-side-become-sub">Hand it to us</span>'
          +    '</a>'
-         +    phaseRows
-         + '</div>';
-
-    html += '<div class="bos-side-section">'
-         +    '<div class="bos-side-label">My business</div>'
-         +    link('app.html',      '🏠', 'Home')
-         +    link('company.html',  '👤', 'About my business');
-    if (isPro) {
-      html += link('leads.html',    '👥', 'My customers')
-            + link('trackers.html', '📈', 'My numbers')
-            + link('tasks.html',    '✓',  'My to-dos')
-            + link('docs.html',     '📁', 'My files');
-    }
-    html += '</div>';
-
-    html += '<div class="bos-side-section">'
-         +    '<div class="bos-side-label">Learn</div>'
-         +    link('database.html', '📚', 'Lessons')
-         +    link('../health-check/index.html?from=bos', '🔍', 'Health check')
-         + '</div>';
-
-    html += '<div class="bos-side-section" data-bos-tools-slot></div>';
-
-    html += '<div class="bos-side-section">'
-         +    '<div class="bos-side-label">Get help</div>'
-         +    link('help.html',    '👋', 'Need help?')
-         +    '<a href="#" data-bos-open-ai><span class="ico">🤖</span> Ask Aqua AI</a>'
-         +    '<a href="tel:+441234567890"><span class="ico">📞</span> Book a free call</a>'
-         +    link('request.html', '✨', 'Request a feature')
-         + '</div>';
-
-    html += '<div class="bos-side-section bos-side-tiny">'
-         +    '<a href="roadmap.html" class="bos-side-tiny-link' + ('roadmap.html' === page ? ' active' : '') + '"><span class="ico">🗺</span> Custom roadmap'
-         +      (isPro ? '' : ' <span class="bos-locked-tag bos-roadmap-tag">Pro</span>')
+         +    '<a href="tel:+441234567890" class="bos-side-tiny-link">'
+         +      '<span class="ico">📞</span> Book a free call'
          +    '</a>'
-         +    (isPro
-              ? '<a href="#" class="bos-side-tiny-link"><span class="ico">▣</span> Aqua agency portal</a>'
-              : '<a href="#" class="bos-side-tiny-link bos-locked"><span class="ico">🔒</span> Aqua agency portal</a>')
          + '</div>';
     return html;
   }
@@ -526,14 +468,14 @@
   function setAi(a) { setJSON(KEY_AI, a); }
 
   /* Lazy-load the shared AquaAI scripted-companion library (R007).
-     Lives at `../incubator/lib/aqua-ai.js`. Injected once; askAi
+     Lives at `../business-os/lib/aqua-ai.js`. Injected once; askAi
      gracefully falls back to the legacy router if it never resolves. */
   function ensureAquaAILoaded() {
     if (window.AquaAI) return;
     if (document.querySelector('script[data-bos-aqua-ai]')) return;
     var s = document.createElement('script');
     s.setAttribute('data-bos-aqua-ai', '');
-    s.src = '../incubator/lib/aqua-ai.js';
+    s.src = '../business-os/lib/aqua-ai.js';
     s.async = true;
     document.head.appendChild(s);
   }
@@ -544,7 +486,7 @@
     if (document.querySelector('script[data-bos-notify]')) return;
     var s = document.createElement('script');
     s.setAttribute('data-bos-notify', '');
-    s.src = '../incubator/lib/notify.js';
+    s.src = '../business-os/lib/notify.js';
     document.head.appendChild(s);
   }
   function mountBellIcon() {
@@ -577,10 +519,10 @@
     if (document.querySelector('script[data-bos-storage]')) return;
     var s = document.createElement('script');
     s.setAttribute('data-bos-storage', '');
-    s.src = '../incubator/lib/storage.js';
+    s.src = '../business-os/lib/storage.js';
     document.head.appendChild(s);
     var sw = document.createElement('script');
-    sw.src = '../incubator/lib/business-switcher.js';
+    sw.src = '../business-os/lib/business-switcher.js';
     sw.defer = true;
     document.head.appendChild(sw);
   }
@@ -844,46 +786,10 @@
   }
 
   /* ─── Boot ───────────────────────────────── */
-  /* ─── Incubator bridge — render a back-to-Incubator strip when the
-     user came in via the Incubator surface (incubator.active === '1').
-     R003: phase-aware. If `bos.returnFromPhase` is set (written by a
-     phase page's BOS deep-link), the strip routes back to that phase
-     page instead of the generic Incubator root. Also consumes
-     `bos.deepLink` to scroll the matching `#bos-<section>` into view
-     (consumed once, with a 30s TTL guard against stale links). */
-  var PHASE_PAGE_BY_ID = {
-    'epic-intro':    'phase-1-epic-intro.html',
-    'blueprint':     'phase-2-blueprint.html',
-    'diagnostics':   'phase-3-diagnostics.html',
-    'brand-builder': 'phase-4-brand-builder.html'
-  };
-  function mountIncubatorStrip() {
-    try {
-      if (localStorage.getItem('incubator.active') !== '1') return;
-    } catch (e) { return; }
-    if (document.querySelector('[data-incubator-strip]')) return;
-
-    var returnPhase = null, returnPage = null;
-    try {
-      returnPhase = localStorage.getItem('bos.returnFromPhase');
-      returnPage = localStorage.getItem('bos.returnFromPhasePage');
-    } catch (e) {}
-    var pageOverride = (returnPhase && PHASE_PAGE_BY_ID[returnPhase]) || returnPage;
-    var href = pageOverride
-      ? '../incubator/' + pageOverride
-      : '../incubator/index.html';
-    var label = returnPhase
-      ? '← Back to your phase'
-      : '← Back to The Opulence Incubator';
-
-    var strip = document.createElement('div');
-    strip.setAttribute('data-incubator-strip', '');
-    strip.style.cssText = 'background:#0a0a0a;color:#C9A76A;border-bottom:1px solid #2A2A2A;padding:8px 16px;font-size:13px;text-align:center;letter-spacing:0.02em;';
-    strip.innerHTML = '<a href="' + href + '" style="color:#D4B888;text-decoration:none;">' + label + '</a>';
-    document.body.insertBefore(strip, document.body.firstChild);
-
-    consumeBosDeepLink();
-  }
+  /* (Removed 2026-05-09) — Back-to-Incubator strip removed along with
+     the rest of the Incubator integration. mountIncubatorStrip is a
+     no-op now so any straggler caller doesn't crash. */
+  function mountIncubatorStrip() {}
   function consumeBosDeepLink() {
     var raw = null;
     try { raw = localStorage.getItem('bos.deepLink'); } catch (e) { return; }

@@ -50,6 +50,12 @@ export function upsertPhase(phase: PhaseDefinition): PhaseDefinition {
   return saved;
 }
 
+export function getPhaseForClientStage(agencyId: string, stage: string): PhaseDefinition | null {
+  return Object.values(getState().phases).find(
+    p => p.agencyId === agencyId && p.stage === stage,
+  ) ?? null;
+}
+
 export function deletePhase(id: string): boolean {
   let removed = false;
   mutate(state => {

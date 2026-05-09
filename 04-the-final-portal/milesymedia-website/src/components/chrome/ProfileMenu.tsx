@@ -61,7 +61,6 @@ export function ProfileMenu({ email, role, name, avatarUrl }: Props) {
           <span className="mm-profile-avatar" aria-hidden="true">{initials(display)}</span>
         )}
         <span className="mm-profile-display">{display}</span>
-        <span className="mm-profile-caret" aria-hidden="true">▾</span>
       </summary>
       <div className="mm-profile-pop" role="menu">
         <div className="mm-profile-pop-head">
@@ -78,6 +77,9 @@ export function ProfileMenu({ email, role, name, avatarUrl }: Props) {
           </Link>
           <Link role="menuitem" href="/portal/account/permissions" className="mm-profile-pop-item">
             <span aria-hidden="true">🔐</span> Permissions
+          </Link>
+          <Link role="menuitem" href="/dev/pov" className="mm-profile-pop-item">
+            <span aria-hidden="true">🔁</span> Switch user
           </Link>
         </div>
         <form action="/api/auth/logout" method="post" className="mm-profile-pop-out">

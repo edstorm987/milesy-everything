@@ -38,7 +38,7 @@ const manifest: AquaPlugin = {
     {
       id: "bookings.calendar",
       label: "Calendar",
-      href: "/portal/clients/{clientId}/bookings",
+      href: "/portal/clients/[clientId]/bookings",
       panelId: "ops",
       order: 30,
       visibleToRoles: [...VIEWERS],
@@ -46,7 +46,7 @@ const manifest: AquaPlugin = {
     {
       id: "bookings.services",
       label: "Services",
-      href: "/portal/clients/{clientId}/bookings/services",
+      href: "/portal/clients/[clientId]/bookings/services",
       panelId: "ops",
       order: 31,
       visibleToRoles: [...VIEWERS],
@@ -54,7 +54,7 @@ const manifest: AquaPlugin = {
     {
       id: "bookings.availability",
       label: "Availability",
-      href: "/portal/clients/{clientId}/bookings/availability",
+      href: "/portal/clients/[clientId]/bookings/availability",
       panelId: "ops",
       order: 32,
       visibleToRoles: [...VIEWERS],

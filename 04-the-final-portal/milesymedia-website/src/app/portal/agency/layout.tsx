@@ -95,6 +95,7 @@ export default async function AgencyLayout({ children }: { children: ReactNode }
                 : [];
             })}
             activeAgencyId={getActiveAgencyId(session)}
+            isDemo={session.isDemo}
           />
           <main id="main-content" className="flex-1 px-8 py-6">
             <ErrorBoundary label="agency workspace">{children}</ErrorBoundary>

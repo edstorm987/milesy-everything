@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Business OS — Inbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/business-os/styles.css" />
+  <script src="/business-os/splash.js"></script>
+</head>
+<body class="bos-body" data-mobile-checked="2026-05-07">
+
+  <div class="bos-bg-glow" aria-hidden="true"></div>
+
+  <div class="bos-shell">
+    <aside class="bos-sidebar">
+      <a href="app.html" class="brand bos-brand-niche">
+        <span class="mark" data-bos-niche-icon>◆</span>
+        <span class="brand-name" data-bos-niche-label>Business OS</span>
+      </a>
+      <nav class="bos-side-nav" data-bos-auto-nav data-bos-active="inbox.html"></nav>
+      <a href="/" class="bos-back-to-site" title="Back to milesymedia.co">← Back to website</a>
+    </aside>
+
+    <main class="bos-main bos-inbox">
+      <header class="bos-section-head">
+        <div>
+          <span class="eyebrow">Inbox</span>
+          <h1>What\'s happened in your portal.</h1>
+          <p class="muted">Phase advances · lessons unlocked · marketplace tips · founder broadcasts. Capped at the last 100 entries.</p>
+        </div>
+        <div>
+          <button type="button" class="btn btn-secondary" data-inbox-mark-all>✓ Mark all read</button>
+        </div>
+      </header>
+
+      <div class="bos-inbox-filters">
+        <button type="button" class="bos-chip is-on" data-filter-kind="">All</button>
+        <button type="button" class="bos-chip" data-filter-kind="phase">🎉 Phase</button>
+        <button type="button" class="bos-chip" data-filter-kind="lesson">📚 Lesson</button>
+        <button type="button" class="bos-chip" data-filter-kind="marketplace">🛒 Marketplace</button>
+        <button type="button" class="bos-chip" data-filter-kind="founder">✨ Founder</button>
+        <button type="button" class="bos-chip" data-filter-kind="system">🛠 System</button>
+        <span style="flex:1"></span>
+        <button type="button" class="bos-chip" data-filter-unread>Unread only</button>
+      </div>
+
+      <ul class="bos-inbox-list" data-inbox-list></ul>
+    </main>
+  </div>
+
+  <script defer src="/business-os/lib/storage.js"></script>
+  <script defer src="/business-os/lib/notify.js"></script>
+  <script defer src="/business-os/bos.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var state = { kind: '', unreadOnly: false };
+    function escape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+    function relTime(iso) {
+      var s = Math.round((Date.now() - +new Date(iso)) / 1000);
+      if (s < 60) return s + 's ago';
+      if (s < 3600) return Math.round(s / 60) + 'm ago';
+      if (s < 86400) return Math.round(s / 3600) + 'h ago';
+      return Math.round(s / 86400) + 'd ago';
+    }
+    function paint() {
+      var items = window.Notify.list({ kind: state.kind || undefined, unreadOnly: state.unreadOnly });
+      var host = document.querySelector('[data-inbox-list]');
+      if (!items.length) {
+        host.innerHTML = '<li class="bos-inbox-empty">Nothing here yet.' + (state.kind || state.unreadOnly ? ' Try widening the filter.' : '') + '</li>';
+        return;
+      }
+      host.innerHTML = items.map(function (n) {
+        var meta = window.Notify.metaFor(n.kind);
+        var unread = n.read ? '' : ' is-unread';
+        var ctaHtml = n.ctaHref ? '<a class="bos-inbox-cta" href="' + escape(n.ctaHref) + '">Open →</a>' : '';
+        var fromHtml = n.from ? ' · from <strong>' + escape(n.from) + '</strong>' : '';
+        return '<li class="bos-inbox-row bos-inbox-row--' + escape(n.kind) + unread + '" data-id="' + escape(n.id) + '">' +
+          '<span class="bos-inbox-icon">' + escape(meta.icon) + '</span>' +
+          '<div class="bos-inbox-body">' +
+            '<div class="bos-inbox-title">' + escape(n.title) + (n.read ? '' : ' <span class="bos-inbox-dot" title="unread"></span>') + '</div>' +
+            (n.body ? '<div class="bos-inbox-text">' + escape(n.body) + '</div>' : '') +
+            '<div class="bos-inbox-meta muted">' + escape(meta.label) + ' · ' + relTime(n.ts) + fromHtml + '</div>' +
+          '</div>' +
+          ctaHtml +
+        '</li>';
+      }).join('');
+    }
+    paint();
+
+    document.addEventListener('click', function (ev) {
+      var k = ev.target.closest('[data-filter-kind]');
+      if (k) {
+        state.kind = k.getAttribute('data-filter-kind');
+        document.querySelectorAll('[data-filter-kind]').forEach(function (b) { b.classList.toggle('is-on', b === k); });
+        paint(); return;
+      }
+      var u = ev.target.closest('[data-filter-unread]');
+      if (u) {
+        state.unreadOnly = !state.unreadOnly;
+        u.classList.toggle('is-on', state.unreadOnly);
+        paint(); return;
+      }
+      var ma = ev.target.closest('[data-inbox-mark-all]');
+      if (ma) { window.Notify.markAllRead(); paint(); return; }
+      var row = ev.target.closest('.bos-inbox-row');
+      if (row) {
+        var id = row.getAttribute('data-id');
+        if (id) { window.Notify.markRead(id); paint(); }
+      }
+    });
+
+    document.addEventListener('notify:new', paint);
+    document.addEventListener('notify:read', paint);
+  });
+  </script>
+
+</body>
+</html>

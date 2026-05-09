@@ -1,8 +1,11 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 // Renamed to avoid clashing with the route-level `dynamic` const below.
 import nextDynamic from "next/dynamic";
 import { isGoogleOAuthConfigured } from "@/lib/server/oauthGoogle";
 import { seedFounder } from "@/lib/server/founderSeed";
+import { getCurrentUser } from "@/lib/server/auth";
+import { resolvePostLoginPath } from "@/lib/server/postLoginRedirect";
 import { SiteShell } from "@/components/SiteShell";
 
 // Code-split: form bundle only ships when /login renders, and the
@@ -22,11 +25,16 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
+  // 2026-05-09 — if already signed in, route straight to the primary
+  // portal for this user's role (Aqua Portal for agency/client/team,
+  // Business OS for leads). No login form needed.
+  const existing = await getCurrentUser();
+  if (existing) {
+    redirect(resolvePostLoginPath(null, existing));
+  }
+
   // T4 unify-3 — make sure the founder user is seeded before the
   // form renders, so a fresh `npm run dev` can sign in immediately.
-  // Wrapped: in prod with no FOUNDER_PASSWORD env, the seed throws
-  // (per chapter #129 fail-closed policy). The login page itself
-  // still renders so visitors can sign in with their own accounts.
   try {
     await seedFounder();
   } catch (e) {

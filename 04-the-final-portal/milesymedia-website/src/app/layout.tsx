@@ -3,6 +3,13 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { SidebarCollapseHydrationScript } from "@/components/chrome/SidebarCollapseToggle";
+import dynamic from "next/dynamic";
+
+// Defer chrome client islands so they don't block first paint of the
+// page content for slow connections.
+const LoadingScreen = dynamic(() => import("@/components/chrome/LoadingScreen").then(m => m.LoadingScreen));
+const PageReveal = dynamic(() => import("@/components/chrome/PageReveal").then(m => m.PageReveal));
+const ScrollClassToggle = dynamic(() => import("@/components/chrome/ScrollClassToggle").then(m => m.ScrollClassToggle));
 
 export const metadata: Metadata = {
   title: "Aqua portal",
@@ -19,6 +26,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SidebarCollapseHydrationScript />
       </head>
       <body>
+        <LoadingScreen />
+        <PageReveal />
+        <ScrollClassToggle threshold={40} />
         <SkipToContent />
         {children}
       </body>

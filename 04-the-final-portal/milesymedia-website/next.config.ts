@@ -55,17 +55,14 @@ const nextConfig: NextConfig = {
         // (SiteShell wrap). Only /business-os keeps the rewrite —
         // it stays a standalone app per Ed's call (separate
         // application; just gets a "Back to website" pill).
-        { source: "/business-os",     destination: "/business-os/index.html" },
-        // T4 R009 (chapter #159) — Incubator becomes the BOS setup
-        // flow. `/business-os/incubator` is the canonical path; the
-        // existing static incubator app at `public/incubator/`
-        // stays in place (avoids touching every internal asset
-        // path) and is exposed under the BOS namespace via this
-        // rewrite. `/incubator` keeps working — the React route at
-        // src/app/incubator/page.tsx now redirects to the canonical
-        // path so external links don't break.
-        { source: "/business-os/incubator",            destination: "/incubator/index.html" },
-        { source: "/business-os/incubator/:path*",     destination: "/incubator/:path*" },
+        // 2026-05-09 — /business-os now lands directly on app.html so
+        // visitors skip the legacy index.html landing page (which had
+        // its own redundant nav/footer that read like marketing chrome).
+        { source: "/business-os",     destination: "/business-os/app.html" },
+        // (Removed 2026-05-09) — Incubator rewrites deleted. The
+        // Incubator was archived to /_archived/incubator-public/
+        // and is no longer part of BOS. Leaving these rewrites in
+        // place produced phantom 404s on any old internal link.
         // T4 R005 — privacy + terms stubs (final-copy-pass).
         { source: "/privacy",         destination: "/_marketing/privacy.html" },
         { source: "/terms",           destination: "/_marketing/terms.html" },
@@ -81,9 +78,7 @@ const nextConfig: NextConfig = {
   // to `/business-os/incubator` (so the redirect appears in the
   // single SiteShell-wrap source of truth).
   async redirects() {
-    return [
-      { source: "/incubator/:path+", destination: "/business-os/incubator/:path+", permanent: false },
-    ];
+    return [];
   },
   // T4 unify-1 — anchor Turbopack + output-file tracing one level up
   // (at `04-the-final-portal/`) so the sibling `../plugins/*` source

@@ -33,7 +33,7 @@ const manifest: AquaPlugin = {
   navItems: [
     {
       id: "client-files.vault", label: "Files",
-      href: "/portal/clients/{clientId}/client-files",
+      href: "/portal/clients/[clientId]/client-files",
       panelId: "ops", order: 25, visibleToRoles: [...VIEWERS],
     },
   ],

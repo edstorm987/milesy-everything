@@ -64,10 +64,20 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
 
 /* ─── Navbar ──────────────────────────────────── */
 .nav {
-  position: sticky; top: 0; z-index: 50;
-  backdrop-filter: blur(12px);
-  background: rgba(10,10,15,0.7);
-  border-bottom: 1px solid var(--border);
+  position: sticky;
+  /* Default: nav sits directly under the .mm-stickybar (which is at top:0).
+     z-index 65 > stickybar's 60 so the nav-dropdown menus overlay
+     the stickybar when opened. */
+  top: var(--mm-stickybar-h, 40px);
+  z-index: 65;
+  /* Solid background — no translucency / blur (cheap to paint, snappy
+     even on older devices). */
+  background: #0a0a0a;
+  background-image: linear-gradient(90deg, #0a0a0a, #1a1208);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid rgba(201, 167, 106, 0.18);
+  transition: top 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .nav-row { display: flex; align-items: center; justify-content: space-between; height: 70px; }
 .brand   { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.01em; }
@@ -650,12 +660,58 @@ footer {
 /* Sticky thin top bar — persistent HC CTA */
 .mm-stickybar {
   background: linear-gradient(90deg, #0a0a0a, #1a1208);
-  border-bottom: 1px solid #2A2A2A;
+  border-bottom: 1px solid rgba(201, 167, 106, 0.18);
   color: #D4B888;
   font-size: 13px;
   position: sticky;
   top: 0;
-  z-index: 9990;
+  z-index: 60; /* above .nav (50) so the seam reads as one stacked unit */
+  /* Trapezoid clip activates only when body.mm-scrolled fires —
+     full-width top edge (touching the nav above), 40% wide at bottom,
+     producing the diagonal connector wedges. */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition:
+    top 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    clip-path 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Scrolled — stickybar slides UNDER the nav.
+   Shape: rectangle anchored to the LEFT page edge, with the right end
+   curving up into a pill/half-stadium so it visually meets the nav. */
+body.mm-scrolled .nav { top: 0; }
+body.mm-stickybar-centered, /* placeholder so transition picks up margin */
+body.mm-scrolled .mm-stickybar {
+  top: 70px; /* nav-row height */
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto; /* centered */
+  clip-path: none;
+  border-bottom: none;
+  border-radius: 0 0 999px 999px; /* both top corners square; bottom corners curve into a pill */
+  box-shadow: 0 6px 18px -8px rgba(20, 18, 14, 0.45);
+}
+body.mm-scrolled .mm-stickybar-row {
+  max-width: 100%;
+  padding-left: 44px;  /* clears the bottom-left pill curve so the 🩺 icon isn't clipped */
+  padding-right: 44px; /* mirrors the right side breathing room */
+  transition:
+    max-width 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mm-stickybar {
+  transition:
+    top 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 900px) {
+  body.mm-scrolled .mm-stickybar {
+    width: 100%;
+    border-radius: 0;
+  }
 }
 .mm-stickybar-row {
   display: flex;
@@ -1943,3 +1999,1787 @@ footer {
 .mm-tenant-add-submit:hover:not(:disabled) { background: #2A2520; }
 .mm-tenant-add-submit:disabled { opacity: 0.55; cursor: not-allowed; }
 .mm-tenant-error { margin: 6px 10px 4px; font-size: 12px; color: #B91C1C; background: rgba(185, 28, 28, 0.05); border: 1px solid rgba(185, 28, 28, 0.15); padding: 6px 8px; border-radius: 6px; }
+
+/* 2026-05-08 — ProfileMenu becomes a pure circle (no pill, no caret).
+   Click opens existing dropdown. Tenant switcher gets glassmorphic
+   pressed state. */
+.mm-profile-menu summary {
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 999px;
+  gap: 0 !important;
+}
+.mm-profile-menu summary:hover { background: transparent !important; }
+.mm-profile-menu[open] summary { background: transparent !important; border: none !important; }
+.mm-profile-menu summary .mm-profile-avatar,
+.mm-profile-menu summary .mm-profile-avatar-img {
+  width: 34px !important;
+  height: 34px !important;
+  font-size: 13px;
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.08), 0 4px 12px -4px rgba(20, 18, 14, 0.18);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.mm-profile-menu summary:hover .mm-profile-avatar,
+.mm-profile-menu summary:hover .mm-profile-avatar-img {
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.1), 0 6px 16px -4px rgba(20, 18, 14, 0.22);
+  transform: translateY(-1px);
+}
+.mm-profile-menu[open] summary .mm-profile-avatar,
+.mm-profile-menu[open] summary .mm-profile-avatar-img {
+  box-shadow: 0 0 0 3px rgba(201, 167, 106, 0.35);
+}
+
+/* Glassmorphic tenant switcher — frosted backdrop on hover/open */
+.mm-tenant-switcher summary {
+  border-radius: 14px;
+  transition: background 0.2s ease, border-color 0.2s ease, backdrop-filter 0.2s ease, box-shadow 0.2s ease;
+}
+.mm-tenant-switcher summary:hover {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 8px 24px -8px rgba(20, 18, 14, 0.18);
+}
+.mm-tenant-switcher[open] summary {
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-color: rgba(201, 167, 106, 0.55) !important;
+  box-shadow: 0 1px 2px rgba(20, 18, 14, 0.04), 0 12px 32px -10px rgba(20, 18, 14, 0.22);
+}
+.mm-tenant-pop {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ─── 2026-05-09 — Million-dollar motion system ─── */
+
+/* === 1. AQUA PORTAL SPLASH ============================================ */
+.mm-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: radial-gradient(ellipse at 50% 40%, #1A1208 0%, #050505 60%, #000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: mm-splash-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.mm-splash-out {
+  animation: mm-splash-out 0.6s cubic-bezier(0.6, 0, 0.4, 1) both;
+  pointer-events: none;
+}
+.mm-splash-glow {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at 50% 50%, rgba(212, 184, 136, 0.18) 0%, transparent 50%);
+  animation: mm-splash-glow 2.4s ease-in-out infinite;
+  filter: blur(24px);
+}
+.mm-splash-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  z-index: 1;
+}
+.mm-splash-mark {
+  animation:
+    mm-splash-mark-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both,
+    mm-splash-mark-float 3.6s ease-in-out 0.9s infinite;
+  filter: drop-shadow(0 8px 32px rgba(212, 184, 136, 0.35));
+}
+.mm-splash-wordmark {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #FAF7EE;
+  opacity: 0;
+  animation: mm-splash-fade 0.8s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.mm-splash-accent {
+  background: linear-gradient(135deg, #D4B888 0%, #8B6F3D 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 2px;
+}
+.mm-splash-tag {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(212, 184, 136, 0.65);
+  font-weight: 600;
+  opacity: 0;
+  animation: mm-splash-fade 0.8s 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.mm-splash-progress {
+  width: 120px;
+  height: 2px;
+  background: rgba(212, 184, 136, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 14px;
+  opacity: 0;
+  animation: mm-splash-fade 0.8s 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.mm-splash-progress span {
+  display: block;
+  height: 100%;
+  width: 30%;
+  background: linear-gradient(90deg, transparent 0%, #D4B888 50%, transparent 100%);
+  animation: mm-splash-bar 1.4s linear infinite;
+}
+
+@keyframes mm-splash-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes mm-splash-out {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.04); pointer-events: none; visibility: hidden; }
+}
+@keyframes mm-splash-glow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+@keyframes mm-splash-mark-in {
+  0% { opacity: 0; transform: scale(0.6) rotate(-12deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes mm-splash-mark-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes mm-splash-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes mm-splash-bar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(450%); }
+}
+
+/* === 2. PAGE MOUNT / EXIT — ULTRA FAST ===============================
+   Content always paints fully visible from first byte. No mount fade,
+   no exit fade — eliminates any risk of a blank/no-CSS page if the
+   `mm-page-leaving` class ever gets stuck across a navigation. */
+.mm-page-content { opacity: 1; }
+.mm-stickybar, .nav, footer { opacity: 1; }
+
+/* === 3. SCROLL-REVEAL — quick + decisive ============================= */
+[data-mm-reveal] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-mm-reveal].mm-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+/* Stagger children when a parent is revealed */
+[data-mm-reveal].mm-revealed > * {
+  animation: mm-stagger-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+[data-mm-reveal].mm-revealed > *:nth-child(1) { animation-delay: 0.02s; }
+[data-mm-reveal].mm-revealed > *:nth-child(2) { animation-delay: 0.04s; }
+[data-mm-reveal].mm-revealed > *:nth-child(3) { animation-delay: 0.06s; }
+[data-mm-reveal].mm-revealed > *:nth-child(4) { animation-delay: 0.08s; }
+[data-mm-reveal].mm-revealed > *:nth-child(5) { animation-delay: 0.10s; }
+[data-mm-reveal].mm-revealed > *:nth-child(6) { animation-delay: 0.12s; }
+
+@keyframes mm-stagger-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* === 4. MICRO-INTERACTIONS ============================================ */
+/* Buttons get a subtle squish + glow on press */
+.btn {
+  transition:
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease !important;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0) scale(0.985); }
+.btn-primary:hover {
+  box-shadow: 0 6px 20px -6px rgba(201, 167, 106, 0.5), 0 1px 2px rgba(20, 18, 14, 0.1);
+}
+
+/* Nav link hover — animated underline */
+.nav-links a {
+  position: relative;
+  transition: color 0.2s ease;
+}
+.nav-links > a::after,
+.nav-dropdown-toggle::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 1.5px;
+  background: linear-gradient(90deg, #C9A76A, #D4B888);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 999px;
+}
+.nav-links > a:hover::after,
+.nav-dropdown:hover .nav-dropdown-toggle::after,
+.nav-dropdown:focus-within .nav-dropdown-toggle::after,
+.nav-dropdown:not(.nav-dropdown-mega):has(.nav-dropdown-menu:hover) .nav-dropdown-toggle::after { transform: scaleX(1); }
+
+/* Project / role / 404 / pov cards — refined hover lift already exists; add
+   a brand-color glow halo on hover */
+.mm-project-card:hover,
+.mm-role-card:hover,
+.mm-pov-btn:hover,
+.mm-404-card:hover {
+  box-shadow:
+    0 12px 36px -12px rgba(20, 18, 14, 0.22),
+    0 0 0 1px rgba(201, 167, 106, 0.25);
+}
+
+/* === 5. REDUCED MOTION ============================================== */
+@media (prefers-reduced-motion: reduce) {
+  .mm-splash, .mm-splash-glow, .mm-splash-mark,
+  .mm-splash-wordmark, .mm-splash-tag, .mm-splash-progress,
+  .mm-splash-progress span,
+  .mm-page-content, .mm-stickybar, .nav, footer,
+  [data-mm-reveal] {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* ─── 2026-05-09 — Floating "M" chatbot launcher (top-left) ─── */
+
+.mm-chat {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 9000;
+  font-family: var(--brand-font-body, "Inter", system-ui, sans-serif);
+  /* Hidden by default — only appears when the nav has been folded away
+     via the side-tab. Clicking it restores the nav. */
+  display: none;
+}
+body.mm-nav-side-folded .mm-chat {
+  display: block;
+  /* Delayed + slower so it appears to "catch" the side-tab as it flies in. */
+  animation: mm-chat-appear 0.9s 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes mm-chat-appear {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.mm-chat-launcher {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  background: linear-gradient(135deg, #D4B888 0%, #8B6F3D 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.92),
+    0 4px 14px -2px rgba(20, 18, 14, 0.35),
+    0 12px 32px -8px rgba(212, 184, 136, 0.45);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+}
+.mm-chat-launcher:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 1),
+    0 6px 18px -2px rgba(20, 18, 14, 0.4),
+    0 16px 40px -8px rgba(212, 184, 136, 0.6);
+}
+.mm-chat[data-open="true"] .mm-chat-launcher {
+  transform: scale(0.94);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 1),
+    0 0 0 5px rgba(212, 184, 136, 0.35),
+    0 4px 14px -2px rgba(20, 18, 14, 0.35);
+}
+.mm-chat-mark {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #14120E;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.mm-chat-pulse {
+  position: absolute;
+  inset: -2px;
+  border-radius: 999px;
+  border: 2px solid rgba(212, 184, 136, 0.55);
+  animation: mm-chat-pulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+.mm-chat[data-open="true"] .mm-chat-pulse { animation: none; opacity: 0; }
+@keyframes mm-chat-pulse {
+  0%   { transform: scale(1); opacity: 0.7; }
+  70%  { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+.mm-chat-panel {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: min(340px, calc(100vw - 40px));
+  background: #FFF;
+  color: #14120E;
+  border-radius: 18px;
+  border: 1px solid rgba(20, 18, 14, 0.06);
+  box-shadow:
+    0 1px 2px rgba(20, 18, 14, 0.06),
+    0 24px 64px -16px rgba(20, 18, 14, 0.32);
+  overflow: hidden;
+  animation: mm-chat-pop 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes mm-chat-pop {
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.mm-chat-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 18px 16px;
+  background: linear-gradient(135deg, #FAF7EE 0%, #FFF 100%);
+  border-bottom: 1px solid rgba(20, 18, 14, 0.06);
+  position: relative;
+}
+.mm-chat-panel-head::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, #C9A76A 0%, #B89254 100%);
+}
+.mm-chat-panel-mark {
+  width: 38px; height: 38px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #D4B888 0%, #8B6F3D 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #14120E;
+  flex: 0 0 auto;
+  box-shadow: 0 2px 6px -2px rgba(20, 18, 14, 0.2);
+}
+.mm-chat-panel-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+.mm-chat-panel-sub {
+  font-size: 12px;
+  color: #6B635A;
+  margin-top: 1px;
+}
+
+.mm-chat-panel-list {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.mm-chat-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s ease;
+}
+.mm-chat-row:hover { background: #FAF7EE; }
+.mm-chat-row-icon {
+  font-size: 17px;
+  width: 24px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.mm-chat-row > span:last-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mm-chat-row strong { font-size: 13.5px; font-weight: 600; color: #14120E; }
+.mm-chat-row em {
+  font-style: normal;
+  font-size: 11.5px;
+  color: #8A8377;
+  line-height: 1.35;
+}
+.mm-chat-panel-foot {
+  padding: 12px 16px 14px;
+  border-top: 1px solid rgba(20, 18, 14, 0.06);
+  font-size: 11px;
+  color: #8A8377;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 540px) {
+  .mm-chat { top: 14px; left: 14px; }
+  .mm-chat-launcher { width: 46px; height: 46px; }
+  .mm-chat-mark { font-size: 21px; }
+}
+
+/* ─── 2026-05-09 — Nav collapse toggle (center bottom of nav) ─── */
+
+/* Position context for the absolute toggle — and let the toggle visually
+   bleed below the bar without being clipped. */
+.mm-stickybar { position: sticky; overflow: visible; }
+
+.mm-nav-collapse {
+  position: absolute;
+  left: 50%;
+  /* Centered on the stickybar's bottom edge — half inside, half overlapping
+     the nav below. Hidden until the user has scrolled past the threshold
+     (body.mm-scrolled), since the bar's only morphed/centered state needs
+     the collapse affordance. */
+  bottom: -13px;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 167, 106, 0.45);
+  background: linear-gradient(180deg, #1a1208 0%, #0a0a0a 100%);
+  color: #D4B888;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 80; /* above stickybar (60) and nav (65) */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 4px 12px -2px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    bottom 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mm-nav-collapse:hover {
+  color: #FFF;
+  border-color: rgba(201, 167, 106, 0.7);
+  transform: translateX(-50%) translateY(-1px);
+}
+/* Visibility — strict.
+   - Default: completely invisible (opacity 0 + visibility hidden so
+     even children can't trigger ancestor hover that would re-show it).
+   - On stickybar :hover: fades in.
+   - In the morphed/scrolled centered pill state: always visible. */
+.mm-nav-collapse {
+  visibility: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    bottom 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.28s ease,
+    visibility 0s linear 0.28s; /* delay hide until fade completes */
+}
+body.mm-scrolled .mm-stickybar:hover .mm-nav-collapse {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    bottom 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.28s ease,
+    visibility 0s linear 0s; /* show immediately when becoming visible */
+}
+.mm-nav-collapse svg { transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.mm-nav-collapse[data-collapsed="true"] svg { transform: rotate(180deg); }
+
+/* Collapsed state — the stickybar smoothly collapses upward (translate
+   + opacity + max-height) while the nav slides up to top: 0 in sync.
+   No `display: none` so the transition is fully visible. */
+body.mm-nav-collapsed .mm-stickybar {
+  transform: translateY(-100%);
+  opacity: 0;
+  max-height: 0;
+  pointer-events: none;
+  border-bottom-color: transparent;
+}
+body.mm-nav-collapsed .nav { top: 0; }
+
+.mm-stickybar {
+  max-height: 80px; /* generous ceiling so the natural height isn't constrained */
+  overflow: visible;
+  transform-origin: top center;
+  transition:
+    background 0.5s ease,
+    color 0.5s ease,
+    border-color 0.7s cubic-bezier(0.6, 0, 0.4, 1),
+    transform 1.1s cubic-bezier(0.6, 0, 0.35, 1),
+    opacity 0.6s cubic-bezier(0.6, 0, 0.4, 1),
+    max-height 1.1s cubic-bezier(0.6, 0, 0.35, 1),
+    top 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Once collapsed, hide overflow so the chevron tab doesn't peek out. */
+body.mm-nav-collapsed .mm-stickybar { overflow: hidden; }
+.nav {
+  transition:
+    background 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    top 0.5s cubic-bezier(0.6, 0, 0.4, 1),
+    transform 0.55s cubic-bezier(0.6, 0, 0.4, 1);
+}
+
+/* Re-expand chevron — small inline button inside the nav-cta cluster,
+   sitting next to the theme switcher. Only renders when stickybar is
+   collapsed. Brings the stickybar back. */
+.mm-nav-expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  margin-left: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 167, 106, 0.45);
+  background: linear-gradient(180deg, #1a1208 0%, #0a0a0a 100%);
+  color: #D4B888;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.18s ease, border-color 0.18s ease;
+  animation: mm-nav-expand-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.mm-nav-expand:hover {
+  color: #FFF;
+  border-color: rgba(201, 167, 106, 0.75);
+  transform: translateY(1px);
+}
+@keyframes mm-nav-expand-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.85); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Side-tab — circular drawer handle hanging off the bottom-right of
+   the nav. Hidden by default. Appears ONLY when:
+     1) the stickybar is collapsed (body.mm-nav-collapsed), AND
+     2) the nav is being hovered.
+   Folds the nav off-screen on click. */
+.mm-nav-side-tab {
+  position: absolute;
+  right: 24px;
+  bottom: -14px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 167, 106, 0.5);
+  background: linear-gradient(180deg, #1a1208 0%, #0a0a0a 100%);
+  color: #D4B888;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 70;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 6px 14px -3px rgba(0, 0, 0, 0.45);
+  /* Hidden by default — fades in only when nav is hovered + stickybar
+     is in collapsed state. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.22s ease,
+    opacity 0.28s ease,
+    visibility 0s linear 0.28s;
+}
+body.mm-nav-collapsed .nav:hover .mm-nav-side-tab {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.22s ease,
+    opacity 0.28s ease,
+    visibility 0s linear 0s;
+}
+.mm-nav-side-tab:hover {
+  color: #FFF;
+  border-color: rgba(201, 167, 106, 0.85);
+  transform: translateY(1px);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 8px 18px -3px rgba(0, 0, 0, 0.55);
+}
+.mm-nav-side-tab svg { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Default: chevrons visible, M hidden. */
+.mm-nav-side-tab-mark {
+  display: none;
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: #14120E;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.mm-nav-side-tab-chev { display: block; }
+
+/* When folded — body.mm-nav-side-folded — three things happen:
+   1. The nav slides off-screen to the LEFT.
+   2. The hide-the-stickybar bar is gone (it's already hidden via mm-nav-collapsed).
+   3. The tab itself fixes to top-left, morphs into the gold M chatbot
+      circle (replacing the FloatingChat M for the duration). */
+body.mm-nav-side-folded .nav {
+  transform: translateX(-104%) scale(0.96);
+  opacity: 0;
+  filter: blur(3px);
+  pointer-events: none;
+  border-bottom-color: transparent;
+}
+.nav {
+  transform-origin: left center;
+  transition:
+    background 0.5s ease,
+    color 0.5s ease,
+    border-color 0.5s ease,
+    top 0.7s cubic-bezier(0.6, 0, 0.35, 1),
+    transform 1.2s cubic-bezier(0.6, 0, 0.35, 1),
+    opacity 0.85s cubic-bezier(0.6, 0, 0.4, 1),
+    filter 0.7s cubic-bezier(0.6, 0, 0.4, 1);
+}
+
+body.mm-nav-side-folded .mm-nav-side-tab {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: auto;
+  bottom: auto;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #D4B888 0%, #8B6F3D 100%);
+  border: none;
+  color: #14120E;
+  z-index: 9100; /* sits above FloatingChat */
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.92),
+    0 4px 14px -2px rgba(20, 18, 14, 0.35),
+    0 12px 32px -8px rgba(212, 184, 136, 0.45);
+}
+body.mm-nav-side-folded .mm-nav-side-tab .mm-nav-side-tab-chev { display: none; }
+body.mm-nav-side-folded .mm-nav-side-tab .mm-nav-side-tab-mark { display: inline-block; }
+
+/* When nav folds, the side tab flies across the screen toward the
+   top-left M circle — converging into it like a "swallow into the
+   chatbot" animation. Position fixes to the viewport so we can
+   animate top/left/width/height/background freely. */
+body.mm-nav-side-folded .mm-nav-side-tab {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: auto;
+  bottom: auto;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #D4B888 0%, #8B6F3D 100%);
+  border-color: transparent;
+  color: #14120E;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.6);
+  transition:
+    top 1.2s cubic-bezier(0.6, 0, 0.35, 1),
+    left 1.2s cubic-bezier(0.6, 0, 0.35, 1),
+    right 1.2s cubic-bezier(0.6, 0, 0.35, 1),
+    bottom 1.2s cubic-bezier(0.6, 0, 0.35, 1),
+    width 1.2s cubic-bezier(0.6, 0, 0.35, 1),
+    height 1.2s cubic-bezier(0.6, 0, 0.35, 1),
+    background 0.9s ease 0.25s,
+    border-color 0.6s ease,
+    transform 1.2s cubic-bezier(0.6, 0, 0.35, 1),
+    opacity 1.05s ease 0.55s;  /* fade out late so the travel is visible */
+}
+
+/* Smooth all the geometry changes. */
+.mm-nav-side-tab {
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.22s ease,
+    width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    left 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    right 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.5s ease,
+    border-radius 0.5s ease;
+}
+
+@media (max-width: 540px) {
+  .mm-nav-side-tab { right: 14px; width: 26px; height: 26px; }
+  body.mm-nav-side-folded .mm-nav-side-tab { width: 46px; height: 46px; top: 14px; left: 14px; }
+  body.mm-nav-side-folded .mm-nav-side-tab .mm-nav-side-tab-mark { font-size: 21px; }
+}
+
+/* ─── 2026-05-09 — Marketing auth widget (sign in / profile circle) ─── */
+
+.mm-auth { position: relative; display: inline-flex; align-items: center; }
+.mm-auth-loading {
+  width: 32px; height: 32px; border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  display: inline-block;
+}
+.mm-auth-signin { /* original Sign in link styling preserved via .btn .btn-ghost */ }
+
+.mm-auth-circle {
+  width: 32px; height: 32px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #1F1B14 0%, #14120E 100%);
+  color: #FFF;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 1.5px rgba(255, 255, 255, 0.9),
+    0 1px 3px rgba(20, 18, 14, 0.18),
+    0 4px 10px -2px rgba(20, 18, 14, 0.18);
+  transition: box-shadow 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mm-auth-circle:hover {
+  box-shadow:
+    0 0 0 1.5px #FFF,
+    0 0 0 4px rgba(201, 167, 106, 0.18),
+    0 2px 6px rgba(20, 18, 14, 0.2);
+}
+.mm-auth[data-open="true"] .mm-auth-circle {
+  box-shadow: 0 0 0 1.5px #FFF, 0 0 0 4px rgba(201, 167, 106, 0.55);
+}
+
+.mm-auth-pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 240px;
+  background: #FFF;
+  color: #14120E;
+  border: 1px solid rgba(20, 18, 14, 0.06);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(20, 18, 14, 0.06),
+    0 24px 56px -16px rgba(20, 18, 14, 0.32);
+  z-index: 100;
+  animation: mm-auth-pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes mm-auth-pop-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.mm-auth-pop-head {
+  padding: 16px 18px 14px;
+  background: linear-gradient(135deg, #FAF7EE 0%, #FFF 100%);
+  border-bottom: 1px solid rgba(20, 18, 14, 0.06);
+  position: relative;
+}
+.mm-auth-pop-head::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, #C9A76A 0%, #B89254 100%);
+}
+.mm-auth-pop-name { font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
+.mm-auth-pop-email { font-size: 12px; color: #6B635A; margin-top: 3px; word-break: break-word; }
+.mm-auth-pop-role {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #B89254;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: rgba(201, 167, 106, 0.10);
+  border: 1px solid rgba(201, 167, 106, 0.25);
+  border-radius: 999px;
+}
+.mm-auth-pop-list { padding: 6px; display: flex; flex-direction: column; }
+.mm-auth-pop-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  color: #14120E;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.1s ease;
+}
+.mm-auth-pop-item:hover { background: #FAF7EE; }
+.mm-auth-pop-item > span:first-child { font-size: 15px; width: 18px; text-align: center; opacity: 0.85; }
+.mm-auth-pop-portal {
+  background: rgba(201, 167, 106, 0.08);
+  font-weight: 600;
+  color: #8E7340;
+}
+.mm-auth-pop-portal:hover { background: rgba(201, 167, 106, 0.16); }
+.mm-auth-pop-out {
+  border-top: 1px solid rgba(20, 18, 14, 0.06);
+  padding: 4px 6px 6px;
+  margin: 0;
+}
+.mm-auth-pop-signout { color: #B91C1C; }
+.mm-auth-pop-signout:hover { background: rgba(185, 28, 28, 0.06); }
+
+/* ─── 2026-05-09 — Theme switcher (circle in topbar) ─── */
+
+.mm-theme-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+.mm-theme-trigger {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  box-shadow:
+    0 0 0 1.5px rgba(255, 255, 255, 0.85),
+    0 1px 3px rgba(20, 18, 14, 0.22),
+    0 4px 12px -3px rgba(20, 18, 14, 0.28);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+}
+.mm-theme-trigger:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1.5px rgba(255, 255, 255, 0.95),
+    0 0 0 4px rgba(201, 167, 106, 0.22),
+    0 2px 6px rgba(20, 18, 14, 0.25);
+}
+.mm-theme-trigger-ring {
+  position: absolute;
+  inset: 4px;
+  border-radius: 999px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.mm-theme-switcher:hover .mm-theme-trigger-ring,
+.mm-theme-trigger[aria-expanded="true"] .mm-theme-trigger-ring { opacity: 1; }
+
+.mm-theme-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: #FFF;
+  color: #14120E;
+  border: 1px solid rgba(20, 18, 14, 0.08);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow:
+    0 1px 2px rgba(20, 18, 14, 0.06),
+    0 24px 56px -16px rgba(20, 18, 14, 0.32);
+  z-index: 100;
+  animation: mm-theme-pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes mm-theme-pop-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.mm-theme-pop-head {
+  padding: 8px 12px 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8A8377;
+  font-weight: 700;
+}
+.mm-theme-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 10px;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: #14120E;
+  transition: background 0.12s ease;
+}
+.mm-theme-row:hover { background: #FAF7EE; }
+.mm-theme-row[data-active="true"] { background: rgba(201, 167, 106, 0.08); }
+.mm-theme-row-swatch {
+  width: 22px; height: 22px;
+  border-radius: 7px;
+  flex: 0 0 auto;
+  box-shadow: inset 0 0 0 1px rgba(20, 18, 14, 0.12), 0 1px 2px rgba(20, 18, 14, 0.08);
+}
+.mm-theme-row-text { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+.mm-theme-row-label { font-size: 13.5px; font-weight: 600; }
+.mm-theme-row-hint { font-size: 11.5px; color: #8A8377; }
+.mm-theme-row-tick { color: #C9A76A; font-weight: 700; margin-left: auto; }
+
+/* ─── Theme overrides ─── */
+
+/* Daylight — cream surface, gold accents, light marketing chrome */
+html[data-mm-theme="light"] {
+  --bg: #FAF7EE;
+  --bg-soft: #FFF;
+  --bg-card: #FFF;
+  --border: rgba(20, 18, 14, 0.08);
+  --border-2: rgba(20, 18, 14, 0.14);
+  --text: #14120E;
+  --text-dim: rgba(20, 18, 14, 0.7);
+  --text-mute: rgba(20, 18, 14, 0.5);
+  --accent: #C9A76A;
+  --accent-2: #B89254;
+  --accent-3: #8B6F3D;
+}
+html[data-mm-theme="light"] .mm-stickybar,
+html[data-mm-theme="light"] .nav {
+  background: linear-gradient(90deg, #FFF 0%, #FAF7EE 100%) !important;
+  color: #14120E;
+  border-bottom-color: rgba(201, 167, 106, 0.35) !important;
+}
+html[data-mm-theme="light"] .mm-stickybar-text,
+html[data-mm-theme="light"] .mm-stickybar-text strong { color: #14120E; }
+html[data-mm-theme="light"] .mm-stickybar-contact,
+html[data-mm-theme="light"] .mm-stickybar-cta { color: #14120E; }
+html[data-mm-theme="light"] .mm-stickybar-cta { background: #14120E; color: #FAF7EE; }
+
+/* Aqua — teal + sky, the Aqua Portal brand on the marketing site */
+html[data-mm-theme="aqua"] {
+  --bg: #03171F;
+  --bg-soft: #062029;
+  --bg-card: #0A2A36;
+  --border: rgba(125, 211, 252, 0.14);
+  --border-2: rgba(125, 211, 252, 0.22);
+  --text: #E0F2FE;
+  --text-dim: rgba(224, 242, 254, 0.7);
+  --text-mute: rgba(224, 242, 254, 0.45);
+  --accent: #7DD3FC;
+  --accent-2: #38BDF8;
+  --accent-3: #0E7490;
+}
+html[data-mm-theme="aqua"] .mm-stickybar,
+html[data-mm-theme="aqua"] .nav {
+  background: linear-gradient(90deg, #03171F 0%, #0A2A36 100%) !important;
+  border-bottom-color: rgba(125, 211, 252, 0.22) !important;
+}
+html[data-mm-theme="aqua"] .mm-stickybar-text { color: #7DD3FC; }
+html[data-mm-theme="aqua"] .mm-stickybar-text strong { color: #E0F2FE; }
+html[data-mm-theme="aqua"] .mm-stickybar-cta { background: #7DD3FC; color: #03171F; }
+
+/* Noir — pure black + bone white, minimal */
+html[data-mm-theme="noir"] {
+  --bg: #000;
+  --bg-soft: #0a0a0a;
+  --bg-card: #111;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-2: rgba(255, 255, 255, 0.2);
+  --text: #FAFAF7;
+  --text-dim: rgba(250, 250, 247, 0.7);
+  --text-mute: rgba(250, 250, 247, 0.45);
+  --accent: #FAFAF7;
+  --accent-2: #DDD;
+  --accent-3: #888;
+}
+html[data-mm-theme="noir"] .mm-stickybar,
+html[data-mm-theme="noir"] .nav {
+  background: #000 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.12) !important;
+}
+html[data-mm-theme="noir"] .mm-stickybar-text { color: #DDD; }
+html[data-mm-theme="noir"] .mm-stickybar-text strong { color: #FFF; }
+html[data-mm-theme="noir"] .mm-stickybar-cta { background: #FFF; color: #000; }
+
+/* Smooth surface transitions when switching themes */
+.mm-stickybar, .nav, body {
+  transition:
+    background 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease;
+}
+
+/* ─── 2026-05-09 — Nav dropdown grace delay ─────────────────────────
+   Dropdowns stay open for ~1s after the mouse leaves (so the user
+   has time to move down into them). If the user hovers ANOTHER
+   dropdown in the meantime, the old one snaps closed immediately so
+   they don't overlap. */
+/* Industries-style standard dropdown ONLY — the Resources mega menu
+   keeps its original behavior (defined earlier in this file). We
+   exclude .nav-dropdown-mega here via :not(). */
+.nav-dropdown:not(.nav-dropdown-mega) .nav-dropdown-menu {
+  display: block !important;     /* override the existing display:none */
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 1s;     /* delayed hide */
+}
+.nav-dropdown:not(.nav-dropdown-mega):hover .nav-dropdown-menu,
+.nav-dropdown:not(.nav-dropdown-mega):focus-within .nav-dropdown-menu,
+.nav-dropdown:not(.nav-dropdown-mega) .nav-dropdown-menu:hover {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+  /* Delay the show ~180ms so the gold underline draws in first, then
+     the menu eases down underneath it. */
+  transition:
+    opacity 0.4s ease 0.18s,
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.18s,
+    visibility 0s linear 0s;
+}
+/* If a different standard .nav-dropdown is being hovered, snap the
+   others closed (the mega menu is unaffected). */
+.nav:has(.nav-dropdown:not(.nav-dropdown-mega):hover) .nav-dropdown:not(.nav-dropdown-mega):not(:hover):not(:focus-within) .nav-dropdown-menu {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.18s ease,
+    visibility 0s linear 0.18s;
+}
+
+/* Resources mega menu — generous 2s grace period after hover-out so
+   elderly visitors have time to reach it. The original opacity/
+   visibility transitions in the existing rules use the standard
+   :hover/focus-within fade — here we extend the visibility hide-delay
+   AND delay pointer-events so the menu stays clickable during grace. */
+.nav-mega-menu {
+  pointer-events: auto !important;     /* always interactive while visible */
+  transition:
+    opacity 1.6s ease 0.4s,            /* fade out slowly, starts after 0.4s */
+    visibility 0s linear 2s !important; /* hide after the full 2s grace */
+}
+.nav-dropdown-mega:hover .nav-mega-menu,
+.nav-dropdown-mega:focus-within .nav-mega-menu,
+.nav-mega-menu:hover {
+  pointer-events: auto !important;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s linear 0s !important; /* show immediately */
+}
+/* If the Industries (or any other standard) dropdown is being hovered,
+   the mega menu vanishes INSTANTLY — no fade, no delay. */
+.nav:has(.nav-dropdown:not(.nav-dropdown-mega):hover) .nav-mega-menu {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+/* And the reverse — if the Resources mega menu is being hovered, any
+   standard dropdown panel snaps closed instantly. Clear intent wins. */
+.nav:has(.nav-dropdown-mega:hover) .nav-dropdown:not(.nav-dropdown-mega):not(:hover):not(:focus-within) .nav-dropdown-menu {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+
+/* ─── 2026-05-09 — Per-route chrome rules ─── */
+
+/* On /health-check: keep the nav as-is, but remove the redundant HC
+   CTA from the stickybar and any chevron handles (collapse/expand/side).
+   Visitors are already on the funnel — don't push them sideways. */
+body.mm-on-health-check .mm-stickybar-cta,
+body.mm-on-health-check .mm-nav-collapse,
+body.mm-on-health-check .mm-nav-expand,
+body.mm-on-health-check .mm-nav-side-tab {
+  display: none !important;
+}
+
+/* ─── 2026-05-09 — Inline contacts inside the leaky-customer stickybar ─── */
+
+.mm-stickybar-contacts {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(201, 167, 106, 0.22);
+}
+.mm-stickybar-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  color: rgba(212, 184, 136, 0.7);
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.18s cubic-bezier(0.16,1,0.3,1);
+}
+.mm-stickybar-contact:hover {
+  color: #FFF;
+  background: rgba(212, 184, 136, 0.12);
+  transform: translateY(-1px);
+}
+.mm-stickybar-contact svg { display: block; }
+
+@media (max-width: 720px) {
+  .mm-stickybar-contacts { gap: 0; margin-left: 6px; padding-left: 6px; }
+  .mm-stickybar-contact { width: 20px; height: 20px; }
+}
+
+/* ─── 2026-05-09 — Projects / case-studies page ─── */
+
+.mm-projects { background: #FAF7EE; padding-bottom: 80px; }
+
+.mm-projects-hero {
+  background: linear-gradient(180deg, #FFF 0%, #FAF7EE 100%);
+  padding: 80px 24px 56px;
+  text-align: center;
+  border-bottom: 1px solid rgba(20, 18, 14, 0.06);
+}
+.mm-projects-hero .eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C9A76A;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.mm-projects-hero h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(34px, 5vw, 52px);
+  margin: 0 0 16px;
+  color: #14120E;
+  letter-spacing: -0.02em;
+}
+.mm-projects-hero p {
+  max-width: 580px;
+  margin: 0 auto;
+  color: #6B635A;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.mm-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+@media (max-width: 480px) {
+  .mm-projects-grid { grid-template-columns: 1fr; }
+}
+
+.mm-project-card {
+  --mm-project-accent: #C9A76A;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px 26px;
+  background: #FFF;
+  border: 1px solid rgba(20, 18, 14, 0.08);
+  border-radius: 16px;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  overflow: hidden;
+}
+.mm-project-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--mm-project-accent);
+  opacity: 0.85;
+}
+.mm-project-card:hover {
+  border-color: var(--mm-project-accent);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px -16px rgba(20, 18, 14, 0.18);
+}
+
+.mm-project-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mm-project-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8A8377;
+  font-weight: 600;
+}
+.mm-project-dot { color: rgba(20, 18, 14, 0.25); }
+
+.mm-project-status {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.mm-project-status-live {
+  color: #228B5B;
+  background: rgba(34, 139, 91, 0.08);
+  border-color: rgba(34, 139, 91, 0.3);
+}
+.mm-project-status-completed {
+  color: #6B635A;
+  background: rgba(20, 18, 14, 0.05);
+  border-color: rgba(20, 18, 14, 0.12);
+}
+.mm-project-status-in-progress {
+  color: #B89254;
+  background: rgba(201, 167, 106, 0.1);
+  border-color: rgba(201, 167, 106, 0.3);
+}
+
+.mm-project-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  margin: 4px 0 0;
+  color: #14120E;
+}
+.mm-project-client {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #14120E;
+}
+.mm-project-swatch {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border-radius: 4px;
+  background: var(--mm-project-accent);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+.mm-project-summary {
+  margin: 0;
+  color: #4A4439;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.mm-project-outcomes {
+  list-style: none;
+  padding: 16px;
+  margin: 4px 0 0;
+  background: #FAF7EE;
+  border: 1px solid rgba(20, 18, 14, 0.06);
+  border-radius: 10px;
+  display: grid;
+  gap: 10px;
+}
+.mm-project-outcomes li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.mm-project-delta {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--mm-project-accent);
+  letter-spacing: -0.02em;
+  align-self: center;
+  min-width: 64px;
+}
+.mm-project-metric {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #14120E;
+}
+.mm-project-detail {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 12px;
+  color: #8A8377;
+}
+
+.mm-project-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mm-project-chip {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #4A4439;
+  background: rgba(20, 18, 14, 0.04);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.mm-project-link {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mm-project-accent);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+}
+.mm-project-link:hover { color: #14120E; }
+
+.mm-projects-cta {
+  margin-top: 64px;
+  padding: 48px 32px;
+  background: #14120E;
+  color: #FAF7EE;
+  border-radius: 20px;
+  text-align: center;
+}
+.mm-projects-cta h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(24px, 3.5vw, 34px);
+  margin: 0 0 10px;
+  color: #FFF;
+  letter-spacing: -0.015em;
+}
+.mm-projects-cta p {
+  margin: 0 auto 24px;
+  max-width: 520px;
+  color: rgba(250, 247, 238, 0.75);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.mm-projects-cta-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ─── 2026-05-09 — Dedicated 404 page ─── */
+
+.mm-404 {
+  position: relative;
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201, 167, 106, 0.10) 0%, transparent 60%),
+    linear-gradient(180deg, #FFF 0%, #FAF7EE 100%);
+  overflow: hidden;
+}
+.mm-404::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(20, 18, 14, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 18, 14, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, #000 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, #000 0%, transparent 75%);
+  pointer-events: none;
+}
+
+.mm-404-inner {
+  position: relative;
+  max-width: 640px;
+  text-align: center;
+  z-index: 1;
+}
+
+.mm-404-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #B89254;
+  background: rgba(201, 167, 106, 0.10);
+  border: 1px solid rgba(201, 167, 106, 0.28);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 32px;
+}
+.mm-404-dot {
+  width: 6px; height: 6px;
+  border-radius: 999px;
+  background: #C9A76A;
+  box-shadow: 0 0 0 4px rgba(201, 167, 106, 0.18);
+}
+
+.mm-404-numerals {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(120px, 22vw, 220px);
+  line-height: 0.9;
+  font-weight: 600;
+  color: #14120E;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, #14120E 0%, #4A4439 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 28px;
+  user-select: none;
+}
+.mm-404-zero {
+  position: relative;
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+}
+.mm-404-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 12px solid transparent;
+  background: linear-gradient(135deg, #C9A76A 0%, #B89254 50%, #14120E 100%) border-box;
+  -webkit-mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+.mm-404-ring-2 {
+  inset: 18%;
+  border-width: 6px;
+  opacity: 0.4;
+  background: linear-gradient(45deg, #C9A76A, transparent) border-box;
+}
+
+.mm-404-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #14120E;
+  margin: 0 0 14px;
+}
+.mm-404-sub {
+  max-width: 480px;
+  margin: 0 auto 40px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #6B635A;
+}
+
+.mm-404-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  max-width: 560px;
+}
+@media (max-width: 520px) {
+  .mm-404-grid { grid-template-columns: 1fr; }
+}
+.mm-404-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 2px 12px;
+  padding: 16px 18px;
+  background: #FFF;
+  border: 1px solid rgba(20, 18, 14, 0.08);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  text-align: left;
+}
+.mm-404-card:hover {
+  border-color: #C9A76A;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -12px rgba(20, 18, 14, 0.18);
+}
+.mm-404-card-label {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #14120E;
+}
+.mm-404-card-hint {
+  grid-column: 1;
+  grid-row: 2;
+  font-size: 12px;
+  color: #8A8377;
+}
+.mm-404-card-arrow {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  font-size: 18px;
+  color: #C9A76A;
+  opacity: 0.55;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.mm-404-card:hover .mm-404-card-arrow {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.mm-404-foot {
+  margin: 36px 0 0;
+  font-size: 13px;
+  color: #8A8377;
+}
+.mm-404-foot a {
+  color: #B89254;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 167, 106, 0.4);
+}
+.mm-404-foot a:hover { color: #14120E; border-bottom-color: #14120E; }
+
+/* ─── 2026-05-09 — Profile + Tenant switcher redesign (Vercel-style) ─── */
+
+/* Tenant switcher trigger — compact chip, bigger swatch, hide subtitle inline */
+.mm-tenant-switcher summary {
+  padding: 5px 10px 5px 6px !important;
+  gap: 8px !important;
+  max-width: 240px;
+  font-weight: 500;
+}
+.mm-tenant-switcher summary .mm-tenant-swatch {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 1px 2px rgba(20, 18, 14, 0.12);
+  border: none;
+}
+.mm-tenant-switcher summary .mm-tenant-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.mm-tenant-switcher summary .mm-tenant-sub { display: none; }
+.mm-tenant-switcher summary .mm-tenant-caret {
+  font-size: 10px;
+  opacity: 0.55;
+  margin-left: 2px;
+}
+
+/* Tenant pop — wider, richer rows, color-tinted active state */
+.mm-tenant-pop {
+  min-width: 300px;
+  padding: 8px !important;
+  border-radius: 14px !important;
+  box-shadow:
+    0 1px 2px rgba(20, 18, 14, 0.06),
+    0 24px 56px -16px rgba(20, 18, 14, 0.28) !important;
+}
+.mm-tenant-pop-head {
+  padding: 10px 12px 8px !important;
+  font-size: 10px !important;
+  letter-spacing: 0.16em !important;
+}
+.mm-tenant-row {
+  padding: 9px 10px !important;
+  gap: 12px !important;
+  border-radius: 10px !important;
+  font-weight: 500;
+  transition: background 0.12s ease;
+}
+.mm-tenant-row .mm-tenant-swatch {
+  width: 24px; height: 24px;
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 1px 2px rgba(20, 18, 14, 0.1);
+  border: none;
+}
+.mm-tenant-row[data-active="true"] {
+  background: rgba(201, 167, 106, 0.08);
+}
+.mm-tenant-row[data-active="true"] .mm-tenant-row-name {
+  font-weight: 600;
+  color: #14120E;
+}
+.mm-tenant-tick {
+  color: #C9A76A !important;
+  font-size: 13px;
+}
+.mm-tenant-divider {
+  margin: 6px 8px !important;
+  background: rgba(20, 18, 14, 0.08) !important;
+}
+.mm-tenant-add-trigger {
+  color: #6B635A !important;
+  font-weight: 500 !important;
+}
+.mm-tenant-add-trigger:hover { color: #B89254 !important; }
+.mm-tenant-plus {
+  width: 24px; height: 24px;
+  border-radius: 7px;
+  font-size: 14px;
+}
+
+/* Profile circle — slightly larger ring on hover, brand-tinted ring on open */
+.mm-profile-menu summary .mm-profile-avatar,
+.mm-profile-menu summary .mm-profile-avatar-img {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, #1F1B14 0%, #14120E 100%) !important;
+  box-shadow:
+    0 0 0 1.5px rgba(255, 255, 255, 0.9),
+    0 1px 3px rgba(20, 18, 14, 0.18),
+    0 4px 10px -2px rgba(20, 18, 14, 0.18) !important;
+}
+.mm-profile-menu summary:hover .mm-profile-avatar,
+.mm-profile-menu summary:hover .mm-profile-avatar-img {
+  box-shadow:
+    0 0 0 1.5px rgba(255, 255, 255, 0.9),
+    0 0 0 4px rgba(201, 167, 106, 0.18),
+    0 2px 6px rgba(20, 18, 14, 0.2) !important;
+  transform: none !important;
+}
+.mm-profile-menu[open] summary .mm-profile-avatar,
+.mm-profile-menu[open] summary .mm-profile-avatar-img {
+  box-shadow:
+    0 0 0 1.5px #FFF,
+    0 0 0 4px rgba(201, 167, 106, 0.55) !important;
+}
+
+/* Profile pop — wider, gradient header band, polished rows */
+.mm-profile-pop {
+  min-width: 280px !important;
+  padding: 0 !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(20, 18, 14, 0.06),
+    0 24px 56px -16px rgba(20, 18, 14, 0.28) !important;
+  background: #FFF !important;
+}
+.mm-profile-pop-head {
+  background: linear-gradient(135deg, #FAF7EE 0%, #FFF 100%);
+  padding: 16px 16px 14px !important;
+  border-bottom: 1px solid rgba(20, 18, 14, 0.06) !important;
+  margin-bottom: 0 !important;
+  position: relative;
+}
+.mm-profile-pop-head::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, #C9A76A 0%, #B89254 100%);
+}
+.mm-profile-pop-name {
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+}
+.mm-profile-pop-email {
+  font-size: 12px !important;
+  margin-top: 3px !important;
+}
+.mm-profile-pop-role {
+  margin-top: 10px !important;
+  font-size: 9.5px !important;
+}
+.mm-profile-pop-list {
+  padding: 6px !important;
+}
+.mm-profile-pop-item {
+  padding: 9px 11px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  gap: 11px !important;
+  transition: background 0.1s ease;
+}
+.mm-profile-pop-item > span:first-child {
+  font-size: 15px !important;
+  width: 18px;
+  text-align: center;
+  opacity: 0.85 !important;
+}
+.mm-profile-pop-out {
+  padding: 4px 6px 6px !important;
+  margin: 0 !important;
+}

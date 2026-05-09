@@ -5,42 +5,56 @@ export const metadata = {
   title: "Not found · Milesy Media",
 };
 
-// Top-level 404 — covers any URL not handled by app/ routes or
-// public/ rewrites. Keeps the marketing chrome so visitors never
-// feel dropped into a void.
+const SUGGESTED = [
+  { href: "/", label: "Marketing home", hint: "Start over" },
+  { href: "/health-check", label: "Free Health Check", hint: "60-second audit" },
+  { href: "/resources", label: "Resources hub", hint: "Tools + templates" },
+  { href: "/login", label: "Sign in to portal", hint: "Existing account" },
+];
+
 export default function NotFound() {
   return (
     <SiteShell>
-      <main className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center gap-4 px-6 py-16 text-center">
-        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#B89254]">
-          404 · not found
-        </span>
-        <h1 className="font-[Playfair_Display,Georgia,serif] text-4xl leading-tight tracking-tight text-[#14120E]">
-          That page isn&apos;t here.
-        </h1>
-        <p className="max-w-prose text-sm text-[#4A4439]">
-          The link might have moved, or the URL has a typo. Take one of
-          these:
-        </p>
-        <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-          <Link
-            href="/"
-            className="rounded-md bg-[#14120E] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2A2520]"
-          >
-            Marketing home
-          </Link>
-          <Link
-            href="/health-check"
-            className="rounded-md border border-black/10 bg-white px-4 py-2 text-sm font-medium text-[#14120E] hover:bg-[#FAF7EE]"
-          >
-            Free Health Check
-          </Link>
-          <Link
-            href="/login"
-            className="rounded-md border border-black/10 bg-white px-4 py-2 text-sm font-medium text-[#14120E] hover:bg-[#FAF7EE]"
-          >
-            Sign in
-          </Link>
+      <main className="mm-404">
+        <div className="mm-404-inner" data-mm-reveal>
+          <div className="mm-404-eyebrow">
+            <span className="mm-404-dot" aria-hidden />
+            Page not found
+          </div>
+
+          <div className="mm-404-numerals" aria-hidden>
+            <span>4</span>
+            <span className="mm-404-zero">
+              <span className="mm-404-ring" />
+              <span className="mm-404-ring mm-404-ring-2" />
+            </span>
+            <span>4</span>
+          </div>
+
+          <h1 className="mm-404-title">
+            We couldn&apos;t find that page.
+          </h1>
+          <p className="mm-404-sub">
+            The link may have moved, the URL has a typo, or the page never existed.
+            Try one of these — all working, all worth your time.
+          </p>
+
+          <ul className="mm-404-grid">
+            {SUGGESTED.map((s) => (
+              <li key={s.href}>
+                <Link href={s.href} className="mm-404-card">
+                  <span className="mm-404-card-label">{s.label}</span>
+                  <span className="mm-404-card-hint">{s.hint}</span>
+                  <span className="mm-404-card-arrow" aria-hidden>→</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mm-404-foot">
+            Still stuck? <Link href="/contact">Drop us a line</Link> and we&apos;ll
+            point you to the right place.
+          </p>
         </div>
       </main>
     </SiteShell>

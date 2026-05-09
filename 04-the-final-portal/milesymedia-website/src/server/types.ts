@@ -319,6 +319,19 @@ export interface PhaseDefinition {
   // trust level as a code-pushed brand kit override.
   customCss?: string;
   customJs?: string;
+  // Phases-as-presets (2026-05-08, chapter `04-phases-presets-architecture.md`).
+  // Optional welcome screen shown on client's first landing at this phase
+  // (e.g. "Welcome Felicia — let's complete your onboarding").
+  welcomeHeading?: string;
+  welcomeBody?: string;
+  // Optional sidebar override — when set, the per-client layout renders
+  // ONLY these nav items instead of the full plugin-driven sidebar.
+  // Lets a phase like "Onboarding" present a stripped, focused workspace.
+  sidebarOverride?: Array<{ id: string; label: string; href: string; order?: number }>;
+  // Public-facing flag — when true this phase is selectable as a public
+  // demo (powering /business-os, /health-check, /demo embeds). Only
+  // operators can flip this; defaults false.
+  isPublicPreset?: boolean;
 }
 
 export interface PhaseChecklistItem {
