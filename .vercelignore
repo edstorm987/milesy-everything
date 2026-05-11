@@ -7,10 +7,8 @@
 # SEPARATE Vercel projects (one per Live client) — this file isn't
 # read for those.
 
-# Reference codebases — not part of any deployment.
-01 development/
-02 felicias aqua portal work/
-03 old portal/
+# Reference codebases — archived, not part of any deployment.
+_obsolete/
 
 # Per-client portals — each is a separate Vercel project.
 # Excluded from the main portal deploy so its bundle stays small.
