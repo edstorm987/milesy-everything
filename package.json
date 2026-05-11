@@ -7,5 +7,8 @@
     "build": "node scripts/build-portal.mjs",
     "vercel-build": "node scripts/build-portal.mjs",
     "deploy": "node scripts/deploy-vercel.mjs"
+  },
+  "dependencies": {
+    "next": "16.2.4"
   }
 }
