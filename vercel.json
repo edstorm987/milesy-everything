@@ -2,9 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "regions": ["lhr1"],
-  "buildCommand": "cd '04-the-final-portal/milesymedia-website' && npm install --legacy-peer-deps && npm run build",
+  "buildCommand": "cd '04-milesymedia-portal/milesymedia-website' && npm install --legacy-peer-deps && npm run build",
   "installCommand": "echo 'Install runs inside buildCommand so workspace file:../plugins/* resolve at the right cwd.'",
-  "outputDirectory": "04-the-final-portal/milesymedia-website/.next",
+  "outputDirectory": "04-milesymedia-portal/milesymedia-website/.next",
   "cleanUrls": true,
   "trailingSlash": false
 }

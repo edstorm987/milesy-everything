@@ -18,7 +18,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 
 const repoRoot = process.cwd();
-const projectRoot = path.join(repoRoot, "04-the-final-portal", "milesymedia-website");
+const projectRoot = path.join(repoRoot, "04-milesymedia-portal", "milesymedia-website");
 
 function step(label, fn) {
   process.stdout.write(`\n▶ ${label}\n`);

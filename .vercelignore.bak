@@ -1,9 +1,9 @@
 # Vercel deploys the unified Next.js host at
-# `04-milesymedia-portal/milesymedia-website/` (chapter #122 unification —
+# `04 milesymedia portal/milesymedia-website/` (chapter #122 unification —
 # replaces the legacy `portal/` + `milesymedia website/` split + the
 # old build-portal.mjs copy step). vercel.json's buildCommand cd's
 # into that folder + runs `npm install && npm run build`.
-# Per-client portals at `04-milesymedia-portal/clients/<slug>/` deploy as
+# Per-client portals at `04 milesymedia portal/clients/<slug>/` deploy as
 # SEPARATE Vercel projects (one per Live client) — this file isn't
 # read for those.
 
@@ -12,7 +12,7 @@ _obsolete/
 
 # Per-client portals — each is a separate Vercel project.
 # Excluded from the main portal deploy so its bundle stays small.
-04-milesymedia-portal/clients/
+04 milesymedia portal/clients/
 
 # Local + build artefacts.
 node_modules/

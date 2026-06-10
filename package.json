@@ -2,7 +2,7 @@
   "name": "ker-v3-deploy-root",
   "version": "1.0.0",
   "private": true,
-  "description": "Root manifest for Vercel. Builds the Aqua portal Next.js app from `04-the-final-portal/portal/` and bundles the milesymedia static front-door files into its public/_milesy/ via scripts/build-portal.mjs.",
+  "description": "Root manifest for Vercel. Builds the Aqua portal Next.js app from `04-milesymedia-portal/portal/` and bundles the milesymedia static front-door files into its public/_milesy/ via scripts/build-portal.mjs.",
   "scripts": {
     "build": "node scripts/build-portal.mjs",
     "vercel-build": "node scripts/build-portal.mjs",
